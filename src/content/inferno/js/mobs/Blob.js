@@ -75,7 +75,7 @@ export class Blob extends Mob{
     }
     
     // Perform attack
-    if (this.hasLOS && this.playerPrayerScan && this.cd <=0) {
+    if (this.playerPrayerScan && this.cd <=0) {
       this.attack(stage);
       this.cd = this.cooldown;
       this.playerPrayerScan = null;
