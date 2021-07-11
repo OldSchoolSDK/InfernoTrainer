@@ -8,6 +8,46 @@ import BlobSound from "../../assets/sounds/blob.ogg";
 
 export class Blob extends Mob{
 
+
+  setStats () {
+
+    // non boosted numbers
+    this.stats = {
+      attack: 160,
+      strength: 160,
+      defence: 95,
+      ranged: 160,
+      magic: 160,
+      hitpoint: 40
+    };
+
+    // with boosts
+    this.currentStats = JSON.parse(JSON.stringify(this.stats))
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 45,
+        ranged: 40
+      },
+      defence: {
+        stab: 25,
+        slash: 25,
+        crush: 25,
+        magic: 25,
+        ranged: 25
+      },
+      other: {
+        meleeStrength: 45,
+        rangedStrength: 45,
+        magicDamage: 45,
+        prayer: 0
+      }
+    }
+  }
+
   // Since blobs attack on a 6 tick cycle, but these mechanics are odd, i set the 
   // attack speed to 3. The attack code exits early during a scan, so it always is 
   // double the cooldown between actual attacks.
@@ -17,10 +57,6 @@ export class Blob extends Mob{
 
   get attackRange() {
     return 15;
-  }
-
-  get maxHealth() {
-    return 40;
   }
 
   get maxHit() {

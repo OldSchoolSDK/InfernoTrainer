@@ -36,24 +36,24 @@ export default class Player {
 
     this.bonuses = {
       attack: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 0,
-        ranged: 0
+        stab: -1,
+        slash: -1,
+        crush: -1,
+        magic: -28,
+        ranged: 115
       },
       defence: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 0,
-        ranged: 0
+        stab: 213,
+        slash: 202,
+        crush: 219,
+        magic: 135,
+        ranged: 215
       },
       other: {
-        meleeStrength: 0,
-        rangedStrength: 0,
+        meleeStrength: 15,
+        rangedStrength: 62,
         magicDamage: 0,
-        prayer: 0
+        prayer: 12
       },
       targetSpecific: {
         undead: 0,
@@ -90,7 +90,35 @@ export default class Player {
 
   attack() {
     // Has LOS
-    const damage = Math.floor(Math.random()*35);
+    const prayerBonus = 1;
+    const isAccurate = false;
+    const voidModifier = 1;
+    const gearBonus = 1;
+
+    const rangedStrength = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+
+    const maxHit = Math.floor(0.5 + ((rangedStrength * (this.bonuses.other.rangedStrength + 64) / 640) * gearBonus));
+
+    const rangedAttack = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+
+    const attackRoll = Math.floor(rangedAttack * (this.bonuses.attack.ranged + 64) * gearBonus)
+
+    const defenceRoll = (this.seeking.currentStats.defence + 9) * (this.seeking.bonuses.defence.ranged + 64)
+
+    let hitChance = 0;
+    if (attackRoll > defenceRoll) {
+      hitChance = 1 - (defenceRoll + 2) / (2 * attackRoll + 1);
+    }else{
+      hitChance = attackRoll / (2 * defenceRoll + 1)
+    }
+
+    let damage;
+    if (Math.random() > hitChance) {
+      damage = 0;
+    }else{
+      damage = Math.random() * maxHit;
+    }
+
     this.seeking.addProjectile(new Projectile(damage, this, this.seeking, 'range'));
     // this.playAttackSound();
   }

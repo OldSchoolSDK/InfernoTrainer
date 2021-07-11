@@ -6,7 +6,7 @@ export default class Projectile {
     This should take the player and mob object, and do chebyshev on the size of them
   */
   constructor(damage, from, to, attackStyle) {
-    this.damage = damage;
+    this.damage = Math.floor(damage);
     this.fromLocation = from.location;
     this.toLocation = to.location;
     this.distance = 999999;

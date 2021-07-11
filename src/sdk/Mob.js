@@ -27,10 +27,6 @@ export class Mob {
     return 0;
   }
 
-  get maxHealth() {
-    return 0;
-  }
-
   get maxHit() {
     return 0;
   }
@@ -55,7 +51,7 @@ export class Mob {
     // override pls
   }
 
-  constructor(location) {
+  setStats () {
 
     // non boosted numbers
     this.stats = {
@@ -99,10 +95,14 @@ export class Mob {
         prayer: 0
       }
     }
+  }
+  
+  constructor(location) {
 
+    this.setStats();
     this.location = location;
     this.cd = 0;
-    this.currentHealth = this.maxHealth;
+    this.currentStats.hitpoint = this.stats.hitpoint;
     this.hasLOS = false;
     this.incomingProjectiles = [];
 
@@ -191,12 +191,12 @@ export class Mob {
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
       if (projectile.delay == 0) {
-        this.currentHealth -= projectile.damage;
+        this.currentStats.hitpoint -= projectile.damage;
       }
     });
-    this.currentHealth = Math.max(0, this.currentHealth);
+    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    if (this.currentHealth <= 0) {
+    if (this.currentStats.hitpoint <= 0) {
       return this.dead(stage);
     }
     
@@ -334,10 +334,10 @@ export class Mob {
     stage.ctx.fillRect(
       this.location.x * Constants.tileSize, 
       ((this.location.y - this.size + 1) * Constants.tileSize), 
-      (this.currentHealth / this.maxHealth) * (Constants.tileSize * this.size), 
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
       5
     );
-
+    
 
     
     let projectileOffsets = [

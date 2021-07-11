@@ -7,16 +7,51 @@ import MeleerSound from "../../assets/sounds/meleer.ogg";
 
 export class Meleer extends Mob{
 
+
+  setStats () {
+
+    // non boosted numbers
+    this.stats = {
+      attack: 210,
+      strength: 290,
+      defence: 120,
+      ranged: 220,
+      magic: 120,
+      hitpoint: 75
+    };
+
+    // with boosts
+    this.currentStats = JSON.parse(JSON.stringify(this.stats))
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 0
+      },
+      defence: {
+        stab: 65,
+        slash: 65,
+        crush: 65,
+        magic: 30,
+        ranged: 5
+      },
+      other: {
+        meleeStrength: 40,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      }
+    }
+  }
   get cooldown() {
     return 4;
   }
 
   get attackRange() {
     return 1;
-  }
-
-  get maxHealth() {
-    return 75;
   }
 
   get maxHit() {

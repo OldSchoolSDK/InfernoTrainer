@@ -7,16 +7,52 @@ import BatSound from "../../assets/sounds/bat.ogg";
 
 export class Bat extends Mob{
 
+
+  setStats () {
+
+    // non boosted numbers
+    this.stats = {
+      attack: 0,
+      strength: 0,
+      defence: 55,
+      ranged: 120,
+      magic: 120,
+      hitpoint: 25
+    };
+
+    // with boosts
+    this.currentStats = JSON.parse(JSON.stringify(this.stats))
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 25
+      },
+      defence: {
+        stab: 30,
+        slash: 30,
+        crush: 30,
+        magic: -20,
+        ranged: 45
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 30,
+        magicDamage: 0,
+        prayer: 0
+      }
+    }
+  }
+  
   get cooldown() {
     return 3;
   }
 
   get attackRange() {
     return 4;
-  }
-
-  get maxHealth() {
-    return 25;
   }
 
   get maxHit() {
