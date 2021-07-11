@@ -46,7 +46,7 @@ export class Meleer extends Mob{
   movementStep(stage) {
     super.movementStep(stage);
     if (!this.hasLOS){
-      if (((this.cd <= -16) & (Math.random() < 0.1)) | (this.cd <= -50)) {
+      if (((this.cd <= -38) & (Math.random() < 0.1)) | (this.cd <= -50)) {
           this.dig(stage);
           this.cd = 8;
       }
