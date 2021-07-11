@@ -103,7 +103,6 @@ export default class Stage {
       clearTimeout(this.inputDelay);
     }
     this.inputDelay = setTimeout(() => {
-
       x = Math.floor(x / Constants.tileSize);
       y = Math.floor(y / Constants.tileSize);
       if (x > this.width || y > this.height) { // Can we not go negative?

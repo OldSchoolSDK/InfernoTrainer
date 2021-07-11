@@ -8,6 +8,7 @@ import ProtectMelee from "./ProtectMelee";
 import ProtectMage from "./ProtectMage";
 import ProtectRange from "./ProtectRange";
 import _ from "lodash";
+import BrowserUtils from "../BrowserUtils";
 
 export default class PrayerControls extends BaseControls{
 
@@ -17,6 +18,11 @@ export default class PrayerControls extends BaseControls{
 
   get tabImageReference() {
     return PrayerTab;
+  }
+
+
+  get keyBinding() {
+    return BrowserUtils.getQueryVar("pray_key") || "3";
   }
 
 

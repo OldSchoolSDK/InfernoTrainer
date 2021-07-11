@@ -12,6 +12,7 @@ import { Ranger } from "./js/mobs/Ranger";
 import { Meleer } from "./js/mobs/Meleer";
 import { Blob } from "./js/mobs/Blob";
 import { Bat } from "./js/mobs/Bat";
+import BrowserUtils from "../../sdk/BrowserUtils";
 
 // Create stage
 const stage = new Stage("map", 29, 30);
@@ -24,18 +25,19 @@ controlPanel.setStage(stage);
 // Add pillars
 Pillar.addPillarsToStage(stage);
 
+
 // Add player
-const player = new Player(new Point(parseInt(getQueryVar("x")) || 17, parseInt(getQueryVar("y")) || 2));
+const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 2));
 stage.setPlayer(player);
 
 // Add mobs
 
 // Backwards compatibility layer for runelite plugin
-const bat = getQueryVar("bat")
-const blob = getQueryVar("blob")
-const melee = getQueryVar("melee")
-const ranger = getQueryVar("ranger")
-const mager = getQueryVar("mager")
+const bat = BrowserUtils.getQueryVar("bat")
+const blob = BrowserUtils.getQueryVar("blob")
+const melee = BrowserUtils.getQueryVar("melee")
+const ranger = BrowserUtils.getQueryVar("ranger")
+const mager = BrowserUtils.getQueryVar("mager")
 
 if (bat || blob || melee || ranger || mager) {
   stage.wave = "imported";
@@ -50,8 +52,8 @@ if (bat || blob || melee || ranger || mager) {
 }else{
 
   // Native approach
-  const wave = parseInt(getQueryVar("wave")) || 62;
-  const spawns = getQueryVar("spawns") ? JSON.parse(decodeURIComponent(getQueryVar("spawns"))) : Waves.getRandomSpawns();
+  const wave = parseInt(BrowserUtils.getQueryVar("wave")) || 62;
+  const spawns = BrowserUtils.getQueryVar("spawns") ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar("spawns"))) : Waves.getRandomSpawns();
 
   Waves.spawn(spawns, wave).forEach(stage.addMob.bind(stage));
   stage.wave = wave;
@@ -88,19 +90,3 @@ document.getElementById("soundToggle").addEventListener("click", function() {
 });
 
 document.getElementById("version").innerHTML = "Version " + process.env.COMMIT_REF + " - " + process.env.BUILD_DATE;
-
-// Helpers
-function getQueryVar(varName){
-  // Grab and unescape the query string - appending an '&' keeps the RegExp simple
-  // for the sake of this example.
-  var queryStr = unescape(window.location.search) + '&';
-
-  // Dynamic replacement RegExp
-  var regex = new RegExp('.*?[&\\?]' + varName + '=(.*?)&.*');
-
-  // Apply RegExp to the query string
-  var val = queryStr.replace(regex, "$1");
-
-  // If the string is the same, we didn't find a match - return false
-  return val == queryStr ? false : val;
-}

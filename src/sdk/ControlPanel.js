@@ -55,6 +55,16 @@ export default class ControlPanel {
 
     this.selectedControl = ControlPanel.controls.PRAYER;
 
+    document.addEventListener("keypress", (event) => {
+      this.controls.forEach((control) => {
+        control.setUnselected();
+        if (control.keyBinding === event.key){
+          control.clickedTab();
+          this.selectedControl = control;
+        }
+      });
+    });
+
   }
 
   setStage(stage){

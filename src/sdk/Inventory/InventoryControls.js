@@ -6,6 +6,7 @@ import BaseControls from "./../ControlPanels/BaseControls";
 
 import { TwistedBow } from "../../content/weapons/TwistedBow";
 import { Blowpipe } from "../../content/weapons/Blowpipe";
+import BrowserUtils from "../BrowserUtils";
 
 
 export default class InventoryControls extends BaseControls{
@@ -25,6 +26,10 @@ export default class InventoryControls extends BaseControls{
 
   get tabImageReference() {
     return InventoryTab;
+  }
+
+  get keyBinding() {
+    return BrowserUtils.getQueryVar("inv_key") || "4";
   }
 
   

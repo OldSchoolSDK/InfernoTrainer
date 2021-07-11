@@ -22,6 +22,9 @@ export default class BaseControls {
   setUnselected(){
     this.selected = false;
   }
+  setSelected(){
+    this.selected = true;
+  }
 
   clickedTab() {
     this.selected = !this.selected;
