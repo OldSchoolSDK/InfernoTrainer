@@ -1,5 +1,6 @@
 'use strict';
 
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import Pathing from "../../../../sdk/Pathing";
 import MeleerImage from "../../assets/images/meleer.png";
@@ -9,6 +10,7 @@ export class Meleer extends Mob{
 
 
   setStats () {
+    this.meleeWeapon = new MeleeWeapon();
 
     // non boosted numbers
     this.stats = {

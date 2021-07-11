@@ -80,6 +80,10 @@ export default class Player {
     
   }
 
+  get isMob() {
+    return false;
+  }
+  
   get size() {
     return 1;
   }
@@ -90,36 +94,8 @@ export default class Player {
 
   attack() {
     // Has LOS
-    const prayerBonus = 1;
-    const isAccurate = false;
-    const voidModifier = 1;
-    const gearBonus = 1;
+    this.weapon.attack(this, this.seeking);
 
-    const rangedStrength = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
-
-    const maxHit = Math.floor(0.5 + ((rangedStrength * (this.bonuses.other.rangedStrength + 64) / 640) * gearBonus));
-
-    const rangedAttack = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
-
-    const attackRoll = Math.floor(rangedAttack * (this.bonuses.attack.ranged + 64) * gearBonus)
-
-    const defenceRoll = (this.seeking.currentStats.defence + 9) * (this.seeking.bonuses.defence.ranged + 64)
-
-    let hitChance = 0;
-    if (attackRoll > defenceRoll) {
-      hitChance = 1 - (defenceRoll + 2) / (2 * attackRoll + 1);
-    }else{
-      hitChance = attackRoll / (2 * defenceRoll + 1)
-    }
-
-    let damage;
-    if (Math.random() > hitChance) {
-      damage = 0;
-    }else{
-      damage = Math.random() * maxHit;
-    }
-
-    this.seeking.addProjectile(new Projectile(damage, this, this.seeking, 'range'));
     // this.playAttackSound();
   }
 

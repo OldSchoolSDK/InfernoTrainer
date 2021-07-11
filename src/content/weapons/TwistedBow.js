@@ -2,7 +2,9 @@
 
 import { Weapon } from "../../sdk/Weapon";
 import TbowInventImage from "../../assets/images/weapons/twistedBow.png"
-export class TwistedBow extends Weapon{
+import RangedWeapon from "../../sdk/RangedWeapon";
+
+export class TwistedBow extends RangedWeapon{
 
   get attackRange() {
       return 10;

@@ -19,6 +19,10 @@ export class Mob {
     SCAN: 3,
   });
 
+  get isMob() {
+    return true;
+  }
+
   get cooldown() {
     return 0;
   }

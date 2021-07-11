@@ -2,7 +2,9 @@
 
 import Constants from "../../../../sdk/Constants";
 import LineOfSight from "../../../../sdk/LineOfSight";
+import MagicWeapon from "../../../../sdk/MagicWeapon";
 import { Mob } from "../../../../sdk/Mob";
+import RangedWeapon from "../../../../sdk/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
@@ -11,6 +13,8 @@ export class Blob extends Mob{
 
   setStats () {
 
+    this.rangedWeapon = new RangedWeapon();
+    this.magicWeapon = new MagicWeapon();
     // non boosted numbers
     this.stats = {
       attack: 160,

@@ -1,6 +1,8 @@
 'use strict';
 
 import Constants from "../../../../sdk/Constants";
+import MagicWeapon from "../../../../sdk/MagicWeapon";
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mager.ogg";
@@ -9,6 +11,8 @@ export class Mager extends Mob{
 
 
   setStats () {
+    this.magicWeapon = new MagicWeapon();
+    this.meleeWeapon = new MeleeWeapon();
 
     // non boosted numbers
     this.stats = {

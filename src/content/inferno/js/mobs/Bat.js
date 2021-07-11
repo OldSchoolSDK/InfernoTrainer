@@ -2,6 +2,7 @@
 
 import Constants from "../../../../sdk/Constants";
 import { Mob } from "../../../../sdk/Mob";
+import RangedWeapon from "../../../../sdk/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";
 
@@ -9,6 +10,8 @@ export class Bat extends Mob{
 
 
   setStats () {
+
+    this.weapon = new RangedWeapon();
 
     // non boosted numbers
     this.stats = {

@@ -8,4 +8,8 @@ export class Weapon {
     this.inventorySprite.src = this.inventoryImage;
   }
 
+  attack(){
+    
+  }
+
 }

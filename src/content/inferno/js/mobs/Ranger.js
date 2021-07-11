@@ -2,7 +2,9 @@
 
 import _ from "lodash";
 import Constants from "../../../../sdk/Constants";
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
+import RangedWeapon from "../../../../sdk/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/ranger.ogg";
 
@@ -10,6 +12,8 @@ export class Ranger extends Mob {
 
 
   setStats () {
+    this.rangedWeapon = new RangedWeapon();
+    this.meleeWeapon = new MeleeWeapon();
 
     // non boosted numbers
     this.stats = {
