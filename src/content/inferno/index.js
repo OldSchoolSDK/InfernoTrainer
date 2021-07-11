@@ -59,7 +59,7 @@ if (bat || blob || melee || ranger || mager) {
 
   const encodedSpawn = encodeURIComponent(JSON.stringify(spawns));
   document.getElementById("replayLink").href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`;
-
+  document.getElementById("waveinput").value = wave;
 
 }
 
@@ -80,7 +80,6 @@ const timer = setInterval(() => {
 document.getElementById("playWaveNum").addEventListener("click", function() {
   window.location = `/?wave=${document.getElementById("waveinput").value || wave}`
 });
-
 
 
 // UI controls
