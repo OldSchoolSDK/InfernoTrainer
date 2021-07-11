@@ -268,7 +268,6 @@ export class Mob {
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     
-    stage.player.addProjectile(new Projectile(damage, this, stage.player, attackStyle));
     this.playAttackSound();
 
     this.cd = this.cooldown;
