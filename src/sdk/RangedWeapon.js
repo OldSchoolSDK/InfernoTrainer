@@ -2,7 +2,7 @@ import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
   attack(from, to, bonuses = {}){
-    bonuses.prayer = bonuses.prayer || 1;
+    bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -10,15 +10,15 @@ export default class RangedWeapon extends Weapon {
   }
 
   _rollAttack(from, to, bonuses){
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.random() * this._maxHit(from, to, bonuses);
+    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses));
   }
 
   _rangedAttack(from, to, bonuses){
-    return Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayer) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    return Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
   }
 
   _maxHit(from, to, bonuses) {
-    const rangedStrength = Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayer) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    const rangedStrength = Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
     return Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier));
   }
 
