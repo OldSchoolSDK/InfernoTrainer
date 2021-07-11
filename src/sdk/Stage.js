@@ -9,6 +9,7 @@ import Point from './Point';
 export default class Stage {
 
   constructor(selector, width, height) {
+    this.inputDelay = null;
     this.frameCounter = 0;
     this.heldDown = 6;
     this.controlPanel = null;
@@ -98,20 +99,26 @@ export default class Stage {
   mapClick(e) {
     let x = e.offsetX;
     let y = e.offsetY;
-    x = Math.floor(x / Constants.tileSize);
-    y = Math.floor(y / Constants.tileSize);
-    if (x > this.width || y > this.height) { // Can we not go negative?
-      return;
+    if (this.inputDelay){
+      clearTimeout(this.inputDelay);
     }
+    this.inputDelay = setTimeout(() => {
 
-    // maybe this should live in the player class? seems very player related in current form.
-    this.player.seeking = false;
-    const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
-    if (mob) {
-      this.player.seeking = mob;
-    }else{
-      this.player.moveTo(x, y);
-    }
+      x = Math.floor(x / Constants.tileSize);
+      y = Math.floor(y / Constants.tileSize);
+      if (x > this.width || y > this.height) { // Can we not go negative?
+        return;
+      }
+  
+      // maybe this should live in the player class? seems very player related in current form.
+      this.player.seeking = false;
+      const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
+      if (mob) {
+        this.player.seeking = mob;
+      }else{
+        this.player.moveTo(x, y);
+      }
+    }, 150);
   }
 
   draw(framePercent) {
