@@ -231,6 +231,9 @@ export class Mob {
     }
   }
 
+  magicMaxHit() {
+    return 0;
+  }
 
   attack(stage){
     let attackStyle = this.attackStyle();
@@ -264,7 +267,7 @@ export class Mob {
     if (protectionPrayerActive){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      this.weapons[attackStyle].attack(this, stage.player, { attackStyle })
+      this.weapons[attackStyle].attack(this, stage.player, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     

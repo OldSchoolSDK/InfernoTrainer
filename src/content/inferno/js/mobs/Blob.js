@@ -106,6 +106,10 @@ export class Blob extends Mob{
   canMeleeIfClose() {
     return 'slash';
   }
+
+  magicMaxHit() {
+    return 29;
+  }
    
   attackIfPossible(stage){
 

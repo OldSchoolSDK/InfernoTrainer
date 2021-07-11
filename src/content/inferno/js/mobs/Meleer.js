@@ -54,6 +54,10 @@ export class Meleer extends Mob{
     return 4;
   }
 
+  attackStyle() {
+    return 'slash';
+  }
+
   get attackRange() {
     return 1;
   }

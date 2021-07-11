@@ -89,6 +89,10 @@ export class Mager extends Mob{
     return 'slash';
   }
 
+  magicMaxHit() {
+    return 70;
+  }
+
   attackAnimation(stage, framePercent){
     stage.ctx.rotate(framePercent * Math.PI * 2);
   }

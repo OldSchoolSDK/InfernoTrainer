@@ -28,15 +28,14 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _attackRoll(from, to, bonuses) {
-    return Math.floor((this._attackLevel(from, to, bonuses) + (from.bonuses.attack.slash + 64)) * bonuses.gearMultiplier);
+    return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack.slash + 64)) * bonuses.gearMultiplier);
   }
 
   _defenceRoll(from, to, bonuses) {
-    let defenceRoll = 0;
     if (to.isMob) {
       return (to.currentStats.defence + 9) * (to.bonuses.defence.slash + 64);
     }else{
-      return this._defenceLevel(from, to, bonuses) * (to.bonuses.defence.slash + 64);
+      return this._defenceLevel(from, to, bonuses) * (from.bonuses.defence.slash + 64);
     }
   }
   _defenceLevel(from, to, bonuses) {
