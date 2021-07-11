@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>OSRS Trainer SDK Test Page</title>
+    <style>
+      @font-face {
+        font-family: 'OSRS';
+        src: url(/assets/fonts/RuneScape-UF.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-UF.woff2) format("woff2");
+      }
+
+      @font-face {
+        font-family: 'Stats_11';
+        src: url(/assets/fonts/RuneScape-Plain-11.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-Plain-11.woff2) format("woff2");
+      }
+
+      @font-face {
+        font-family: 'Stats_12';
+        src: url(/assets/fonts/RuneScape-Plain-12.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-Plain-12.woff2) format("woff2");
+      }
+
+      body {
+        font-family: 'OSRS';
+        background: black;
+        font-weight: normal;
+        font-style: normal;
+        color: #ffff00;
+      }
+
+      button, input, a {
+        border: 1px #FFFF00 solid;
+        background-color: black;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        font-family: 'OSRS';
+        color: #FFFF00
+      }
+
+      .stats-font-11 {
+        font-family: 'Stats 11'; 
+        font-size: 11;
+      }
+
+      .stats-font-12 {
+        font-family: 'Stats 12'; 
+        font-size: 12;
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <button id="soundToggle">Toggle Sound</button>
+    <a id="replayLink">Replay / Save This Exact Wave Spawn</a>
+    <input id="waveinput" type="text" placeholder="Wave #"/>
+    <button id="playWaveNum">Play Wave Number</button>
+    <br />
+
+    <canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
+    <canvas id="controlPanel" onselectstart="return false" oncontextmenu="return false"></canvas>
+    <canvas id="grid" onselectstart="return false" oncontextmenu="return false" style="display:none;"></canvas>
+    <div id="version" style="width: 600px;"></div>
+    <div>Contact: "Tesla Owner" IG, "Tesla Owner#1337" via Discord.</div>
+    <div>Special Thanks: <br />
+      Senior Wells, the true Inferno Chad<br />
+      I BreakRules <br />
+      Dry Defender <br />
+      ArtsicleOfficial <br />
+      TheKlodster
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
