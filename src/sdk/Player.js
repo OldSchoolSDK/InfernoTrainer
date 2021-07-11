@@ -44,7 +44,7 @@ export default class Player {
   attack() {
     // Has LOS
     const damage = Math.floor(Math.random()*35);
-    this.seeking.addProjectile(new Projectile(damage, this, this.seeking));
+    this.seeking.addProjectile(new Projectile(damage, this, this.seeking, 'range'));
     // this.playAttackSound();
   }
 
@@ -132,7 +132,7 @@ export default class Player {
 
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
-      if (projectile.delay == 0) {
+      if (projectile.delay <= 0) {
         this.currentHealth -= projectile.damage;
       }
     });
