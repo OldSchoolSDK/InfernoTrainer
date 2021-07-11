@@ -19,17 +19,6 @@ export default class BaseControls {
     return null;
   }
 
-  setUnselected(){
-    this.selected = false;
-  }
-  setSelected(){
-    this.selected = true;
-  }
-
-  clickedTab() {
-    this.selected = !this.selected;
-  }
-
   clickedPanel(x, y){
 
   }

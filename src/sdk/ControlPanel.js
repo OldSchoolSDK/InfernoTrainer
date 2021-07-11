@@ -57,9 +57,7 @@ export default class ControlPanel {
 
     document.addEventListener("keypress", (event) => {
       this.controls.forEach((control) => {
-        control.setUnselected();
         if (control.keyBinding === event.key){
-          control.clickedTab();
           this.selectedControl = control;
         }
       });
@@ -88,15 +86,12 @@ export default class ControlPanel {
     if (y > 275) {
       this.controls.forEach((control, index) => {
         const tabPosition = this.tabPosition(index, true);
-        this.controls[index].setUnselected();
         if (tabPosition.x <= x && x < tabPosition.x + 33 ){
           if (tabPosition.y <= y && x < tabPosition.y + 36){
             if (this.controls[index] === this.selectedControl) {
-              this.controls[index].setUnselected();
               this.selectedControl = null;
               return;
             }
-            this.controls[index].clickedTab();
             this.selectedControl = this.controls[index];
           }
         }
@@ -133,7 +128,7 @@ export default class ControlPanel {
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true);
       this.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y);
-      if (control.selected){
+      if (control === this.selectedControl){
         selectedPosition = tabPosition;
       }
     })
