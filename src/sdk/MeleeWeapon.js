@@ -33,7 +33,7 @@ export default class MeleeWeapon extends Weapon {
 
   _defenceRoll(from, to, bonuses) {
     let defenceRoll = 0;
-    if (to.isMob()) {
+    if (to.isMob) {
       return (to.currentStats.defence + 9) * (to.bonuses.defence.slash + 64);
     }else{
       return this._defenceLevel(from, to, bonuses) * (to.bonuses.defence.slash + 64);
