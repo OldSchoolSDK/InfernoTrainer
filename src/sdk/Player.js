@@ -13,6 +13,54 @@ export default class Player {
 
   constructor(location) {
     this.prayers = [];
+
+    // non boosted numbers
+    this.stats = {
+      attack: 99,
+      strength: 99,
+      defence: 99,
+      ranged: 99,
+      magic: 99,
+      hitpoint: 99
+    };
+
+    // with boosts
+    this.currentStats = {
+      attack: 99,
+      strength: 99,
+      defence: 99,
+      ranged: 99,
+      magic: 99,
+      hitpoint: 99
+    };
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 0
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
+
     this.lastOverhead = null;
     this.location = location;
     this.seeking = false;
@@ -22,7 +70,6 @@ export default class Player {
     this.weapon = new TwistedBow();
     this.incomingProjectiles = [];
 
-    this.currentHealth = 99;
 
     this.cd = 0;
     
@@ -43,7 +90,35 @@ export default class Player {
 
   attack() {
     // Has LOS
-    const damage = Math.floor(Math.random()*35);
+    const prayerBonus = 1;
+    const isAccurate = false;
+    const voidModifier = 1;
+    const gearBonus = 1;
+
+    const rangedStrength = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+
+    const maxHit = Math.floor(0.5 + ((rangedStrength * (this.bonuses.other.rangedStrength + 64) / 640) * gearBonus));
+
+    const rangedAttack = Math.floor((Math.floor(this.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+
+    const attackRoll = Math.floor(rangedAttack * (this.bonuses.attack.ranged + 64) * gearBonus)
+
+    const defenceRoll = (this.seeking.currentStats.defence + 9) * (this.seeking.bonuses.defence.ranged + 64)
+
+    let hitChance = 0;
+    if (attackRoll > defenceRoll) {
+      hitChance = 1 - (defenceRoll + 2) / (2 * attackRoll + 1);
+    }else{
+      hitChance = attackRoll / (2 * defenceRoll + 1)
+    }
+
+    let damage;
+    if (Math.random() > hitChance) {
+      damage = 0;
+    }else{
+      damage = Math.random() * maxHit;
+    }
+
     this.seeking.addProjectile(new Projectile(damage, this, this.seeking, 'range'));
     // this.playAttackSound();
   }
@@ -133,10 +208,10 @@ export default class Player {
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
       if (projectile.delay <= 0) {
-        this.currentHealth -= projectile.damage;
+        this.currentStats.hitpoint -= projectile.damage;
       }
     });
-    this.currentHealth = Math.max(0, this.currentHealth);
+    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     this.cd--;
 
@@ -240,7 +315,7 @@ export default class Player {
     stage.ctx.fillStyle = "red";
     stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
     stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, (this.currentHealth / 99) * Constants.tileSize, 5);
+    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
 
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());

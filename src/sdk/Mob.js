@@ -56,6 +56,50 @@ export class Mob {
   }
 
   constructor(location) {
+
+    // non boosted numbers
+    this.stats = {
+      attack: 99,
+      strength: 99,
+      defence: 99,
+      ranged: 99,
+      magic: 99,
+      hitpoint: 99
+    };
+
+    // with boosts
+    this.currentStats = {
+      attack: 99,
+      strength: 99,
+      defence: 99,
+      ranged: 99,
+      magic: 99,
+      hitpoint: 99
+    };
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 0
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        ranged: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      }
+    }
+
     this.location = location;
     this.cd = 0;
     this.currentHealth = this.maxHealth;
@@ -181,7 +225,7 @@ export class Mob {
   attack(stage){
     let attackStyle = this.attackStyle();
 
-    if (this.canMeleeIfClose()){
+    if (this.canMeleeIfClose() && attackStyle !== 'melee'){
       const playerX = stage.player.location.x;
       const playerY = stage.player.location.y;
       let isWithinMeleeRange = false;
