@@ -1,37 +1,38 @@
 import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
-  attack(from, to){
+  attack(from, to, bonuses = {}){
+    bonuses.prayer = bonuses.prayer || 1;
+    bonuses.isAccurate = bonuses.isAccurate || false;
+    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
+    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, 'range'));
+  }
 
-    const prayerBonus = 1;
-    const isAccurate = false;
-    const voidModifier = 1;
-    const gearBonus = 1;
+  _rollAttack(from, to, bonuses){
+    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.random() * this._maxHit(from, to, bonuses);
+  }
 
-    const rangedStrength = Math.floor((Math.floor(from.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+  _rangedAttack(from, to, bonuses){
+    return Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayer) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+  }
 
-    const maxHit = Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * gearBonus));
+  _maxHit(from, to, bonuses) {
+    const rangedStrength = Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayer) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    return Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier));
+  }
 
-    const rangedAttack = Math.floor((Math.floor(from.currentStats.ranged) * prayerBonus) + (isAccurate ? 3 : 0) + 8) * voidModifier;
+  _attackRoll(from, to, bonuses){
+    return Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.ranged + 64) * bonuses.gearMultiplier)
+  }
 
-    const attackRoll = Math.floor(rangedAttack * (from.bonuses.attack.ranged + 64) * gearBonus)
+  _defenceRoll(from, to, bonuses) {
+    return (to.currentStats.defence + 9) * (to.bonuses.defence.ranged + 64);
+  }
 
-    const defenceRoll = (to.currentStats.defence + 9) * (to.bonuses.defence.ranged + 64)
-
-    let hitChance = 0;
-    if (attackRoll > defenceRoll) {
-      hitChance = 1 - (defenceRoll + 2) / (2 * attackRoll + 1);
-    }else{
-      hitChance = attackRoll / (2 * defenceRoll + 1)
-    }
-
-    let damage;
-    if (Math.random() > hitChance) {
-      damage = 0;
-    }else{
-      damage = Math.random() * maxHit;
-    }
-
-    to.addProjectile(new Projectile(damage, from, to, 'range'));
+  _hitChance(from, to, bonuses) {
+    const attackRoll = this._attackRoll(from, to, bonuses) ;
+    const defenceRoll = this._defenceRoll(from, to, bonuses);
+    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1));    
   }
 }
