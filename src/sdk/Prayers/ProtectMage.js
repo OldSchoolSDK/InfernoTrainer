@@ -25,7 +25,7 @@ export default class ProtectMage extends BasePrayer{
   }
   
   feature () {
-    return 'mage';
+    return 'magic';
   }
 
   playOnSound(){

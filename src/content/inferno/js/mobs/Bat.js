@@ -1,6 +1,7 @@
 'use strict';
 
 import Constants from "../../../../sdk/Constants";
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import RangedWeapon from "../../../../sdk/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
@@ -11,14 +12,16 @@ export class Bat extends Mob{
 
   setStats () {
 
-    this.weapon = new RangedWeapon();
+    this.weapons = {
+      range: new RangedWeapon()
+    }
 
     // non boosted numbers
     this.stats = {
       attack: 0,
       strength: 0,
       defence: 55,
-      ranged: 120,
+      range: 120,
       magic: 120,
       hitpoint: 25
     };
@@ -32,14 +35,14 @@ export class Bat extends Mob{
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 25
+        range: 25
       },
       defence: {
         stab: 30,
         slash: 30,
         crush: 30,
         magic: -20,
-        ranged: 45
+        range: 45
       },
       other: {
         meleeStrength: 0,

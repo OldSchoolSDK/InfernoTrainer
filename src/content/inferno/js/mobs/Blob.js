@@ -3,6 +3,7 @@
 import Constants from "../../../../sdk/Constants";
 import LineOfSight from "../../../../sdk/LineOfSight";
 import MagicWeapon from "../../../../sdk/MagicWeapon";
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import RangedWeapon from "../../../../sdk/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
@@ -13,14 +14,18 @@ export class Blob extends Mob{
 
   setStats () {
 
-    this.rangedWeapon = new RangedWeapon();
-    this.magicWeapon = new MagicWeapon();
+    this.weapons = {
+      melee: new MeleeWeapon(),
+      magic: new MagicWeapon(),
+      range: new RangedWeapon()
+    }
+
     // non boosted numbers
     this.stats = {
       attack: 160,
       strength: 160,
       defence: 95,
-      ranged: 160,
+      range: 160,
       magic: 160,
       hitpoint: 40
     };
@@ -34,14 +39,14 @@ export class Blob extends Mob{
         slash: 0,
         crush: 0,
         magic: 45,
-        ranged: 40
+        range: 40
       },
       defence: {
         stab: 25,
         slash: 25,
         crush: 25,
         magic: 25,
-        ranged: 25
+        range: 25
       },
       other: {
         meleeStrength: 45,
@@ -92,14 +97,14 @@ export class Blob extends Mob{
   }
 
   attackStyle() {
-    if (this.playerPrayerScan !== 'mage' && this.playerPrayerScan != 'range'){
-      return (Math.random() < 0.5) ? 'mage' : 'range';
+    if (this.playerPrayerScan !== 'magic' && this.playerPrayerScan != 'range'){
+      return (Math.random() < 0.5) ? 'magic' : 'range';
     }
-    return (this.playerPrayerScan === 'mage') ? 'range' : 'mage';
+    return (this.playerPrayerScan === 'magic') ? 'range' : 'magic';
   }
 
   canMeleeIfClose() {
-    return true;
+    return 'slash';
   }
    
   attackIfPossible(stage){

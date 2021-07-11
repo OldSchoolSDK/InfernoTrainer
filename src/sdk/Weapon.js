@@ -12,4 +12,7 @@ export class Weapon {
     
   }
 
+  static isMeleeAttackStyle(style){
+    return style === 'crush' || style === 'slash' || style === 'stab';
+  }
 }

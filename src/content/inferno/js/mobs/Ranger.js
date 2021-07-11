@@ -12,15 +12,18 @@ export class Ranger extends Mob {
 
 
   setStats () {
-    this.rangedWeapon = new RangedWeapon();
-    this.meleeWeapon = new MeleeWeapon();
+
+    this.weapons = {
+      slash: new MeleeWeapon(),
+      range: new RangedWeapon()
+    };
 
     // non boosted numbers
     this.stats = {
       attack: 140,
       strength: 180,
       defence: 60,
-      ranged: 250,
+      range: 250,
       magic: 90,
       hitpoint: 125
     };
@@ -34,14 +37,14 @@ export class Ranger extends Mob {
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 40
+        range: 40
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       other: {
         meleeStrength: 0,
@@ -86,7 +89,7 @@ export class Ranger extends Mob {
   }
 
   canMeleeIfClose() {
-    return true;
+    return 'slash';
   }
   
   playAttackSound (){

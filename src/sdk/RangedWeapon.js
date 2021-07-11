@@ -1,3 +1,4 @@
+import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
@@ -14,20 +15,20 @@ export default class RangedWeapon extends Weapon {
   }
 
   _rangedAttack(from, to, bonuses){
-    return Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    return Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
   }
 
   _maxHit(from, to, bonuses) {
-    const rangedStrength = Math.floor((Math.floor(from.currentStats.ranged) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
     return Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier));
   }
 
   _attackRoll(from, to, bonuses){
-    return Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.ranged + 64) * bonuses.gearMultiplier)
+    return Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier)
   }
 
   _defenceRoll(from, to, bonuses) {
-    return (to.currentStats.defence + 9) * (to.bonuses.defence.ranged + 64);
+    return (to.currentStats.defence + 9) * (to.bonuses.defence.range + 64);
   }
 
   _hitChance(from, to, bonuses) {

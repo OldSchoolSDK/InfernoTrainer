@@ -10,14 +10,16 @@ export class Meleer extends Mob{
 
 
   setStats () {
-    this.meleeWeapon = new MeleeWeapon();
+    this.weapons = {
+      slash: new MeleeWeapon()
+    };
 
     // non boosted numbers
     this.stats = {
       attack: 210,
       strength: 290,
       defence: 120,
-      ranged: 220,
+      range: 220,
       magic: 120,
       hitpoint: 75
     };
@@ -31,14 +33,14 @@ export class Meleer extends Mob{
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       defence: {
         stab: 65,
         slash: 65,
         crush: 65,
         magic: 30,
-        ranged: 5
+        range: 5
       },
       other: {
         meleeStrength: 40,

@@ -1,3 +1,4 @@
+import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MagicWeapon extends Weapon {
@@ -15,11 +16,7 @@ export default class MagicWeapon extends Weapon {
   }
   
   _magicLevel(from, to, bonuses){
-    bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
-    bonuses.isAccurate = bonuses.isAccurate || false;
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    return Math.floor(Math.floor(from.currentStats.magic * bonuses.prayerMultiplier) * voidMultiplier + (isAccurate ? 2 : 0) + 9)
+    return Math.floor(Math.floor(from.currentStats.magic * bonuses.prayerMultiplier) * bonuses.voidMultiplier + (bonuses.isAccurate ? 2 : 0) + 9)
   }
   _equipmentBonus(from, to, bonuses) {
     return from.bonuses.attack.magic;

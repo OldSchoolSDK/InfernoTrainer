@@ -1,5 +1,6 @@
 'use strict';
 import chebyshev from "chebyshev";
+import { Weapon } from "./Weapon";
 
 export default class Projectile {
   /*
@@ -11,7 +12,7 @@ export default class Projectile {
     this.toLocation = to.location;
     this.distance = 999999;
 
-    if (attackStyle === 'melee'){
+    if (Weapon.isMeleeAttackStyle(attackStyle)){
       this.distance = 0;
       this.delay = 0;
       return;

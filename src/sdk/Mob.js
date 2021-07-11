@@ -9,6 +9,7 @@ import Projectile from "./Projectile";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
+import { Weapon } from "./Weapon";
 
 export class Mob {
 
@@ -62,7 +63,7 @@ export class Mob {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -72,7 +73,7 @@ export class Mob {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -83,14 +84,14 @@ export class Mob {
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       other: {
         meleeStrength: 0,
@@ -215,9 +216,12 @@ export class Mob {
   }
 
   attackStyle() {
-    return 'melee';
+    return 'slash';
   }
 
+  meleeDistanceAttackStyle() {
+    return 'slash';
+  }
 
   attackIfPossible(stage){
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1);
@@ -226,10 +230,12 @@ export class Mob {
       this.attack(stage);
     }
   }
+
+
   attack(stage){
     let attackStyle = this.attackStyle();
 
-    if (this.canMeleeIfClose() && attackStyle !== 'melee'){
+    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
       const playerX = stage.player.location.x;
       const playerY = stage.player.location.y;
       let isWithinMeleeRange = false;
@@ -244,17 +250,21 @@ export class Mob {
         isWithinMeleeRange = true;
       }
       if (isWithinMeleeRange && Math.random() < 0.5) { 
-        attackStyle = 'melee';
+        attackStyle = this.meleeDistanceAttackStyle();
       }
     }
 
 
     let damage = 0;
-    const protectionPrayerActive = _.find(stage.player.prayers, prayer => prayer.feature() === attackStyle);
+    let prayerAttackBlockStyle = attackStyle;
+    if (Weapon.isMeleeAttackStyle(attackStyle)) { 
+      prayerAttackBlockStyle = 'melee'; // because protect melee scans for the style as melee, generalize them
+    }
+    const protectionPrayerActive = _.find(stage.player.prayers, prayer => prayer.feature() === prayerAttackBlockStyle);
     if (protectionPrayerActive){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      damage = Math.round(Math.random() * this.maxHit);
+      this.weapons[attackStyle].attack(this, stage.player, { attackStyle })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     

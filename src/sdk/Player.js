@@ -19,7 +19,7 @@ export default class Player {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -29,7 +29,7 @@ export default class Player {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -40,14 +40,14 @@ export default class Player {
         slash: -1,
         crush: -1,
         magic: -28,
-        ranged: 115
+        range: 115
       },
       defence: {
         stab: 213,
         slash: 202,
         crush: 219,
         magic: 135,
-        ranged: 215
+        range: 215
       },
       other: {
         meleeStrength: 15,

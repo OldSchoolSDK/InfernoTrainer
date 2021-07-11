@@ -1,14 +1,14 @@
+import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MeleeWeapon extends Weapon {
   attack(from, to, bonuses = {}){
-
+    bonuses.attackStyle = bonuses.attackStyle || 'slash';
     bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, 'melee'));
-
+    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, bonuses.attackStyle ));
   }
 
   _rollAttack(from, to, bonuses){
@@ -44,6 +44,8 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _hitChance(from, to, bonuses) {
+    const attackRoll = this._attackRoll(from, to, bonuses) ;
+    const defenceRoll = this._defenceRoll(from, to, bonuses);
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 }

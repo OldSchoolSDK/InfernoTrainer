@@ -11,15 +11,17 @@ export class Mager extends Mob{
 
 
   setStats () {
-    this.magicWeapon = new MagicWeapon();
-    this.meleeWeapon = new MeleeWeapon();
+    this.weapons = {
+      slash: new MeleeWeapon(),
+      magic: new MagicWeapon()
+    };
 
     // non boosted numbers
     this.stats = {
       attack: 370,
       strength: 510,
       defence: 260,
-      ranged: 510,
+      range: 510,
       magic: 300,
       hitpoint: 220
     };
@@ -33,14 +35,14 @@ export class Mager extends Mob{
         slash: 0,
         crush: 0,
         magic: 80,
-        ranged: 0
+        range: 0
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       other: {
         meleeStrength: 0,
@@ -80,11 +82,11 @@ export class Mager extends Mob{
   }
 
   attackStyle() {
-    return 'mage';
+    return 'magic';
   }
   
   canMeleeIfClose() {
-    return true;
+    return 'slash';
   }
 
   attackAnimation(stage, framePercent){
