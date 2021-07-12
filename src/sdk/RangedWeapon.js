@@ -3,7 +3,12 @@ import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
   attack(from, to, bonuses = {}){
-    bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
+    if (from.isMob === false){
+      const offensiveRangedPrayer = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');
+      if (offensiveRangedPrayer) {
+        bonuses.offensivePrayer = offensiveRangedPrayer;
+      }
+    }
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -21,11 +26,33 @@ export default class RangedWeapon extends Weapon {
   }
 
   _rangedAttack(from, to, bonuses){
-    return Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer === 'Sharp Eye'){
+      prayerMultiplier = 1.05;
+    }else if (bonuses.offensivePrayer === 'Hawk Eye'){
+      prayerMultiplier = 1.1;
+    }else if (bonuses.offensivePrayer === 'Eagle Eye'){
+      prayerMultiplier = 1.15;
+    }else if (bonuses.offensivePrayer === 'Rigour'){
+      prayerMultiplier = 1.2;
+    } 
+    return Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
   }
   
   _maxHit(from, to, bonuses) {
-    const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
+
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer === 'Sharp Eye'){
+      prayerMultiplier = 1.05;
+    }else if (bonuses.offensivePrayer === 'Hawk Eye'){
+      prayerMultiplier = 1.1;
+    }else if (bonuses.offensivePrayer === 'Eagle Eye'){
+      prayerMultiplier = 1.15;
+    }else if (bonuses.offensivePrayer === 'Rigour'){
+      prayerMultiplier = 1.23;
+    } 
+
+    const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
     return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses));
   }
 

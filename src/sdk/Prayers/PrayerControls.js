@@ -9,6 +9,10 @@ import ProtectMage from "./ProtectMage";
 import ProtectRange from "./ProtectRange";
 import _ from "lodash";
 import BrowserUtils from "../BrowserUtils";
+import Rigour from "./Rigour";
+import SharpEye from "./SharpEye";
+import HawkEye from "./HawkEye";
+import EagleEye from "./EagleEye";
 
 export default class PrayerControls extends BaseControls{
 
@@ -30,7 +34,7 @@ export default class PrayerControls extends BaseControls{
     'Thick Skin',
     'Burst of Strength',
     'Clarity of Thought',
-    'Sharp Eye',
+    new SharpEye(),
     'Mystic Will',
     'Rock Skin',
     'Superhuman Strength',
@@ -38,7 +42,7 @@ export default class PrayerControls extends BaseControls{
     'Rapid Restore',
     'Rapid Heal',
     'Protect Item',
-    'Hawk Eye',
+    new HawkEye(),
     'Mystic Lore',
     'Steel Skin',
     'Ultimate Strength',
@@ -46,7 +50,7 @@ export default class PrayerControls extends BaseControls{
     new ProtectMage(),
     new ProtectRange(),
     new ProtectMelee(),
-    'Eagle Eye',
+    new EagleEye(),
     'Mystic Might',
     'Retribution',
     'Redemption',
@@ -54,7 +58,7 @@ export default class PrayerControls extends BaseControls{
     'Preserve',
     'Chivalry',
     'Piety',
-    'Rigour',
+    new Rigour(),
     'Augury'
   ];
 
@@ -72,7 +76,7 @@ export default class PrayerControls extends BaseControls{
         if (!prayer || !prayer.groups) {
           return;
         }
-        if (_.intersection(prayer.groups, clickedPrayer.groups) && prayer != clickedPrayer){
+        if (_.intersection(prayer.groups, clickedPrayer.groups).length && prayer != clickedPrayer){
           prayer.deactivate();
         }
       })
@@ -94,9 +98,8 @@ export default class PrayerControls extends BaseControls{
         const y2 = Math.floor(index / 5);
         
         ctx.beginPath();
-
         ctx.fillStyle = "#D1BB7773";
-        ctx.arc(24 + x + (x2 + 0.5) * 35, 21 + y + (y2 + 0.5) * 35, 18, 0, 2 * Math.PI);
+        ctx.arc(39 + (x2 + 0.5) * 36, 19 + y + (y2 + 0.5) * 36, 18, 0, 2 * Math.PI);
         ctx.fill();
       }
 
