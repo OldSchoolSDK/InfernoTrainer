@@ -86,7 +86,7 @@ export class Mager extends Mob{
   }
   
   canMeleeIfClose() {
-    return 'slash';
+    return 'stab';
   }
 
   magicMaxHit() {

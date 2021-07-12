@@ -104,7 +104,7 @@ export class Blob extends Mob{
   }
 
   canMeleeIfClose() {
-    return 'slash';
+    return 'crush';
   }
 
   magicMaxHit() {

@@ -89,7 +89,7 @@ export class Ranger extends Mob {
   }
 
   canMeleeIfClose() {
-    return 'slash';
+    return 'crush';
   }
   
   playAttackSound (){
