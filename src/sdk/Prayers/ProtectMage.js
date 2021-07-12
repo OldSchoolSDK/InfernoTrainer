@@ -13,7 +13,7 @@ export default class ProtectMage extends BasePrayer{
   }
 
   get groups(){
-    return ['protection'];
+    return [BasePrayer.groups.OVERHEADS];
   }
   
   isOverhead() {

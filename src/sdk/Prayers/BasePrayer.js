@@ -2,6 +2,18 @@
 
 export default class BasePrayer {
 
+  static groups = {
+    OVERHEADS: "overheads",
+    DEFENCE: "defence",
+    STRENGTH: "strength",
+    ATTACK: "attack",
+    MAGIC: "magic",
+    RANGE: "range",
+    HEARTS: "hearts",
+    PROTECTITEM: "protectitem",
+    PRESERVE: "preserve"
+  };
+
   constructor() {
     this.deactivate();
   }
