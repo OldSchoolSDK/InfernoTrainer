@@ -59,10 +59,6 @@ export class Mager extends Mob{
   get attackRange() {
     return 15;
   }
-
-  get maxHit() {
-    return 70;
-  }
   
   get size() {
     return 4;

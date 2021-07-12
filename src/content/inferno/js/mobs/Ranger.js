@@ -63,10 +63,6 @@ export class Ranger extends Mob {
     return 15;
   }
 
-  get maxHit() {
-    return 46;
-  }
-
   get size() {
     return 3;
   }

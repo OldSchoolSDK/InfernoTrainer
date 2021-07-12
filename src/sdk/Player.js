@@ -12,6 +12,7 @@ export default class Player {
   constructor(location) {
     this.prayers = [];
 
+    this.isDead = false;
     // non boosted numbers
     this.stats = {
       attack: 99,

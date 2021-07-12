@@ -61,10 +61,6 @@ export class Bat extends Mob{
     return 4;
   }
 
-  get maxHit() {
-    return 19;
-  }
-
   get size() {
     return 2;
   }

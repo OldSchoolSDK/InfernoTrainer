@@ -62,10 +62,6 @@ export class Meleer extends Mob{
     return 1;
   }
 
-  get maxHit() {
-    return 49;
-  }
-
   get size() {
     return 4;
   }

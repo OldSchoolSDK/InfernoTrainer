@@ -101,8 +101,8 @@ export class Mob {
     }
   }
   
-  constructor(location) {
-
+  constructor(location, aggro) {
+    this.aggro = aggro;
     this.setStats();
     this.location = location;
     this.cd = 0;
@@ -131,16 +131,26 @@ export class Mob {
       this.location = location;
   }
 
+  setHasLOS(stage){
+    if (this.aggro === stage.player) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(stage, this.location.x, this.location.y, this.size, this.attackRange, true)
+    }else if (this.aggro.isMob){
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.aggro, this.size, true);
+    }else if (this.aggro.isEntity) {
+      this.hasLOS = false;
+    }
+  }
+
   movementStep(stage) {
 
-    let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1);
+    let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
-    this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(stage, this.location.x, this.location.y, this.size, this.attackRange, true)
+    this.setHasLOS(stage);
     if (!this.hasLOS) {
-        var dx = this.location.x + Math.sign(stage.player.location.x - this.location.x);
-        var dy = this.location.y + Math.sign(stage.player.location.y - this.location.y);
+        var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
+        var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
-        if (Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1)) {
+        if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
             // Random movement if player is under the mob
             if (Math.random() < 0.5) {
                 dy = this.location.y;
@@ -157,7 +167,7 @@ export class Mob {
                     dy = this.location.y - 1
                 }
             }
-        } else if (Pathing.collisionMath(dx, dy, this.size, stage.player.location.x, stage.player.location.y, 1)) {
+        } else if (Pathing.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
             //allows corner safespotting
             dy = this.location.y;
         }
@@ -168,12 +178,12 @@ export class Mob {
             dy = this.location.y;
         }
 
-        if (Pathing.canTileBePathedTo(stage, dx, dy, this.size, this)) {
+        if (Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)) {
           this.location.x = dx;
           this.location.y = dy;
-        } else if (Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this)) {
+        } else if (Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null)) {
           this.location.x = dx;
-        } else if (Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this)) {
+        } else if (Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null)) {
           this.location.y = dy;
         }
   
@@ -181,6 +191,7 @@ export class Mob {
   }
 
   dead(stage) {
+    this.isDead = true;
     stage.removeMob(this);
   }
 
@@ -188,7 +199,7 @@ export class Mob {
     return false;
   }
 
-  attackStep(stage, playerPrayers) {
+  attackStep(stage, playerPrayers = []) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
@@ -207,7 +218,7 @@ export class Mob {
     this.cd--;
 
     this.hadLOS = this.hasLOS;
-    this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(stage, this.location.x, this.location.y, this.size, this.attackRange, true);
+    this.setHasLOS(stage);
 
     this.attackIfPossible(stage);
   }
@@ -221,10 +232,10 @@ export class Mob {
   }
 
   attackIfPossible(stage){
-    let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1);
+    let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
     this.attackFeedback = Mob.attackIndicators.NONE;
 
-    if (!isUnderPlayer && this.hasLOS && this.cd <= 0){
+    if (!isUnderAggro && this.hasLOS && this.cd <= 0){
       this.attack(stage);
     }
   }
@@ -237,8 +248,8 @@ export class Mob {
     let attackStyle = this.attackStyle();
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
-      const playerX = stage.player.location.x;
-      const playerY = stage.player.location.y;
+      const playerX = this.aggro.location.x;
+      const playerY = this.aggro.location.y;
       let isWithinMeleeRange = false;
 
       if (playerX === this.location.x - 1 && (playerY <= this.location.y + 1 && playerY > this.location.y - this.size - 1)) {
@@ -255,17 +266,16 @@ export class Mob {
       }
     }
 
-
     let damage = 0;
     let prayerAttackBlockStyle = attackStyle;
     if (Weapon.isMeleeAttackStyle(attackStyle)) { 
       prayerAttackBlockStyle = 'melee'; // because protect melee scans for the style as melee, generalize them
     }
-    const protectionPrayerActive = _.find(stage.player.prayers, prayer => prayer.feature() === prayerAttackBlockStyle);
+    const protectionPrayerActive = _.find(this.aggro.prayers, prayer => prayer.feature() === prayerAttackBlockStyle);
     if (protectionPrayerActive){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      this.weapons[attackStyle].attack(this, stage.player, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+      this.weapons[attackStyle].attack(this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     
@@ -276,6 +286,10 @@ export class Mob {
 
   shouldShowAttackAnimation() {
     return this.cd === this.cooldown
+  }
+
+  get consumesSpace() {
+    return true;
   }
 
   playAttackSound (){
@@ -326,7 +340,7 @@ export class Mob {
 
 
 
-    if (LineOfSight.hasLineOfSightOfMob(stage, stage.player.location.x, stage.player.location.y, this, this.size)){
+    if (LineOfSight.hasLineOfSightOfMob(stage, this.aggro.location.x, this.aggro.location.y, this, this.size)){
       stage.ctx.strokeStyle = "#00FF0073"
       stage.ctx.lineWidth = 3;
       stage.ctx.strokeRect(
@@ -387,8 +401,6 @@ export class Mob {
         24,
         23
       );
-
-
       stage.ctx.fillStyle = "#FFFFFF";
       stage.ctx.font = "16px Stats_11";
       stage.ctx.textAlign="center";

@@ -8,17 +8,23 @@ export class Entity {
     this.size = size;
   }
 
-  tick() {
+  get isEntity() {
+    return true;
+  }
+
+  tick(stage) {
       
   }
 
   draw(stage) {
     stage.ctx.fillStyle = "#000073";
+
     stage.ctx.fillRect(
       this.location.x * Constants.tileSize,
-      (this.location.y + 1) * Constants.tileSize,
+      (this.location.y - this.size + 1) * Constants.tileSize,
       this.size * Constants.tileSize,
-      -this.size * Constants.tileSize
+      this.size * Constants.tileSize
     );
+    
   }
 }

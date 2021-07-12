@@ -66,10 +66,6 @@ export class Blob extends Mob{
     return 15;
   }
 
-  get maxHit() {
-    return 29;
-  }
-
   get size() {
     return 3;
   }

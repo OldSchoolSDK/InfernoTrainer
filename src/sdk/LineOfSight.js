@@ -29,6 +29,7 @@ export default class LineOfSight {
         }
         stage.ctx.globalAlpha = 1;
     }
+
     static drawMobLOS(stage, x, y, s, r, c) {
         stage.ctx.globalAlpha = 0.4;
         for (var i = 0; i < 870; i++) {
@@ -52,20 +53,24 @@ export default class LineOfSight {
         return LineOfSight.hasLineOfSight(stage, x, y, stage.player.location.x, stage.player.location.y, s, r, isNPC);
     }
 
+    static closestPointTo(x, y, mob) {
 
-    static hasLineOfSightOfMob(stage, x, y, mob, r = 1, isNPC = false) {
-        const corners = [];
-        for (let xx=0; xx < mob.size; xx++){
-            for (let yy=0; yy < mob.size; yy++){
-              corners.push({
-                  x: mob.location.x + xx, 
-                  y: mob.location.y - yy
-              });
-            }
-        }
-        
-        const mobPoint = _.minBy(corners, (point) => Pathing.dist(x, y, point.x, point.y));
-        return LineOfSight.hasLineOfSight(stage, x, y, mobPoint.x, mobPoint.y, 1, stage.player.weapon.attackRange, false);
+      const corners = [];
+      for (let xx=0; xx < mob.size; xx++){
+          for (let yy=0; yy < mob.size; yy++){
+            corners.push({
+                x: mob.location.x + xx, 
+                y: mob.location.y - yy
+            });
+          }
+      }
+      
+      return _.minBy(corners, (point) => Pathing.dist(x, y, point.x, point.y));
+    }
+    
+    static hasLineOfSightOfMob(stage, x, y, mob, s = 1, isNPC = false) {
+      const mobPoint = LineOfSight.closestPointTo(x, y, mob);
+      return LineOfSight.hasLineOfSight(stage, x, y, mobPoint.x, mobPoint.y, s, stage.player.weapon.attackRange, false);
     }
 
     static hasLineOfSight(stage, x1, y1, x2, y2, s = 1, r = 1, isNPC = false) {
