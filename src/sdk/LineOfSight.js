@@ -68,9 +68,9 @@ export default class LineOfSight {
       return _.minBy(corners, (point) => Pathing.dist(x, y, point.x, point.y));
     }
     
-    static hasLineOfSightOfMob(stage, x, y, mob, s = 1, isNPC = false) {
+    static hasLineOfSightOfMob(stage, x, y, mob, r = 1, isNPC = false) {
       const mobPoint = LineOfSight.closestPointTo(x, y, mob);
-      return LineOfSight.hasLineOfSight(stage, x, y, mobPoint.x, mobPoint.y, s, stage.player.weapon.attackRange, false);
+      return LineOfSight.hasLineOfSight(stage, x, y, mobPoint.x, mobPoint.y, 1, r, false);
     }
 
     static hasLineOfSight(stage, x1, y1, x2, y2, s = 1, r = 1, isNPC = false) {

@@ -167,15 +167,12 @@ export default class Player {
       this.overhead.playOnSound();
     }
 
-    console.log('seek', this.seeking)
-
     let isUnderSeekingMob = false;
     // We clicked a mob but didn't have line of sight. Once we can see it, start attacking and stop moving. 
     if (this.seeking) {
       isUnderSeekingMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.seeking.location.x, this.seeking.location.y, this.seeking.size);
 
       if (isUnderSeekingMob) {
-        console.log('under');
         const maxDist = Math.ceil(this.seeking.size / 2);
         const bestDistance = 9999;
         for (let xx=0; xx < maxDist; xx++){
@@ -193,7 +190,6 @@ export default class Player {
         }
       }else {
         this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
-        console.log('has los?', this.hasLOS)
         if (!this.hasLOS){
           const seekingTiles = [];
           for (let xx=0; xx < this.seeking.size; xx++){
