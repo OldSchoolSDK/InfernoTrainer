@@ -18,15 +18,35 @@ export class TwistedBow extends RangedWeapon{
     return TbowInventImage;    
   }
 
-
-  _maxHit(from, to, bonuses) {
-    const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
-    return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses));
+  get bonuses() {
+    return {
+      attack: {
+        stab: -1,
+        slash: -1,
+        crush: -1,
+        magic: -28,
+        range: 168
+      },
+      defence: {
+        stab: 213,
+        slash: 202,
+        crush: 219,
+        magic: 135,
+        range: 215
+      },
+      other: {
+        meleeStrength: 15,
+        rangedStrength: 87,
+        magicDamage: 0,
+        prayer: 12
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
   }
 
-  _attackRoll(from, to, bonuses){
-    return Math.floor(Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses));
-  }
 
   _accuracyMultiplier(from, to, bonuses) {
     const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic);
