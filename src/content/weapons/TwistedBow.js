@@ -25,7 +25,7 @@ export class TwistedBow extends RangedWeapon{
         slash: -1,
         crush: -1,
         magic: -28,
-        range: 155
+        range: 168
       },
       defence: {
         stab: 213,
