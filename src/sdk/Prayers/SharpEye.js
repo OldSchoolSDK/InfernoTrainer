@@ -14,7 +14,7 @@ export default class SharpEye extends BasePrayer{
   }
 
   get groups(){
-    return ['offensives'];
+    return [BasePrayer.groups.RANGE];
   }
   
   isOverhead() {

@@ -13,6 +13,10 @@ import Rigour from "./Rigour";
 import SharpEye from "./SharpEye";
 import HawkEye from "./HawkEye";
 import EagleEye from "./EagleEye";
+import MysticWill from "./MysticWill";
+import MysticLore from "./MysticLore";
+import MysticMight from "./MysticMight";
+import Augury from "./Augury";
 
 export default class PrayerControls extends BaseControls{
 
@@ -35,7 +39,7 @@ export default class PrayerControls extends BaseControls{
     'Burst of Strength',
     'Clarity of Thought',
     new SharpEye(),
-    'Mystic Will',
+    new MysticWill(),
     'Rock Skin',
     'Superhuman Strength',
     'Improved Reflexes',
@@ -43,7 +47,7 @@ export default class PrayerControls extends BaseControls{
     'Rapid Heal',
     'Protect Item',
     new HawkEye(),
-    'Mystic Lore',
+    new MysticLore(),
     'Steel Skin',
     'Ultimate Strength',
     'Incredible Reflexes',
@@ -51,7 +55,7 @@ export default class PrayerControls extends BaseControls{
     new ProtectRange(),
     new ProtectMelee(),
     new EagleEye(),
-    'Mystic Might',
+    new MysticMight(),
     'Retribution',
     'Redemption',
     'Smite',
@@ -59,7 +63,7 @@ export default class PrayerControls extends BaseControls{
     'Chivalry',
     'Piety',
     new Rigour(),
-    'Augury'
+    new Augury()
   ];
 
   getCurrentActivePrayers() {
@@ -99,7 +103,7 @@ export default class PrayerControls extends BaseControls{
         
         ctx.beginPath();
         ctx.fillStyle = "#D1BB7773";
-        ctx.arc(39 + (x2 + 0.5) * 36, 19 + y + (y2 + 0.5) * 36, 18, 0, 2 * Math.PI);
+        ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI);
         ctx.fill();
       }
 

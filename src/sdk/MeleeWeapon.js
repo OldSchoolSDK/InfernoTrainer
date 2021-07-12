@@ -16,7 +16,21 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _strengthLevel(from, to, bonuses){
-    return Math.floor((Math.floor(from.currentStats.strength * bonuses.prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier);
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer){
+      if (bonuses.offensivePrayer.Name === 'Burst of Strength'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Superhuman Strength'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Ultimate Strength'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+        prayerMultiplier = 1.18;
+      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+        prayerMultiplier = 1.23;
+      }
+    }
+    return Math.floor((Math.floor(from.currentStats.strength * prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier);
   }
 
   _maxHit(from, to, bonuses) {
@@ -24,7 +38,21 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _attackLevel(from, to, bonuses) {
-    return Math.floor((Math.floor(from.currentStats.attack * bonuses.prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier);
+    if (bonuses.offensivePrayer){
+      if (bonuses.offensivePrayer.Name === 'Clarity of Thought'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Improved Reflexes'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Incredible Reflexes'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+        prayerMultiplier = 1.2;
+      }
+    }
+
+    return Math.floor((Math.floor(from.currentStats.attack * prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier);
   }
 
   _attackRoll(from, to, bonuses) {
@@ -39,7 +67,32 @@ export default class MeleeWeapon extends Weapon {
     }
   }
   _defenceLevel(from, to, bonuses) {
-    return (Math.floor(from.currentStats.defence * bonuses.prayerMultiplier) + bonuses.styleBonus + 8);
+
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer){
+      if (bonuses.offensivePrayer.Name === 'Thick Skin'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Will'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Rock Skin'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Lore'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Steel Skin'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Might'){
+        prayerMultiplier = 1.15;
+      } else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+        prayerMultiplier = 1.2;
+      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+        prayerMultiplier = 1.25;
+      } else if (bonuses.offensivePrayer.Name === 'Rigour'){
+        prayerMultiplier = 1.25;
+      } else if (bonuses.offensivePrayer.Name === 'Augury'){
+        prayerMultiplier = 1.25;
+      } 
+    }
+    return (Math.floor(from.currentStats.defence * prayerMultiplier) + bonuses.styleBonus + 8);
   }
 
   _hitChance(from, to, bonuses) {

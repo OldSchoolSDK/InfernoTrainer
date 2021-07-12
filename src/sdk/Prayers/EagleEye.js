@@ -14,7 +14,7 @@ export default class EagleEye extends BasePrayer{
   }
 
   get groups(){
-    return ['offensives'];
+    return [BasePrayer.groups.RANGE];
   }
   
   isOverhead() {

@@ -14,7 +14,7 @@ export default class Rigour extends BasePrayer{
   }
 
   get groups(){
-    return ['offensives'];
+    return [BasePrayer.groups.RANGE, BasePrayer.groups.DEFENCE];
   }
   
   isOverhead() {

@@ -14,7 +14,7 @@ export default class ProtectMelee extends BasePrayer{
   }
 
   get groups(){
-    return ['protection'];
+    return [BasePrayer.groups.OVERHEADS];
   }
   
   isOverhead() {

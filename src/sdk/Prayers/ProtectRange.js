@@ -14,7 +14,7 @@ export default class ProtectRange extends BasePrayer{
   }
 
   get groups(){
-    return ['protection'];
+    return [BasePrayer.groups.OVERHEADS];
   }
   
   isOverhead() {

@@ -3,7 +3,12 @@ import { Weapon } from "./Weapon";
 
 export default class MagicWeapon extends Weapon {
   attack(from, to, bonuses){
-    bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
+    if (from.isMob === false){
+      const offensivePrayer = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveMagic');
+      if (offensivePrayer) {
+        bonuses.offensivePrayer = offensivePrayer;
+      }
+    }
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -16,7 +21,20 @@ export default class MagicWeapon extends Weapon {
   }
   
   _magicLevel(from, to, bonuses){
-    return Math.floor(Math.floor(from.currentStats.magic * bonuses.prayerMultiplier) * bonuses.voidMultiplier + (bonuses.isAccurate ? 2 : 0) + 9)
+    
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer){
+      if (bonuses.offensivePrayer.Name === 'Mystic Will'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Lore'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Might'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Augury'){
+        prayerMultiplier = 1.2;
+      }
+    }
+    return Math.floor(Math.floor(from.currentStats.magic * prayerMultiplier) * bonuses.voidMultiplier + (bonuses.isAccurate ? 2 : 0) + 9)
   }
   _equipmentBonus(from, to, bonuses) {
     return from.bonuses.attack.magic;
@@ -30,7 +48,32 @@ export default class MagicWeapon extends Weapon {
     return Math.floor(this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMultiplier)
   }
   _defenceRoll(from, to, bonuses) {
-    return (9 + to.currentStats.magic) * (to.bonuses.defence.magic + 64)
+    const prayerMultiplier = 1;
+    if (bonuses.offensivePrayer){
+      if (bonuses.offensivePrayer.Name === 'Thick Skin'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Will'){
+        prayerMultiplier = 1.05;
+      }else if (bonuses.offensivePrayer.Name === 'Rock Skin'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Lore'){
+        prayerMultiplier = 1.1;
+      }else if (bonuses.offensivePrayer.Name === 'Steel Skin'){
+        prayerMultiplier = 1.15;
+      }else if (bonuses.offensivePrayer.Name === 'Mystic Might'){
+        prayerMultiplier = 1.15;
+      } else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+        prayerMultiplier = 1.2;
+      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+        prayerMultiplier = 1.25;
+      } else if (bonuses.offensivePrayer.Name === 'Rigour'){
+        prayerMultiplier = 1.25;
+      } else if (bonuses.offensivePrayer.Name === 'Augury'){
+        prayerMultiplier = 1.25;
+      } 
+    }
+
+    return (9 + to.currentStats.magic * prayerMultiplier) * (to.bonuses.defence.magic + 64)
   }
 
   _hitChance(from, to, bonuses) {
