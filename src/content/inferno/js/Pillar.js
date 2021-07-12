@@ -29,14 +29,14 @@ export class Pillar extends Entity{
 
     // with boosts
     this.currentStats = {
-      defence: -50,
+      defence: 0,
       hitpoint: 256
     };
 
     this.bonuses = {
       attack: { },
       defence: { 
-        crush: -50
+        crush: -20
       },
       other: { }
     };
