@@ -38,7 +38,7 @@ export default class Player {
         stab: -1,
         slash: -1,
         crush: -1,
-        magic: -28,
+        magic: 53,
         range: 128
       },
       defence: {
@@ -51,7 +51,7 @@ export default class Player {
       other: {
         meleeStrength: 15,
         rangedStrength: 62,
-        magicDamage: 0,
+        magicDamage: 1.27,
         prayer: 12
       },
       targetSpecific: {
@@ -93,6 +93,7 @@ export default class Player {
   }
 
   attack(stage) {
+
     // Has LOS
     if (this.manualSpellCastSelection){
 
@@ -108,7 +109,7 @@ export default class Player {
           let castsAllowed = this.manualSpellCastSelection.maxConcurrentHits;
           const alreadyCastedOn = [];
           this.manualSpellCastSelection.aoe.forEach((point) => {
-            stage.getMobsAtPoint(point.x + this.seeking.location.x, point.y + this.seeking.location.y)
+            Pathing.mobsAtPoint(stage, point.x + this.seeking.location.x, point.y + this.seeking.location.y)
             .forEach((mob) =>{
               if (castsAllowed <= 0) {
                 return;
@@ -122,7 +123,7 @@ export default class Player {
             })
 
 
-            stage.getMobsAtPoint(point.x + this.seeking.lastLocation.x, point.y + this.seeking.lastLocation.y)
+            Pathing.mobsAtPoint(stage, point.x + this.seeking.location.x, point.y + this.seeking.location.y)
             .forEach((mob) =>{
               if (castsAllowed <= 0) {
                 return;
@@ -141,8 +142,8 @@ export default class Player {
         }else{
           this.manualSpellCastSelection.attack(this, this.seeking, {magicBaseSpellDamage: 30});
         }
-        this.manualSpellCastSelection = null;
       }
+      this.manualSpellCastSelection = null;
     }else{
       // use equipped weapon
       this.weapon.attack(this, this.seeking);
@@ -166,6 +167,7 @@ export default class Player {
       this.overhead.playOnSound();
     }
 
+    console.log('seek', this.seeking)
 
     let isUnderSeekingMob = false;
     // We clicked a mob but didn't have line of sight. Once we can see it, start attacking and stop moving. 
@@ -173,6 +175,7 @@ export default class Player {
       isUnderSeekingMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.seeking.location.x, this.seeking.location.y, this.seeking.size);
 
       if (isUnderSeekingMob) {
+        console.log('under');
         const maxDist = Math.ceil(this.seeking.size / 2);
         const bestDistance = 9999;
         for (let xx=0; xx < maxDist; xx++){
@@ -190,7 +193,7 @@ export default class Player {
         }
       }else {
         this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
-
+        console.log('has los?', this.hasLOS)
         if (!this.hasLOS){
           const seekingTiles = [];
           for (let xx=0; xx < this.seeking.size; xx++){

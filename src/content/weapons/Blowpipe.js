@@ -22,7 +22,7 @@ export class Blowpipe extends RangedWeapon{
         stab: -1,
         slash: -1,
         crush: -1,
-        magic: -28,
+        magic: 53,
         range: 138
       },
       defence: {
@@ -35,7 +35,7 @@ export class Blowpipe extends RangedWeapon{
       other: {
         meleeStrength: 15,
         rangedStrength: 62,
-        magicDamage: 0,
+        magicDamage: 1.27,
         prayer: 12
       },
       targetSpecific: {

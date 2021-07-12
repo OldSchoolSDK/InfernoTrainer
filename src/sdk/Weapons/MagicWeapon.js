@@ -55,7 +55,7 @@ export default class MagicWeapon extends Weapon {
   }
 
   _magicDamageBonusMultiplier(from, to, bonuses) {
-    return 1; // needs to scan from for gear
+    return from.bonuses.other.magicDamage;
   }
 
   _attackRoll(from, to, bonuses) {

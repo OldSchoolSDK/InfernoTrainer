@@ -104,11 +104,9 @@ export class Mob {
   
   constructor(location, aggro) {
     this.aggro = aggro;
-    this.setStats();
     this.lastLocation = location;
     this.location = location;
     this.cd = 0;
-    this.currentStats.hitpoint = this.stats.hitpoint;
     this.hasLOS = false;
     this.frozen = 0;
     this.incomingProjectiles = [];
@@ -124,6 +122,9 @@ export class Mob {
       this.mobImage = new Image(Constants.tileSize * this.size, Constants.tileSize * this.size);
       this.mobImage.src = this.image;
     }
+    this.setStats();
+    this.currentStats.hitpoint = this.stats.hitpoint;
+
   }
 
   addProjectile(projectile) {

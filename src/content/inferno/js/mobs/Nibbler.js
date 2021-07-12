@@ -12,6 +12,7 @@ export class Nibbler extends Mob{
 
 
   setStats () {
+    this.frozen = 1;
     this.weapon = {
       attackRange: 1
     }

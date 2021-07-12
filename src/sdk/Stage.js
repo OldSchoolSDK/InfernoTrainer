@@ -35,10 +35,6 @@ export default class Stage {
     this.map.addEventListener('mousedown', this.mapClick.bind(this));
   }
 
-  getMobsAtPoint(x, y){
-    return this.mobs.filter((mob) => mob.location.x === x && mob.location.y === y);
-  }
-
   getContext() {
     return this.ctx;
   }
@@ -125,10 +121,13 @@ export default class Stage {
       const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
       const mobAtPreviousPoint = Pathing.collidesWithAnyMobsAtPreviousSpot(this, x, y, 1);
       if (mob) {
+        console.log('1', mob)
         this.player.seeking = mob;
       }else if (mobAtPreviousPoint) {
+        console.log('2', mob)
         this.player.seeking = mobAtPreviousPoint;
       }else {
+        console.log('3');
         this.player.moveTo(x, y);
       }
     }, 150);

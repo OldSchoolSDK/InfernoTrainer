@@ -11,6 +11,7 @@ export class Blob extends Mob{
 
 
   setStats () {
+    this.frozen = 1;
 
     this.weapons = {
       melee: new MeleeWeapon(),

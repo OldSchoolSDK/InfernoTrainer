@@ -10,6 +10,8 @@ export class Mager extends Mob{
 
 
   setStats () {
+    this.frozen = 1;
+
     this.weapons = {
       slash: new MeleeWeapon(),
       magic: new MagicWeapon()

@@ -27,7 +27,7 @@ Pillar.addPillarsToStage(stage);
 
 
 // Add player
-const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 2));
+const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 3));
 stage.setPlayer(player);
 
 // Add mobs

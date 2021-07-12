@@ -4,6 +4,7 @@ import StandardSpellbookTab from "../../assets/images/tabs/standard_spellbook.pn
 import AncientsPanel from "../../assets/images/panels/ancients.png";
 import BaseControls from "./BaseControls";
 import BarrageMagicWeapon from "../Weapons/BarrageMagicWeapon";
+import BrowserUtils from "../Utils/BrowserUtils";
 
 export default class AncientsSpellbookControls extends BaseControls{
 

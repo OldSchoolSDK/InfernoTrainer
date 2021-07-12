@@ -46,6 +46,18 @@ export default class Pathing {
   }
 
 
+  static mobsAtPoint(stage, x, y) {
+    const mobs = [];
+    for (let i = 0; i < stage.mobs.length; i++) {
+
+      const collidedWithSpecificMob = stage.mobs[i].location.x === x && stage.mobs[i].location.y === y;
+
+      if (collidedWithSpecificMob) {
+        mobs.push(stage.mobs[i])
+      }
+    }
+    return mobs;
+  }
 
   static collidesWithAnyMobs(stage, x, y, s, mobToAvoid) {
     for (let i = 0; i < stage.mobs.length; i++) {
