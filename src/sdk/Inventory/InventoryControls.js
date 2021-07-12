@@ -57,6 +57,7 @@ export default class InventoryControls extends BaseControls{
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon;
         stage.player.weapon = clickedItem;
         stage.player.seeking = null;
+        stage.player.bonuses = clickedItem.bonuses; // temp code 
       }else{
         clickedItem.selected = true;
       }

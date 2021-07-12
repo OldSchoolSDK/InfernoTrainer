@@ -14,26 +14,34 @@ export default class RangedWeapon extends Weapon {
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses));
   }
 
+  _hitChance(from, to, bonuses) {
+    const attackRoll = this._attackRoll(from, to, bonuses) ;
+    const defenceRoll = this._defenceRoll(from, to, bonuses);
+    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1));    
+  }
+
   _rangedAttack(from, to, bonuses){
     return Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
   }
-
+  
   _maxHit(from, to, bonuses) {
     const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * bonuses.prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
-    return Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier));
+    return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses));
   }
 
   _attackRoll(from, to, bonuses){
-    return Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier)
+    return Math.floor(Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses));
   }
 
   _defenceRoll(from, to, bonuses) {
     return (to.currentStats.defence + 9) * (to.bonuses.defence.range + 64);
   }
 
-  _hitChance(from, to, bonuses) {
-    const attackRoll = this._attackRoll(from, to, bonuses) ;
-    const defenceRoll = this._defenceRoll(from, to, bonuses);
-    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1));    
+  _accuracyMultiplier(from, to, bonuses) {
+    return 1 // Used for tbow passive effect
+  }
+
+  _damageMultiplier(from, to, bonuses) {
+    return 1 // Used for tbow passive effect
   }
 }
