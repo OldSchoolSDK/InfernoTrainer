@@ -1,14 +1,32 @@
 
 import PrayerPanel from "../../assets/images/panels/prayer.png";
 import PrayerTab from "../../assets/images/tabs/prayer.png";
-import Pathing from "../Pathing";
-import Point from "../Point";
+import _ from "lodash";
+import BrowserUtils from "../BrowserUtils";
+
 import BaseControls from "../ControlPanels/BaseControls";
 import ProtectMelee from "./ProtectMelee";
 import ProtectMage from "./ProtectMage";
 import ProtectRange from "./ProtectRange";
-import _ from "lodash";
-import BrowserUtils from "../BrowserUtils";
+import Rigour from "./Rigour";
+import SharpEye from "./SharpEye";
+import HawkEye from "./HawkEye";
+import EagleEye from "./EagleEye";
+import MysticWill from "./MysticWill";
+import MysticLore from "./MysticLore";
+import MysticMight from "./MysticMight";
+import Augury from "./Augury";
+import ThickSkin from "./ThickSkin";
+import BurstOfStrength from "./BurstOfStrength";
+import ClarityOfThought from "./ClarityOfThought";
+import RockSkin from "./RockSkin";
+import SuperhumanStrength from "./SuperhumanStrength";
+import ImprovedReflexes from "./ImprovedReflexes";
+import SteelSkin from "./SteelSkin";
+import UltimateStrength from "./UltimateStrength";
+import IncredibleReflexes from "./IncredibleReflexes";
+import Chivalry from "./Chivalry";
+import Piety from "./Piety";
 
 export default class PrayerControls extends BaseControls{
 
@@ -27,35 +45,35 @@ export default class PrayerControls extends BaseControls{
 
 
   static prayers = [
-    'Thick Skin',
-    'Burst of Strength',
-    'Clarity of Thought',
-    'Sharp Eye',
-    'Mystic Will',
-    'Rock Skin',
-    'Superhuman Strength',
-    'Improved Reflexes',
+    new ThickSkin(),
+    new BurstOfStrength(),
+    new ClarityOfThought(),
+    new SharpEye(),
+    new MysticWill(),
+    new RockSkin(),
+    new SuperhumanStrength(),
+    new ImprovedReflexes,
     'Rapid Restore',
     'Rapid Heal',
     'Protect Item',
-    'Hawk Eye',
-    'Mystic Lore',
-    'Steel Skin',
-    'Ultimate Strength',
-    'Incredible Reflexes',
+    new HawkEye(),
+    new MysticLore(),
+    new SteelSkin(),
+    new UltimateStrength(),
+    new IncredibleReflexes(),
     new ProtectMage(),
     new ProtectRange(),
     new ProtectMelee(),
-    'Eagle Eye',
-    'Mystic Might',
+    new EagleEye(),
+    new MysticMight(),
     'Retribution',
     'Redemption',
     'Smite',
     'Preserve',
-    'Chivalry',
-    'Piety',
-    'Rigour',
-    'Augury'
+    new Chivalry(),
+    new Piety(),
+    new Rigour(),
+    new Augury()
   ];
 
   getCurrentActivePrayers() {
@@ -72,7 +90,7 @@ export default class PrayerControls extends BaseControls{
         if (!prayer || !prayer.groups) {
           return;
         }
-        if (_.intersection(prayer.groups, clickedPrayer.groups) && prayer != clickedPrayer){
+        if (_.intersection(prayer.groups, clickedPrayer.groups).length && prayer != clickedPrayer){
           prayer.deactivate();
         }
       })
@@ -94,9 +112,8 @@ export default class PrayerControls extends BaseControls{
         const y2 = Math.floor(index / 5);
         
         ctx.beginPath();
-
         ctx.fillStyle = "#D1BB7773";
-        ctx.arc(24 + x + (x2 + 0.5) * 35, 21 + y + (y2 + 0.5) * 35, 18, 0, 2 * Math.PI);
+        ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI);
         ctx.fill();
       }
 
