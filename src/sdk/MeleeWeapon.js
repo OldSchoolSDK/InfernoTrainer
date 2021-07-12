@@ -34,7 +34,7 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _strengthLevel(from, to, bonuses){
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const strengthPrayer = bonuses.effectivePrayers['strength'];
 
     if (strengthPrayer){

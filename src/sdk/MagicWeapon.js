@@ -28,7 +28,7 @@ export default class MagicWeapon extends Weapon {
   
   _magicLevel(from, to, bonuses){
     
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const magicPrayer = bonuses.effectivePrayers['magic'];
 
     if (magicPrayer){
@@ -56,7 +56,7 @@ export default class MagicWeapon extends Weapon {
     return Math.floor(this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMultiplier)
   }
   _defenceRoll(from, to, bonuses) {
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const defencePrayer = bonuses.effectivePrayers['defense'];
 
     if (defencePrayer){

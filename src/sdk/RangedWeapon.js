@@ -32,7 +32,7 @@ export default class RangedWeapon extends Weapon {
   }
 
   _rangedAttack(from, to, bonuses){
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const rangePrayer = bonuses.effectivePrayers['range'];
 
     if (rangePrayer){
@@ -51,7 +51,7 @@ export default class RangedWeapon extends Weapon {
   }
   
   _maxHit(from, to, bonuses) {
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const rangePrayer = bonuses.effectivePrayers['range'];
     if (rangePrayer){
       if (rangePrayer.name === 'Sharp Eye'){
@@ -74,7 +74,7 @@ export default class RangedWeapon extends Weapon {
 
   _defenceRoll(from, to, bonuses) {
 
-    const prayerMultiplier = 1;
+    let prayerMultiplier = 1;
     const defencePrayer = bonuses.effectivePrayers['defence'];
 
     if (defencePrayer){
