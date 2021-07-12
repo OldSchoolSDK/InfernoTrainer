@@ -50,7 +50,7 @@ export class Blob extends Mob{
       other: {
         meleeStrength: 45,
         rangedStrength: 45,
-        magicDamage: 45,
+        magicDamage: 1.0,
         prayer: 0
       }
     }

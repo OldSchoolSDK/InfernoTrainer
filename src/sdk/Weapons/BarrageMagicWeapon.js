@@ -23,6 +23,10 @@ export default class BarrageMagicWeapon extends MagicWeapon {
     return 10;
   }
 
+  get attackSpeed() {
+    return 5;
+  }
+
   get maxConcurrentHits() {
     return 9;
   }

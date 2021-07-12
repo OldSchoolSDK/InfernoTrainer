@@ -234,6 +234,13 @@ export default class Player {
     }
     return this.weapon.attackRange;
   }
+
+  attackSpeed() {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackSpeed;
+    }
+    return this.weapon.attackSpeed;
+  }
   
   attackStep(stage) {
 
@@ -255,7 +262,7 @@ export default class Player {
     this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
     if (this.hasLOS && this.seeking && this.cd <= 0) {
       this.attack(stage)
-      this.cd = this.weapon.attackSpeed;
+      this.cd = this.attackSpeed();
     }
   }
 
