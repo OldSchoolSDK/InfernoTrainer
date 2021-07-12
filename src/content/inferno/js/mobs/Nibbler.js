@@ -95,7 +95,7 @@ export class Nibbler extends Mob{
 
   attackIfPossible(stage){
     if (this.aggro.isDead) {
-      this.dead(stage);
+      this.dead(stage); // cheat way for now. pillar should AOE 
     }
     let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
     this.attackFeedback = Mob.attackIndicators.NONE;

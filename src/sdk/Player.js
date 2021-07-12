@@ -189,7 +189,6 @@ export default class Player {
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     this.cd--;
-
     if (!this.seeking){
       return;
     }

@@ -24,12 +24,12 @@ export class Pillar extends Entity{
 
     // non boosted numbers
     this.stats = {
-      hitpoint: 5
+      hitpoint: 100
     };
 
     // with boosts
     this.currentStats = {
-      hitpoint: 5
+      hitpoint: 100
     };
 
     this.bonuses = {
