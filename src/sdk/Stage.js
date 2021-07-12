@@ -123,12 +123,11 @@ export default class Stage {
       // maybe this should live in the player class? seems very player related in current form.
       this.player.seeking = false;
       const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
-      const mob2 = Pathing.collidesWithAnyMobsAtPreviousSpot(this, x, y, 1);
+      const mobAtPreviousPoint = Pathing.collidesWithAnyMobsAtPreviousSpot(this, x, y, 1);
       if (mob) {
         this.player.seeking = mob;
-      }else if (mob2) {
-        this.player.seeking = mob2;
-
+      }else if (mobAtPreviousPoint) {
+        this.player.seeking = mobAtPreviousPoint;
       }else {
         this.player.moveTo(x, y);
       }
