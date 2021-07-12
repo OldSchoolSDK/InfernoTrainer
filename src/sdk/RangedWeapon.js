@@ -3,12 +3,18 @@ import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
   attack(from, to, bonuses = {}){
+    bonuses.effectivePrayers = {};
     if (from.isMob === false){
-      const offensivePrayer = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');
-      if (offensivePrayer) {
-        bonuses.offensivePrayer = offensivePrayer;
+      const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');
+      if (offensiveRange) {
+        bonuses.effectivePrayers['range'] = offensiveRange;
+      }
+      const defence = _.find(from.prayers, (prayer) => prayer.feature() === 'defence');
+      if (defence) {
+        bonuses.effectivePrayers['defence'] = defence;
       }
     }
+
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -27,14 +33,16 @@ export default class RangedWeapon extends Weapon {
 
   _rangedAttack(from, to, bonuses){
     const prayerMultiplier = 1;
-    if (bonuses.offensivePrayer){
-      if (bonuses.offensivePrayer.Name === 'Sharp Eye'){
+    const rangePrayer = bonuses.effectivePrayers['range'];
+
+    if (rangePrayer){
+      if (rangePrayer.name === 'Sharp Eye'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Hawk Eye'){
+      }else if (rangePrayer.name === 'Hawk Eye'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Eagle Eye'){
+      }else if (rangePrayer.name === 'Eagle Eye'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Rigour'){
+      }else if (rangePrayer.name === 'Rigour'){
         prayerMultiplier = 1.2;
       }
     }
@@ -43,21 +51,19 @@ export default class RangedWeapon extends Weapon {
   }
   
   _maxHit(from, to, bonuses) {
-
     const prayerMultiplier = 1;
-    if (bonuses.offensivePrayer) {
-      if (bonuses.offensivePrayer.Name === 'Sharp Eye'){
+    const rangePrayer = bonuses.effectivePrayers['range'];
+    if (rangePrayer){
+      if (rangePrayer.name === 'Sharp Eye'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Hawk Eye'){
+      }else if (rangePrayer.name === 'Hawk Eye'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Eagle Eye'){
+      }else if (rangePrayer.name === 'Eagle Eye'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Rigour'){
+      }else if (rangePrayer.name === 'Rigour'){
         prayerMultiplier = 1.23;
-      } 
+      }
     }
-
-
     const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier;
     return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses));
   }
@@ -69,26 +75,28 @@ export default class RangedWeapon extends Weapon {
   _defenceRoll(from, to, bonuses) {
 
     const prayerMultiplier = 1;
-    if (bonuses.offensivePrayer){
-      if (bonuses.offensivePrayer.Name === 'Thick Skin'){
+    const defencePrayer = bonuses.effectivePrayers['defence'];
+
+    if (defencePrayer){
+      if (defencePrayer.name === 'Thick Skin'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Will'){
+      }else if (defencePrayer.name === 'Mystic Will'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Rock Skin'){
+      }else if (defencePrayer.name === 'Rock Skin'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Lore'){
+      }else if (defencePrayer.name === 'Mystic Lore'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Steel Skin'){
+      }else if (defencePrayer.name === 'Steel Skin'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Might'){
+      }else if (defencePrayer.name === 'Mystic Might'){
         prayerMultiplier = 1.15;
-      } else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+      }else if (defencePrayer.name === 'Chivalry'){
         prayerMultiplier = 1.2;
-      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+      }else if (defencePrayer.name === 'Piety'){
         prayerMultiplier = 1.25;
-      } else if (bonuses.offensivePrayer.Name === 'Rigour'){
+      }else if (defencePrayer.name === 'Rigour'){
         prayerMultiplier = 1.25;
-      } else if (bonuses.offensivePrayer.Name === 'Augury'){
+      }else if (defencePrayer.name === 'Augury'){
         prayerMultiplier = 1.25;
       } 
     }

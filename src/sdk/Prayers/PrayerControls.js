@@ -1,14 +1,13 @@
 
 import PrayerPanel from "../../assets/images/panels/prayer.png";
 import PrayerTab from "../../assets/images/tabs/prayer.png";
-import Pathing from "../Pathing";
-import Point from "../Point";
+import _ from "lodash";
+import BrowserUtils from "../BrowserUtils";
+
 import BaseControls from "../ControlPanels/BaseControls";
 import ProtectMelee from "./ProtectMelee";
 import ProtectMage from "./ProtectMage";
 import ProtectRange from "./ProtectRange";
-import _ from "lodash";
-import BrowserUtils from "../BrowserUtils";
 import Rigour from "./Rigour";
 import SharpEye from "./SharpEye";
 import HawkEye from "./HawkEye";
@@ -17,6 +16,17 @@ import MysticWill from "./MysticWill";
 import MysticLore from "./MysticLore";
 import MysticMight from "./MysticMight";
 import Augury from "./Augury";
+import ThickSkin from "./ThickSkin";
+import BurstOfStrength from "./BurstOfStrength";
+import ClarityOfThought from "./ClarityOfThought";
+import RockSkin from "./RockSkin";
+import SuperhumanStrength from "./SuperhumanStrength";
+import ImprovedReflexes from "./ImprovedReflexes";
+import SteelSkin from "./SteelSkin";
+import UltimateStrength from "./UltimateStrength";
+import IncredibleReflexes from "./IncredibleReflexes";
+import Chivalry from "./Chivalry";
+import Piety from "./Piety";
 
 export default class PrayerControls extends BaseControls{
 
@@ -35,22 +45,22 @@ export default class PrayerControls extends BaseControls{
 
 
   static prayers = [
-    'Thick Skin',
-    'Burst of Strength',
-    'Clarity of Thought',
+    new ThickSkin(),
+    new BurstOfStrength(),
+    new ClarityOfThought(),
     new SharpEye(),
     new MysticWill(),
-    'Rock Skin',
-    'Superhuman Strength',
-    'Improved Reflexes',
+    new RockSkin(),
+    new SuperhumanStrength(),
+    new ImprovedReflexes,
     'Rapid Restore',
     'Rapid Heal',
     'Protect Item',
     new HawkEye(),
     new MysticLore(),
-    'Steel Skin',
-    'Ultimate Strength',
-    'Incredible Reflexes',
+    new SteelSkin(),
+    new UltimateStrength(),
+    new IncredibleReflexes(),
     new ProtectMage(),
     new ProtectRange(),
     new ProtectMelee(),
@@ -60,8 +70,8 @@ export default class PrayerControls extends BaseControls{
     'Redemption',
     'Smite',
     'Preserve',
-    'Chivalry',
-    'Piety',
+    new Chivalry(),
+    new Piety(),
     new Rigour(),
     new Augury()
   ];

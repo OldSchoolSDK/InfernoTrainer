@@ -3,8 +3,26 @@ import { Weapon } from "./Weapon";
 
 export default class MeleeWeapon extends Weapon {
   attack(from, to, bonuses = {}){
+    bonuses.effectivePrayers = {};
+    if (from.isMob === false){
+      const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack');
+      if (offensiveAttack) {
+        bonuses.effectivePrayers['attack'] = offensiveAttack;
+      }
+      
+      const offensiveStrength = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveStrength');
+      if (offensiveStrength) {
+        bonuses.effectivePrayers['strength'] = offensiveStrength;
+      }
+      
+      const defence = _.find(from.prayers, (prayer) => prayer.feature() === 'defence');
+      if (defence) {
+        bonuses.effectivePrayers['defence'] = defence;
+      }
+      
+    }
+
     bonuses.attackStyle = bonuses.attackStyle || 'slash';
-    bonuses.prayerMultiplier = bonuses.prayerMultiplier || 1;
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -17,16 +35,18 @@ export default class MeleeWeapon extends Weapon {
 
   _strengthLevel(from, to, bonuses){
     const prayerMultiplier = 1;
-    if (bonuses.offensivePrayer){
-      if (bonuses.offensivePrayer.Name === 'Burst of Strength'){
+    const strengthPrayer = bonuses.effectivePrayers['strength'];
+
+    if (strengthPrayer){
+      if (strengthPrayer.name === 'Burst of Strength'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Superhuman Strength'){
+      }else if (bstrengthPrayer.name === 'Superhuman Strength'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Ultimate Strength'){
+      }else if (strengthPrayer.name === 'Ultimate Strength'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+      }else if (strengthPrayer.name === 'Chivalry'){
         prayerMultiplier = 1.18;
-      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+      }else if (strengthPrayer.name === 'Piety'){
         prayerMultiplier = 1.23;
       }
     }
@@ -38,16 +58,18 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _attackLevel(from, to, bonuses) {
-    if (bonuses.offensivePrayer){
-      if (bonuses.offensivePrayer.Name === 'Clarity of Thought'){
+    const attackPrayer = bonuses.effectivePrayers['attack'];
+    let prayerMultiplier = 1;
+    if (attackPrayer){
+      if (attackPrayer.name === 'Clarity of Thought'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Improved Reflexes'){
+      }else if (attackPrayer.name === 'Improved Reflexes'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Incredible Reflexes'){
+      }else if (attackPrayer.name === 'Incredible Reflexes'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+      }else if (attackPrayer.name === 'Chivalry'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+      }else if (attackPrayer.name === 'Piety'){
         prayerMultiplier = 1.2;
       }
     }
@@ -68,27 +90,28 @@ export default class MeleeWeapon extends Weapon {
   }
   _defenceLevel(from, to, bonuses) {
 
-    const prayerMultiplier = 1;
-    if (bonuses.offensivePrayer){
-      if (bonuses.offensivePrayer.Name === 'Thick Skin'){
+    const defencePrayer = bonuses.effectivePrayers['defence'];
+    let prayerMultiplier = 1;
+    if (defencePrayer){
+      if (defencePrayer.name === 'Thick Skin'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Will'){
+      }else if (defencePrayer.name === 'Mystic Will'){
         prayerMultiplier = 1.05;
-      }else if (bonuses.offensivePrayer.Name === 'Rock Skin'){
+      }else if (defencePrayer.name === 'Rock Skin'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Lore'){
+      }else if (defencePrayer.name === 'Mystic Lore'){
         prayerMultiplier = 1.1;
-      }else if (bonuses.offensivePrayer.Name === 'Steel Skin'){
+      }else if (defencePrayer.name === 'Steel Skin'){
         prayerMultiplier = 1.15;
-      }else if (bonuses.offensivePrayer.Name === 'Mystic Might'){
+      }else if (defencePrayer.name === 'Mystic Might'){
         prayerMultiplier = 1.15;
-      } else if (bonuses.offensivePrayer.Name === 'Chivalry'){
+      } else if (defencePrayer.name === 'Chivalry'){
         prayerMultiplier = 1.2;
-      }else if (bonuses.offensivePrayer.Name === 'Piety'){
+      }else if (defencePrayer.name === 'Piety'){
         prayerMultiplier = 1.25;
-      } else if (bonuses.offensivePrayer.Name === 'Rigour'){
+      } else if (defencePrayer.name === 'Rigour'){
         prayerMultiplier = 1.25;
-      } else if (bonuses.offensivePrayer.Name === 'Augury'){
+      } else if (defencePrayer.name === 'Augury'){
         prayerMultiplier = 1.25;
       } 
     }
