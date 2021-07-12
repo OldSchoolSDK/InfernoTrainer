@@ -40,7 +40,7 @@ export default class MeleeWeapon extends Weapon {
     if (strengthPrayer){
       if (strengthPrayer.name === 'Burst of Strength'){
         prayerMultiplier = 1.05;
-      }else if (bstrengthPrayer.name === 'Superhuman Strength'){
+      }else if (strengthPrayer.name === 'Superhuman Strength'){
         prayerMultiplier = 1.1;
       }else if (strengthPrayer.name === 'Ultimate Strength'){
         prayerMultiplier = 1.15;
