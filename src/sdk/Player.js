@@ -105,12 +105,17 @@ export default class Player {
           // attack them all 
 
           let castsAllowed = this.manualSpellCastSelection.maxConcurrentHits;
+          const alreadyCastedOn = [];
           this.manualSpellCastSelection.aoe.forEach((point) => {
             stage.getMobsAtPoint(point.x + this.seeking.location.x, point.y + this.seeking.location.y)
             .forEach((mob) =>{
               if (castsAllowed <= 0) {
                 return;
               }
+              if (alreadyCastedOn.indexOf(mob) > -1) {
+                return;
+              }
+              alreadyCastedOn.push(mob);
               castsAllowed--;
               this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
             })
