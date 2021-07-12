@@ -94,10 +94,9 @@ export default class Player {
   attack(stage) {
     // Has LOS
     if (this.manualSpellCastSelection){
-      console.log('has cast selection', this.manualSpellCastSelection);
+
       // manual cast spell
       if (this.manualSpellCastSelection.name === 'Ice Barrage') {
-        console.log('barrage');
 
         // calculate AoE magic effects
         if (this.manualSpellCastSelection.aoe.length) {
@@ -107,17 +106,25 @@ export default class Player {
 
           let castsAllowed = this.manualSpellCastSelection.maxConcurrentHits;
           this.manualSpellCastSelection.aoe.forEach((point) => {
-            console.log('point', point.x + this.seeking.location.x, point.y + this.seeking.location.y);
             stage.getMobsAtPoint(point.x + this.seeking.location.x, point.y + this.seeking.location.y)
             .forEach((mob) =>{
               if (castsAllowed <= 0) {
                 return;
               }
               castsAllowed--;
-              console.log('castsAllowed', castsAllowed);
-              console.log(mob);
               this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
             })
+
+
+            stage.getMobsAtPoint(point.x + this.seeking.lastLocation.x, point.y + this.seeking.lastLocation.y)
+            .forEach((mob) =>{
+              if (castsAllowed <= 0) {
+                return;
+              }
+              castsAllowed--;
+              this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
+            })
+
 
           });
 
