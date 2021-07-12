@@ -2,7 +2,19 @@ import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MagicWeapon extends Weapon {
-  attack(from, to, bonuses){
+  attack(from, to, bonuses = {}){
+
+    this._calculatePrayerEffects(from, to, bonuses);
+
+    bonuses.isAccurate = bonuses.isAccurate || false;
+    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
+    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+    this.damage = this._rollAttack(from, to, bonuses);
+    to.addProjectile(new Projectile(this.damage, from, to, 'magic'));
+  }
+
+  _calculatePrayerEffects(from, to, bonuses){
+
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveMagic = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveMagic');
@@ -14,12 +26,6 @@ export default class MagicWeapon extends Weapon {
         bonuses.effectivePrayers['defence'] = defence;
       }
     }
-
-    bonuses.isAccurate = bonuses.isAccurate || false;
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    
-    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, 'magic'));
   }
 
   _rollAttack(from, to, bonuses){

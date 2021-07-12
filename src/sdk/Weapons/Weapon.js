@@ -12,6 +12,12 @@ export class Weapon {
     
   }
 
+  get aoe() {
+    return [
+      {x: 0, y: 0}
+    ];
+  }
+
   static isMeleeAttackStyle(style){
     return style === 'crush' || style === 'slash' || style === 'stab';
   }

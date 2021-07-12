@@ -1,5 +1,6 @@
 'use strict';
 import AccountControls from "./ControlPanels/AccountControls";
+import AncientsSpellbookControls from "./ControlPanels/AncientsSpellbookControls";
 import ClanChatControls from "./ControlPanels/ClanChatControls";
 import CombatControls from "./ControlPanels/CombatControls";
 import EmotesControls from "./ControlPanels/EmotesControls";
@@ -20,6 +21,7 @@ export default class ControlPanelController {
     PRAYER: new PrayerControls(),
     EQUIPMENT: new EquipmentControls(),
     STATS: new StatsControls(),
+    ANCIENTSSPELLBOOK: new AncientsSpellbookControls()
   });
   constructor() {
     this.canvas = document.getElementById("controlPanel");
@@ -40,7 +42,7 @@ export default class ControlPanelController {
       ControlPanelController.controls.INVENTORY,
       ControlPanelController.controls.EQUIPMENT,
       ControlPanelController.controls.PRAYER,
-      new StandardSpellbookControls(),
+      ControlPanelController.controls.ANCIENTSSPELLBOOK,
       new EmptyControls(),
       new FriendsControls(),
       new AccountControls(),
@@ -112,13 +114,13 @@ export default class ControlPanelController {
     }
   }
   
-  draw() {
+  draw(stage) {
     this.ctx.fillStyle = "#000";
 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(this.ctx, this.canvas.width - 204, 0);
+      this.selectedControl.draw(stage, this, this.canvas.width - 204, 0);
     }
 
     let selectedPosition = null;

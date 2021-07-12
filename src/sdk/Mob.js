@@ -108,6 +108,7 @@ export class Mob {
     this.cd = 0;
     this.currentStats.hitpoint = this.stats.hitpoint;
     this.hasLOS = false;
+    this.frozen = 0;
     this.incomingProjectiles = [];
 
 
@@ -146,48 +147,50 @@ export class Mob {
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
     this.setHasLOS(stage);
-    if (!this.hasLOS) {
-        var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
-        var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
+    if (!this.hasLOS && this.frozen <= 0) {
+      var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
+      var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
-        if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
-            // Random movement if player is under the mob
-            if (Math.random() < 0.5) {
-                dy = this.location.y;
-                if (Math.random() < 0.5) {
-                    dx = this.location.x + 1
-                } else {
-                    dx = this.location.x - 1
-                }
-            } else {
-                dx = this.location.x;
-                if (Math.random() < 0.5) {
-                    dy = this.location.y + 1
-                } else {
-                    dy = this.location.y - 1
-                }
-            }
-        } else if (Pathing.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
-            //allows corner safespotting
-            dy = this.location.y;
-        }
-
-        if (this.cd > this.cooldown) {
-            // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
-            dx = this.location.x;
-            dy = this.location.y;
-        }
-
-        if (Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)) {
-          this.location.x = dx;
-          this.location.y = dy;
-        } else if (Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null)) {
-          this.location.x = dx;
-        } else if (Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null)) {
-          this.location.y = dy;
-        }
-  
+      if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+          // Random movement if player is under the mob
+          if (Math.random() < 0.5) {
+              dy = this.location.y;
+              if (Math.random() < 0.5) {
+                  dx = this.location.x + 1
+              } else {
+                  dx = this.location.x - 1
+              }
+          } else {
+              dx = this.location.x;
+              if (Math.random() < 0.5) {
+                  dy = this.location.y + 1
+              } else {
+                  dy = this.location.y - 1
+              }
+          }
+      } else if (Pathing.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+          //allows corner safespotting
+          dy = this.location.y;
       }
+
+      if (this.cd > this.cooldown) {
+          // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
+          dx = this.location.x;
+          dy = this.location.y;
+      }
+
+      if (Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)) {
+        this.location.x = dx;
+        this.location.y = dy;
+      } else if (Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null)) {
+        this.location.x = dx;
+      } else if (Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null)) {
+        this.location.y = dy;
+      }
+
+    }
+
+    this.frozen--;
   }
 
   dead(stage) {

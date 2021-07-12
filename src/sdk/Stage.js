@@ -35,6 +35,10 @@ export default class Stage {
     this.map.addEventListener('mousedown', this.mapClick.bind(this));
   }
 
+  getMobsAtPoint(x, y){
+    return this.mobs.filter((mob) => mob.location.x === x && mob.location.y === y);
+  }
+
   getContext() {
     return this.ctx;
   }

@@ -91,9 +91,45 @@ export default class Player {
     this.destinationLocation = new Point(x, y);
   }
 
-  attack() {
+  attack(stage) {
     // Has LOS
-    this.weapon.attack(this, this.seeking);
+    if (this.manualSpellCastSelection){
+      console.log('has cast selection', this.manualSpellCastSelection);
+      // manual cast spell
+      if (this.manualSpellCastSelection.name === 'Ice Barrage') {
+        console.log('barrage');
+
+        // calculate AoE magic effects
+        if (this.manualSpellCastSelection.aoe.length) {
+
+          // get mobs at aoe points
+          // attack them all 
+
+          let castsAllowed = this.manualSpellCastSelection.maxConcurrentHits;
+          this.manualSpellCastSelection.aoe.forEach((point) => {
+            console.log('point', point.x + this.seeking.location.x, point.y + this.seeking.location.y);
+            stage.getMobsAtPoint(point.x + this.seeking.location.x, point.y + this.seeking.location.y)
+            .forEach((mob) =>{
+              if (castsAllowed <= 0) {
+                return;
+              }
+              castsAllowed--;
+              console.log('castsAllowed', castsAllowed);
+              console.log(mob);
+              this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
+            })
+
+          });
+
+        }else{
+          this.manualSpellCastSelection.attack(this, this.seeking, {magicBaseSpellDamage: 30});
+        }
+        this.manualSpellCastSelection = null;
+      }
+    }else{
+      // use equipped weapon
+      this.weapon.attack(this, this.seeking);
+    }
 
     // this.playAttackSound();
   }
@@ -195,7 +231,7 @@ export default class Player {
 
     this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
     if (this.hasLOS && this.seeking && this.cd <= 0) {
-      this.attack()
+      this.attack(stage)
       this.cd = this.weapon.attackSpeed;
     }
   }
