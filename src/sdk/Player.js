@@ -19,7 +19,7 @@ export default class Player {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -29,31 +29,31 @@ export default class Player {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
 
     this.bonuses = {
       attack: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 0,
-        ranged: 0
+        stab: -1,
+        slash: -1,
+        crush: -1,
+        magic: -28,
+        range: 138
       },
       defence: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 0,
-        ranged: 0
+        stab: 213,
+        slash: 202,
+        crush: 219,
+        magic: 135,
+        range: 215
       },
       other: {
-        meleeStrength: 0,
-        rangedStrength: 0,
+        meleeStrength: 15,
+        rangedStrength: 62,
         magicDamage: 0,
-        prayer: 0
+        prayer: 12
       },
       targetSpecific: {
         undead: 0,
@@ -80,6 +80,10 @@ export default class Player {
     
   }
 
+  get isMob() {
+    return false;
+  }
+  
   get size() {
     return 1;
   }
@@ -90,8 +94,8 @@ export default class Player {
 
   attack() {
     // Has LOS
-    const damage = Math.floor(Math.random()*35);
-    this.seeking.addProjectile(new Projectile(damage, this, this.seeking, 'range'));
+    this.weapon.attack(this, this.seeking);
+
     // this.playAttackSound();
   }
 

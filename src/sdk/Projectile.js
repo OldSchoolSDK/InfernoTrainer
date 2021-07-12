@@ -1,17 +1,18 @@
 'use strict';
 import chebyshev from "chebyshev";
+import { Weapon } from "./Weapon";
 
 export default class Projectile {
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */
   constructor(damage, from, to, attackStyle) {
-    this.damage = damage;
+    this.damage = Math.floor(damage);
     this.fromLocation = from.location;
     this.toLocation = to.location;
     this.distance = 999999;
 
-    if (attackStyle === 'melee'){
+    if (Weapon.isMeleeAttackStyle(attackStyle)){
       this.distance = 0;
       this.delay = 0;
       return;

@@ -2,22 +2,65 @@
 
 import _ from "lodash";
 import Constants from "../../../../sdk/Constants";
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
+import RangedWeapon from "../../../../sdk/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/ranger.ogg";
 
 export class Ranger extends Mob {
 
+
+  setStats () {
+
+    this.weapons = {
+      slash: new MeleeWeapon(),
+      range: new RangedWeapon()
+    };
+
+    // non boosted numbers
+    this.stats = {
+      attack: 140,
+      strength: 180,
+      defence: 60,
+      range: 250,
+      magic: 90,
+      hitpoint: 125
+    };
+
+    // with boosts
+    this.currentStats = JSON.parse(JSON.stringify(this.stats))
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 40
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 50,
+        magicDamage: 0,
+        prayer: 0
+      }
+    }
+  }
+  
   get cooldown() {
     return 4;
   }
 
   get attackRange() {
     return 15;
-  }
-
-  get maxHealth() {
-    return 130;
   }
 
   get maxHit() {
@@ -46,7 +89,7 @@ export class Ranger extends Mob {
   }
 
   canMeleeIfClose() {
-    return true;
+    return 'slash';
   }
   
   playAttackSound (){

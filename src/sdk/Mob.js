@@ -9,6 +9,7 @@ import Projectile from "./Projectile";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
+import { Weapon } from "./Weapon";
 
 export class Mob {
 
@@ -19,15 +20,15 @@ export class Mob {
     SCAN: 3,
   });
 
+  get isMob() {
+    return true;
+  }
+
   get cooldown() {
     return 0;
   }
 
   get attackRange() {
-    return 0;
-  }
-
-  get maxHealth() {
     return 0;
   }
 
@@ -55,14 +56,14 @@ export class Mob {
     // override pls
   }
 
-  constructor(location) {
+  setStats () {
 
     // non boosted numbers
     this.stats = {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -72,7 +73,7 @@ export class Mob {
       attack: 99,
       strength: 99,
       defence: 99,
-      ranged: 99,
+      range: 99,
       magic: 99,
       hitpoint: 99
     };
@@ -83,14 +84,14 @@ export class Mob {
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
         magic: 0,
-        ranged: 0
+        range: 0
       },
       other: {
         meleeStrength: 0,
@@ -99,10 +100,14 @@ export class Mob {
         prayer: 0
       }
     }
+  }
+  
+  constructor(location) {
 
+    this.setStats();
     this.location = location;
     this.cd = 0;
-    this.currentHealth = this.maxHealth;
+    this.currentStats.hitpoint = this.stats.hitpoint;
     this.hasLOS = false;
     this.incomingProjectiles = [];
 
@@ -191,12 +196,12 @@ export class Mob {
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
       if (projectile.delay == 0) {
-        this.currentHealth -= projectile.damage;
+        this.currentStats.hitpoint -= projectile.damage;
       }
     });
-    this.currentHealth = Math.max(0, this.currentHealth);
+    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    if (this.currentHealth <= 0) {
+    if (this.currentStats.hitpoint <= 0) {
       return this.dead(stage);
     }
     
@@ -211,9 +216,12 @@ export class Mob {
   }
 
   attackStyle() {
-    return 'melee';
+    return 'slash';
   }
 
+  meleeDistanceAttackStyle() {
+    return 'slash';
+  }
 
   attackIfPossible(stage){
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1);
@@ -222,10 +230,15 @@ export class Mob {
       this.attack(stage);
     }
   }
+
+  magicMaxHit() {
+    return 0;
+  }
+
   attack(stage){
     let attackStyle = this.attackStyle();
 
-    if (this.canMeleeIfClose() && attackStyle !== 'melee'){
+    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
       const playerX = stage.player.location.x;
       const playerY = stage.player.location.y;
       let isWithinMeleeRange = false;
@@ -240,21 +253,24 @@ export class Mob {
         isWithinMeleeRange = true;
       }
       if (isWithinMeleeRange && Math.random() < 0.5) { 
-        attackStyle = 'melee';
+        attackStyle = this.meleeDistanceAttackStyle();
       }
     }
 
 
     let damage = 0;
-    const protectionPrayerActive = _.find(stage.player.prayers, prayer => prayer.feature() === attackStyle);
+    let prayerAttackBlockStyle = attackStyle;
+    if (Weapon.isMeleeAttackStyle(attackStyle)) { 
+      prayerAttackBlockStyle = 'melee'; // because protect melee scans for the style as melee, generalize them
+    }
+    const protectionPrayerActive = _.find(stage.player.prayers, prayer => prayer.feature() === prayerAttackBlockStyle);
     if (protectionPrayerActive){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      damage = Math.round(Math.random() * this.maxHit);
+      this.weapons[attackStyle].attack(this, stage.player, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     
-    stage.player.addProjectile(new Projectile(damage, this, stage.player, attackStyle));
     this.playAttackSound();
 
     this.cd = this.cooldown;
@@ -334,10 +350,10 @@ export class Mob {
     stage.ctx.fillRect(
       this.location.x * Constants.tileSize, 
       ((this.location.y - this.size + 1) * Constants.tileSize), 
-      (this.currentHealth / this.maxHealth) * (Constants.tileSize * this.size), 
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
       5
     );
-
+    
 
     
     let projectileOffsets = [

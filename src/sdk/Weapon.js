@@ -8,4 +8,11 @@ export class Weapon {
     this.inventorySprite.src = this.inventoryImage;
   }
 
+  attack(){
+    
+  }
+
+  static isMeleeAttackStyle(style){
+    return style === 'crush' || style === 'slash' || style === 'stab';
+  }
 }

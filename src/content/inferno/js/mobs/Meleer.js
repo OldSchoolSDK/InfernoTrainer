@@ -1,5 +1,6 @@
 'use strict';
 
+import MeleeWeapon from "../../../../sdk/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import Pathing from "../../../../sdk/Pathing";
 import MeleerImage from "../../assets/images/meleer.png";
@@ -7,16 +8,58 @@ import MeleerSound from "../../assets/sounds/meleer.ogg";
 
 export class Meleer extends Mob{
 
+
+  setStats () {
+    this.weapons = {
+      slash: new MeleeWeapon()
+    };
+
+    // non boosted numbers
+    this.stats = {
+      attack: 210,
+      strength: 290,
+      defence: 120,
+      range: 220,
+      magic: 120,
+      hitpoint: 75
+    };
+
+    // with boosts
+    this.currentStats = JSON.parse(JSON.stringify(this.stats))
+
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      defence: {
+        stab: 65,
+        slash: 65,
+        crush: 65,
+        magic: 30,
+        range: 5
+      },
+      other: {
+        meleeStrength: 40,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      }
+    }
+  }
   get cooldown() {
     return 4;
   }
 
-  get attackRange() {
-    return 1;
+  attackStyle() {
+    return 'slash';
   }
 
-  get maxHealth() {
-    return 75;
+  get attackRange() {
+    return 1;
   }
 
   get maxHit() {
