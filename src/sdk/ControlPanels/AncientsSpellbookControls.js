@@ -16,6 +16,11 @@ export default class AncientsSpellbookControls extends BaseControls{
     return StandardSpellbookTab;
   }
 
+  get keyBinding() {
+    return BrowserUtils.getQueryVar("spellbook_key") || "2";
+  }
+
+
   clickedPanel(stage, x, y){
 
 
