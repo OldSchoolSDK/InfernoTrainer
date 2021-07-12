@@ -2,15 +2,15 @@ import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MagicWeapon extends Weapon {
-  attack(from, to, bonuses = {}){
+  attack(from, to, bonuses = {}, forceSWOnly = false){
 
-    this._calculatePrayerEffects(from, to, bonuses);
+    this._calculatePrayerEffects(from, to, bonuses, forceSWOnly);
 
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
     this.damage = this._rollAttack(from, to, bonuses);
-    to.addProjectile(new Projectile(this.damage, from, to, 'magic'));
+    to.addProjectile(new Projectile(this.damage, from, to, 'magic', forceSWOnly));
   }
 
   _calculatePrayerEffects(from, to, bonuses){

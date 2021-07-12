@@ -19,12 +19,16 @@ export default class BarrageMagicWeapon extends MagicWeapon {
     ]
   }
 
+  get attackRange() {
+    return 10;
+  }
+
   get maxConcurrentHits() {
     return 9;
   }
 
   attack(from, to, bonuses = {}){
-    super.attack(from, to, bonuses)
+    super.attack(from, to, bonuses, true)
     console.log('damage', this.damage);
     if (this.damage > 0){
       to.frozen = 32;

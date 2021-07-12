@@ -189,7 +189,7 @@ export default class Player {
           }
         }
       }else {
-        this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
+        this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
         if (!this.hasLOS){
           const seekingTiles = [];
           for (let xx=0; xx < this.seeking.size; xx++){
@@ -213,7 +213,7 @@ export default class Player {
       }
     }
 
-    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange)){
+    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange())){
       this.destinationLocation = this.location;
     }
 
@@ -226,6 +226,13 @@ export default class Player {
 
   setPrayers(prayers){
     this.prayers = prayers;
+  }
+
+  attackRange() {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackRange;
+    }
+    return this.weapon.attackRange;
   }
   
   attackStep(stage) {
@@ -245,7 +252,7 @@ export default class Player {
       return;
     }
 
-    this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
+    this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
     if (this.hasLOS && this.seeking && this.cd <= 0) {
       this.attack(stage)
       this.cd = this.weapon.attackSpeed;
@@ -254,7 +261,7 @@ export default class Player {
 
   draw(stage, framePercent) {
 
-    LineOfSight.drawLOS(stage, this.location.x, this.location.y, 1, this.weapon.attackRange);
+    LineOfSight.drawLOS(stage, this.location.x, this.location.y, 1, this.attackRange());
 
     // Draw player
     stage.ctx.fillStyle = "#fff";
