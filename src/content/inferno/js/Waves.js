@@ -20,11 +20,11 @@ export class Waves {
     const mobCounts = Waves.waves[wave - 1];
     const mobs = [];
     let i=0;
-    // Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(spawns[i++], stage.player)));
-    // Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(spawns[i++], stage.player)));
-    // Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(spawns[i++], stage.player)));
-    // Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(spawns[i++], stage.player)));
-    // Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(spawns[i++], stage.player)));
+    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(spawns[i++], stage.player)));
+    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(spawns[i++], stage.player)));
+    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(spawns[i++], stage.player)));
+    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(spawns[i++], stage.player)));
+    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(spawns[i++], stage.player)));
 
     const nibblerSpawns = _.shuffle([
       { x: 8, y: 13},
