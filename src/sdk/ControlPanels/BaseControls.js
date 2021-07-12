@@ -25,7 +25,6 @@ export default class BaseControls {
 
   draw(ctx, x, y) {
     ctx.drawImage(this.panelImage, x, y);
-    
   }
 
 }

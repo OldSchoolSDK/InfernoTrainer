@@ -1,11 +1,9 @@
 'use strict';
 
-import Constants from "../../../../sdk/Constants";
-import LineOfSight from "../../../../sdk/LineOfSight";
-import MagicWeapon from "../../../../sdk/MagicWeapon";
-import MeleeWeapon from "../../../../sdk/MeleeWeapon";
+import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
+import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/RangedWeapon";
+import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
@@ -112,7 +110,7 @@ export class Blob extends Mob{
   }
    
   attackIfPossible(stage){
-
+    this.attackFeedback = Mob.attackIndicators.NONE;
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.cd <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
@@ -123,7 +121,7 @@ export class Blob extends Mob{
       return;
     }
     
-    // Perform attack
+    // Perform attack. Blobs can hit through LoS if they got a scan.
     if (this.playerPrayerScan && this.cd <=0) {
       this.attack(stage);
       this.cd = this.cooldown;

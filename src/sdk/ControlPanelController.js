@@ -1,7 +1,4 @@
 'use strict';
-import Constants from "./Constants";
-import PrayerPanel from "../assets/images/panels/prayer.png";
-
 import AccountControls from "./ControlPanels/AccountControls";
 import ClanChatControls from "./ControlPanels/ClanChatControls";
 import CombatControls from "./ControlPanels/CombatControls";
@@ -9,15 +6,15 @@ import EmotesControls from "./ControlPanels/EmotesControls";
 import EmptyControls from "./ControlPanels/EmptyControls";
 import EquipmentControls from "./ControlPanels/EquipmentControls";
 import FriendsControls from "./ControlPanels/FriendsControls";
-import InventoryControls from "./Inventory/InventoryControls";
+import InventoryControls from "./ControlPanels/InventoryControls";
 import MusicControls from "./ControlPanels/MusicControls";
-import PrayerControls from "./Prayers/PrayerControls";
+import PrayerControls from "./ControlPanels/PrayerControls";
 import QuestsControls from "./ControlPanels/QuestsControls";
 import SettingsControls from "./ControlPanels/SettingsControls";
 import StandardSpellbookControls from "./ControlPanels/StandardSpellbookControls";
 import StatsControls from "./ControlPanels/StatsControls";
 
-export default class ControlPanel {
+export default class ControlPanelController {
   static controls = Object.freeze({
     INVENTORY: new InventoryControls(),
     PRAYER: new PrayerControls(),
@@ -38,11 +35,11 @@ export default class ControlPanel {
 
     this.controls = [
       new CombatControls(),
-      ControlPanel.controls.STATS,
+      ControlPanelController.controls.STATS,
       new QuestsControls(),
-      ControlPanel.controls.INVENTORY,
-      ControlPanel.controls.EQUIPMENT,
-      ControlPanel.controls.PRAYER,
+      ControlPanelController.controls.INVENTORY,
+      ControlPanelController.controls.EQUIPMENT,
+      ControlPanelController.controls.PRAYER,
       new StandardSpellbookControls(),
       new EmptyControls(),
       new FriendsControls(),
@@ -53,7 +50,7 @@ export default class ControlPanel {
       new MusicControls()
     ];
 
-    this.selectedControl = ControlPanel.controls.PRAYER;
+    this.selectedControl = ControlPanelController.controls.PRAYER;
 
     document.addEventListener("keypress", (event) => {
       this.controls.forEach((control) => {

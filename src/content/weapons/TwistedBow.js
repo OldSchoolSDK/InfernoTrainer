@@ -1,8 +1,7 @@
 'use strict';
 
-import { Weapon } from "../../sdk/Weapon";
 import TbowInventImage from "../../assets/images/weapons/twistedBow.png"
-import RangedWeapon from "../../sdk/RangedWeapon";
+import RangedWeapon from "../../sdk/Weapons/RangedWeapon";
 
 export class TwistedBow extends RangedWeapon{
 

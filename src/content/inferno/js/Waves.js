@@ -1,6 +1,5 @@
 'use strict';
 import _ from 'lodash';
-import Point from '../../../sdk/Point';
 import { Bat } from "./mobs/Bat";
 import { Blob } from './mobs/Blob';
 import { Mager } from './mobs/Mager';

@@ -22,7 +22,7 @@ export default class MeleeWeapon extends Weapon {
       
     }
 
-    bonuses.attackStyle = bonuses.attackStyle || 'slash';
+    bonuses.attackStyle = bonuses.attackStyle;
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;

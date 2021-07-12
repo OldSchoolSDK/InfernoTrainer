@@ -1,5 +1,5 @@
 'use strict';
-import Point from "./Point";
+import Point from "./Utils/Point";
 
 export default class Pathing {
 

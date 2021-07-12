@@ -1,7 +1,7 @@
 'use strict';
 
 import BPInventImage from "../../assets/images/weapons/blowpipe.png"
-import RangedWeapon from "../../sdk/RangedWeapon";
+import RangedWeapon from "../../sdk/Weapons/RangedWeapon";
 
 export class Blowpipe extends RangedWeapon{
   get attackRange() {

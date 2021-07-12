@@ -1,15 +1,14 @@
 'use strict';
 import _ from "lodash";
-import chebyshev from "chebyshev";
 
 import Constants from "./Constants";
 import LineOfSight from "./LineOfSight";
 import Pathing from "./Pathing";
-import Projectile from "./Projectile";
+import Projectile from "./Weapons/Projectile";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
-import { Weapon } from "./Weapon";
+import { Weapon } from "./Weapons/Weapon";
 
 export class Mob {
 
@@ -210,8 +209,6 @@ export class Mob {
     this.hadLOS = this.hasLOS;
     this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(stage, this.location.x, this.location.y, this.size, this.attackRange, true);
 
-    this.attackFeedback = Mob.attackIndicators.NONE;
-
     this.attackIfPossible(stage);
   }
 
@@ -225,6 +222,7 @@ export class Mob {
 
   attackIfPossible(stage){
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, stage.player.location.x, stage.player.location.y, 1);
+    this.attackFeedback = Mob.attackIndicators.NONE;
 
     if (!isUnderPlayer && this.hasLOS && this.cd <= 0){
       this.attack(stage);

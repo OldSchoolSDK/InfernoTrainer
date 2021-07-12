@@ -1,6 +1,6 @@
 'use strict';
 
-import MeleeWeapon from "../../../../sdk/MeleeWeapon";
+import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import Pathing from "../../../../sdk/Pathing";
 import MeleerImage from "../../assets/images/meleer.png";

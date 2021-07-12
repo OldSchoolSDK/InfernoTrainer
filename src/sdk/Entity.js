@@ -1,6 +1,6 @@
 'use strict';
 import Constants from "./Constants";
-import Point from "./Point";
+import Point from "./Utils/Point";
 
 export class Entity {
   constructor(point, size) {

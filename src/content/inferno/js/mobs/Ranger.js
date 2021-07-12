@@ -2,9 +2,9 @@
 
 import _ from "lodash";
 import Constants from "../../../../sdk/Constants";
-import MeleeWeapon from "../../../../sdk/MeleeWeapon";
+import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/RangedWeapon";
+import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/ranger.ogg";
 

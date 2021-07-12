@@ -1,13 +1,11 @@
 'use strict';
 import Pathing from "./Pathing";
 import Constants from "./Constants";
-import Point from "./Point";
+import Point from "./Utils/Point";
 import LineOfSight from "./LineOfSight";
 import { TwistedBow } from "../content/weapons/TwistedBow";
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
-import { has } from "lodash";
-import Projectile from "./Projectile";
 
 export default class Player {
 

@@ -1,7 +1,7 @@
 'use strict';
-import Constants from "../../../sdk/Constants";
+
 import { Entity } from "../../../sdk/Entity";
-import Point from "../../../sdk/Point";
+import Point from "../../../sdk/Utils/Point";
 
 export class Pillar extends Entity{
 

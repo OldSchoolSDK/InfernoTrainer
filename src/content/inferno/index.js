@@ -2,22 +2,22 @@
 
 import { Pillar } from "./js/Pillar";
 import Player from '../../sdk/Player';
-import Point from '../../sdk/Point';
+import Point from '../../sdk/Utils/Point';
 import Stage from '../../sdk/Stage';
 import { Waves } from "./js/Waves";
 import Constants from "../../sdk/Constants";
-import ControlPanel from "../../sdk/ControlPanel";
+import ControlPanelController from "../../sdk/ControlPanelController";
 import { Mager } from "./js/mobs/Mager";
 import { Ranger } from "./js/mobs/Ranger";
 import { Meleer } from "./js/mobs/Meleer";
 import { Blob } from "./js/mobs/Blob";
 import { Bat } from "./js/mobs/Bat";
-import BrowserUtils from "../../sdk/BrowserUtils";
+import BrowserUtils from "../../sdk/Utils/BrowserUtils";
 
 // Create stage
 const stage = new Stage("map", 29, 30);
 
-const controlPanel = new ControlPanel();
+const controlPanel = new ControlPanelController();
 
 stage.setControlPanel(controlPanel);
 controlPanel.setStage(stage);

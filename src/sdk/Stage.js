@@ -1,10 +1,10 @@
 'use strict';
 import _ from 'lodash';
 import Constants from "./Constants";
-import ControlPanel from './ControlPanel';
+import ControlPanelController from './ControlPanelController';
 import LineOfSight from './LineOfSight';
 import Pathing from './Pathing';
-import Point from './Point';
+import Point from './Utils/Point';
 
 export default class Stage {
 
@@ -73,7 +73,7 @@ export default class Stage {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
 
-      this.player.setPrayers(ControlPanel.controls.PRAYER.getCurrentActivePrayers());
+      this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
 
       this.entities.forEach((entity) => entity.tick(this));
 
