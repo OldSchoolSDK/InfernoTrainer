@@ -192,7 +192,6 @@ export class Mob {
 
   dead(stage) {
     this.isDead = true;
-    stage.removeMob(this);
   }
 
   canMeleeIfClose() {

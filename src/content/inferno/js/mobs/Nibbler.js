@@ -12,7 +12,6 @@ export class Nibbler extends Mob{
 
 
   setStats () {
-
     this.weapon = {
       attackRange: 1
     }
@@ -22,8 +21,8 @@ export class Nibbler extends Mob{
 
     // non boosted numbers
     this.stats = {
-      attack: 10,
-      strength: 19,
+      attack: 1,
+      strength: 30, // This isn't true w/r/t the Monster Examine feature, but those stats are obviously wrong.
       defence: 15,
       range: 1,
       magic: 15,
@@ -62,11 +61,11 @@ export class Nibbler extends Mob{
   }
 
   get cooldown() {
-    return 1;
+    return 4;
   }
 
   get attackRange() {
-    return 2;
+    return 1;
   }
 
   get size() {

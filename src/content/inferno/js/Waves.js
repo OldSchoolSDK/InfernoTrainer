@@ -37,8 +37,9 @@ export class Waves {
       { x: 9, y: 11},
       { x: 10, y: 11}      
     ]);
+    
 
-    Array(mobCounts[0]).fill(0).forEach(() => mobs.push(new Nibbler(nibblerSpawns.shift(), randomPillar)));
+    Array(mobCounts[0]).fill(0).forEach(() => mobs.push(new Nibbler(nibblerSpawns.shift(), randomPillar || stage.player)));
     return mobs;  
   }
   

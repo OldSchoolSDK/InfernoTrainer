@@ -83,6 +83,13 @@ export default class Stage {
       this.player.movementStep(this);
       this.player.attackStep(this);
 
+
+      // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
+      const deadMobs = this.mobs.filter((mob) => mob.isDead);
+      const deadEntities = this.entities.filter((mob) => mob.isDead);
+      deadMobs.forEach((mob) => this.removeMob(mob));
+      deadEntities.forEach((entity) => this.removeEntity(entity));
+
       this.tickTime = performance.now() - t;
     }
     let t2 = performance.now();

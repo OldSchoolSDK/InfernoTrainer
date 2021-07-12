@@ -24,17 +24,20 @@ export class Pillar extends Entity{
 
     // non boosted numbers
     this.stats = {
-      hitpoint: 100
+      hitpoint: 256
     };
 
     // with boosts
     this.currentStats = {
-      hitpoint: 100
+      defence: -50,
+      hitpoint: 256
     };
 
     this.bonuses = {
       attack: { },
-      defence: { },
+      defence: { 
+        crush: -50
+      },
       other: { }
     };
 
@@ -133,7 +136,6 @@ export class Pillar extends Entity{
 
   dead(stage){
     this.isDead = true;
-    stage.removeEntity(this);
     // TODO: needs to AOE the nibblers around it 
   }
 
