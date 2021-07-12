@@ -9,6 +9,7 @@ import Projectile from "./Weapons/Projectile";
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
 import { Weapon } from "./Weapons/Weapon";
+import Point from "./Utils/Point";
 
 export class Mob {
 
@@ -104,6 +105,7 @@ export class Mob {
   constructor(location, aggro) {
     this.aggro = aggro;
     this.setStats();
+    this.lastLocation = location;
     this.location = location;
     this.cd = 0;
     this.currentStats.hitpoint = this.stats.hitpoint;
@@ -144,6 +146,7 @@ export class Mob {
 
   movementStep(stage) {
 
+    this.lastLocation = new Point(this.location.x, this.location.y);
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
     this.setHasLOS(stage);

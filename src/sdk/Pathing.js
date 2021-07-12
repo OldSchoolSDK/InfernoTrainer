@@ -24,6 +24,29 @@ export default class Pathing {
     return false;
   }
 
+
+
+  static collidesWithAnyMobsAtPreviousSpot(stage, x, y, s, mobToAvoid) {
+    for (let i = 0; i < stage.mobs.length; i++) {
+      if (stage.mobs[i] === mobToAvoid) {
+        continue;
+      }
+
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPreviousSpot(stage, x, y, s, stage.mobs[i]);
+
+      if (collidedWithSpecificMob) {
+        return stage.mobs[i];
+      }
+    }
+    return null;
+  }
+
+  static collidesWithMobAtPreviousSpot(stage, x, y, s, mob) {
+    return (Pathing.collisionMath(x, y, s, mob.lastLocation.x, mob.lastLocation.y, mob.size));
+  }
+
+
+
   static collidesWithAnyMobs(stage, x, y, s, mobToAvoid) {
     for (let i = 0; i < stage.mobs.length; i++) {
       if (stage.mobs[i] === mobToAvoid) {
