@@ -40,7 +40,7 @@ export default class Player {
         slash: -1,
         crush: -1,
         magic: -28,
-        range: 115
+        range: 138
       },
       defence: {
         stab: 213,
