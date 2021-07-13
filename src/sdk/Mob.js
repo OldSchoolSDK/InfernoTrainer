@@ -189,7 +189,7 @@ export class Mob {
       const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace)
       const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace);
       const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace);
-      if (both && (xSpace || ySpace)) {
+      if (both && xSpace && ySpace) {
         this.location.x = dx;
         this.location.y = dy;
       } else if (xSpace) {
@@ -318,6 +318,7 @@ export class Mob {
   }
 
   draw(stage, framePercent) {
+
 
     LineOfSight.drawMobLOS(stage, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
         
