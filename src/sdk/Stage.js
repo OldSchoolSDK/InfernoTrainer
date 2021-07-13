@@ -33,6 +33,9 @@ export default class Stage {
     this.width = width;
     this.height = height;
 
+    this.offPerformanceDelta = 0;
+    this.offPerformanceCount = 0;
+
     this.map.addEventListener('mousedown', this.mapClick.bind(this));
   }
 
@@ -73,6 +76,23 @@ export default class Stage {
     if (this.frameCounter === 0 && this.heldDown <=0) {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
+
+      // Calculate Time Between Tick Off Performance and adjust framerate accordingly
+      if (isNaN(this.timeBetweenTicks) === false){
+        const offPerformance = 600 - this.timeBetweenTicks;
+        this.offPerformanceDelta += offPerformance;
+        this.offPerformanceCount++;
+        if (this.offPerformanceCount > 5){
+          const delta = this.offPerformanceDelta / this.offPerformanceCount / 10;
+          if (delta > 0){
+            Constants.framesPerTick += Math.floor(delta);
+          }else{
+            Constants.framesPerTick += Math.ceil(delta);
+          }          
+          this.offPerformanceCount = 0;
+          this.offPerformanceDelta = 0;
+        }
+      }
 
       this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
 

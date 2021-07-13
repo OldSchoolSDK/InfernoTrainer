@@ -7,6 +7,7 @@ import RedX1 from "../assets/images/interface/red_x_1.png";
 import RedX2 from "../assets/images/interface/red_x_2.png";
 import RedX3 from "../assets/images/interface/red_x_3.png";
 import RedX4 from "../assets/images/interface/red_x_4.png";
+import Constants from "./Constants";
 
 
 export default class ClickAnimation {
@@ -57,7 +58,7 @@ export default class ClickAnimation {
       this.y - 9
     );
 
-    this.ttl -=0.06;
+    this.ttl -= 1.65 / Constants.framesPerTick;
 
 
   }

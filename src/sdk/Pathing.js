@@ -77,7 +77,7 @@ export default class Pathing {
     return (Pathing.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size));
   }
 
-  static canTileBePathedTo(stage, x, y, s, mobToAvoid, debug) {
+  static canTileBePathedTo(stage, x, y, s, mobToAvoid) {
     if (y - (s - 1) < 0 || x + (s - 1) > 28) {
       return false;
     }
@@ -88,13 +88,8 @@ export default class Pathing {
     collision = collision | Pathing.collidesWithAnyEntities(stage, x, y, s);
 
     if (mobToAvoid) { // if no mobs to avoid, avoid them all
-      if (debug){
-        console.log('avoidind mobs');
-      }
       // Player can walk under mobs
       collision = collision | Pathing.collidesWithAnyMobs(stage, x, y, s, mobToAvoid) != null;
-    }else{
-      console.log('colliding mobs')
     }
 
     return !collision;
