@@ -111,6 +111,7 @@ export class Meleer extends Mob{
       this.location.x = stage.player.location.x - 1
       this.location.y = stage.player.location.y + 1
     }
+    this.perceivedLocation = this.location;
   }
 
 }

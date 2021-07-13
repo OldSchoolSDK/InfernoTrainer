@@ -104,7 +104,7 @@ export class Mob {
   
   constructor(location, aggro) {
     this.aggro = aggro;
-    this.lastLocation = location;
+    this.perceivedLocation = location;
     this.location = location;
     this.cd = 0;
     this.hasLOS = false;
@@ -147,7 +147,7 @@ export class Mob {
 
   movementStep(stage) {
 
-    this.lastLocation = new Point(this.location.x, this.location.y);
+    this.perceivedLocation = new Point(this.location.x, this.location.y);
     let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
     this.setHasLOS(stage);
@@ -317,19 +317,27 @@ export class Mob {
     } else if (this.hasLOS){
       stage.ctx.fillStyle = "#FF7300";
     } else {
-      stage.ctx.fillStyle="#FFFFFF73";
+      stage.ctx.fillStyle="#FFFFFF22";
     }
-
-    stage.ctx.fillRect(
-      this.location.x * Constants.tileSize,
-      (this.location.y - this.size + 1) * Constants.tileSize,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
-    );
 
     stage.ctx.save();
 
-    stage.ctx.translate(this.location.x * Constants.tileSize + (this.size * Constants.tileSize) / 2, (this.location.y - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
+
+    stage.ctx.save();
+    
+    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+
+
+
+    stage.ctx.fillRect(
+      -(this.size * Constants.tileSize) / 2,
+      -(this.size * Constants.tileSize) / 2,
+      this.size * Constants.tileSize,
+      this.size * Constants.tileSize
+    );
 
     if (this.shouldShowAttackAnimation()){
       this.attackAnimation(stage, framePercent);
@@ -342,36 +350,39 @@ export class Mob {
       this.size * Constants.tileSize,
       this.size * Constants.tileSize
     );
+
     stage.ctx.restore();
 
-
-
-    if (LineOfSight.hasLineOfSightOfMob(stage, this.aggro.location.x, this.aggro.location.y, this, this.size)){
-      stage.ctx.strokeStyle = "#00FF0073"
-      stage.ctx.lineWidth = 3;
-      stage.ctx.strokeRect(
-        this.location.x * Constants.tileSize,
-        (this.location.y - this.size + 1) * Constants.tileSize,
-        this.size * Constants.tileSize,
-        this.size * Constants.tileSize
-      );
-    }
+    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
 
     stage.ctx.fillStyle = "red";
     stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
+      -(this.size * Constants.tileSize) / 2,
+      -(this.size * Constants.tileSize) / 2,
       Constants.tileSize * this.size, 
       5
     );
     stage.ctx.fillStyle = "green";
     stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
+      -(this.size * Constants.tileSize) / 2,
+      -(this.size * Constants.tileSize) / 2,
       (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
       5
     );
     
+
+    if (LineOfSight.hasLineOfSightOfMob(stage, this.aggro.location.x, this.aggro.location.y, this, stage.player.attackRange())){
+      stage.ctx.strokeStyle = "#00FF0073"
+      stage.ctx.lineWidth = 1;
+      stage.ctx.strokeRect(
+        -(this.size * Constants.tileSize) / 2,
+        -(this.size * Constants.tileSize) / 2,
+        this.size * Constants.tileSize,
+        this.size * Constants.tileSize
+      );
+    }
+
+
 
     
     let projectileOffsets = [
@@ -402,8 +413,9 @@ export class Mob {
 
       stage.ctx.drawImage(
         image,
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX - 12,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY,
+        
+        -12,
+        -((this.size) * Constants.tileSize) / 2,
         24,
         23
       );
@@ -412,11 +424,14 @@ export class Mob {
       stage.ctx.textAlign="center";
       stage.ctx.fillText(
         projectile.damage, 
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY + 15
+        0,
+        -((this.size) * Constants.tileSize) / 2 + 15,
       );
       stage.ctx.textAlign="left";
     });
+
+
+    stage.ctx.restore();
   }
 
 }

@@ -42,7 +42,7 @@ export default class Pathing {
   }
 
   static collidesWithMobAtPreviousSpot(stage, x, y, s, mob) {
-    return (Pathing.collisionMath(x, y, s, mob.lastLocation.x, mob.lastLocation.y, mob.size));
+    return (Pathing.collisionMath(x, y, s, mob.perceivedLocation.x, mob.perceivedLocation.y, mob.size));
   }
 
 
