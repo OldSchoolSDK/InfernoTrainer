@@ -109,6 +109,7 @@ export class Mob {
     this.cd = 0;
     this.hasLOS = false;
     this.frozen = 0;
+    this.dying = -1;
     this.incomingProjectiles = [];
 
 
@@ -147,10 +148,13 @@ export class Mob {
 
   movementStep(stage) {
 
+    if (this.dying === 0) {
+      return;
+    }
     this.perceivedLocation = new Point(this.location.x, this.location.y);
 
     this.setHasLOS(stage);
-    if (!this.hasLOS && this.frozen <= 0) {
+    if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
@@ -200,7 +204,9 @@ export class Mob {
   }
 
   dead(stage) {
-    this.isDead = true;
+    console.log('deding')
+    this.perceivedLocation = this.location;
+    this.dying = 4;
   }
 
   canMeleeIfClose() {
@@ -211,6 +217,12 @@ export class Mob {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
+    console.log('1', this.dying);
+    
+    if (this.dying === 0) {
+      return;
+    }
+
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
       if (projectile.delay == 0) {
@@ -219,7 +231,7 @@ export class Mob {
     });
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    if (this.currentStats.hitpoint <= 0) {
+    if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
       return this.dead(stage);
     }
     
@@ -229,6 +241,9 @@ export class Mob {
     this.setHasLOS(stage);
 
     this.attackIfPossible(stage);
+    if (this.dying > 0){
+      this.dying--;
+    }
   }
 
   attackStyle() {

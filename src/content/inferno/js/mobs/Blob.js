@@ -19,7 +19,7 @@ export class Blob extends Mob{
     this.frozen = 1;
 
     this.weapons = {
-      melee: new MeleeWeapon(),
+      crush: new MeleeWeapon(),
       magic: new MagicWeapon(),
       range: new RangedWeapon()
     }

@@ -12,7 +12,7 @@ export default class Player {
   constructor(location) {
     this.prayers = [];
 
-    this.isDead = false;
+    this.dying = -1;
     // non boosted numbers
     this.stats = {
       attack: 99,
@@ -122,7 +122,11 @@ export default class Player {
     }
 
     let isUnderSeekingMob = false;
-    // We clicked a mob but didn't have line of sight. Once we can see it, start attacking and stop moving. 
+
+    if (this.seeking && this.seeking.dying === 0){
+      this.seeking = null;
+    }
+
     if (this.seeking) {
       isUnderSeekingMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.seeking.location.x, this.seeking.location.y, this.seeking.size);
 

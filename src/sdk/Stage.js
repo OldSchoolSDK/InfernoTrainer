@@ -106,8 +106,8 @@ export default class Stage {
 
 
       // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
-      const deadMobs = this.mobs.filter((mob) => mob.isDead);
-      const deadEntities = this.entities.filter((mob) => mob.isDead);
+      const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
+      const deadEntities = this.entities.filter((mob) => mob.dying === 0);
       deadMobs.forEach((mob) => this.removeMob(mob));
       deadEntities.forEach((entity) => this.removeEntity(entity));
 
