@@ -204,7 +204,6 @@ export class Mob {
   }
 
   dead(stage) {
-    console.log('deding')
     this.perceivedLocation = this.location;
     this.dying = 4;
   }
@@ -216,8 +215,6 @@ export class Mob {
   attackStep(stage, playerPrayers = []) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
-
-    console.log('1', this.dying);
     
     if (this.dying === 0) {
       return;

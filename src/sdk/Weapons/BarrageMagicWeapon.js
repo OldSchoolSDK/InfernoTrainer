@@ -59,7 +59,6 @@ export default class BarrageMagicWeapon extends MagicWeapon {
 
   attack(stage, from, to, bonuses = {}){
     super.attack(stage, from, to, bonuses, true)
-    console.log('damage', this.damage);
     if (this.damage > 0){
       to.frozen = 32;
     }

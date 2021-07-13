@@ -69,7 +69,7 @@ export default class Pathing {
 
       const collidedWithSpecificMob = Pathing.collidesWithMob(stage, x, y, s, stage.mobs[i]);
 
-      if (collidedWithSpecificMob) {
+      if (collidedWithSpecificMob && stage.mobs[i].consumesSpace) {
         return stage.mobs[i];
       }
     }
