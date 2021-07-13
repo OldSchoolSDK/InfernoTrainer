@@ -2,7 +2,7 @@ import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
-  attack(from, to, bonuses = {}){
+  attack(stage, from, to, bonuses = {}){
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');

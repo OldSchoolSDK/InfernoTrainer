@@ -94,59 +94,13 @@ export default class Player {
 
   attack(stage) {
 
-    // Has LOS
+    
     if (this.manualSpellCastSelection){
-
-      // manual cast spell
-      if (this.manualSpellCastSelection.name === 'Ice Barrage') {
-
-        // calculate AoE magic effects
-        if (this.manualSpellCastSelection.aoe.length) {
-
-          // get mobs at aoe points
-          // attack them all 
-
-          let castsAllowed = this.manualSpellCastSelection.maxConcurrentHits;
-          const alreadyCastedOn = [];
-          this.manualSpellCastSelection.aoe.forEach((point) => {
-            Pathing.mobsAtPoint(stage, point.x + this.seeking.location.x, point.y + this.seeking.location.y)
-            .forEach((mob) =>{
-              if (castsAllowed <= 0) {
-                return;
-              }
-              if (alreadyCastedOn.indexOf(mob) > -1) {
-                return;
-              }
-              alreadyCastedOn.push(mob);
-              castsAllowed--;
-              this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
-            })
-
-
-            Pathing.mobsAtPoint(stage, point.x + this.seeking.location.x, point.y + this.seeking.location.y)
-            .forEach((mob) =>{
-              if (castsAllowed <= 0) {
-                return;
-              }
-              if (alreadyCastedOn.indexOf(mob) > -1) {
-                return;
-              }
-              alreadyCastedOn.push(mob);
-              castsAllowed--;
-              this.manualSpellCastSelection.attack(this, mob, {magicBaseSpellDamage: 30});
-            })
-
-
-          });
-
-        }else{
-          this.manualSpellCastSelection.attack(this, this.seeking, {magicBaseSpellDamage: 30});
-        }
-      }
+      this.manualSpellCastSelection.cast(stage, this, this.seeking);
       this.manualSpellCastSelection = null;
     }else{
       // use equipped weapon
-      this.weapon.attack(this, this.seeking);
+      this.weapon.attack(stage, this, this.seeking);
     }
 
     // this.playAttackSound();

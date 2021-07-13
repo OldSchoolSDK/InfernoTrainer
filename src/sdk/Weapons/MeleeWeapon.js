@@ -2,7 +2,7 @@ import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MeleeWeapon extends Weapon {
-  attack(from, to, bonuses = {}){
+  attack(stage, from, to, bonuses = {}){
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack');

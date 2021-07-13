@@ -283,7 +283,7 @@ export class Mob {
     if (protectionPrayerActive){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      this.weapons[attackStyle].attack(this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+      this.weapons[attackStyle].attack(stage, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
     

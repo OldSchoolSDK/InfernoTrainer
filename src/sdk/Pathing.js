@@ -1,4 +1,5 @@
 'use strict';
+import _ from "lodash";
 import Constants from "./Constants";
 import Point from "./Utils/Point";
 
@@ -45,17 +46,19 @@ export default class Pathing {
   }
 
 
-  static mobsAtPoint(stage, x, y) {
+  // point.x + to.location.x, point.y + to.location.y
+  static mobsAroundMob(stage, mob, point) {
     const mobs = [];
     for (let i = 0; i < stage.mobs.length; i++) {
 
-      const collidedWithSpecificMob = stage.mobs[i].location.x === x && stage.mobs[i].location.y === y;
+      const collidedWithSpecificMob = stage.mobs[i].location.x === point.x + mob.location.x && stage.mobs[i].location.y === point.y + mob.location.y;
 
       if (collidedWithSpecificMob) {
         mobs.push(stage.mobs[i])
       }
     }
-    return mobs;
+
+    return _.sortBy(mobs, (m) => mob !== m);
   }
 
   static collidesWithAnyMobs(stage, x, y, s, mobToAvoid) {
