@@ -8,7 +8,7 @@ export default class JalAkRekXil extends Mob{
 
 
   setStats () {
-    this.frozen = 1;
+    this.frozen = 0;
 
     this.weapons = {
       range: new RangedWeapon()

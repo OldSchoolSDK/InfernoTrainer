@@ -1,8 +1,28 @@
 import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
+import BasePrayer from "../Prayers/BasePrayer";
 
 export default class MeleeWeapon extends Weapon {
   attack(stage, from, to, bonuses = {}){
+    this._calculatePrayerEffects(from, to, bonuses);
+
+
+    bonuses.attackStyle = bonuses.attackStyle || 'slash';
+    bonuses.styleBonus = bonuses.styleBonus || 0;
+    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
+    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+
+    let damage = this._rollAttack(from, to, bonuses);
+
+
+    if (this.isBlockable(from, to, bonuses)){
+      damage = 0;
+    }
+
+    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle ));
+  }
+
+  _calculatePrayerEffects(from, to, bonuses){
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack');
@@ -19,14 +39,28 @@ export default class MeleeWeapon extends Weapon {
       if (defence) {
         bonuses.effectivePrayers['defence'] = defence;
       }
-      
     }
 
-    bonuses.attackStyle = bonuses.attackStyle || 'slash';
-    bonuses.styleBonus = bonuses.styleBonus || 0;
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, bonuses.attackStyle ));
+    if (to.isMob === false){
+      const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
+      if (overhead) {
+        bonuses.effectivePrayers['overhead'] = overhead;
+      }
+    }
+  }
+
+  isBlockable(from, to, bonuses) {
+    this._calculatePrayerEffects(from, to, bonuses);
+
+    let prayerAttackBlockStyle = bonuses.attackStyle;
+    if (Weapon.isMeleeAttackStyle(prayerAttackBlockStyle)) { 
+      prayerAttackBlockStyle = 'melee'; // because protect melee scans for the style as melee, generalize them
+    }
+
+    if (bonuses.effectivePrayers['overhead'] && bonuses.effectivePrayers['overhead'].feature() === prayerAttackBlockStyle){
+      return true;
+    }
+    return false;
   }
 
   _rollAttack(from, to, bonuses){

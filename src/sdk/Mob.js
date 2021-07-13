@@ -186,9 +186,9 @@ export class Mob {
           dy = this.location.y;
       }
 
-      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)
-      const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null);
-      const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null);
+      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace)
+      const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace);
+      const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace);
       if (both && (xSpace || ySpace)) {
         this.location.x = dx;
         this.location.y = dy;
@@ -205,9 +205,10 @@ export class Mob {
 
   dead(stage) {
     this.perceivedLocation = this.location;
-    this.dying = 4;
+    this.dying = 3;
   }
 
+  // todo: Rename this possibly? it returns the attack style if it's possible
   canMeleeIfClose() {
     return false;
   }
@@ -241,6 +242,13 @@ export class Mob {
     if (this.dying > 0){
       this.dying--;
     }
+    if (this.dying === 0 ){
+      this.removedFromStage(stage);
+    }
+  }
+
+  removedFromStage(stage){
+
   }
 
   attackStyle() {
@@ -283,19 +291,13 @@ export class Mob {
       }
     }
 
-    let damage = 0;
-    let prayerAttackBlockStyle = attackStyle;
-    if (Weapon.isMeleeAttackStyle(attackStyle)) { 
-      prayerAttackBlockStyle = 'melee'; // because protect melee scans for the style as melee, generalize them
-    }
-    const protectionPrayerActive = _.find(this.aggro.prayers, prayer => prayer.feature() === prayerAttackBlockStyle);
-    if (protectionPrayerActive){
+    if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
-      this.weapons[attackStyle].attack(stage, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
-    
+    this.weapons[attackStyle].attack(stage, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+
     this.playAttackSound();
 
     this.cd = this.cooldown;
@@ -306,7 +308,7 @@ export class Mob {
   }
 
   get consumesSpace() {
-    return true;
+    return this;
   }
 
   playAttackSound (){

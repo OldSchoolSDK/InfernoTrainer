@@ -7,6 +7,15 @@ import NibblerImage from "../../assets/images/nib.png";
 import NibblerSound from "../../assets/sounds/meleer.ogg";
 import Pathing from "../../../../sdk/Pathing";
 import LineOfSight from "../../../../sdk/LineOfSight";
+import Projectile from "../../../../sdk/Weapons/Projectile";
+
+class NibblerWeapon extends MeleeWeapon {
+  attack(stage, from, to, bonuses) {
+    const damage = Math.floor(Math.random() * 5);
+    to.addProjectile(new Projectile(damage, from, to, 'crush'));
+  }
+}
+
 
 export class Nibbler extends Mob{
 
@@ -17,13 +26,13 @@ export class Nibbler extends Mob{
       attackRange: 1
     }
     this.weapons = {
-      crush: new MeleeWeapon()
+      crush: new NibblerWeapon()
     }
 
     // non boosted numbers
     this.stats = {
       attack: 1,
-      strength: 30, // This isn't true w/r/t the Monster Examine feature, but those stats are obviously wrong.
+      strength: 1,
       defence: 15,
       range: 1,
       magic: 15,
@@ -58,7 +67,7 @@ export class Nibbler extends Mob{
   }
   
   get consumesSpace() {
-    return false;
+    return null;
   }
 
   get cooldown() {

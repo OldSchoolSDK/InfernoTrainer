@@ -13,7 +13,7 @@ export class Mager extends Mob{
     this.frozen = 1;
 
     this.weapons = {
-      slash: new MeleeWeapon(),
+      stab: new MeleeWeapon(),
       magic: new MagicWeapon()
     };
 

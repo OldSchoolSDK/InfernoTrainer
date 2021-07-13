@@ -7,7 +7,7 @@ import JalAkRekKetImage from "../../assets/images/Jal-AkRek-Ket.png";
 export default class JalAkRekKet extends Mob{
 
   setStats () {
-    this.frozen = 1;
+    this.frozen = 0;
 
     this.weapons = {
       crush: new MeleeWeapon()

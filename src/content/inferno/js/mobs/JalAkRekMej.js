@@ -9,7 +9,7 @@ export default class JalAkRekMej extends Mob{
 
   setStats () {
     this.isMej = true;
-    this.frozen = 1;
+    this.frozen = 0;
 
     this.weapons = {
       magic: new MagicWeapon()

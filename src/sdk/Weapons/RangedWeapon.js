@@ -1,8 +1,25 @@
+import BasePrayer from "../Prayers/BasePrayer";
 import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class RangedWeapon extends Weapon {
   attack(stage, from, to, bonuses = {}){
+    this._calculatePrayerEffects(from, to, bonuses);
+    bonuses.styleBonus = bonuses.styleBonus || 0;
+    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
+    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+
+
+    let damage = this._rollAttack(from, to, bonuses);
+    if (this.isBlockable(from, to, bonuses)){
+      damage = 0;
+    }
+
+    to.addProjectile(new Projectile(damage, from, to, 'range' ));
+  }
+
+  _calculatePrayerEffects(from, to, bonuses){
+
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');
@@ -14,12 +31,23 @@ export default class RangedWeapon extends Weapon {
         bonuses.effectivePrayers['defence'] = defence;
       }
     }
-
-    bonuses.isAccurate = bonuses.isAccurate || false;
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    to.addProjectile(new Projectile(this._rollAttack(from, to, bonuses), from, to, 'range'));
+    if (to.isMob === false) {
+      const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
+      if (overhead) {
+        bonuses.effectivePrayers['overhead'] = overhead;
+      }
+    }
   }
+
+  isBlockable(from, to, bonuses) {
+    this._calculatePrayerEffects(from, to, bonuses);
+
+    if (bonuses.effectivePrayers['overhead'] && bonuses.effectivePrayers['overhead'].feature() === 'range'){
+      return true;
+    }
+    return false;
+  }
+
 
   _rollAttack(from, to, bonuses){
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses));

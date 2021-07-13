@@ -1,3 +1,4 @@
+import BasePrayer from "../Prayers/BasePrayer";
 import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
@@ -9,8 +10,21 @@ export default class MagicWeapon extends Weapon {
     bonuses.isAccurate = bonuses.isAccurate || false;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
-    this.damage = this._rollAttack(from, to, bonuses);
-    to.addProjectile(new Projectile(this.damage, from, to, 'magic', forceSWOnly));
+
+    let damage = this._rollAttack(from, to, bonuses);
+    if (this.isBlockable(from, to, bonuses, forceSWOnly)){
+      damage = 0;
+    }
+    to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly ));
+  }
+
+  isBlockable(from, to, bonuses, forceSWOnly) {
+    this._calculatePrayerEffects(from, to, bonuses, forceSWOnly);
+
+    if (bonuses.effectivePrayers['overhead'] && bonuses.effectivePrayers['overhead'].feature() === 'magic'){
+      return true;
+    }
+    return false;
   }
 
   _calculatePrayerEffects(from, to, bonuses){
@@ -24,6 +38,12 @@ export default class MagicWeapon extends Weapon {
       const defence = _.find(from.prayers, (prayer) => prayer.feature() === 'defence');
       if (defence) {
         bonuses.effectivePrayers['defence'] = defence;
+      }
+    }
+    if (to.isMob === false) {
+      const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
+      if (overhead) {
+        bonuses.effectivePrayers['overhead'] = overhead;
       }
     }
   }

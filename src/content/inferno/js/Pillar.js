@@ -135,7 +135,7 @@ export class Pillar extends Entity{
 
 
   dead(stage){
-    this.dying = 4;
+    this.dying = 3;
     // TODO: needs to AOE the nibblers around it 
   }
 

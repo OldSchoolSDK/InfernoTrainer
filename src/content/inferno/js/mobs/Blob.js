@@ -62,20 +62,6 @@ export class Blob extends Mob{
   }
 
 
-  dead(stage) {
-    super.dead(stage);
-    
-
-    stage.addMob(new JalAkRekKet(this.location, this.aggro));
-
-    const xil = new Point(this.location.x+1, this.location.y - 1);
-    stage.addMob(new JalAkRekXil(xil, this.aggro));
-
-    const mej = new Point(this.location.x+2, this.location.y - 2);
-    stage.addMob(new JalAkRekMej(mej, this.aggro));
-  }
-
-
   // Since blobs attack on a 6 tick cycle, but these mechanics are odd, i set the 
   // attack speed to 3. The attack code exits early during a scan, so it always is 
   // double the cooldown between actual attacks.
@@ -144,6 +130,18 @@ export class Blob extends Mob{
       this.cd = this.cooldown;
       this.playerPrayerScan = null;
     }
+  }
+  
+  removedFromStage(stage){
+
+    const ket = new JalAkRekKet(this.location, this.aggro);
+    stage.addMob(ket);
+
+    const xil = new JalAkRekXil(new Point(this.location.x+1, this.location.y - 1), this.aggro);
+    stage.addMob(new JalAkRekXil(xil, this.aggro));
+
+    const mej = new JalAkRekMej(new Point(this.location.x+2, this.location.y - 2), this.aggro);
+    stage.addMob(mej);
   }
 
 }
