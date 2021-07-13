@@ -15,6 +15,7 @@ export default class MagicWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses, forceSWOnly)){
       damage = 0;
     }
+    this.damage = damage;
     to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly ));
   }
 
