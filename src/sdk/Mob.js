@@ -148,7 +148,6 @@ export class Mob {
   movementStep(stage) {
 
     this.perceivedLocation = new Point(this.location.x, this.location.y);
-    let isUnderPlayer = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
     this.setHasLOS(stage);
     if (!this.hasLOS && this.frozen <= 0) {
@@ -183,12 +182,15 @@ export class Mob {
           dy = this.location.y;
       }
 
-      if (Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)) {
+      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace ? this : null)
+      const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null);
+      const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null);
+      if (both && (xSpace || ySpace)) {
         this.location.x = dx;
         this.location.y = dy;
-      } else if (Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace ? this : null)) {
+      } else if (xSpace) {
         this.location.x = dx;
-      } else if (Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace ? this : null)) {
+      } else if (ySpace) {
         this.location.y = dy;
       }
 

@@ -7,6 +7,11 @@ import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
+import JalAkRekKet from "../../js/mobs/JalAkRekKet";
+import JalAkRekMej from "../../js/mobs/JalAkRekMej";
+import JalAkRekXil from "../../js/mobs/JalAkRekXil";
+import Point from "../../../../sdk/Utils/Point";
+
 export class Blob extends Mob{
 
 
@@ -55,6 +60,21 @@ export class Blob extends Mob{
       }
     }
   }
+
+
+  dead(stage) {
+    super.dead(stage);
+    
+
+    stage.addMob(new JalAkRekKet(this.location, this.aggro));
+
+    const xil = new Point(this.location.x+1, this.location.y - 1);
+    stage.addMob(new JalAkRekXil(xil, this.aggro));
+
+    const mej = new Point(this.location.x+2, this.location.y - 2);
+    stage.addMob(new JalAkRekMej(mej, this.aggro));
+  }
+
 
   // Since blobs attack on a 6 tick cycle, but these mechanics are odd, i set the 
   // attack speed to 3. The attack code exits early during a scan, so it always is 
