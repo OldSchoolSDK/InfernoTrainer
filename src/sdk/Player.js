@@ -278,29 +278,30 @@ export default class Player {
       stage.ctx.fillStyle = "#00FFFF";
     }
 
-    stage.ctx.fillRect(
+
+    stage.ctx.strokeStyle = "#FFFFFF73"
+    stage.ctx.lineWidth = 3;
+    stage.ctx.strokeRect(
       this.location.x * Constants.tileSize,
       this.location.y * Constants.tileSize,
       Constants.tileSize,
       Constants.tileSize
     );
 
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
 
     // Perceived location
-    if (Point.compare(this.location, this.perceivedLocation) === false) {
-      let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
-      let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
-      stage.ctx.globalAlpha = .7;
-      stage.ctx.fillStyle = "#FFFF00"
-      stage.ctx.fillRect(
-        perceivedX * Constants.tileSize, 
-        perceivedY * Constants.tileSize, 
-        Constants.tileSize, 
-        Constants.tileSize
-      );
-      stage.ctx.globalAlpha = 1;
-    }
 
+    stage.ctx.globalAlpha = .7;
+    stage.ctx.fillStyle = "#FFFF00"
+    stage.ctx.fillRect(
+      perceivedX * Constants.tileSize, 
+      perceivedY * Constants.tileSize, 
+      Constants.tileSize, 
+      Constants.tileSize
+    );
+    stage.ctx.globalAlpha = 1;
     ////
     let projectileOffsets = [
       [0, 0],
@@ -330,8 +331,8 @@ export default class Player {
 
       stage.ctx.drawImage(
         image,
-        this.location.x * Constants.tileSize + projectile.offsetX,
-        (this.location.y) * Constants.tileSize + projectile.offsetY - 8,
+        perceivedX * Constants.tileSize + projectile.offsetX,
+        (perceivedY) * Constants.tileSize + projectile.offsetY - 8,
         24,
         23
       );
@@ -342,8 +343,8 @@ export default class Player {
       stage.ctx.textAlign="center";
       stage.ctx.fillText(
         projectile.damage, 
-        this.location.x * Constants.tileSize + projectile.offsetX + 12,
-        (this.location.y) * Constants.tileSize + projectile.offsetY + 15 - 8
+        perceivedX * Constants.tileSize + projectile.offsetX + 12,
+        (perceivedY) * Constants.tileSize + projectile.offsetY + 15 - 8
       );
       stage.ctx.textAlign="left";
 
@@ -353,9 +354,9 @@ export default class Player {
 
 
     stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
     stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
 
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
@@ -363,8 +364,8 @@ export default class Player {
 
       stage.ctx.drawImage(
         overheads[0].overheadImage(),
-        this.location.x * Constants.tileSize,
-        (this.location.y - 2) * Constants.tileSize,
+        perceivedX * Constants.tileSize,
+        (perceivedY - 2) * Constants.tileSize,
         Constants.tileSize,
         Constants.tileSize
       );
