@@ -10,6 +10,8 @@ export class Meleer extends Mob{
 
 
   setStats () {
+    this.frozen = 1;
+
     this.weapons = {
       slash: new MeleeWeapon()
     };
@@ -62,10 +64,6 @@ export class Meleer extends Mob{
     return 1;
   }
 
-  get maxHit() {
-    return 49;
-  }
-
   get size() {
     return 4;
   }
@@ -113,6 +111,7 @@ export class Meleer extends Mob{
       this.location.x = stage.player.location.x - 1
       this.location.y = stage.player.location.y + 1
     }
+    this.perceivedLocation = this.location;
   }
 
 }

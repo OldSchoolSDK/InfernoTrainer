@@ -10,6 +10,8 @@ export class Mager extends Mob{
 
 
   setStats () {
+    this.frozen = 1;
+
     this.weapons = {
       slash: new MeleeWeapon(),
       magic: new MagicWeapon()
@@ -46,7 +48,7 @@ export class Mager extends Mob{
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
-        magicDamage: 0,
+        magicDamage: 1.0,
         prayer: 0
       }
     }
@@ -58,10 +60,6 @@ export class Mager extends Mob{
 
   get attackRange() {
     return 15;
-  }
-
-  get maxHit() {
-    return 70;
   }
   
   get size() {
@@ -92,6 +90,9 @@ export class Mager extends Mob{
     return 70;
   }
 
+  get maxHit() {
+    return 70;
+  }
   attackAnimation(stage, framePercent){
     stage.ctx.rotate(framePercent * Math.PI * 2);
   }

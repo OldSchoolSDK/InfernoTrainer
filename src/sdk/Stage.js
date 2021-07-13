@@ -1,10 +1,10 @@
 'use strict';
 import _ from 'lodash';
+import ClickAnimation from './ClickAnimation';
 import Constants from "./Constants";
 import ControlPanelController from './ControlPanelController';
-import LineOfSight from './LineOfSight';
 import Pathing from './Pathing';
-import Point from './Utils/Point';
+
 
 export default class Stage {
 
@@ -16,6 +16,7 @@ export default class Stage {
     this.player = null;
     this.entities = [];
     this.mobs = [];
+    this.clickAnimation = null;
 
     this.map = document.getElementById(selector);
     this.ctx = this.map.getContext("2d");
@@ -31,6 +32,9 @@ export default class Stage {
 
     this.width = width;
     this.height = height;
+
+    this.offPerformanceDelta = 0;
+    this.offPerformanceCount = 0;
 
     this.map.addEventListener('mousedown', this.mapClick.bind(this));
   }
@@ -73,6 +77,23 @@ export default class Stage {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
 
+      // // Calculate Time Between Tick Off Performance and adjust framerate accordingly
+      // if (isNaN(this.timeBetweenTicks) === false){
+      //   const offPerformance = 600 - this.timeBetweenTicks;
+      //   this.offPerformanceDelta += offPerformance;
+      //   this.offPerformanceCount++;
+      //   if (this.offPerformanceCount > 5){
+      //     const delta = this.offPerformanceDelta / this.offPerformanceCount / 10;
+      //     if (delta > 0){
+      //       Constants.framesPerTick += Math.floor(delta);
+      //     }else{
+      //       Constants.framesPerTick += Math.ceil(delta);
+      //     }          
+      //     this.offPerformanceCount = 0;
+      //     this.offPerformanceDelta = 0;
+      //   }
+      // }
+
       this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
 
       this.entities.forEach((entity) => entity.tick(this));
@@ -82,6 +103,13 @@ export default class Stage {
 
       this.player.movementStep(this);
       this.player.attackStep(this);
+
+
+      // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
+      const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
+      const deadEntities = this.entities.filter((mob) => mob.dying === 0);
+      deadMobs.forEach((mob) => this.removeMob(mob));
+      deadEntities.forEach((entity) => this.removeEntity(entity));
 
       this.tickTime = performance.now() - t;
     }
@@ -97,25 +125,23 @@ export default class Stage {
   }
 
   mapClick(e) {
+    const framePercent = this.frameCounter / Constants.framesPerTick;
+
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.inputDelay){
       clearTimeout(this.inputDelay);
     }
     this.inputDelay = setTimeout(() => {
-      x = Math.floor(x / Constants.tileSize);
-      y = Math.floor(y / Constants.tileSize);
-      if (x > this.width || y > this.height) { // Can we not go negative?
-        return;
-      }
-  
       // maybe this should live in the player class? seems very player related in current form.
       this.player.seeking = false;
-      const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
+      const mob = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
       if (mob) {
+        this.clickAnimation = new ClickAnimation('red', x, y);
         this.player.seeking = mob;
-      }else{
-        this.player.moveTo(x, y);
+      }else {
+        this.clickAnimation = new ClickAnimation('yellow', x, y);
+        this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
       }
     }, 150);
   }
@@ -150,16 +176,20 @@ export default class Stage {
     }
     this.player.draw(this, framePercent);
     
+    if (this.clickAnimation) {
+      this.clickAnimation.draw(this, framePercent)
+    }
     
     // Performance info
     this.ctx.fillStyle = "#FFFF0066";
     this.ctx.font = "16px OSRS";
     this.ctx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16);
-    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 32);
-    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 48);
-    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 64);
-    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 80);
-    this.ctx.fillText(`Wave: ${this.wave}`, 0, 96);
+    this.ctx.fillText(`DFR: ${Constants.framesPerTick * (1 / 0.6)}`, 0, 32);
+    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48);
+    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64);
+    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80);
+    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96);
+    this.ctx.fillText(`Wave: ${this.wave}`, 0, 112);
 
     if (this.heldDown){
 

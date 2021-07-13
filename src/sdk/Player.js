@@ -12,6 +12,7 @@ export default class Player {
   constructor(location) {
     this.prayers = [];
 
+    this.dying = -1;
     // non boosted numbers
     this.stats = {
       attack: 99,
@@ -37,7 +38,7 @@ export default class Player {
         stab: -1,
         slash: -1,
         crush: -1,
-        magic: -28,
+        magic: 53,
         range: 128
       },
       defence: {
@@ -50,7 +51,7 @@ export default class Player {
       other: {
         meleeStrength: 15,
         rangedStrength: 62,
-        magicDamage: 0,
+        magicDamage: 1.27,
         prayer: 12
       },
       targetSpecific: {
@@ -87,12 +88,20 @@ export default class Player {
   }
 
   moveTo(x, y) {
+    this.manualSpellCastSelection = null;
     this.destinationLocation = new Point(x, y);
   }
 
-  attack() {
-    // Has LOS
-    this.weapon.attack(this, this.seeking);
+  attack(stage) {
+
+    
+    if (this.manualSpellCastSelection){
+      this.manualSpellCastSelection.cast(stage, this, this.seeking);
+      this.manualSpellCastSelection = null;
+    }else{
+      // use equipped weapon
+      this.weapon.attack(stage, this, this.seeking);
+    }
 
     // this.playAttackSound();
   }
@@ -112,9 +121,12 @@ export default class Player {
       this.overhead.playOnSound();
     }
 
-
     let isUnderSeekingMob = false;
-    // We clicked a mob but didn't have line of sight. Once we can see it, start attacking and stop moving. 
+
+    if (this.seeking && this.seeking.dying === 0){
+      this.seeking = null;
+    }
+
     if (this.seeking) {
       isUnderSeekingMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.seeking.location.x, this.seeking.location.y, this.seeking.size);
 
@@ -135,8 +147,7 @@ export default class Player {
           }
         }
       }else {
-        this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
-
+        this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
         if (!this.hasLOS){
           const seekingTiles = [];
           for (let xx=0; xx < this.seeking.size; xx++){
@@ -160,7 +171,7 @@ export default class Player {
       }
     }
 
-    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange)){
+    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange())){
       this.destinationLocation = this.location;
     }
 
@@ -173,6 +184,20 @@ export default class Player {
 
   setPrayers(prayers){
     this.prayers = prayers;
+  }
+
+  attackRange() {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackRange;
+    }
+    return this.weapon.attackRange;
+  }
+
+  attackSpeed() {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackSpeed;
+    }
+    return this.weapon.attackSpeed;
   }
   
   attackStep(stage) {
@@ -188,21 +213,20 @@ export default class Player {
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     this.cd--;
-
     if (!this.seeking){
       return;
     }
 
-    this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.weapon.attackRange);
+    this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
     if (this.hasLOS && this.seeking && this.cd <= 0) {
-      this.attack()
-      this.cd = this.weapon.attackSpeed;
+      this.attack(stage)
+      this.cd = this.attackSpeed();
     }
   }
 
   draw(stage, framePercent) {
 
-    LineOfSight.drawLOS(stage, this.location.x, this.location.y, 1, this.weapon.attackRange);
+    LineOfSight.drawLOS(stage, this.location.x, this.location.y, 1, this.attackRange());
 
     // Draw player
     stage.ctx.fillStyle = "#fff";
@@ -212,29 +236,30 @@ export default class Player {
       stage.ctx.fillStyle = "#00FFFF";
     }
 
-    stage.ctx.fillRect(
+
+    stage.ctx.strokeStyle = "#FFFFFF73"
+    stage.ctx.lineWidth = 3;
+    stage.ctx.strokeRect(
       this.location.x * Constants.tileSize,
       this.location.y * Constants.tileSize,
       Constants.tileSize,
       Constants.tileSize
     );
 
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
 
     // Perceived location
-    if (Point.compare(this.location, this.perceivedLocation) === false) {
-      let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
-      let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
-      stage.ctx.globalAlpha = .7;
-      stage.ctx.fillStyle = "#FFFF00"
-      stage.ctx.fillRect(
-        perceivedX * Constants.tileSize, 
-        perceivedY * Constants.tileSize, 
-        Constants.tileSize, 
-        Constants.tileSize
-      );
-      stage.ctx.globalAlpha = 1;
-    }
 
+    stage.ctx.globalAlpha = .7;
+    stage.ctx.fillStyle = "#FFFF00"
+    stage.ctx.fillRect(
+      perceivedX * Constants.tileSize, 
+      perceivedY * Constants.tileSize, 
+      Constants.tileSize, 
+      Constants.tileSize
+    );
+    stage.ctx.globalAlpha = 1;
     ////
     let projectileOffsets = [
       [0, 0],
@@ -264,8 +289,8 @@ export default class Player {
 
       stage.ctx.drawImage(
         image,
-        this.location.x * Constants.tileSize + projectile.offsetX,
-        (this.location.y) * Constants.tileSize + projectile.offsetY - 8,
+        perceivedX * Constants.tileSize + projectile.offsetX,
+        (perceivedY) * Constants.tileSize + projectile.offsetY - 8,
         24,
         23
       );
@@ -276,8 +301,8 @@ export default class Player {
       stage.ctx.textAlign="center";
       stage.ctx.fillText(
         projectile.damage, 
-        this.location.x * Constants.tileSize + projectile.offsetX + 12,
-        (this.location.y) * Constants.tileSize + projectile.offsetY + 15 - 8
+        perceivedX * Constants.tileSize + projectile.offsetX + 12,
+        (perceivedY) * Constants.tileSize + projectile.offsetY + 15 - 8
       );
       stage.ctx.textAlign="left";
 
@@ -287,9 +312,9 @@ export default class Player {
 
 
     stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
     stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(this.location.x * Constants.tileSize, (this.location.y * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
 
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
@@ -297,8 +322,8 @@ export default class Player {
 
       stage.ctx.drawImage(
         overheads[0].overheadImage(),
-        this.location.x * Constants.tileSize,
-        (this.location.y - 2) * Constants.tileSize,
+        perceivedX * Constants.tileSize,
+        (perceivedY - 2) * Constants.tileSize,
         Constants.tileSize,
         Constants.tileSize
       );

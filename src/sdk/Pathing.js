@@ -1,4 +1,6 @@
 'use strict';
+import _ from "lodash";
+import Constants from "./Constants";
 import Point from "./Utils/Point";
 
 export default class Pathing {
@@ -24,6 +26,41 @@ export default class Pathing {
     return false;
   }
 
+
+
+  static collidesWithAnyMobsAtPerceivedDisplayLocation(stage, x, y, framePercent) {
+    for (let i = 0; i < stage.mobs.length; i++) {
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, stage.mobs[i]);
+      if (collidedWithSpecificMob) {
+        return stage.mobs[i];
+      }
+    }
+    return null;
+  }
+
+  static collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, mob) {
+
+    let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Constants.tileSize, mob.location.x * Constants.tileSize, framePercent);
+    let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Constants.tileSize, mob.location.y * Constants.tileSize, framePercent);
+    return (Pathing.collisionMath(x - Constants.tileSize, y, Constants.tileSize, perceivedX, perceivedY, (mob.size - 1) * Constants.tileSize));
+  }
+
+
+  // point.x + to.location.x, point.y + to.location.y
+  static mobsAroundMob(stage, mob, point) {
+    const mobs = [];
+    for (let i = 0; i < stage.mobs.length; i++) {
+
+      const collidedWithSpecificMob = stage.mobs[i].location.x === point.x + mob.location.x && stage.mobs[i].location.y === point.y + mob.location.y;
+
+      if (collidedWithSpecificMob) {
+        mobs.push(stage.mobs[i])
+      }
+    }
+
+    return _.sortBy(mobs, (m) => mob !== m);
+  }
+
   static collidesWithAnyMobs(stage, x, y, s, mobToAvoid) {
     for (let i = 0; i < stage.mobs.length; i++) {
       if (stage.mobs[i] === mobToAvoid) {
@@ -32,7 +69,7 @@ export default class Pathing {
 
       const collidedWithSpecificMob = Pathing.collidesWithMob(stage, x, y, s, stage.mobs[i]);
 
-      if (collidedWithSpecificMob) {
+      if (collidedWithSpecificMob && stage.mobs[i].consumesSpace) {
         return stage.mobs[i];
       }
     }

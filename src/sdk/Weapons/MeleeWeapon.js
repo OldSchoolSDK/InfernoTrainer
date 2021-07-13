@@ -2,7 +2,7 @@ import Projectile from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export default class MeleeWeapon extends Weapon {
-  attack(from, to, bonuses = {}){
+  attack(stage, from, to, bonuses = {}){
     bonuses.effectivePrayers = {};
     if (from.isMob === false){
       const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack');
@@ -22,7 +22,7 @@ export default class MeleeWeapon extends Weapon {
       
     }
 
-    bonuses.attackStyle = bonuses.attackStyle;
+    bonuses.attackStyle = bonuses.attackStyle || 'slash';
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
@@ -78,14 +78,14 @@ export default class MeleeWeapon extends Weapon {
   }
 
   _attackRoll(from, to, bonuses) {
-    return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack.slash + 64)) * bonuses.gearMultiplier);
+    return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack[bonuses.attackStyle] + 64)) * bonuses.gearMultiplier);
   }
 
   _defenceRoll(from, to, bonuses) {
-    if (to.isMob) {
-      return (to.currentStats.defence + 9) * (to.bonuses.defence.slash + 64);
+    if (to.isMob || to.isEntity) {
+      return (to.currentStats.defence + 9) * (to.bonuses.defence[bonuses.attackStyle] + 64);
     }else{
-      return this._defenceLevel(from, to, bonuses) * (from.bonuses.defence.slash + 64);
+      return this._defenceLevel(from, to, bonuses) * (to.bonuses.defence[bonuses.attackStyle] + 64);
     }
   }
   _defenceLevel(from, to, bonuses) {

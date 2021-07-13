@@ -19,12 +19,12 @@ export default class BaseControls {
     return null;
   }
 
-  clickedPanel(x, y){
-
+  clickedPanel(stage, x, y){
+    console.log(x, y);
   }
 
-  draw(ctx, x, y) {
-    ctx.drawImage(this.panelImage, x, y);
+  draw(stage, ctrl, x, y) {
+    ctrl.ctx.drawImage(this.panelImage, x, y);
   }
 
 }

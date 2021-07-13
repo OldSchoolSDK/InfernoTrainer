@@ -12,6 +12,7 @@ export class Ranger extends Mob {
 
 
   setStats () {
+    this.frozen = 1;
 
     this.weapons = {
       slash: new MeleeWeapon(),
@@ -61,10 +62,6 @@ export class Ranger extends Mob {
 
   get attackRange() {
     return 15;
-  }
-
-  get maxHit() {
-    return 46;
   }
 
   get size() {

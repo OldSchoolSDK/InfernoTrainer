@@ -1,30 +1,28 @@
 'use strict';
 
-import Constants from "../../../../sdk/Constants";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
-import BatImage from "../../assets/images/bat.png";
-import BatSound from "../../assets/sounds/bat.ogg";
+import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
+import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
 
-export class Bat extends Mob{
+export default class JalAkRekMej extends Mob{
 
 
   setStats () {
+    this.isMej = true;
     this.frozen = 1;
 
     this.weapons = {
-      range: new RangedWeapon()
+      magic: new MagicWeapon()
     }
 
     // non boosted numbers
     this.stats = {
-      attack: 0,
-      strength: 0,
-      defence: 55,
-      range: 120,
+      attack: 1,
+      strength: 1,
+      defence: 95,
+      range: 1,
       magic: 120,
-      hitpoint: 25
+      hitpoint: 15
     };
 
     // with boosts
@@ -35,43 +33,43 @@ export class Bat extends Mob{
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 0,
-        range: 25
+        magic: 25,
+        range: 0
       },
       defence: {
-        stab: 30,
-        slash: 30,
-        crush: 30,
-        magic: -20,
-        range: 45
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 25,
+        range: 0
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 30,
-        magicDamage: 0,
+        rangedStrength: 0,
+        magicDamage: 1.25,
         prayer: 0
       }
     }
   }
   
   get cooldown() {
-    return 3;
-  }
-
-  get attackRange() {
     return 4;
   }
 
+  get attackRange() {
+    return 5;
+  }
+
   get size() {
-    return 2;
+    return 1;
   }
 
   get image() {
-    return BatImage;
+    return JalAkRekMejImage;
   }
 
   get sound() {
-    return BatSound;
+    return null;
   }
   
   get color() {
@@ -79,7 +77,7 @@ export class Bat extends Mob{
   }
 
   attackStyle() {
-    return 'range';
+    return 'magic';
   }
   
   attackAnimation(stage, framePercent){

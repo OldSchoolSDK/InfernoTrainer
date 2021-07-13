@@ -1,13 +1,10 @@
 'use strict';
 
-import Constants from "../../../../sdk/Constants";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
-import BatImage from "../../assets/images/bat.png";
-import BatSound from "../../assets/sounds/bat.ogg";
+import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
 
-export class Bat extends Mob{
+export default class JalAkRekXil extends Mob{
 
 
   setStats () {
@@ -19,12 +16,12 @@ export class Bat extends Mob{
 
     // non boosted numbers
     this.stats = {
-      attack: 0,
-      strength: 0,
-      defence: 55,
+      attack: 1,
+      strength: 1,
+      defence: 95,
       range: 120,
-      magic: 120,
-      hitpoint: 25
+      magic: 1,
+      hitpoint: 15
     };
 
     // with boosts
@@ -39,15 +36,15 @@ export class Bat extends Mob{
         range: 25
       },
       defence: {
-        stab: 30,
-        slash: 30,
-        crush: 30,
-        magic: -20,
-        range: 45
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 25
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 30,
+        rangedStrength: 25,
         magicDamage: 0,
         prayer: 0
       }
@@ -55,23 +52,23 @@ export class Bat extends Mob{
   }
   
   get cooldown() {
-    return 3;
-  }
-
-  get attackRange() {
     return 4;
   }
 
+  get attackRange() {
+    return 5;
+  }
+
   get size() {
-    return 2;
+    return 1;
   }
 
   get image() {
-    return BatImage;
+    return JalAkRekMejImage;
   }
 
   get sound() {
-    return BatSound;
+    return null;
   }
   
   get color() {

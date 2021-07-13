@@ -63,9 +63,9 @@ export default class InventoryControls extends BaseControls{
     }
   }
 
-  draw(ctx, x, y) {
+  draw(stage, ctrl, x, y) {
 
-    super.draw(ctx, x, y);
+    super.draw(stage, ctrl, x, y);
 
     InventoryControls.inventory.forEach((inventoryItem, index) => {
 
@@ -76,7 +76,7 @@ export default class InventoryControls extends BaseControls{
       const itemY = 17 + y + (y2) * 35;
 
       if (inventoryItem != null) {
-        ctx.drawImage(
+        ctrl.ctx.drawImage(
           inventoryItem.inventorySprite,
           itemX,
           itemY,
@@ -86,10 +86,10 @@ export default class InventoryControls extends BaseControls{
 
         if (inventoryItem.selected) {
 
-          ctx.beginPath();
-          ctx.fillStyle = "#D1BB7773";
-          ctx.arc(itemX + 15, itemY + 17,  16, 0, 2 * Math.PI);
-          ctx.fill();
+          ctrl.ctx.beginPath();
+          ctrl.ctx.fillStyle = "#D1BB7773";
+          ctrl.ctx.arc(itemX + 15, itemY + 17,  16, 0, 2 * Math.PI);
+          ctrl.ctx.fill();
         }
       }
     });

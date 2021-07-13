@@ -99,9 +99,9 @@ export default class PrayerControls extends BaseControls{
     }
   }
 
-  draw(ctx, x, y) {
+  draw(stage, ctrl, x, y) {
 
-    super.draw(ctx, x, y);
+    super.draw(stage, ctrl, x, y);
 
     PrayerControls.prayers.forEach((prayer, index) => {
 
@@ -111,10 +111,10 @@ export default class PrayerControls extends BaseControls{
         const x2 = index % 5;
         const y2 = Math.floor(index / 5);
         
-        ctx.beginPath();
-        ctx.fillStyle = "#D1BB7773";
-        ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI);
-        ctx.fill();
+        ctrl.ctx.beginPath();
+        ctrl.ctx.fillStyle = "#D1BB7773";
+        ctrl.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI);
+        ctrl.ctx.fill();
       }
 
     });

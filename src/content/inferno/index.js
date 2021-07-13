@@ -27,7 +27,7 @@ Pillar.addPillarsToStage(stage);
 
 
 // Add player
-const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 2));
+const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 3));
 stage.setPlayer(player);
 
 // Add mobs
@@ -42,11 +42,11 @@ if (bat || blob || melee || ranger || mager) {
   // Backwards compatibility layer for runelite plugin
   stage.wave = "imported";
 
-  (JSON.parse(mager) || []).forEach((spawn) => stage.addMob(new Mager(new Point(spawn[0], spawn[1]))));
-  (JSON.parse(ranger) || []).forEach((spawn) => stage.addMob(new Ranger(new Point(spawn[0], spawn[1]))));
-  (JSON.parse(melee) || []).forEach((spawn) => stage.addMob(new Meleer(new Point(spawn[0], spawn[1]))));
-  (JSON.parse(blob) || []).forEach((spawn) => stage.addMob(new Blob(new Point(spawn[0], spawn[1]))));
-  (JSON.parse(bat) || []).forEach((spawn) => stage.addMob(new Bat(new Point(spawn[0], spawn[1]))));
+  (JSON.parse(mager) || []).forEach((spawn) => stage.addMob(new Mager(new Point(spawn[0], spawn[1]), player)));
+  (JSON.parse(ranger) || []).forEach((spawn) => stage.addMob(new Ranger(new Point(spawn[0], spawn[1]), player)));
+  (JSON.parse(melee) || []).forEach((spawn) => stage.addMob(new Meleer(new Point(spawn[0], spawn[1]), player)));
+  (JSON.parse(blob) || []).forEach((spawn) => stage.addMob(new Blob(new Point(spawn[0], spawn[1]), player)));
+  (JSON.parse(bat) || []).forEach((spawn) => stage.addMob(new Bat(new Point(spawn[0], spawn[1]), player)));
   document.getElementById("replayLink").href = `/${window.location.search}`;
 
 }else{
@@ -55,7 +55,8 @@ if (bat || blob || melee || ranger || mager) {
   const wave = parseInt(BrowserUtils.getQueryVar("wave")) || 62;
   const spawns = BrowserUtils.getQueryVar("spawns") ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar("spawns"))) : Waves.getRandomSpawns();
 
-  Waves.spawn(spawns, wave).forEach(stage.addMob.bind(stage));
+  const randomPillar = _.shuffle(stage.entities)[0];
+  Waves.spawn(stage, randomPillar, spawns, wave).forEach(stage.addMob.bind(stage));
   stage.wave = wave;
 
   const encodedSpawn = encodeURIComponent(JSON.stringify(spawns));
