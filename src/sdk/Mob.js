@@ -305,7 +305,7 @@ export class Mob {
   }
 
   shouldShowAttackAnimation() {
-    return this.cd === this.cooldown
+    return this.cd === this.cooldown && this.dying === -1
   }
 
   get consumesSpace() {
@@ -322,7 +322,9 @@ export class Mob {
 
     LineOfSight.drawMobLOS(stage, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
         
-    if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
+    if (this.dying > -1) {
+      stage.ctx.fillStyle = "#964B00";
+    }else if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
       stage.ctx.fillStyle = "#00FF00";
     } else if (this.attackFeedback === Mob.attackIndicators.HIT){
       stage.ctx.fillStyle = "#FF0000";
