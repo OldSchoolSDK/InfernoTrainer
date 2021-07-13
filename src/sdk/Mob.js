@@ -190,7 +190,11 @@ export class Mob {
       const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace);
       const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace);
 
-      if (both && xSpace && ySpace) {
+      let cornerFilter = xSpace && ySpace;
+      if (this.size > 1) {
+        cornerFilter = xSpace || ySpace;
+      }
+      if (both && cornerFilter) {
         this.location.x = dx;
         this.location.y = dy;
       } else if (xSpace) {
