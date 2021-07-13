@@ -10,7 +10,6 @@ export class Mager extends Mob{
 
 
   setStats () {
-    this.debug = true;
     this.frozen = 1;
 
     this.weapons = {
