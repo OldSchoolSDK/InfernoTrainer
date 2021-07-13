@@ -8,7 +8,6 @@ export default class JalAkRekMej extends Mob{
 
 
   setStats () {
-    this.isMej = true;
     this.frozen = 0;
 
     this.weapons = {

@@ -186,9 +186,13 @@ export class Mob {
           dy = this.location.y;
       }
 
-      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace)
+      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace);
       const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace);
       const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace);
+      if (this.debug){
+        console.log('bofa', both ,xSpace, ySpace)
+      }
+
       if (both && xSpace && ySpace) {
         this.location.x = dx;
         this.location.y = dy;

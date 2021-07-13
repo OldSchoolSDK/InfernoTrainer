@@ -134,11 +134,11 @@ export class Blob extends Mob{
   
   removedFromStage(stage){
 
-    const ket = new JalAkRekKet(this.location, this.aggro);
-    stage.addMob(ket);
+    // const xil = new JalAkRekXil(new Point(this.location.x+1, this.location.y - 1), this.aggro);
+    // stage.addMob(xil);
 
-    const xil = new JalAkRekXil(new Point(this.location.x+1, this.location.y - 1), this.aggro);
-    stage.addMob(new JalAkRekXil(xil, this.aggro));
+    // const ket = new JalAkRekKet(this.location, this.aggro);
+    // stage.addMob(ket);
 
     const mej = new JalAkRekMej(new Point(this.location.x+2, this.location.y - 2), this.aggro);
     stage.addMob(mej);
