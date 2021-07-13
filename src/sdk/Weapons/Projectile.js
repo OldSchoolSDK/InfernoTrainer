@@ -8,6 +8,9 @@ export default class Projectile {
   */
   constructor(damage, from, to, attackStyle, forceSWOnly) {
     this.damage = Math.floor(damage);
+    if (this.damage > to.currentStats.hitpoint){
+      this.damage = to.currentStats.hitpoint;
+    }
     this.fromLocation = from.location;
     this.toLocation = to.location;
     this.distance = 999999;

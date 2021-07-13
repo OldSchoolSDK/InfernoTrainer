@@ -123,7 +123,7 @@ export default class Player {
 
     let isUnderSeekingMob = false;
 
-    if (this.seeking && this.seeking.dying === 0){
+    if (this.seeking && this.seeking.dying > -1){
       this.seeking = null;
     }
 
