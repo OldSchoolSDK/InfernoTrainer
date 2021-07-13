@@ -193,10 +193,10 @@ export class Mob {
       if (both && xSpace && ySpace) {
         this.location.x = dx;
         this.location.y = dy;
-      } else if (xSpace) {
-        this.location.x = dx;
       } else if (ySpace) {
         this.location.y = dy;
+      } else if (xSpace) {
+        this.location.x = dx;
       }
 
     }
