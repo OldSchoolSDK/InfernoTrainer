@@ -247,9 +247,6 @@ export class Mob {
     return 'slash';
   }
 
-  meleeDistanceAttackStyle() {
-    return 'slash';
-  }
 
   attackIfPossible(stage){
     let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
@@ -282,7 +279,7 @@ export class Mob {
         isWithinMeleeRange = true;
       }
       if (isWithinMeleeRange && Math.random() < 0.5) { 
-        attackStyle = this.meleeDistanceAttackStyle();
+        attackStyle = this.canMeleeIfClose();
       }
     }
 
