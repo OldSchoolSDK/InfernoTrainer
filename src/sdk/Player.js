@@ -206,7 +206,7 @@ export default class Player {
 
     this.incomingProjectiles.forEach((projectile) => {
       projectile.delay--;
-      if (projectile.delay <= 0) {
+      if (projectile.delay < 0) {
         this.currentStats.hitpoint -= projectile.damage;
       }
     });
