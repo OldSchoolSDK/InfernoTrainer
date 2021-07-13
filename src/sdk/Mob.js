@@ -154,6 +154,9 @@ export class Mob {
     this.perceivedLocation = new Point(this.location.x, this.location.y);
 
     this.setHasLOS(stage);
+    if (this.debug){
+      console.log(this);
+    }
     if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
