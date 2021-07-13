@@ -308,7 +308,7 @@ export class Mob {
 
   draw(stage, framePercent) {
 
-    // LineOfSight.drawMobLOS(stage, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
+    LineOfSight.drawMobLOS(stage, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
         
     if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
       stage.ctx.fillStyle = "#00FF00";

@@ -77,22 +77,22 @@ export default class Stage {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
 
-      // Calculate Time Between Tick Off Performance and adjust framerate accordingly
-      if (isNaN(this.timeBetweenTicks) === false){
-        const offPerformance = 600 - this.timeBetweenTicks;
-        this.offPerformanceDelta += offPerformance;
-        this.offPerformanceCount++;
-        if (this.offPerformanceCount > 5){
-          const delta = this.offPerformanceDelta / this.offPerformanceCount / 10;
-          if (delta > 0){
-            Constants.framesPerTick += Math.floor(delta);
-          }else{
-            Constants.framesPerTick += Math.ceil(delta);
-          }          
-          this.offPerformanceCount = 0;
-          this.offPerformanceDelta = 0;
-        }
-      }
+      // // Calculate Time Between Tick Off Performance and adjust framerate accordingly
+      // if (isNaN(this.timeBetweenTicks) === false){
+      //   const offPerformance = 600 - this.timeBetweenTicks;
+      //   this.offPerformanceDelta += offPerformance;
+      //   this.offPerformanceCount++;
+      //   if (this.offPerformanceCount > 5){
+      //     const delta = this.offPerformanceDelta / this.offPerformanceCount / 10;
+      //     if (delta > 0){
+      //       Constants.framesPerTick += Math.floor(delta);
+      //     }else{
+      //       Constants.framesPerTick += Math.ceil(delta);
+      //     }          
+      //     this.offPerformanceCount = 0;
+      //     this.offPerformanceDelta = 0;
+      //   }
+      // }
 
       this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
 
@@ -184,11 +184,12 @@ export default class Stage {
     this.ctx.fillStyle = "#FFFF0066";
     this.ctx.font = "16px OSRS";
     this.ctx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16);
-    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 32);
-    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 48);
-    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 64);
-    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 80);
-    this.ctx.fillText(`Wave: ${this.wave}`, 0, 96);
+    this.ctx.fillText(`DFR: ${Constants.framesPerTick * (1 / 0.6)}`, 0, 32);
+    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48);
+    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64);
+    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80);
+    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96);
+    this.ctx.fillText(`Wave: ${this.wave}`, 0, 112);
 
     if (this.heldDown){
 
