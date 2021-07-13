@@ -118,6 +118,7 @@ export default class Stage {
       const mob = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
       if (mob) {
         this.clickAnimation = new ClickAnimation('red', x, y);
+        console.log('mob', mob);
         this.player.seeking = mob;
       }else {
         this.clickAnimation = new ClickAnimation('yellow', x, y);

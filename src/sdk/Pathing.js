@@ -41,7 +41,7 @@ export default class Pathing {
 
     let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Constants.tileSize, mob.location.x * Constants.tileSize, framePercent);
     let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Constants.tileSize, mob.location.y * Constants.tileSize, framePercent);
-    return (Pathing.collisionMath(x, y, Constants.tileSize, perceivedX, perceivedY, mob.size * Constants.tileSize));
+    return (Pathing.collisionMath(x - Constants.tileSize, y, Constants.tileSize, perceivedX, perceivedY, (mob.size - 1) * Constants.tileSize));
   }
 
 

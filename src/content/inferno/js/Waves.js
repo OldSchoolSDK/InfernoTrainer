@@ -59,7 +59,7 @@ export class Waves {
   // cba to convert this to any other format
   // nibblers, bats, blobs, melee, ranger, mager
   static waves = [
-    [0, 1, 0, 0, 0, 0], //1
+    [3, 1, 0, 0, 0, 0], //1
     [3, 2, 0, 0, 0, 0],
     [6, 0, 0, 0, 0, 0],
     [3, 0, 1, 0, 0, 0],
