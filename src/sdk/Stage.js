@@ -1,10 +1,10 @@
 'use strict';
 import _ from 'lodash';
+import ClickAnimation from './ClickAnimation';
 import Constants from "./Constants";
 import ControlPanelController from './ControlPanelController';
-import LineOfSight from './LineOfSight';
 import Pathing from './Pathing';
-import Point from './Utils/Point';
+
 
 export default class Stage {
 
@@ -16,6 +16,7 @@ export default class Stage {
     this.player = null;
     this.entities = [];
     this.mobs = [];
+    this.clickAnimation = null;
 
     this.map = document.getElementById(selector);
     this.ctx = this.map.getContext("2d");
@@ -116,8 +117,10 @@ export default class Stage {
       this.player.seeking = false;
       const mob = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
       if (mob) {
+        this.clickAnimation = new ClickAnimation('red', x, y);
         this.player.seeking = mob;
       }else {
+        this.clickAnimation = new ClickAnimation('yellow', x, y);
         this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
       }
     }, 150);
@@ -153,6 +156,9 @@ export default class Stage {
     }
     this.player.draw(this, framePercent);
     
+    if (this.clickAnimation) {
+      this.clickAnimation.draw(this, framePercent)
+    }
     
     // Performance info
     this.ctx.fillStyle = "#FFFF0066";
