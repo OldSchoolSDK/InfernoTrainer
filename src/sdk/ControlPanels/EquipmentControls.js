@@ -13,4 +13,23 @@ export default class EquipmentControls extends BaseControls{
     return EquipmentTab;
   }
 
+  get keyBinding() {
+    return BrowserUtils.getQueryVar("equipment_key") || "1";
+  }
+
+
+  clickedPanel(stage, x, y){
+
+  }
+
+
+  draw(stage, ctrl, x, y) {
+    console.log('ay');
+
+    super.draw(stage, ctrl, x, y);
+
+    if (stage.player.weapon) {
+      ctrl.ctx.drawImage(stage.player.weapon.inventorySprite, 58, 92);
+    }
+  }
 }
