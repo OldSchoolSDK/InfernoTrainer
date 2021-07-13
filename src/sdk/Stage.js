@@ -104,28 +104,21 @@ export default class Stage {
   }
 
   mapClick(e) {
+    const framePercent = this.frameCounter / Constants.framesPerTick;
+
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.inputDelay){
       clearTimeout(this.inputDelay);
     }
     this.inputDelay = setTimeout(() => {
-      x = Math.floor(x / Constants.tileSize);
-      y = Math.floor(y / Constants.tileSize);
-      if (x > this.width || y > this.height) { // Can we not go negative?
-        return;
-      }
-  
       // maybe this should live in the player class? seems very player related in current form.
       this.player.seeking = false;
-      const mob = Pathing.collidesWithAnyMobs(this, x, y, 1);
-      const mobAtPreviousPoint = Pathing.collidesWithAnyMobsAtPreviousSpot(this, x, y, 1);
+      const mob = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
       if (mob) {
         this.player.seeking = mob;
-      }else if (mobAtPreviousPoint) {
-        this.player.seeking = mobAtPreviousPoint;
       }else {
-        this.player.moveTo(x, y);
+        this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
       }
     }, 150);
   }

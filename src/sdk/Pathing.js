@@ -1,4 +1,5 @@
 'use strict';
+import Constants from "./Constants";
 import Point from "./Utils/Point";
 
 export default class Pathing {
@@ -26,14 +27,9 @@ export default class Pathing {
 
 
 
-  static collidesWithAnyMobsAtPreviousSpot(stage, x, y, s, mobToAvoid) {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation(stage, x, y, framePercent) {
     for (let i = 0; i < stage.mobs.length; i++) {
-      if (stage.mobs[i] === mobToAvoid) {
-        continue;
-      }
-
-      const collidedWithSpecificMob = Pathing.collidesWithMobAtPreviousSpot(stage, x, y, s, stage.mobs[i]);
-
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, stage.mobs[i]);
       if (collidedWithSpecificMob) {
         return stage.mobs[i];
       }
@@ -41,8 +37,11 @@ export default class Pathing {
     return null;
   }
 
-  static collidesWithMobAtPreviousSpot(stage, x, y, s, mob) {
-    return (Pathing.collisionMath(x, y, s, mob.perceivedLocation.x, mob.perceivedLocation.y, mob.size));
+  static collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, mob) {
+
+    let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Constants.tileSize, mob.location.x * Constants.tileSize, framePercent);
+    let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Constants.tileSize, mob.location.y * Constants.tileSize, framePercent);
+    return (Pathing.collisionMath(x, y, Constants.tileSize, perceivedX, perceivedY, mob.size * Constants.tileSize));
   }
 
 
