@@ -88,6 +88,7 @@ export default class Player {
   }
 
   moveTo(x, y) {
+    this.seeking = null;
     this.manualSpellCastSelection = null;
     this.destinationLocation = new Point(x, y);
   }
