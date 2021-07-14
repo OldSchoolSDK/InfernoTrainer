@@ -6,6 +6,17 @@ import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
 
 export default class JalAkRekXil extends Mob{
 
+  get displayName(){
+    return "Jal-AkRek-Xil";
+  }
+
+  get combatLevel() {
+    return 70
+  }
+
+  get combatLevelColor() {
+    return 'lime';
+  }
 
   setStats () {
     this.frozen = 0;
