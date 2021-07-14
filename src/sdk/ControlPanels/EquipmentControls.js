@@ -1,11 +1,11 @@
 
 import EquipmentPanel from "../../assets/images/panels/equipment.png";
 import EquipmentTab from "../../assets/images/tabs/equipment.png";
-import BaseControls from "./BaseControls";
+import { BaseControls } from "./BaseControls";
 import UsedSpotBackground from "../../assets/images/interface/equipment_spot_used.png"
-import BrowserUtils from "../Utils/BrowserUtils";
+import { BrowserUtils } from "../Utils/BrowserUtils";
 
-export default class EquipmentControls extends BaseControls{
+export class EquipmentControls extends BaseControls{
 
   constructor(){
     super();

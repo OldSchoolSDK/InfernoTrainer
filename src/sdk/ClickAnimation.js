@@ -7,10 +7,10 @@ import RedX1 from "../assets/images/interface/red_x_1.png";
 import RedX2 from "../assets/images/interface/red_x_2.png";
 import RedX3 from "../assets/images/interface/red_x_3.png";
 import RedX4 from "../assets/images/interface/red_x_4.png";
-import Settings from "./Settings";
+import { Settings } from "./Settings";
 
 
-export default class ClickAnimation {
+export class ClickAnimation {
 
   constructor(color, x, y) {
     this.color = color;

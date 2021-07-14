@@ -1,13 +1,13 @@
 'use strict';
 
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 
 import NibblerImage from "../../assets/images/nib.png";
 import NibblerSound from "../../assets/sounds/meleer.ogg";
-import Pathing from "../../../../sdk/Pathing";
-import LineOfSight from "../../../../sdk/LineOfSight";
-import Projectile from "../../../../sdk/Weapons/Projectile";
+import { Pathing } from "../../../../sdk/Pathing";
+import { LineOfSight } from "../../../../sdk/LineOfSight";
+import { Projectile } from "../../../../sdk/Weapons/Projectile";
 
 class NibblerWeapon extends MeleeWeapon {
   attack(stage, from, to, bonuses) {

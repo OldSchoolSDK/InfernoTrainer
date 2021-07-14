@@ -2,33 +2,33 @@
 import PrayerPanel from "../../assets/images/panels/prayer.png";
 import PrayerTab from "../../assets/images/tabs/prayer.png";
 import _ from "lodash";
-import BrowserUtils from "../Utils/BrowserUtils";
+import { BrowserUtils } from "../Utils/BrowserUtils";
 
-import BaseControls from "./BaseControls";
-import ProtectMelee from "../Prayers/ProtectMelee";
-import ProtectMage from "../Prayers/ProtectMage";
-import ProtectRange from "../Prayers/ProtectRange";
-import Rigour from "../Prayers/Rigour";
-import SharpEye from "../Prayers/SharpEye";
-import HawkEye from "../Prayers/HawkEye";
-import EagleEye from "../Prayers/EagleEye";
-import MysticWill from "../Prayers/MysticWill";
-import MysticLore from "../Prayers/MysticLore";
-import MysticMight from "../Prayers/MysticMight";
-import Augury from "../Prayers/Augury";
-import ThickSkin from "../Prayers/ThickSkin";
-import BurstOfStrength from "../Prayers/BurstOfStrength";
-import ClarityOfThought from "../Prayers/ClarityOfThought";
-import RockSkin from "../Prayers/RockSkin";
-import SuperhumanStrength from "../Prayers/SuperhumanStrength";
-import ImprovedReflexes from "../Prayers/ImprovedReflexes";
-import SteelSkin from "../Prayers/SteelSkin";
-import UltimateStrength from "../Prayers/UltimateStrength";
-import IncredibleReflexes from "../Prayers/IncredibleReflexes";
-import Chivalry from "../Prayers/Chivalry";
-import Piety from "../Prayers/Piety";
+import { BaseControls } from "./BaseControls";
+import { ProtectMelee } from "../Prayers/ProtectMelee";
+import { ProtectMage } from "../Prayers/ProtectMage";
+import { ProtectRange } from "../Prayers/ProtectRange";
+import { Rigour } from "../Prayers/Rigour";
+import { SharpEye } from "../Prayers/SharpEye";
+import { HawkEye } from "../Prayers/HawkEye";
+import { EagleEye } from "../Prayers/EagleEye";
+import { MysticWill } from "../Prayers/MysticWill";
+import { MysticLore } from "../Prayers/MysticLore";
+import { MysticMight } from "../Prayers/MysticMight";
+import { Augury } from "../Prayers/Augury";
+import { ThickSkin } from "../Prayers/ThickSkin";
+import { BurstOfStrength } from "../Prayers/BurstOfStrength";
+import { ClarityOfThought } from "../Prayers/ClarityOfThought";
+import { RockSkin } from "../Prayers/RockSkin";
+import { SuperhumanStrength } from "../Prayers/SuperhumanStrength";
+import { ImprovedReflexes } from "../Prayers/ImprovedReflexes";
+import { SteelSkin } from "../Prayers/SteelSkin";
+import { UltimateStrength } from "../Prayers/UltimateStrength";
+import { IncredibleReflexes } from "../Prayers/IncredibleReflexes";
+import { Chivalry } from "../Prayers/Chivalry";
+import { Piety } from "../Prayers/Piety";
 
-export default class PrayerControls extends BaseControls{
+export class PrayerControls extends BaseControls{
 
   get panelImageReference() {
     return PrayerPanel;

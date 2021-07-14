@@ -1,16 +1,16 @@
 'use strict';
 
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
+import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
-import JalAkRekKet from "../../js/mobs/JalAkRekKet";
-import JalAkRekMej from "../../js/mobs/JalAkRekMej";
-import JalAkRekXil from "../../js/mobs/JalAkRekXil";
-import Point from "../../../../sdk/Utils/Point";
+import { JalAkRekKet } from "../../js/mobs/JalAkRekKet";
+import { JalAkRekMej } from "../../js/mobs/JalAkRekMej";
+import { JalAkRekXil } from "../../js/mobs/JalAkRekXil";
+import { Point } from "../../../../sdk/Utils/Point";
 
 export class Blob extends Mob{
 

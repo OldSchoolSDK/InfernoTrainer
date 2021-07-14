@@ -2,11 +2,11 @@
 
 import StandardSpellbookTab from "../../assets/images/tabs/standard_spellbook.png";
 import AncientsPanel from "../../assets/images/panels/ancients.png";
-import BaseControls from "./BaseControls";
-import BarrageMagicWeapon from "../Weapons/BarrageMagicWeapon";
-import BrowserUtils from "../Utils/BrowserUtils";
+import { BaseControls } from "./BaseControls";
+import { BarrageMagicWeapon } from "../Weapons/BarrageMagicWeapon";
+import { BrowserUtils } from "../Utils/BrowserUtils";
 
-export default class AncientsSpellbookControls extends BaseControls{
+export class AncientsSpellbookControls extends BaseControls{
 
   get panelImageReference() {
     return AncientsPanel;

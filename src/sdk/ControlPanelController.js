@@ -1,21 +1,20 @@
 'use strict';
-import AccountControls from "./ControlPanels/AccountControls";
-import AncientsSpellbookControls from "./ControlPanels/AncientsSpellbookControls";
-import ClanChatControls from "./ControlPanels/ClanChatControls";
-import CombatControls from "./ControlPanels/CombatControls";
-import EmotesControls from "./ControlPanels/EmotesControls";
-import EmptyControls from "./ControlPanels/EmptyControls";
-import EquipmentControls from "./ControlPanels/EquipmentControls";
-import FriendsControls from "./ControlPanels/FriendsControls";
-import InventoryControls from "./ControlPanels/InventoryControls";
-import MusicControls from "./ControlPanels/MusicControls";
-import PrayerControls from "./ControlPanels/PrayerControls";
-import QuestsControls from "./ControlPanels/QuestsControls";
-import SettingsControls from "./ControlPanels/SettingsControls";
-import StandardSpellbookControls from "./ControlPanels/StandardSpellbookControls";
-import StatsControls from "./ControlPanels/StatsControls";
+import { AccountControls } from "./ControlPanels/AccountControls";
+import { AncientsSpellbookControls } from "./ControlPanels/AncientsSpellbookControls";
+import { ClanChatControls } from "./ControlPanels/ClanChatControls";
+import { CombatControls } from "./ControlPanels/CombatControls";
+import { EmotesControls } from "./ControlPanels/EmotesControls";
+import { EmptyControls } from "./ControlPanels/EmptyControls";
+import { EquipmentControls } from "./ControlPanels/EquipmentControls";
+import { FriendsControls } from "./ControlPanels/FriendsControls";
+import { InventoryControls } from "./ControlPanels/InventoryControls";
+import { MusicControls } from "./ControlPanels/MusicControls";
+import { PrayerControls } from "./ControlPanels/PrayerControls";
+import { QuestsControls } from "./ControlPanels/QuestsControls";
+import { SettingsControls } from "./ControlPanels/SettingsControls";
+import { StatsControls } from "./ControlPanels/StatsControls";
 
-export default class ControlPanelController {
+export class ControlPanelController {
   static controls = Object.freeze({
     INVENTORY: new InventoryControls(),
     PRAYER: new PrayerControls(),

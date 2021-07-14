@@ -1,14 +1,14 @@
 'use strict';
 import _ from "lodash";
 
-import Settings from "./Settings";
-import LineOfSight from "./LineOfSight";
-import Pathing from "./Pathing";
+import { Settings } from "./Settings";
+import { LineOfSight } from "./LineOfSight";
+import { Pathing } from "./Pathing";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
 import { Weapon } from "./Weapons/Weapon";
-import Point from "./Utils/Point";
+import { Point } from "./Utils/Point";
 
 export class Mob {
 

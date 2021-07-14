@@ -1,8 +1,8 @@
 'use strict';
 
-import Settings from "../../../sdk/Settings";
+import { Settings } from "../../../sdk/Settings";
 import { Entity } from "../../../sdk/Entity";
-import Point from "../../../sdk/Utils/Point";
+import { Point } from "../../../sdk/Utils/Point";
 
 import MissSplat from "../../../assets/images/hitsplats/miss.png"
 import DamageSplat from "../../../assets/images/hitsplats/damage.png"

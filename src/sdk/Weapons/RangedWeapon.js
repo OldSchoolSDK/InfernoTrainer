@@ -1,8 +1,8 @@
-import BasePrayer from "../Prayers/BasePrayer";
-import Projectile from "./Projectile";
+import { BasePrayer } from "../Prayers/BasePrayer";
+import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
-export default class RangedWeapon extends Weapon {
+export class RangedWeapon extends Weapon {
   attack(stage, from, to, bonuses = {}){
     this._calculatePrayerEffects(from, to, bonuses);
     bonuses.styleBonus = bonuses.styleBonus || 0;

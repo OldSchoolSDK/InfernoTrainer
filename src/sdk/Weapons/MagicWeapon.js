@@ -1,8 +1,8 @@
-import BasePrayer from "../Prayers/BasePrayer";
-import Projectile from "./Projectile";
+import { BasePrayer } from "../Prayers/BasePrayer";
+import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
-export default class MagicWeapon extends Weapon {
+export class MagicWeapon extends Weapon {
   attack(stage, from, to, bonuses = {}, forceSWOnly = false){
 
     this._calculatePrayerEffects(from, to, bonuses, forceSWOnly);

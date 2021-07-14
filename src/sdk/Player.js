@@ -1,15 +1,14 @@
 'use strict';
-import Pathing from "./Pathing";
-import Settings from "./Settings";
-import Point from "./Utils/Point";
-import LineOfSight from "./LineOfSight";
+import { Pathing } from "./Pathing";
+import { Settings } from "./Settings";
+import { Point } from "./Utils/Point";
+import { LineOfSight } from "./LineOfSight";
 import { TwistedBow } from "../content/weapons/TwistedBow";
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
 import _ from "lodash";
-import chebyshev from "chebyshev";
 
-export default class Player {
+export class Player {
 
   constructor(location) {
     this.prayers = [];

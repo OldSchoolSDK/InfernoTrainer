@@ -1,5 +1,5 @@
 
-export default class BaseControls {
+export class BaseControls {
   constructor() {
 
     this.panelImage = new Image(204, 275);

@@ -2,9 +2,9 @@
 
 import { Mob } from "../../../../sdk/Mob";
 import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
 
-export default class JalAkRekMej extends Mob{
+export class JalAkRekMej extends Mob{
 
   get displayName(){
     return "Jal-AkRek-Mej";

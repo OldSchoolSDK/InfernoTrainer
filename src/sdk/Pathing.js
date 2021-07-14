@@ -1,9 +1,9 @@
 'use strict';
 import _ from "lodash";
-import Settings from "./Settings";
-import Point from "./Utils/Point";
+import { Settings } from "./Settings";
+import { Point } from "./Utils/Point";
 
-export default class Pathing {
+export class Pathing {
 
   static linearInterpolation(x, y, a) {
     return ((y - x) * a) + x

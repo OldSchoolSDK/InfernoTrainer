@@ -1,13 +1,13 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OverheadImg from "../../assets/images/prayers/rangeOver.png"
 
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Settings from "../Settings";
+import { Settings } from "../Settings";
 
-export default class ProtectRange extends BasePrayer{
+export class ProtectRange extends BasePrayer{
   
   get name() {
     return 'Protect from Range';

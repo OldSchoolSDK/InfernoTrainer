@@ -1,6 +1,6 @@
 'use strict';
 
-export default class Point {
+export class Point {
   constructor(x, y) {
     if (isNaN(x) || isNaN(y)){
       console.log(`We received points that are not numbers. (X: ${x}, Y: ${y})`)

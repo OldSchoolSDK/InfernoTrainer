@@ -1,7 +1,7 @@
 'use strict';
 
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mager.ogg";

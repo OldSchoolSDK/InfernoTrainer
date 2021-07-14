@@ -1,15 +1,15 @@
 'use strict';
 
 import _ from "lodash";
-import Settings from "./Settings";
-import Pathing from "./Pathing";
+import { Settings } from "./Settings";
+import { Pathing } from "./Pathing";
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
  This algorithm makes no sense and is copy pasta'd between basically every trainer.
  I have no clue how it works, nor do I care. 
 */
-export default class LineOfSight {
+export class LineOfSight {
     static drawLOS(stage, x, y, s, r, isNPC) {
         stage.ctx.globalAlpha = 0.4;
         for (var i = 0; i < 870; i++) {

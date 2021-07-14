@@ -1,11 +1,11 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Settings from "../Settings";
+import { Settings } from "../Settings";
 
-export default class ThickSkin extends BasePrayer{
+export class ThickSkin extends BasePrayer{
   
   get name() {
     return 'Thick Skin';

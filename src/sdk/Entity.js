@@ -1,5 +1,5 @@
 'use strict';
-import Settings from "./Settings";
+import { Settings } from "./Settings";
 
 export class Entity {
   constructor(point, size) {

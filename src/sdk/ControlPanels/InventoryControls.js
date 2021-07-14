@@ -1,14 +1,13 @@
 import _ from "lodash";
 import InventoryPanel from "../../assets/images/panels/inventory.png";
 import InventoryTab from "../../assets/images/tabs/inventory.png";
-import Pathing from "../Pathing";
-import BaseControls from "./BaseControls";
-import BrowserUtils from "../Utils/BrowserUtils";
-
+import { Pathing } from "../Pathing";
+import { BaseControls } from "./BaseControls";
+import { BrowserUtils } from "../Utils/BrowserUtils";
 import { Blowpipe } from "../../content/weapons/Blowpipe";
 
 
-export default class InventoryControls extends BaseControls{
+export class InventoryControls extends BaseControls{
 
   constructor() {
     super();

@@ -1,10 +1,10 @@
 'use strict';
 
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import JalAkRekKetImage from "../../assets/images/Jal-AkRek-Ket.png";
 
-export default class JalAkRekKet extends Mob{
+export class JalAkRekKet extends Mob{
 
   get displayName(){
     return "Jal-AkRek-Ket";

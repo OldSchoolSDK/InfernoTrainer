@@ -1,8 +1,8 @@
-import Projectile from "./Projectile";
+import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
-import BasePrayer from "../Prayers/BasePrayer";
+import { BasePrayer } from "../Prayers/BasePrayer";
 
-export default class MeleeWeapon extends Weapon {
+export class MeleeWeapon extends Weapon {
   attack(stage, from, to, bonuses = {}){
     this._calculatePrayerEffects(from, to, bonuses);
 

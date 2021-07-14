@@ -1,7 +1,7 @@
-import Pathing from "../Pathing";
-import MagicWeapon from "./MagicWeapon";
+import { Pathing } from "../Pathing";
+import { MagicWeapon } from "./MagicWeapon";
 
-export default class BarrageMagicWeapon extends MagicWeapon {
+export class BarrageMagicWeapon extends MagicWeapon {
   get name() {
     return "Ice Barrage";
   }

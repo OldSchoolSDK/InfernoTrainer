@@ -1,7 +1,7 @@
 import _ from "lodash";
-import Point from "./Utils/Point";
+import { Point } from "./Utils/Point";
 
-export default class ContextMenu {
+export class ContextMenu {
   
   constructor() {
     this.isActive = false;
