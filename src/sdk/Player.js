@@ -87,10 +87,37 @@ export default class Player {
     return 1;
   }
 
-  moveTo(x, y) {
+  moveTo(stage, x, y) {
     this.seeking = null;
     this.manualSpellCastSelection = null;
-    this.destinationLocation = new Point(x, y);
+
+
+    const clickedOnEntities = Pathing.entitiesAtPoint(stage, x, y, 1);
+    if (clickedOnEntities.length) {
+      // Clicked on an entity, scan around to find the best spot to actually path to
+      const clickedOnEntity = clickedOnEntities[0];
+      const maxDist = Math.ceil(clickedOnEntity.size / 2);
+      let bestDistance = 9999;
+      let winner = null;
+      for (let yy=-maxDist; yy < maxDist; yy++){
+        for (let xx=-maxDist; xx < maxDist; xx++){
+          const _x = x + xx;
+          const _y = y + yy;
+          if (Pathing.entitiesAtPoint(stage, _x, _y, 1).length === 0) {
+            const distance = Pathing.dist(x, y, _x, _y);
+            if (distance > 0 && distance < bestDistance){
+              bestDistance = distance;
+              winner = { x: _x, y: _y };
+            }
+          }
+        }
+      }
+      if (winner){
+        this.destinationLocation = new Point(winner.x, winner.y);
+      }
+    }else{
+      this.destinationLocation = new Point(x, y);
+    }
   }
 
   attack(stage) {
