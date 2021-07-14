@@ -1,6 +1,6 @@
 'use strict';
 
-import Constants from "../../../sdk/Constants";
+import Settings from "../../../sdk/Settings";
 import { Entity } from "../../../sdk/Entity";
 import Point from "../../../sdk/Utils/Point";
 
@@ -66,25 +66,25 @@ export class Pillar extends Entity{
     stage.ctx.fillStyle = "#000073";
 
     stage.ctx.fillRect(
-      this.location.x * Constants.tileSize,
-      (this.location.y - this.size + 1) * Constants.tileSize,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+      this.location.x * Settings.tileSize,
+      (this.location.y - this.size + 1) * Settings.tileSize,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
 
     stage.ctx.fillStyle = "red";
     stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
-      Constants.tileSize * this.size, 
+      this.location.x * Settings.tileSize, 
+      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      Settings.tileSize * this.size, 
       5
     );
     stage.ctx.fillStyle = "green";
     stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
+      this.location.x * Settings.tileSize, 
+      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
     
@@ -116,8 +116,8 @@ export class Pillar extends Entity{
 
       stage.ctx.drawImage(
         image,
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX - 12,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY,
+        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX - 12,
+        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY,
         24,
         23
       );
@@ -126,8 +126,8 @@ export class Pillar extends Entity{
       stage.ctx.textAlign="center";
       stage.ctx.fillText(
         projectile.damage, 
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY + 15
+        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX,
+        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY + 15
       );
       stage.ctx.textAlign="left";
     });

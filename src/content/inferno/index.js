@@ -5,7 +5,7 @@ import Player from '../../sdk/Player';
 import Point from '../../sdk/Utils/Point';
 import Stage from '../../sdk/Stage';
 import { Waves } from "./js/Waves";
-import Constants from "../../sdk/Constants";
+import Settings from "../../sdk/Settings";
 import ControlPanelController from "../../sdk/ControlPanelController";
 import { Mager } from "./js/mobs/Mager";
 import { Ranger } from "./js/mobs/Ranger";
@@ -79,6 +79,6 @@ const timer = setInterval(() => {
 
 document.getElementById("playWaveNum").addEventListener("click", () => window.location = `/?wave=${document.getElementById("waveinput").value || wave}`);
 
-document.getElementById("soundToggle").addEventListener("click", () => Constants.playsAudio = !Constants.playsAudio);
+document.getElementById("soundToggle").addEventListener("click", () => Settings.playsAudio = !Settings.playsAudio);
 
 document.getElementById("version").innerHTML = "Version " + process.env.COMMIT_REF + " - " + process.env.BUILD_DATE;

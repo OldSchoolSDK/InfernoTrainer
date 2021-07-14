@@ -1,6 +1,6 @@
 'use strict';
 import _ from "lodash";
-import Constants from "./Constants";
+import Settings from "./Settings";
 import Point from "./Utils/Point";
 
 export default class Pathing {
@@ -41,9 +41,9 @@ export default class Pathing {
 
   static collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, mob) {
 
-    let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Constants.tileSize, mob.location.x * Constants.tileSize, framePercent);
-    let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Constants.tileSize, mob.location.y * Constants.tileSize, framePercent);
-    return (Pathing.collisionMath(x - Constants.tileSize, y, Constants.tileSize, perceivedX, perceivedY, (mob.size - 1) * Constants.tileSize));
+    let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, framePercent);
+    let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, framePercent);
+    return (Pathing.collisionMath(x - Settings.tileSize, y, Settings.tileSize, perceivedX, perceivedY, (mob.size - 1) * Settings.tileSize));
   }
 
 

@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import ClickAnimation from './ClickAnimation';
-import Constants from "./Constants";
+import Settings from "./Settings";
 import ContextMenu from './ContextMenu';
 import ControlPanelController from './ControlPanelController';
 import Pathing from './Pathing';
@@ -23,13 +23,13 @@ export default class Stage {
 
     this.map = document.getElementById(selector);
     this.ctx = this.map.getContext("2d");
-    this.map.width = Constants.tileSize * width;
-    this.map.height = Constants.tileSize * height;
+    this.map.width = Settings.tileSize * width;
+    this.map.height = Settings.tileSize * height;
 
     this.grid = document.getElementById("grid");
     this.gridCtx = this.grid.getContext("2d");
-    this.grid.width = Constants.tileSize * width;
-    this.grid.height = Constants.tileSize * height;
+    this.grid.width = Settings.tileSize * width;
+    this.grid.height = Settings.tileSize * height;
     this.hasCalcedGrid = false;
 
 
@@ -45,7 +45,7 @@ export default class Stage {
       const y = e.offsetY;
       this.contextMenu.setPosition(new Point(x, y));
       /*gather options */
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Constants.framesPerTick);
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];
       mobs.forEach((mob) => {
         menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
@@ -63,7 +63,7 @@ export default class Stage {
 
   mapClick(e) {
 
-    const framePercent = this.frameCounter / Constants.framesPerTick;
+    const framePercent = this.frameCounter / Settings.framesPerTick;
 
     let x = e.offsetX;
     let y = e.offsetY;
@@ -101,7 +101,7 @@ export default class Stage {
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
+      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
     }, 100);
   }
 
@@ -118,34 +118,13 @@ export default class Stage {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
 
-      // // Calculate Time Between Tick Off Performance and adjust framerate accordingly
-      // if (isNaN(this.timeBetweenTicks) === false){
-      //   const offPerformance = 600 - this.timeBetweenTicks;
-      //   this.offPerformanceDelta += offPerformance;
-      //   this.offPerformanceCount++;
-      //   if (this.offPerformanceCount > 5){
-      //     const delta = this.offPerformanceDelta / this.offPerformanceCount / 10;
-      //     if (delta > 0){
-      //       Constants.framesPerTick += Math.floor(delta);
-      //     }else{
-      //       Constants.framesPerTick += Math.ceil(delta);
-      //     }          
-      //     this.offPerformanceCount = 0;
-      //     this.offPerformanceDelta = 0;
-      //   }
-      // }
-
       this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
-
       this.entities.forEach((entity) => entity.tick(this));
-
       this.mobs.forEach((mob) => mob.movementStep(this));
       this.mobs.forEach((mob) => mob.attackStep(this));
-
       this.player.movementStep(this);
       this.player.attackStep(this);
-
-
+      
       // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
       const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
       const deadEntities = this.entities.filter((mob) => mob.dying === 0);
@@ -155,10 +134,10 @@ export default class Stage {
       this.tickTime = performance.now() - t;
     }
     let t2 = performance.now();
-    this.draw(this.frameCounter / Constants.framesPerTick);
+    this.draw(this.frameCounter / Settings.framesPerTick);
     this.drawTime = performance.now() - t2;
     this.frameCounter++;
-    if (this.frameCounter >= Constants.framesPerTick) {
+    if (this.frameCounter >= Settings.framesPerTick) {
       this.fps = this.frameCounter / this.timeBetweenTicks * 1000;
       this.frameCounter = 0;
     }
@@ -176,10 +155,10 @@ export default class Stage {
       for (var i = 0; i < this.map.width * this.map.height; i++) {
         this.gridCtx.fillStyle = (i % 2) ? "#100" : "#210";
         this.gridCtx.fillRect(
-          i % this.width * Constants.tileSize, 
-          Math.floor(i / this.width) * Constants.tileSize, 
-          Constants.tileSize, 
-          Constants.tileSize
+          i % this.width * Settings.tileSize, 
+          Math.floor(i / this.width) * Settings.tileSize, 
+          Settings.tileSize, 
+          Settings.tileSize
         );
       }
       this.hasCalcedGrid = true;
@@ -204,7 +183,7 @@ export default class Stage {
     this.ctx.fillStyle = "#FFFF0066";
     this.ctx.font = "16px OSRS";
     this.ctx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16);
-    this.ctx.fillText(`DFR: ${Constants.framesPerTick * (1 / 0.6)}`, 0, 32);
+    this.ctx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32);
     this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48);
     this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64);
     this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80);
@@ -247,6 +226,6 @@ export default class Stage {
   }
 
   startTicking() {
-    setInterval(this.gameLoop.bind(this), Constants.tickMs / Constants.framesPerTick); 
+    setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick); 
   }
 }

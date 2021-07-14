@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from "lodash";
-import Constants from "../../../../sdk/Constants";
+import Settings from "../../../../sdk/Settings";
 import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
@@ -102,8 +102,8 @@ export class Ranger extends Mob {
   }
   
   playAttackSound (){
-    if (Constants.playsAudio){
-      setTimeout(() => new Audio(this.sound).play(), 1.75 * Constants.tickMs)
+    if (Settings.playsAudio){
+      setTimeout(() => new Audio(this.sound).play(), 1.75 * Settings.tickMs)
     }
   }
 
