@@ -77,10 +77,16 @@ export default class Stage {
       if (this.inputDelay){
         clearTimeout(this.inputDelay);
       }
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
+
+      if (mobs.length) {
+        this.redClick();
+      }else {
+        this.yellowClick();
+      }
       this.inputDelay = setTimeout(() => {
         // maybe this should live in the player class? seems very player related in current form.
         this.player.seeking = false;
-        const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
         if (mobs.length) {
           this.playerAttackClick(mobs[0])
         }else {
@@ -93,14 +99,12 @@ export default class Stage {
   }
 
   playerAttackClick(mob) {
-    this.redClick();
     this.inputDelay = setTimeout(() => {
       this.player.seeking = mob;
     }, 150);
   }
   
   playerWalkClick(x, y) {
-    this.yellowClick();
     this.inputDelay = setTimeout(() => {
     this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
     }, 150);
