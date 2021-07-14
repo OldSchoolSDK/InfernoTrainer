@@ -339,7 +339,7 @@ export class Mob {
       {
         text: [{text: "Attack ", fillStyle: "white"}, {text: this.displayName, fillStyle: "yellow"},{text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor}],
         action: () => {
-          
+          stage.redClick();
           stage.playerAttackClick(this);
         }
       }

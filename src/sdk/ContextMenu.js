@@ -62,6 +62,7 @@ export default class ContextMenu {
         {
           text: [{text: "Walk Here", fillStyle: "white"}],
           action: () => {
+            stage.yellowClick();
             stage.playerWalkClick(this.position.x, this.position.y);
           }
         },

@@ -77,33 +77,32 @@ export default class Stage {
       if (this.inputDelay){
         clearTimeout(this.inputDelay);
       }
-      this.inputDelay = setTimeout(() => {
-        // maybe this should live in the player class? seems very player related in current form.
-        this.player.seeking = false;
-        const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
-        if (mobs.length) {
-          this.playerAttackClick(mobs[0])
-        }else {
-          this.playerWalkClick(x, y);
-        }
-      }, 150);
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
+
+      this.player.seeking = false;
+      if (mobs.length) {
+        this.redClick();
+        this.playerAttackClick(mobs[0])
+      }else {
+        this.yellowClick();
+        this.playerWalkClick(x, y);
+      }
+      
     }
     this.contextMenu.setInactive();
 
   }
 
   playerAttackClick(mob) {
-    this.redClick();
     this.inputDelay = setTimeout(() => {
       this.player.seeking = mob;
-    }, 150);
+    }, 100);
   }
   
   playerWalkClick(x, y) {
-    this.yellowClick();
     this.inputDelay = setTimeout(() => {
-    this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
-    }, 150);
+      this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
+    }, 100);
   }
 
   redClick() {
