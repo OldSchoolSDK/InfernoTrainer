@@ -4,7 +4,6 @@ import _ from "lodash";
 import Constants from "./Constants";
 import LineOfSight from "./LineOfSight";
 import Pathing from "./Pathing";
-import Projectile from "./Weapons/Projectile";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"

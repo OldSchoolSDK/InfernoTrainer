@@ -132,20 +132,25 @@ export default class Player {
 
       if (isUnderSeekingMob) {
         const maxDist = Math.ceil(this.seeking.size / 2);
-        const bestDistance = 9999;
-        for (let xx=0; xx < maxDist; xx++){
-          for (let yy=0; yy < maxDist; yy++){
-            const x = this.seeking.location.x + xx;
-            const y = this.seeking.location.y - yy;
-
-            if (Pathing.canTileBePathedTo(stage, x, y, 1) === false) {
-              const distance = chebyshev([this.fromLocation.x, this.fromLocation.y], [this.toLocation.x, this.toLocation.y]);
-              if (distance < bestDistance){
-                this.destinationLocation = new Point(x, y);
+        let bestDistance = 9999;
+        let winner = null;
+        for (let yy=-maxDist; yy < maxDist; yy++){
+          for (let xx=-maxDist; xx < maxDist; xx++){
+            const x = this.location.x + xx;
+            const y = this.location.y + yy;
+            if (Pathing.canTileBePathedTo(stage, x, y, 1, true)) {
+              const distance = Pathing.dist(this.location.x, this.location.y, x, y);
+              if (distance > 0 && distance < bestDistance){
+                bestDistance = distance;
+                winner = { x, y };
               }
             }
           }
         }
+        if (winner){
+          this.destinationLocation = new Point(winner.x, winner.y);
+        }
+
       }else {
         this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
         if (!this.hasLOS){
