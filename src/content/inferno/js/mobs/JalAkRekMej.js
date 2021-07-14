@@ -6,6 +6,17 @@ import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
 
 export default class JalAkRekMej extends Mob{
 
+  get displayName(){
+    return "Jal-AkRek-Mej";
+  }
+
+  get combatLevel() {
+    return 70
+  }
+
+  get combatLevelColor() {
+    return 'lime';
+  }
 
   setStats () {
     this.frozen = 0;

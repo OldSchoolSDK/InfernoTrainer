@@ -9,6 +9,18 @@ import BatSound from "../../assets/sounds/bat.ogg";
 
 export class Bat extends Mob{
 
+  get displayName(){
+    return "Jal-MejRah";
+  }
+
+  get combatLevel() {
+    return 85
+  }
+
+  get combatLevelColor() {
+    return 'lime';
+  }
+
 
   setStats () {
     this.frozen = 1;

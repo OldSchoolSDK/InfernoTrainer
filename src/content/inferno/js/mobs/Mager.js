@@ -9,6 +9,18 @@ import MagerSound from "../../assets/sounds/mager.ogg";
 export class Mager extends Mob{
 
 
+  get displayName(){
+    return "Jal-Zek";
+  }
+
+  get combatLevel() {
+    return 490
+  }
+
+  get combatLevelColor() {
+    return 'red';
+  }
+  
   setStats () {
     this.frozen = 1;
 

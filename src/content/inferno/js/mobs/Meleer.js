@@ -9,6 +9,18 @@ import MeleerSound from "../../assets/sounds/meleer.ogg";
 export class Meleer extends Mob{
 
 
+  get displayName(){
+    return "Jal-ImKot";
+  }
+
+  get combatLevel() {
+    return 240
+  }
+
+  get combatLevelColor() {
+    return 'red';
+  }
+  
   setStats () {
     this.frozen = 1;
 
