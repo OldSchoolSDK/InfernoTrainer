@@ -101,7 +101,7 @@ export default class Stage {
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+      this.player.moveTo(this, Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
     }, 100);
   }
 

@@ -25,6 +25,15 @@ export default class Pathing {
     }
     return false;
   }
+  static entitiesAtPoint(stage, x, y, s) {
+    const entities = [];
+    for (var i = 0; i < stage.entities.length; i++) {
+        if (Pathing.collisionMath(x, y, s, stage.entities[i].location.x, stage.entities[i].location.y, stage.entities[i].size)) {
+          entities.push(stage.entities[i]);
+        }
+    }
+    return entities;
+  }
 
 
 
