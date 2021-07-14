@@ -6,6 +6,8 @@ import LineOfSight from "./LineOfSight";
 import { TwistedBow } from "../content/weapons/TwistedBow";
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
+import _ from "lodash";
+import chebyshev from "chebyshev";
 
 export default class Player {
 
@@ -97,21 +99,26 @@ export default class Player {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0];
       const maxDist = Math.ceil(clickedOnEntity.size / 2);
+      let bestDistances = [];
       let bestDistance = 9999;
-      let winner = null;
-      for (let yy=-maxDist; yy < maxDist; yy++){
-        for (let xx=-maxDist; xx < maxDist; xx++){
-          const _x = x + xx;
-          const _y = y + yy;
-          if (Pathing.entitiesAtPoint(stage, _x, _y, 1).length === 0) {
-            const distance = Pathing.dist(x, y, _x, _y);
-            if (distance > 0 && distance < bestDistance){
-              bestDistance = distance;
-              winner = { x: _x, y: _y };
+      for (let yOff=-maxDist; yOff < maxDist; yOff++){
+        for (let xOff=-maxDist; xOff < maxDist; xOff++){
+          const potentialX = x + xOff;
+          const potentialY = y + yOff;
+          const e = Pathing.entitiesAtPoint(stage, potentialX, potentialY, 1);
+          if (e.length === 0) {
+            const distance = Pathing.dist(potentialX, potentialY, x, y);
+            if (distance <= bestDistance){
+              if (bestDistances[0] && bestDistances[0].bestDistance > distance){
+                bestDistance = distance;
+                bestDistances = [];
+              }
+              bestDistances.push({ x: potentialX, y: potentialY, bestDistance });
             }
           }
         }
       }
+      const winner = _.minBy(bestDistances, (distance) => Pathing.dist(distance.x, distance.y, this.location.x, this.location.y));
       if (winner){
         this.destinationLocation = new Point(winner.x, winner.y);
       }
