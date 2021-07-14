@@ -1,6 +1,6 @@
 'use strict';
 import Pathing from "./Pathing";
-import Constants from "./Constants";
+import Settings from "./Settings";
 import Point from "./Utils/Point";
 import LineOfSight from "./LineOfSight";
 import { TwistedBow } from "../content/weapons/TwistedBow";
@@ -280,10 +280,10 @@ export default class Player {
     stage.ctx.strokeStyle = "#FFFFFF73"
     stage.ctx.lineWidth = 3;
     stage.ctx.strokeRect(
-      this.location.x * Constants.tileSize,
-      this.location.y * Constants.tileSize,
-      Constants.tileSize,
-      Constants.tileSize
+      this.location.x * Settings.tileSize,
+      this.location.y * Settings.tileSize,
+      Settings.tileSize,
+      Settings.tileSize
     );
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
@@ -294,10 +294,10 @@ export default class Player {
     stage.ctx.globalAlpha = .7;
     stage.ctx.fillStyle = "#FFFF00"
     stage.ctx.fillRect(
-      perceivedX * Constants.tileSize, 
-      perceivedY * Constants.tileSize, 
-      Constants.tileSize, 
-      Constants.tileSize
+      perceivedX * Settings.tileSize, 
+      perceivedY * Settings.tileSize, 
+      Settings.tileSize, 
+      Settings.tileSize
     );
     stage.ctx.globalAlpha = 1;
     ////
@@ -329,8 +329,8 @@ export default class Player {
 
       stage.ctx.drawImage(
         image,
-        perceivedX * Constants.tileSize + projectile.offsetX,
-        (perceivedY) * Constants.tileSize + projectile.offsetY - 8,
+        perceivedX * Settings.tileSize + projectile.offsetX,
+        (perceivedY) * Settings.tileSize + projectile.offsetY - 8,
         24,
         23
       );
@@ -341,8 +341,8 @@ export default class Player {
       stage.ctx.textAlign="center";
       stage.ctx.fillText(
         projectile.damage, 
-        perceivedX * Constants.tileSize + projectile.offsetX + 12,
-        (perceivedY) * Constants.tileSize + projectile.offsetY + 15 - 8
+        perceivedX * Settings.tileSize + projectile.offsetX + 12,
+        (perceivedY) * Settings.tileSize + projectile.offsetY + 15 - 8
       );
       stage.ctx.textAlign="left";
 
@@ -352,9 +352,9 @@ export default class Player {
 
 
     stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Settings.tileSize, 5);
     stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(perceivedX * Constants.tileSize, (perceivedY * Constants.tileSize) - Constants.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Constants.tileSize, 5);
+    stage.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Settings.tileSize, 5);
 
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
@@ -362,10 +362,10 @@ export default class Player {
 
       stage.ctx.drawImage(
         overheads[0].overheadImage(),
-        perceivedX * Constants.tileSize,
-        (perceivedY - 2) * Constants.tileSize,
-        Constants.tileSize,
-        Constants.tileSize
+        perceivedX * Settings.tileSize,
+        (perceivedY - 2) * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
       );
     }
 
@@ -376,10 +376,10 @@ export default class Player {
       stage.ctx.strokeStyle = "#FFFFFF73"
       stage.ctx.lineWidth = 3;
       stage.ctx.strokeRect(
-        this.destinationLocation.x * Constants.tileSize, 
-        this.destinationLocation.y * Constants.tileSize, 
-        Constants.tileSize, 
-        Constants.tileSize
+        this.destinationLocation.x * Settings.tileSize, 
+        this.destinationLocation.y * Settings.tileSize, 
+        Settings.tileSize, 
+        Settings.tileSize
       );
     }
     

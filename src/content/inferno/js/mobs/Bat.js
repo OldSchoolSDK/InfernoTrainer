@@ -1,7 +1,5 @@
 'use strict';
 
-import Constants from "../../../../sdk/Constants";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";

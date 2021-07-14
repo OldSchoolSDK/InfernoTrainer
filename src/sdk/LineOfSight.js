@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from "lodash";
-import Constants from "./Constants";
+import Settings from "./Settings";
 import Pathing from "./Pathing";
 
 /*
@@ -20,10 +20,10 @@ export default class LineOfSight {
 
             if (LineOfSight.hasLineOfSight(stage, x, y, x2, y2, s, r, isNPC)) {
                 stage.ctx.fillRect(
-                    x2 * Constants.tileSize, 
-                    y2 * Constants.tileSize, 
-                    Constants.tileSize, 
-                    Constants.tileSize
+                    x2 * Settings.tileSize, 
+                    y2 * Settings.tileSize, 
+                    Settings.tileSize, 
+                    Settings.tileSize
                 );
             }
         }
@@ -39,10 +39,10 @@ export default class LineOfSight {
             var y2 = Math.floor(i / 29);
             if (LineOfSight.hasLineOfSight(stage, x, y, x2, y2, s, r, true)) {
                 stage.ctx.fillRect(
-                    x2 * Constants.tileSize, 
-                    y2 * Constants.tileSize, 
-                    Constants.tileSize, 
-                    Constants.tileSize
+                    x2 * Settings.tileSize, 
+                    y2 * Settings.tileSize, 
+                    Settings.tileSize, 
+                    Settings.tileSize
                 );
             }
         }

@@ -1,7 +1,7 @@
 'use strict';
 import _ from "lodash";
 
-import Constants from "./Constants";
+import Settings from "./Settings";
 import LineOfSight from "./LineOfSight";
 import Pathing from "./Pathing";
 
@@ -119,7 +119,7 @@ export class Mob {
     
 
     if (!this.mobImage){
-      this.mobImage = new Image(Constants.tileSize * this.size, Constants.tileSize * this.size);
+      this.mobImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
       this.mobImage.src = this.image;
     }
     this.setStats();
@@ -316,7 +316,7 @@ export class Mob {
   }
 
   playAttackSound (){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       new Audio(this.sound).play();
     }
   }
@@ -372,15 +372,15 @@ export class Mob {
 
     stage.ctx.save();
     
-    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+    stage.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
 
 
 
     stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
     if (this.shouldShowAttackAnimation()){
@@ -389,28 +389,28 @@ export class Mob {
 
     stage.ctx.drawImage(
       this.mobImage,
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
     stage.ctx.restore();
 
-    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+    stage.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
 
     stage.ctx.fillStyle = "red";
     stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      Constants.tileSize * this.size, 
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      Settings.tileSize * this.size, 
       5
     );
     stage.ctx.fillStyle = "green";
     stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
     
@@ -419,10 +419,10 @@ export class Mob {
       stage.ctx.strokeStyle = "#00FF0073"
       stage.ctx.lineWidth = 1;
       stage.ctx.strokeRect(
-        -(this.size * Constants.tileSize) / 2,
-        -(this.size * Constants.tileSize) / 2,
-        this.size * Constants.tileSize,
-        this.size * Constants.tileSize
+        -(this.size * Settings.tileSize) / 2,
+        -(this.size * Settings.tileSize) / 2,
+        this.size * Settings.tileSize,
+        this.size * Settings.tileSize
       );
     }
 
@@ -459,7 +459,7 @@ export class Mob {
         image,
         
         -12,
-        -((this.size) * Constants.tileSize) / 2,
+        -((this.size) * Settings.tileSize) / 2,
         24,
         23
       );
@@ -469,7 +469,7 @@ export class Mob {
       stage.ctx.fillText(
         projectile.damage, 
         0,
-        -((this.size) * Constants.tileSize) / 2 + 15,
+        -((this.size) * Settings.tileSize) / 2 + 15,
       );
       stage.ctx.textAlign="left";
     });
