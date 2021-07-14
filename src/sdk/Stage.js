@@ -2,8 +2,10 @@
 import _ from 'lodash';
 import ClickAnimation from './ClickAnimation';
 import Constants from "./Constants";
+import ContextMenu from './ContextMenu';
 import ControlPanelController from './ControlPanelController';
 import Pathing from './Pathing';
+import Point from './Utils/Point';
 
 
 export default class Stage {
@@ -17,6 +19,7 @@ export default class Stage {
     this.entities = [];
     this.mobs = [];
     this.clickAnimation = null;
+    this.contextMenu = new ContextMenu();
 
     this.map = document.getElementById(selector);
     this.ctx = this.map.getContext("2d");
@@ -36,39 +39,77 @@ export default class Stage {
     this.offPerformanceDelta = 0;
     this.offPerformanceCount = 0;
 
-    this.map.addEventListener('mousedown', this.mapClick.bind(this));
+    this.map.addEventListener('click', this.mapClick.bind(this));
+    this.map.addEventListener('contextmenu', (e) =>{
+      const x = e.offsetX;
+      const y = e.offsetY;
+      this.contextMenu.setPosition(new Point(x, y));
+      /*gather options */
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Constants.framesPerTick);
+      let menuOptions = [];
+      mobs.forEach((mob) => {
+        menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
+      })
+      this.contextMenu.setMenuOptions(menuOptions);
+      this.contextMenu.setActive();
+    });
+
+    this.map.addEventListener("mousemove", (e) => {      
+      const x = e.clientX;
+      const y = e.clientY;
+      this.contextMenu.cursorMovedTo(this, x, y);
+    })
   }
 
-  getContext() {
-    return this.ctx;
+  mapClick(e) {
+
+    const framePercent = this.frameCounter / Constants.framesPerTick;
+
+    let x = e.offsetX;
+    let y = e.offsetY;
+
+    const xAlign = this.contextMenu.position.x - (this.contextMenu.width / 2) < x && x < this.contextMenu.position.x + this.contextMenu.width / 2;
+    const yAlign = this.contextMenu.position.y < y && y < this.contextMenu.position.y + this.contextMenu.height;
+
+    if (this.contextMenu.isActive && xAlign && yAlign) {
+      this.contextMenu.clicked(this, x, y);
+    } else {
+      if (this.inputDelay){
+        clearTimeout(this.inputDelay);
+      }
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
+
+      this.player.seeking = false;
+      if (mobs.length) {
+        this.redClick();
+        this.playerAttackClick(mobs[0])
+      }else {
+        this.yellowClick();
+        this.playerWalkClick(x, y);
+      }
+      
+    }
+    this.contextMenu.setInactive();
+
   }
 
-  setPlayer(player) {
-    this.player = player;
+  playerAttackClick(mob) {
+    this.inputDelay = setTimeout(() => {
+      this.player.seeking = mob;
+    }, 100);
+  }
+  
+  playerWalkClick(x, y) {
+    this.inputDelay = setTimeout(() => {
+      this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
+    }, 100);
   }
 
-  setControlPanel(controlPanel){
-    this.controlPanel = controlPanel;
+  redClick() {
+    this.clickAnimation = new ClickAnimation('red', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y);
   }
-
-  addEntity(entity) {
-    this.entities.push(entity);
-  }
-
-  removeEntity(entity) {
-    _.remove(this.entities, entity);
-  }
-
-  addMob(mob) {
-    this.mobs.push(mob);
-  }
-
-  removeMob(mob) {
-    _.remove(this.mobs, mob);
-  }
-
-  startTicking() {
-    setInterval(this.gameLoop.bind(this), Constants.tickMs / Constants.framesPerTick); 
+  yellowClick() {
+    this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y);
   }
 
   gameLoop() {
@@ -123,29 +164,6 @@ export default class Stage {
     }
     this.frameTime = performance.now() - t;
   }
-
-  mapClick(e) {
-    const framePercent = this.frameCounter / Constants.framesPerTick;
-
-    let x = e.offsetX;
-    let y = e.offsetY;
-    if (this.inputDelay){
-      clearTimeout(this.inputDelay);
-    }
-    this.inputDelay = setTimeout(() => {
-      // maybe this should live in the player class? seems very player related in current form.
-      this.player.seeking = false;
-      const mob = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
-      if (mob) {
-        this.clickAnimation = new ClickAnimation('red', x, y);
-        this.player.seeking = mob;
-      }else {
-        this.clickAnimation = new ClickAnimation('yellow', x, y);
-        this.player.moveTo(Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
-      }
-    }, 150);
-  }
-
   draw(framePercent) {
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = "black";
@@ -176,6 +194,8 @@ export default class Stage {
     }
     this.player.draw(this, framePercent);
     
+    this.contextMenu.draw(this);
+
     if (this.clickAnimation) {
       this.clickAnimation.draw(this, framePercent)
     }
@@ -200,5 +220,33 @@ export default class Stage {
       this.ctx.textAlign="left";
   
     }
+  }
+
+  setPlayer(player) {
+    this.player = player;
+  }
+
+  setControlPanel(controlPanel){
+    this.controlPanel = controlPanel;
+  }
+
+  addEntity(entity) {
+    this.entities.push(entity);
+  }
+
+  removeEntity(entity) {
+    _.remove(this.entities, entity);
+  }
+
+  addMob(mob) {
+    this.mobs.push(mob);
+  }
+
+  removeMob(mob) {
+    _.remove(this.mobs, mob);
+  }
+
+  startTicking() {
+    setInterval(this.gameLoop.bind(this), Constants.tickMs / Constants.framesPerTick); 
   }
 }

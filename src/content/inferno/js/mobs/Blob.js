@@ -15,6 +15,18 @@ import Point from "../../../../sdk/Utils/Point";
 export class Blob extends Mob{
 
 
+  get displayName(){
+    return "Jal-Ak";
+  }
+
+  get combatLevel() {
+    return 165
+  }
+
+  get combatLevelColor() {
+    return 'red';
+  }
+  
   setStats () {
     this.frozen = 1;
 

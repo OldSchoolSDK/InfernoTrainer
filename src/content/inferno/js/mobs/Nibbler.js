@@ -19,6 +19,18 @@ class NibblerWeapon extends MeleeWeapon {
 
 export class Nibbler extends Mob{
 
+  get displayName(){
+    return "Jal-Nib";
+  }
+
+  get combatLevel() {
+    return 32
+  }
+
+  get combatLevelColor() {
+    return 'lime';
+  }
+
 
   setStats () {
     this.frozen = 1;

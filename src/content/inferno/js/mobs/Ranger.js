@@ -11,6 +11,18 @@ import RangerSound from "../../assets/sounds/ranger.ogg";
 export class Ranger extends Mob {
 
 
+  get displayName(){
+    return "Jal-Xil";
+  }
+
+  get combatLevel() {
+    return 370
+  }
+
+  get combatLevelColor() {
+    return 'red';
+  }
+  
   setStats () {
     this.frozen = 1;
 

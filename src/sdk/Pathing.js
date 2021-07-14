@@ -29,13 +29,14 @@ export default class Pathing {
 
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation(stage, x, y, framePercent) {
+    const mobs = [];
     for (let i = 0; i < stage.mobs.length; i++) {
       const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, stage.mobs[i]);
       if (collidedWithSpecificMob) {
-        return stage.mobs[i];
+        mobs.push(stage.mobs[i])
       }
     }
-    return null;
+    return mobs;
   }
 
   static collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, mob) {

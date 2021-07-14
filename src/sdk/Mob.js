@@ -292,6 +292,10 @@ export class Mob {
       }
     }
 
+    if (!this.weapons[attackStyle])
+    {
+      klasdjflak;
+    }
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
@@ -316,6 +320,30 @@ export class Mob {
     if (Constants.playsAudio){
       new Audio(this.sound).play();
     }
+  }
+
+  get displayName(){
+    return "Jal-No-Name";
+  }
+
+  get combatLevel() {
+    return 99
+  }
+
+  get combatLevelColor() {
+    return 'red';
+  }
+
+  contextActions(stage, x, y){
+    return [
+      {
+        text: [{text: "Attack ", fillStyle: "white"}, {text: this.displayName, fillStyle: "yellow"},{text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor}],
+        action: () => {
+          stage.redClick();
+          stage.playerAttackClick(this);
+        }
+      }
+    ]
   }
 
   draw(stage, framePercent) {
