@@ -109,6 +109,10 @@ export class Player extends Unit{
     }
   }
 
+  dead(region) {
+
+  }
+  
   attack(region) {
 
     
@@ -233,22 +237,19 @@ export class Player extends Unit{
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
-    this.incomingProjectiles.forEach((projectile) => {
-      projectile.delay--;
-      if (projectile.delay < 0) {
-        this.currentStats.hitpoint -= projectile.damage;
-      }
-    });
-    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
-    
+    this.processIncomingAttacks();
+
+    this.attackIfPossible();
+  }
+
+  attackIfPossible() {
     this.attackCooldownTicks--;
-    if (!this.aggro){
-      return;
-    }
-    this.setHasLOS(region);
-    if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
-      this.attack(region)
-      this.attackCooldownTicks = this.attackSpeed;
+    if (this.aggro){
+      this.setHasLOS(region);
+      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
+        this.attack(region)
+        this.attackCooldownTicks = this.attackSpeed;
+      }
     }
   }
 

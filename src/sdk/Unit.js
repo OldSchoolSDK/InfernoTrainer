@@ -154,6 +154,39 @@ export class Unit {
     // override pls
   }
 
+  dead(region) {
+    this.perceivedLocation = this.location;
+    this.dying = 3;
+  }
+
+  detectDeath(){
+    if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
+      this.dead(region);
+      return;
+    }
+    
+    if (this.dying > 0){
+      this.dying--;
+    }
+    if (this.dying === 0 ){
+      this.removedFromRegion(region);
+    }
+  }
+
+
+  processIncomingAttacks() {
+
+    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
+    this.incomingProjectiles.forEach((projectile) => {
+      projectile.delay--;
+      if (projectile.delay == 0) {
+        this.currentStats.hitpoint -= projectile.damage;
+      }
+    });
+    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
+
+  }
+
   drawHPBar(region){
 
     region.ctx.fillStyle = "red";
@@ -185,7 +218,7 @@ export class Unit {
 
     let projectileCounter = 0;
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay >= 0 ) {
+      if (projectile.delay > 0 ) {
         return;
       }
       if (projectileCounter > 3){

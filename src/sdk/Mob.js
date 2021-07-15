@@ -138,12 +138,6 @@ export class Mob extends Unit{
 
     this.frozen--;
   }
-
-  dead(region) {
-    this.perceivedLocation = this.location;
-    this.dying = 3;
-  }
-
   // todo: Rename this possibly? it returns the attack style if it's possible
   canMeleeIfClose() {
     return false;
@@ -156,43 +150,28 @@ export class Mob extends Unit{
       }
     }
 
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
-    
     if (this.dying === 0) {
       return;
     }
-
-    this.incomingProjectiles.forEach((projectile) => {
-      projectile.delay--;
-      if (projectile.delay == 0) {
-        this.currentStats.hitpoint -= projectile.damage;
-      }
-    });
-    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
-      return this.dead(region);
-    }
-    
-    this.attackCooldownTicks--;
-
-    this.hadLOS = this.hasLOS;
-    this.setHasLOS(region);
-
+    this.processIncomingAttacks();
     this.attackIfPossible(region);
-    if (this.dying > 0){
-      this.dying--;
-    }
-    if (this.dying === 0 ){
-      this.removedFromRegion(region);
-    }
+    this.detectDeath();
   }
+  
 
   get attackStyle() {
     return 'slash';
   }
 
+
   attackIfPossible(region){
+
+    this.attackCooldownTicks--;
+
+    this.hadLOS = this.hasLOS;
+    this.setHasLOS(region);
+
     let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
     if (!weaponIsAreaAttack) {
