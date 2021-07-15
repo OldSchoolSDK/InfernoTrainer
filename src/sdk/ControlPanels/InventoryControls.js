@@ -4,17 +4,14 @@ import InventoryTab from "../../assets/images/tabs/inventory.png";
 import { Pathing } from "../Pathing";
 import { BaseControls } from "./BaseControls";
 import { BrowserUtils } from "../Utils/BrowserUtils";
-import { Blowpipe } from "../../content/weapons/Blowpipe";
-import { ScytheOfVitur } from "../../content/weapons/ScytheOfVitur";
 
 
 export class InventoryControls extends BaseControls{
 
-  constructor() {
+  constructor(inventory) {
     super();
 
-    InventoryControls.inventory[0] = new Blowpipe();
-    InventoryControls.inventory[1] = new ScytheOfVitur();
+    InventoryControls.inventory = [];
 
   }
 

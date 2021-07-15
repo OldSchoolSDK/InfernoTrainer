@@ -6,6 +6,7 @@ import { Region } from './sdk/Region';
 import { ControlPanelController } from './sdk/ControlPanelController';
 import { BrowserUtils } from './sdk/Utils/BrowserUtils';
 import { Settings } from './sdk/Settings';
+import { InventoryControls } from "./sdk/ControlPanels/InventoryControls";
 
 const selectedScenarioName = Settings.scenario;
 let selectedScenario;
@@ -22,7 +23,8 @@ switch (selectedScenarioName) {
 // Create region
 const region = new Region("map", selectedScenario.getRegionWidth(), selectedScenario.getRegionHeight());
 
-const controlPanel = new ControlPanelController();
+const controlPanel = new ControlPanelController(selectedScenario);
+InventoryControls.inventory = selectedScenario.getInventory();
 
 region.setControlPanel(controlPanel);
 controlPanel.setRegion(region);

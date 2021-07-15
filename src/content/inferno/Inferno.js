@@ -9,6 +9,7 @@ import { Meleer } from "./js/mobs/Meleer";
 import { Blob } from "./js/mobs/Blob";
 import { Bat } from "./js/mobs/Bat";
 import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
+import { Blowpipe } from "../weapons/Blowpipe";
 import { Scenario } from "../../sdk/Scenario";
 
 export class Inferno extends Scenario {
@@ -17,13 +18,19 @@ export class Inferno extends Scenario {
     return "Inferno";
   }
 
+  getInventory() {
+    return [new Blowpipe()];
+  }
+
   initialize(region, document) {
     // Add pillars
     Pillar.addPillarsToRegion(region);
 
 
     // Add player
-    const player = new Player({ x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3});
+    const player = new Player(
+      { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
+      new TwistedBow());
     region.setPlayer(player);
 
     // Add mobs

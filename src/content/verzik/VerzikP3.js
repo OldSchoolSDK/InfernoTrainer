@@ -7,6 +7,7 @@ import { ControlPanelController } from "../../sdk/ControlPanelController";
 import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
 import { Verzik } from "./js/mobs/Verzik";
 import { Scenario } from "../../sdk/Scenario";
+import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
 
 export class VerzikP3 extends Scenario {
   
@@ -14,9 +15,15 @@ export class VerzikP3 extends Scenario {
     return "Verzik Phase 3";
   }
 
+  getInventory() {
+    return [];
+  }
+
   initialize(region, document) {
     // Add player
-    const player = new Player({ x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3});
+    const player = new Player(
+      { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
+      new ScytheOfVitur());
     region.setPlayer(player);
 
     // Add mobs

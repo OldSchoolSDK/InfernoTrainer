@@ -2,8 +2,9 @@
 
 import ScytheInventImage from "../../assets/images/weapons/scytheOfVitur.png"
 import { MeleeWeapon } from "../../sdk/Weapons/MeleeWeapon";
+import { Pathing } from "../../sdk/Pathing";
 
-export class ScytheOfVitur extends MeleeWeapon{
+export class ScytheOfVitur extends MeleeWeapon {
   get attackRange() {
       return 1;
   }
@@ -43,5 +44,52 @@ export class ScytheOfVitur extends MeleeWeapon{
         slayer: 0
       }
     }
+  }
+
+  // Scythe attacks in a 1x3 arc in front of the player.
+  // TODO: Refactor/change method so that it can actually hit multiple targets.
+  attack(region, from, to, bonuses = {}){
+    // As there is no concept of player direction yet, we dynamically calculate this based on the relative location of 
+    // the attacker.
+    // Find the closest tile on the npc to us.
+    const seekingTiles = [];
+    for (let xx=0; xx < to.size; xx++){
+      for (let yy=0; yy < to.size; yy++){
+        seekingTiles.push({
+          x: to.location.x + xx,
+          y: to.location.y - yy
+        });
+      }
+    }
+    const targetTile = _.minBy(seekingTiles, (point) => Pathing.dist(from.location.x, from.location.y, point.x, point.y));
+
+    const extraHitLocations = [
+      [[-1, -1], [1, -1]], // North
+      [[1, 1], [1, -1]], // East
+      [[-1, 1], [1, 1]], // South
+      [[-1, 1], [-1, -1]], // West
+    ];
+    let dx = from.location.x - targetTile.x;
+    let dy = from.location.y - targetTile.y;
+    let direction;
+    if (dx < 0) {
+      direction = 1; // East
+    } else if (dx > 0) {
+      direction = 3; // West
+    } else if (dy < 0) {
+      direction = 2; // South
+    } else {
+      direction = 0; // North
+    }
+    // Full damage attack, but each subsequent hit does half of the last.
+    super.attack(region, from, to, bonuses);
+    extraHitLocations[direction].forEach(hit => {
+      if (to.isOnTile(from.location.x + hit[0], from.location.y + hit[1])) {
+        let extraHitBonuses = {
+          overallMultipler: 0.5
+        };
+        super.attack(region, from, to, extraHitBonuses);
+      }
+    });
   }
 }

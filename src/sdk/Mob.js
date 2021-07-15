@@ -299,6 +299,11 @@ export class Mob {
     return isWithinMeleeRange;
   }
 
+  // Returns true if this mob is on the specified tile.
+  isOnTile(x, y) {
+    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size);
+  }
+
   attack(region){
     let attackStyle = this.attackStyle();
 
@@ -483,17 +488,17 @@ export class Mob {
       }
       projectileCounter++;
       const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage;
+    
       if (!projectile.offsetX && !projectile.offsetY){
         projectile.offsetX = projectileOffsets[0][0];
         projectile.offsetY = projectileOffsets[0][1];
       }
-    
       projectileOffsets = _.remove(projectileOffsets, (offset) => {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      let hitsplatOriginX = 0;
-      let hitsplatOriginY = 0;
+      let hitsplatOriginX = 0 + projectile.offsetX;
+      let hitsplatOriginY = 0 + projectile.offsetY;
 
       region.ctx.drawImage(
         image,

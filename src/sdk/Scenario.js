@@ -1,5 +1,7 @@
 'use strict';
 
+import { TwistedBow } from "../content/weapons/TwistedBow";
+
 // Base class for any trainer scenario.
 export class Scenario {
   
@@ -16,6 +18,10 @@ export class Scenario {
 
   getRegionHeight() {
     return 30;
+  }
+
+  getInventory() {
+    return [];
   }
 
   // Spawn entities, NPCs, player and initialize any extra UI controls.

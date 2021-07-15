@@ -11,6 +11,7 @@ export class MeleeWeapon extends Weapon {
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+    bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0;
 
     let damage = this._rollAttack(from, to, bonuses);
 
@@ -88,7 +89,11 @@ export class MeleeWeapon extends Weapon {
   }
 
   _maxHit(from, to, bonuses) {
-    return Math.floor(Math.floor((this._strengthLevel(from,to,bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640) * bonuses.gearMultiplier)
+    return Math.floor(
+      Math.floor(
+        (this._strengthLevel(from,to,bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640
+      ) * bonuses.gearMultiplier * bonuses.overallMultiplier
+    )
   }
 
   _attackLevel(from, to, bonuses) {

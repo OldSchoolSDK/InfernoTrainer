@@ -9,7 +9,7 @@ import _ from "lodash";
 
 export class Player {
 
-  constructor(location) {
+  constructor(location, weapon) {
     this.prayers = [];
 
     this.dying = -1;
@@ -66,7 +66,7 @@ export class Player {
     this.perceivedLocation = location;
     this.destinationLocation = -1;
     this.path = null;
-    this.weapon = new TwistedBow();
+    this.weapon = weapon;
     this.incomingProjectiles = [];
 
 

@@ -95,7 +95,7 @@ export class Verzik extends Mob{
 
   // Verzik can always move towards its target, even if it has LOS.
   getCanMove(region) {
-    return !this.isWithinMeleeRange() && !this.isDying();
+    return !this.isWithinMeleeRange() && !this.isDying() && this.attackCooldownTicks != 1;
   }
 
   canMeleeIfClose() {
