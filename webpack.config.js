@@ -2,7 +2,7 @@ const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack');
 
-const isDevBuild = false;
+let isDevBuild = false;
 if (!process.env.COMMIT_REF) {
   isDevBuild = true;
   process.env.COMMIT_REF = "local build"
@@ -11,10 +11,10 @@ if (!process.env.BUILD_DATE) {
   isDevBuild = true;
   process.env.BUILD_DATE = "n/a";
 }
-const content = 'inferno';
+const content = 'verzik';
 module.exports = {
   mode: isDevBuild ? 'development' : 'production',
-  entry: './src/content/inferno/index.js',
+  entry: './src/content/' + content + '/index.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
