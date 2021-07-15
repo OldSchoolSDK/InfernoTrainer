@@ -80,15 +80,6 @@ export class Mob extends Unit{
     }
   }
 
-  setHasLOS(region){
-    if (this.aggro === region.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
-    }else if (this.aggro.type === Unit.types.MOB){
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, true);
-    }else if (this.aggro.isEntity) {
-      this.hasLOS = false;
-    }
-  }
 
   movementStep(region) {
 

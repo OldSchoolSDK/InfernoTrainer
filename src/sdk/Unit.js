@@ -3,6 +3,7 @@
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
 import { Settings } from "./Settings";
+import { LineOfSight } from "./LineOfSight";
 
 export class Unit {
 
@@ -89,6 +90,16 @@ export class Unit {
 
   get color() {
     return "#FFFFFF";
+  }
+
+  setHasLOS(region){
+    if (this.aggro === region.player) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
+    }else if (this.aggro.type === Unit.types.MOB){
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, this.type === Unit.types.MOB);
+    }else if (this.aggro.isEntity) {
+      this.hasLOS = false;
+    }
   }
 
   addProjectile(projectile) {

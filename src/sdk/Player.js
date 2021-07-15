@@ -166,7 +166,7 @@ export class Player extends Unit{
         }
 
       } else {
-        this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange);
+        this.setHasLOS(region);
         if (!this.hasLOS) {
           const seekingTiles = [];
           // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
@@ -267,8 +267,7 @@ export class Player extends Unit{
     if (!this.aggro){
       return;
     }
-
-    this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange);
+    this.setHasLOS(region);
     if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
       this.attack(region)
       this.attackCooldownTicks = this.attackSpeed;
