@@ -9,6 +9,7 @@ import { Meleer } from "./js/mobs/Meleer";
 import { Blob } from "./js/mobs/Blob";
 import { Bat } from "./js/mobs/Bat";
 import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
+import { TwistedBow } from "../weapons/TwistedBow";
 import { Blowpipe } from "../weapons/Blowpipe";
 import { Scenario } from "../../sdk/Scenario";
 
