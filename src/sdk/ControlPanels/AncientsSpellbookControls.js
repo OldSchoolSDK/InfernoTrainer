@@ -22,22 +22,22 @@ export class AncientsSpellbookControls extends BaseControls{
   }
 
 
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
 
 
     if (x >= 21 && x <= 42){
       if (y >= 229 && y <= 249) {
-        stage.player.manualSpellCastSelection = new BarrageMagicWeapon();
+        region.player.manualSpellCastSelection = new BarrageMagicWeapon();
         return;
       }
     }
   }
 
 
-  draw(stage, ctrl, x, y) {
+  draw(region, ctrl, x, y) {
     ctrl.ctx.drawImage(this.panelImage, x, y);
 
-    if (stage.player.manualSpellCastSelection) {
+    if (region.player.manualSpellCastSelection) {
       ctrl.ctx.fillStyle = "#D1BB7773";
       ctrl.ctx.fillRect( 47, 225, 21, 21);
     }

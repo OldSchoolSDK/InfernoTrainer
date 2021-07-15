@@ -3,7 +3,7 @@ import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export class MagicWeapon extends Weapon {
-  attack(stage, from, to, bonuses = {}, forceSWOnly = false){
+  attack(region, from, to, bonuses = {}, forceSWOnly = false){
 
     this._calculatePrayerEffects(from, to, bonuses, forceSWOnly);
 

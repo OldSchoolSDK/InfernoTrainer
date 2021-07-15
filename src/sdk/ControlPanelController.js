@@ -29,7 +29,7 @@ export class ControlPanelController {
     this.canvas.width = 33 * 7;
     this.canvas.height = 36 * 2 + 275;
 
-    this.stage = null;
+    this.region = null;
 
 
     this.canvas.addEventListener('mousedown', this.controlPanelClick.bind(this));
@@ -63,8 +63,8 @@ export class ControlPanelController {
 
   }
 
-  setStage(stage){
-    this.stage = stage;
+  setRegion(region){
+    this.region = region;
   }
 
   tabPosition(i, compact) {
@@ -108,18 +108,18 @@ export class ControlPanelController {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX;
         const relativeY = y - panelY;
-        this.selectedControl.clickedPanel(this.stage, relativeX, relativeY);
+        this.selectedControl.clickedPanel(this.region, relativeX, relativeY);
       }
     }
   }
   
-  draw(stage) {
+  draw(region) {
     this.ctx.fillStyle = "#000";
 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(stage, this, this.canvas.width - 204, 0);
+      this.selectedControl.draw(region, this, this.canvas.width - 204, 0);
     }
 
     let selectedPosition = null;

@@ -31,7 +31,7 @@ export class InventoryControls extends BaseControls{
   }
 
   
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
 
     let itemX, itemY;
     const clickedItem = _.first(_.filter(InventoryControls.inventory, (inventoryItem, index) => {
@@ -51,20 +51,20 @@ export class InventoryControls extends BaseControls{
 
     if (clickedItem) {
       if (true) { // "Is this something with a left click action"
-        const currentWeapon = stage.player.weapon;
+        const currentWeapon = region.player.weapon;
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon;
-        stage.player.weapon = clickedItem;
-        stage.player.seeking = null;
-        stage.player.bonuses = clickedItem.bonuses; // temp code 
+        region.player.weapon = clickedItem;
+        region.player.seeking = null;
+        region.player.bonuses = clickedItem.bonuses; // temp code 
       }else{
         clickedItem.selected = true;
       }
     }
   }
 
-  draw(stage, ctrl, x, y) {
+  draw(region, ctrl, x, y) {
 
-    super.draw(stage, ctrl, x, y);
+    super.draw(region, ctrl, x, y);
 
     InventoryControls.inventory.forEach((inventoryItem, index) => {
 

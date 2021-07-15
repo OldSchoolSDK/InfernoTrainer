@@ -19,11 +19,11 @@ export class BaseControls {
     return null;
   }
 
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
     console.log(x, y);
   }
 
-  draw(stage, ctrl, x, y) {
+  draw(region, ctrl, x, y) {
     ctrl.ctx.drawImage(this.panelImage, x, y);
   }
 

@@ -47,12 +47,12 @@ export class ClickAnimation {
     }
   }
 
-  draw(stage, framePercent) {
+  draw(region, framePercent) {
     if (this.ttl <= 0) {
       return;
     }
     const frameNumber = Math.floor((1-this.ttl) * 4) 
-    stage.ctx.drawImage(
+    region.ctx.drawImage(
       ClickAnimation.frames[this.color][frameNumber],
       this.x - 9,
       this.y - 9

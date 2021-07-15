@@ -5,10 +5,9 @@ import { Settings } from "./Settings";
 import { ContextMenu } from './ContextMenu';
 import { ControlPanelController } from './ControlPanelController';
 import { Pathing } from './Pathing';
-import { Point } from './Utils/Point';
 
 
-export class Stage {
+export class Region {
 
   constructor(selector, width, height) {
     this.inputDelay = null;
@@ -120,7 +119,7 @@ export class Stage {
     this.player.movementStep(this);
     this.player.attackStep(this);
     
-    // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
+    // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
     const deadEntities = this.entities.filter((mob) => mob.dying === 0);
     deadMobs.forEach((mob) => this.removeMob(mob));

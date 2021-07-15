@@ -1,7 +1,6 @@
 'use strict';
 import _ from "lodash";
 import { Settings } from "./Settings";
-import { Point } from "./Utils/Point";
 
 export class Pathing {
 
@@ -17,19 +16,19 @@ export class Pathing {
     return !(x > (x2 + s2 - 1) || (x + s - 1) < x2 || (y - s + 1) > y2 || y < (y2 - s2 + 1));
   }
 
-  static collidesWithAnyEntities(stage, x, y, s) {
-    for (var i = 0; i < stage.entities.length; i++) {
-        if (Pathing.collisionMath(x, y, s, stage.entities[i].location.x, stage.entities[i].location.y, stage.entities[i].size)) {
+  static collidesWithAnyEntities(region, x, y, s) {
+    for (var i = 0; i < region.entities.length; i++) {
+        if (Pathing.collisionMath(x, y, s, region.entities[i].location.x, region.entities[i].location.y, region.entities[i].size)) {
           return true;
         }
     }
     return false;
   }
-  static entitiesAtPoint(stage, x, y, s) {
+  static entitiesAtPoint(region, x, y, s) {
     const entities = [];
-    for (var i = 0; i < stage.entities.length; i++) {
-        if (Pathing.collisionMath(x, y, s, stage.entities[i].location.x, stage.entities[i].location.y, stage.entities[i].size)) {
-          entities.push(stage.entities[i]);
+    for (var i = 0; i < region.entities.length; i++) {
+        if (Pathing.collisionMath(x, y, s, region.entities[i].location.x, region.entities[i].location.y, region.entities[i].size)) {
+          entities.push(region.entities[i]);
         }
     }
     return entities;
@@ -37,18 +36,18 @@ export class Pathing {
 
 
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation(stage, x, y, framePercent) {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, framePercent) {
     const mobs = [];
-    for (let i = 0; i < stage.mobs.length; i++) {
-      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, stage.mobs[i]);
+    for (let i = 0; i < region.mobs.length; i++) {
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(region, x, y, framePercent, region.mobs[i]);
       if (collidedWithSpecificMob) {
-        mobs.push(stage.mobs[i])
+        mobs.push(region.mobs[i])
       }
     }
     return mobs;
   }
 
-  static collidesWithMobAtPerceivedDisplayLocation(stage, x, y, framePercent, mob) {
+  static collidesWithMobAtPerceivedDisplayLocation(region, x, y, framePercent, mob) {
 
     let perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, framePercent);
     let perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, framePercent);
@@ -57,40 +56,40 @@ export class Pathing {
 
 
   // point.x + to.location.x, point.y + to.location.y
-  static mobsAroundMob(stage, mob, point) {
+  static mobsAroundMob(region, mob, point) {
     const mobs = [];
-    for (let i = 0; i < stage.mobs.length; i++) {
+    for (let i = 0; i < region.mobs.length; i++) {
 
-      const collidedWithSpecificMob = stage.mobs[i].location.x === point.x + mob.location.x && stage.mobs[i].location.y === point.y + mob.location.y;
+      const collidedWithSpecificMob = region.mobs[i].location.x === point.x + mob.location.x && region.mobs[i].location.y === point.y + mob.location.y;
 
       if (collidedWithSpecificMob) {
-        mobs.push(stage.mobs[i])
+        mobs.push(region.mobs[i])
       }
     }
 
     return _.sortBy(mobs, (m) => mob !== m);
   }
 
-  static collidesWithAnyMobs(stage, x, y, s, mobToAvoid) {
-    for (let i = 0; i < stage.mobs.length; i++) {
-      if (stage.mobs[i] === mobToAvoid) {
+  static collidesWithAnyMobs(region, x, y, s, mobToAvoid) {
+    for (let i = 0; i < region.mobs.length; i++) {
+      if (region.mobs[i] === mobToAvoid) {
         continue;
       }
 
-      const collidedWithSpecificMob = Pathing.collidesWithMob(stage, x, y, s, stage.mobs[i]);
+      const collidedWithSpecificMob = Pathing.collidesWithMob(region, x, y, s, region.mobs[i]);
 
-      if (collidedWithSpecificMob && stage.mobs[i].consumesSpace) {
-        return stage.mobs[i];
+      if (collidedWithSpecificMob && region.mobs[i].consumesSpace) {
+        return region.mobs[i];
       }
     }
     return null;
   }
 
-  static collidesWithMob(stage, x, y, s, mob) {
+  static collidesWithMob(region, x, y, s, mob) {
     return (Pathing.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size));
   }
 
-  static canTileBePathedTo(stage, x, y, s, mobToAvoid) {
+  static canTileBePathedTo(region, x, y, s, mobToAvoid) {
     if (y - (s - 1) < 0 || x + (s - 1) > 28) {
       return false;
     }
@@ -98,17 +97,17 @@ export class Pathing {
       return false;
     }
     var collision = false;
-    collision = collision | Pathing.collidesWithAnyEntities(stage, x, y, s);
+    collision = collision | Pathing.collidesWithAnyEntities(region, x, y, s);
 
     if (mobToAvoid) { // if no mobs to avoid, avoid them all
       // Player can walk under mobs
-      collision = collision | Pathing.collidesWithAnyMobs(stage, x, y, s, mobToAvoid) != null;
+      collision = collision | Pathing.collidesWithAnyMobs(region, x, y, s, mobToAvoid) != null;
     }
 
     return !collision;
   }
 
-  static constructPath(stage, startPoint, endPoint, seeking) {
+  static constructPath(region, startPoint, endPoint, seeking) {
 
     if (endPoint === -1) {
       return [];
@@ -118,7 +117,7 @@ export class Pathing {
     const y = startPoint.y;
     const toX = endPoint.x;
     const toY = endPoint.y;
-    if (!Pathing.canTileBePathedTo(stage, toX, toY, 1)) {
+    if (!Pathing.canTileBePathedTo(region, toX, toY, 1)) {
       return [];
     }
 
@@ -161,7 +160,7 @@ export class Pathing {
         pathX = parent_node.x + iDirection.x;
         pathY = parent_node.y + iDirection.y;
 
-        if (!Pathing.canTileBePathedTo(stage, pathX, pathY, 1, null)) {
+        if (!Pathing.canTileBePathedTo(region, pathX, pathY, 1, null)) {
           // Destination is not a valid square
           continue;
         }
@@ -169,12 +168,12 @@ export class Pathing {
           // Check neighbourin squares for diagonal moves
           var neighbour_x = parent_node.x;
           var neighbour_y = parent_node.y + iDirection.y;
-          if (!Pathing.canTileBePathedTo(stage, neighbour_x, neighbour_y, 1, null)) {
+          if (!Pathing.canTileBePathedTo(region, neighbour_x, neighbour_y, 1, null)) {
             continue;
           }
           var neighbour_x = parent_node.x + iDirection.x;
           var neighbour_y = parent_node.y;
-          if (!Pathing.canTileBePathedTo(stage, neighbour_x, neighbour_y, 1, null)) {
+          if (!Pathing.canTileBePathedTo(region, neighbour_x, neighbour_y, 1, null)) {
             continue;
           }
         }
@@ -198,14 +197,14 @@ export class Pathing {
     return pathTiles;
   }
 
-  static path(stage, startPoint, endPoint, speed, seeking) {
+  static path(region, startPoint, endPoint, speed, seeking) {
 
     let x, y;
-    const path = Pathing.constructPath(stage, startPoint, endPoint);
+    const path = Pathing.constructPath(region, startPoint, endPoint);
     if (path.length === 0) {
       return startPoint;
     }
-    if (seeking && Pathing.collidesWithMob(stage, path[0].x, path[0].y, 1, seeking)){
+    if (seeking && Pathing.collidesWithMob(region, path[0].x, path[0].y, 1, seeking)){
       path.shift();
     }    
 

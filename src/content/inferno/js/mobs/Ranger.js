@@ -107,7 +107,7 @@ export class Ranger extends Mob {
     }
   }
 
-  attackAnimation(stage, framePercent){
-    stage.ctx.rotate(Math.sin(-framePercent * Math.PI))
+  attackAnimation(region, framePercent){
+    region.ctx.rotate(Math.sin(-framePercent * Math.PI))
   }
 }

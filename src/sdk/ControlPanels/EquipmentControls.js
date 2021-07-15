@@ -26,17 +26,17 @@ export class EquipmentControls extends BaseControls{
   }
 
 
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
 
   }
 
 
-  draw(stage, ctrl, x, y) {
-    super.draw(stage, ctrl, x, y);
+  draw(region, ctrl, x, y) {
+    super.draw(region, ctrl, x, y);
 
-    if (stage.player.weapon) {
+    if (region.player.weapon) {
       ctrl.ctx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      ctrl.ctx.drawImage(stage.player.weapon.inventorySprite, x + 32, y + 92);
+      ctrl.ctx.drawImage(region.player.weapon.inventorySprite, x + 32, y + 92);
     }
   }
 }

@@ -10,7 +10,7 @@ import { LineOfSight } from "../../../../sdk/LineOfSight";
 import { Projectile } from "../../../../sdk/Weapons/Projectile";
 
 class NibblerWeapon extends MeleeWeapon {
-  attack(stage, from, to, bonuses) {
+  attack(region, from, to, bonuses) {
     const damage = Math.floor(Math.random() * 5);
     to.addProjectile(new Projectile(damage, from, to, 'crush'));
   }
@@ -110,13 +110,13 @@ export class Nibbler extends Mob{
     return 'crush';
   }
   
-  attackAnimation(stage, framePercent){
-    stage.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(region, framePercent){
+    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 
-  attackIfPossible(stage){
+  attackIfPossible(region){
     if (this.aggro.dying === 0) {
-      this.dead(stage); // cheat way for now. pillar should AOE 
+      this.dead(region); // cheat way for now. pillar should AOE 
     }
     let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
     this.attackFeedback = Mob.attackIndicators.NONE;
@@ -124,7 +124,7 @@ export class Nibbler extends Mob{
     const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro);
 
     if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.cd <= 0){
-      this.attack(stage);
+      this.attack(region);
     }
   }
 }

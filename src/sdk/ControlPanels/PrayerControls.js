@@ -80,7 +80,7 @@ export class PrayerControls extends BaseControls{
     return PrayerControls.prayers.filter((prayer) => prayer.isActive);
   }
 
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
     const gridX = x - 14;
     const gridY = y - 22;
 
@@ -99,9 +99,9 @@ export class PrayerControls extends BaseControls{
     }
   }
 
-  draw(stage, ctrl, x, y) {
+  draw(region, ctrl, x, y) {
 
-    super.draw(stage, ctrl, x, y);
+    super.draw(region, ctrl, x, y);
 
     PrayerControls.prayers.forEach((prayer, index) => {
 

@@ -11,14 +11,14 @@ export class Entity {
     return true;
   }
 
-  tick(stage) {
+  tick(region) {
       
   }
 
-  draw(stage) {
-    stage.ctx.fillStyle = "#000073";
+  draw(region) {
+    region.ctx.fillStyle = "#000073";
 
-    stage.ctx.fillRect(
+    region.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

@@ -2,7 +2,6 @@
 
 import { Settings } from "../../../sdk/Settings";
 import { Entity } from "../../../sdk/Entity";
-import { Point } from "../../../sdk/Utils/Point";
 
 import MissSplat from "../../../assets/images/hitsplats/miss.png"
 import DamageSplat from "../../../assets/images/hitsplats/damage.png"
@@ -43,7 +42,7 @@ export class Pillar extends Entity{
 
   }
 
-  tick(stage) {
+  tick(region) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
@@ -56,16 +55,16 @@ export class Pillar extends Entity{
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     if (this.currentStats.hitpoint <= 0) {
-      return this.dead(stage);
+      return this.dead(region);
     }
     
   }
 
 
-  draw(stage) {
-    stage.ctx.fillStyle = "#000073";
+  draw(region) {
+    region.ctx.fillStyle = "#000073";
 
-    stage.ctx.fillRect(
+    region.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
@@ -73,15 +72,15 @@ export class Pillar extends Entity{
     );
 
 
-    stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(
       this.location.x * Settings.tileSize, 
       ((this.location.y - this.size + 1) * Settings.tileSize), 
       Settings.tileSize * this.size, 
       5
     );
-    stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(
       this.location.x * Settings.tileSize, 
       ((this.location.y - this.size + 1) * Settings.tileSize), 
       (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
@@ -114,27 +113,27 @@ export class Pillar extends Entity{
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      stage.ctx.drawImage(
+      region.ctx.drawImage(
         image,
         (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX - 12,
         (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY,
         24,
         23
       );
-      stage.ctx.fillStyle = "#FFFFFF";
-      stage.ctx.font = "16px Stats_11";
-      stage.ctx.textAlign="center";
-      stage.ctx.fillText(
+      region.ctx.fillStyle = "#FFFFFF";
+      region.ctx.font = "16px Stats_11";
+      region.ctx.textAlign="center";
+      region.ctx.fillText(
         projectile.damage, 
         (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX,
         (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY + 15
       );
-      stage.ctx.textAlign="left";
+      region.ctx.textAlign="left";
     });
   }
 
 
-  dead(stage){
+  dead(region){
     this.dying = 3;
     // TODO: needs to AOE the nibblers around it 
   }
@@ -143,11 +142,11 @@ export class Pillar extends Entity{
     this.incomingProjectiles.push(projectile);
   }
 
-  static addPillarsToStage(stage) {
+  static addPillarsToRegion(region) {
     [
       { x: 0, y: 9},
       { x: 17, y: 7},
       { x: 10, y: 23}
-    ].forEach((position) => stage.addEntity(new Pillar(position, 3)));    
+    ].forEach((position) => region.addEntity(new Pillar(position, 3)));    
   }
 }

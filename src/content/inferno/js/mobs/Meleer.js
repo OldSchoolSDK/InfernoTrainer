@@ -92,36 +92,36 @@ export class Meleer extends Mob{
     return "#ACFF5633";
   }
 
-  attackAnimation(stage, framePercent){
-    stage.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
+  attackAnimation(region, framePercent){
+    region.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
-  movementStep(stage) {
-    super.movementStep(stage);
+  movementStep(region) {
+    super.movementStep(region);
     if (!this.hasLOS){
       if (((this.cd <= -38) & (Math.random() < 0.1)) | (this.cd <= -50)) {
-          this.dig(stage);
+          this.dig(region);
           this.cd = 8;
       }
     }
   }
 
-  dig(stage) {
-    if (!Pathing.collidesWithAnyEntities(stage, stage.player.location.x - 3, stage.player.location.y + 3, this.size)) {
-      this.location.x = stage.player.location.x - this.size + 1
-      this.location.y = stage.player.location.y + this.size - 1
-    } else if (!Pathing.collidesWithAnyEntities(stage, stage.player.location.x, stage.player.location.y, this.size)) {
-      this.location.x = stage.player.location.x
-      this.location.y = stage.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(stage, stage.player.location.x - 3, stage.player.location.y, this.size)) {
-      this.location.x = stage.player.location.x - this.size + 1
-      this.location.y = stage.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(stage, stage.player.location.x, stage.player.location.y + 3, this.size)) {
-      this.location.x = stage.player.location.x
-      this.location.y = stage.player.location.y + this.size - 1
+  dig(region) {
+    if (!Pathing.collidesWithAnyEntities(region, region.player.location.x - 3, region.player.location.y + 3, this.size)) {
+      this.location.x = region.player.location.x - this.size + 1
+      this.location.y = region.player.location.y + this.size - 1
+    } else if (!Pathing.collidesWithAnyEntities(region, region.player.location.x, region.player.location.y, this.size)) {
+      this.location.x = region.player.location.x
+      this.location.y = region.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(region, region.player.location.x - 3, region.player.location.y, this.size)) {
+      this.location.x = region.player.location.x - this.size + 1
+      this.location.y = region.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(region, region.player.location.x, region.player.location.y + 3, this.size)) {
+      this.location.x = region.player.location.x
+      this.location.y = region.player.location.y + this.size - 1
     } else {
-      this.location.x = stage.player.location.x - 1
-      this.location.y = stage.player.location.y + 1
+      this.location.x = region.player.location.x - 1
+      this.location.y = region.player.location.y + 1
     }
     this.perceivedLocation = this.location;
   }

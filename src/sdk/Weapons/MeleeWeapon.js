@@ -3,7 +3,7 @@ import { Weapon } from "./Weapon";
 import { BasePrayer } from "../Prayers/BasePrayer";
 
 export class MeleeWeapon extends Weapon {
-  attack(stage, from, to, bonuses = {}){
+  attack(region, from, to, bonuses = {}){
     this._calculatePrayerEffects(from, to, bonuses);
 
 

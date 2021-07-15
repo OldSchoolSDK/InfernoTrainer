@@ -1,7 +1,6 @@
 'use strict';
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
-import { Point } from "./Utils/Point";
 import { LineOfSight } from "./LineOfSight";
 import { TwistedBow } from "../content/weapons/TwistedBow";
 import MissSplat from "../assets/images/hitsplats/miss.png"
@@ -88,12 +87,12 @@ export class Player {
     return 1;
   }
 
-  moveTo(stage, x, y) {
+  moveTo(region, x, y) {
     this.seeking = null;
     this.manualSpellCastSelection = null;
 
 
-    const clickedOnEntities = Pathing.entitiesAtPoint(stage, x, y, 1);
+    const clickedOnEntities = Pathing.entitiesAtPoint(region, x, y, 1);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0];
@@ -104,7 +103,7 @@ export class Player {
         for (let xOff=-maxDist; xOff < maxDist; xOff++){
           const potentialX = x + xOff;
           const potentialY = y + yOff;
-          const e = Pathing.entitiesAtPoint(stage, potentialX, potentialY, 1);
+          const e = Pathing.entitiesAtPoint(region, potentialX, potentialY, 1);
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y);
             if (distance <= bestDistance){
@@ -126,15 +125,15 @@ export class Player {
     }
   }
 
-  attack(stage) {
+  attack(region) {
 
     
     if (this.manualSpellCastSelection){
-      this.manualSpellCastSelection.cast(stage, this, this.seeking);
+      this.manualSpellCastSelection.cast(region, this, this.seeking);
       this.manualSpellCastSelection = null;
     }else{
       // use equipped weapon
-      this.weapon.attack(stage, this, this.seeking);
+      this.weapon.attack(region, this, this.seeking);
     }
 
     // this.playAttackSound();
@@ -144,10 +143,10 @@ export class Player {
     this.incomingProjectiles.push(projectile);
   }
 
-  movementStep(stage) {
+  movementStep(region) {
     this.lastOverhead = this.overhead; 
 
-    this.overhead = _.find(stage.player.prayers, prayer => prayer.isOverhead() && prayer.isActive); 
+    this.overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive); 
 
     if (this.lastOverhead && !this.overhead){
       this.lastOverhead.playOffSound();
@@ -172,7 +171,7 @@ export class Player {
           for (let xx=-maxDist; xx < maxDist; xx++){
             const x = this.location.x + xx;
             const y = this.location.y + yy;
-            if (Pathing.canTileBePathedTo(stage, x, y, 1, true)) {
+            if (Pathing.canTileBePathedTo(region, x, y, 1, true)) {
               const distance = Pathing.dist(this.location.x, this.location.y, x, y);
               if (distance > 0 && distance < bestDistance){
                 bestDistance = distance;
@@ -186,7 +185,7 @@ export class Player {
         }
 
       }else {
-        this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
+        this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange());
         if (!this.hasLOS){
           const seekingTiles = [];
           for (let xx=0; xx < this.seeking.size; xx++){
@@ -198,7 +197,7 @@ export class Player {
             }
           }
           // Create paths to all npc tiles
-          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(stage, this.location, { x: point.x, y: point.y }).length);
+          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }).length);
           // Figure out what the min distance is
           const shortestPathLength = _.min(potentialPaths);
           // Get all of the paths of the same minimum distance (can be more than 1)
@@ -210,14 +209,13 @@ export class Player {
       }
     }
 
-    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange())){
+    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange())){
       this.destinationLocation = this.location;
     }
 
     this.perceivedLocation = this.location;
-    if (Point.compare(this.location, this.destinationLocation) === false) {
-      this.location = Pathing.path(stage, this.location, this.destinationLocation, 2, this.seeking);
-    }
+
+    this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.seeking);
     
   }
 
@@ -239,7 +237,7 @@ export class Player {
     return this.weapon.attackSpeed;
   }
   
-  attackStep(stage) {
+  attackStep(region) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
@@ -256,29 +254,29 @@ export class Player {
       return;
     }
 
-    this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.seeking, this.attackRange());
+    this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange());
     if (this.hasLOS && this.seeking && this.cd <= 0) {
-      this.attack(stage)
+      this.attack(region)
       this.cd = this.attackSpeed();
     }
   }
 
-  draw(stage, framePercent) {
+  draw(region, framePercent) {
 
-    LineOfSight.drawLOS(stage, this.location.x, this.location.y, 1, this.attackRange());
+    LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange());
 
     // Draw player
-    stage.ctx.fillStyle = "#fff";
+    region.ctx.fillStyle = "#fff";
     
     // feedback for when you shoot
     if (this.cd == this.weapon.attackSpeed) {
-      stage.ctx.fillStyle = "#00FFFF";
+      region.ctx.fillStyle = "#00FFFF";
     }
 
 
-    stage.ctx.strokeStyle = "#FFFFFF73"
-    stage.ctx.lineWidth = 3;
-    stage.ctx.strokeRect(
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.strokeRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -290,15 +288,15 @@ export class Player {
 
     // Perceived location
 
-    stage.ctx.globalAlpha = .7;
-    stage.ctx.fillStyle = "#FFFF00"
-    stage.ctx.fillRect(
+    region.ctx.globalAlpha = .7;
+    region.ctx.fillStyle = "#FFFF00"
+    region.ctx.fillRect(
       perceivedX * Settings.tileSize, 
       perceivedY * Settings.tileSize, 
       Settings.tileSize, 
       Settings.tileSize
     );
-    stage.ctx.globalAlpha = 1;
+    region.ctx.globalAlpha = 1;
     ////
     let projectileOffsets = [
       [0, 0],
@@ -326,7 +324,7 @@ export class Player {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      stage.ctx.drawImage(
+      region.ctx.drawImage(
         image,
         perceivedX * Settings.tileSize + projectile.offsetX,
         (perceivedY) * Settings.tileSize + projectile.offsetY - 8,
@@ -335,31 +333,31 @@ export class Player {
       );
 
 
-      stage.ctx.fillStyle = "#FFFFFF";
-      stage.ctx.font = "16px Stats_11";
-      stage.ctx.textAlign="center";
-      stage.ctx.fillText(
+      region.ctx.fillStyle = "#FFFFFF";
+      region.ctx.font = "16px Stats_11";
+      region.ctx.textAlign="center";
+      region.ctx.fillText(
         projectile.damage, 
         perceivedX * Settings.tileSize + projectile.offsetX + 12,
         (perceivedY) * Settings.tileSize + projectile.offsetY + 15 - 8
       );
-      stage.ctx.textAlign="left";
+      region.ctx.textAlign="left";
 
       
     });
     ////
 
 
-    stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Settings.tileSize, 5);
-    stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Settings.tileSize, 5);
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Settings.tileSize, 5);
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Settings.tileSize, 5);
 
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
     if (overheads.length){
 
-      stage.ctx.drawImage(
+      region.ctx.drawImage(
         overheads[0].overheadImage(),
         perceivedX * Settings.tileSize,
         (perceivedY - 2) * Settings.tileSize,
@@ -370,17 +368,15 @@ export class Player {
 
 
     // Destination location
-    if (Point.compare(this.location, this.destinationLocation) === false) {
-      // Draw highlighted tile
-      stage.ctx.strokeStyle = "#FFFFFF73"
-      stage.ctx.lineWidth = 3;
-      stage.ctx.strokeRect(
-        this.destinationLocation.x * Settings.tileSize, 
-        this.destinationLocation.y * Settings.tileSize, 
-        Settings.tileSize, 
-        Settings.tileSize
-      );
-    }
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.strokeRect(
+      this.destinationLocation.x * Settings.tileSize, 
+      this.destinationLocation.y * Settings.tileSize, 
+      Settings.tileSize, 
+      Settings.tileSize
+    );
+    
     
   }
 }

@@ -3,7 +3,7 @@ import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export class RangedWeapon extends Weapon {
-  attack(stage, from, to, bonuses = {}){
+  attack(region, from, to, bonuses = {}){
     this._calculatePrayerEffects(from, to, bonuses);
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
