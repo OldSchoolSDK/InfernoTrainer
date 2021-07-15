@@ -184,24 +184,39 @@ export class Player {
           this.destinationLocation = { x: winner.x, y: winner.y };
         }
 
-      }else {
+      } else {
         this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange());
-        if (!this.hasLOS){
+        if (!this.hasLOS) {
           const seekingTiles = [];
-          for (let xx=0; xx < this.seeking.size; xx++){
-            for (let yy=0; yy < this.seeking.size; yy++){
-              seekingTiles.push({
-                x: this.seeking.location.x + xx, 
-                y: this.seeking.location.y - yy
-              });
+          // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
+          // "within melee range of the npc, object, or player."
+          for (let xx=-1; xx <= this.seeking.size; xx++){
+            for (let yy=-1; yy <= this.seeking.size; yy++){
+              // Edges only, and no corners.
+              if ((xx == -1 || xx == this.seeking.size || yy == -1 || yy == this.seeking.size)
+                && ((xx != yy) && (xx != -1 || yy != this.seeking.size) && (xx != this.seeking.size || yy != -1))) {
+                // Don't path into an unpathable object.
+                const px = this.seeking.location.x + xx;
+                const py = this.seeking.location.y - yy;
+                if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
+                  seekingTiles.push({
+                    x: px,
+                    y: py
+                  });
+                }
+              }
             }
           }
           // Create paths to all npc tiles
-          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }).length);
+          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }));
+          const validPaths = _.filter(potentialPaths, (path) => {
+            return true;
+          });
+          const validPathLengths = _.map(validPaths, (path) => path.length);
           // Figure out what the min distance is
-          const shortestPathLength = _.min(potentialPaths);
+          const shortestPathLength = _.min(validPathLengths);
           // Get all of the paths of the same minimum distance (can be more than 1)
-          const shortestPaths = _.filter(_.map(potentialPaths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
+          const shortestPaths = _.filter(_.map(validPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
           // Take the path that is the shortest absolute distance from player
           this.destinationLocation = _.minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
   
@@ -214,9 +229,7 @@ export class Player {
     }
 
     this.perceivedLocation = this.location;
-
     this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.seeking);
-    
   }
 
   setPrayers(prayers){
