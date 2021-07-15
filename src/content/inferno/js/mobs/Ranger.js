@@ -27,7 +27,7 @@ export class Ranger extends Mob {
     this.frozen = 1;
 
     this.weapons = {
-      slash: new MeleeWeapon(),
+      crush: new MeleeWeapon(),
       range: new RangedWeapon()
     };
 

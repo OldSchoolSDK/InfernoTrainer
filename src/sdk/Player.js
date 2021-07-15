@@ -265,23 +265,6 @@ export class Player {
 
     LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange());
 
-    // Draw player
-    region.ctx.fillStyle = "#fff";
-    
-    // feedback for when you shoot
-    if (this.cd == this.weapon.attackSpeed) {
-      region.ctx.fillStyle = "#00FFFF";
-    }
-
-
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.strokeRect(
-      this.location.x * Settings.tileSize,
-      this.location.y * Settings.tileSize,
-      Settings.tileSize,
-      Settings.tileSize
-    );
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
@@ -297,17 +280,79 @@ export class Player {
       Settings.tileSize
     );
     region.ctx.globalAlpha = 1;
-    ////
+    
+    // Draw player
+    region.ctx.fillStyle = "#fff";
+    
+    // feedback for when you shoot
+    if (this.cd == this.weapon.attackSpeed) {
+      region.ctx.fillStyle = "#00FFFF";
+    }
+
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize,
+      this.location.y * Settings.tileSize,
+      Settings.tileSize,
+      Settings.tileSize
+    );
+
+    // Destination location
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.strokeRect(
+      this.destinationLocation.x * Settings.tileSize, 
+      this.destinationLocation.y * Settings.tileSize, 
+      Settings.tileSize, 
+      Settings.tileSize
+    );
+
+
+
+    region.ctx.save();
+
+    region.ctx.translate(
+      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
+      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
+    )
+
+
+    if (Settings.rotated === 'south'){
+      region.ctx.rotate(Math.PI)
+    }
+
+
+
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
+      Settings.tileSize * this.size, 
+      5
+    );
+
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
+      5
+    );
+
+    
+
+    //
     let projectileOffsets = [
-      [0, 0],
-      [0, -16],
-      [-12, -8],
-      [12, -8]
+      [0, 12],
+      [0, 28],
+      [-14, 20],
+      [14, 20]
     ];
 
     let projectileCounter = 0;
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0 ) {
+      if (projectile.delay >= 0 ) {
         return;
       }
       if (projectileCounter > 3){
@@ -326,57 +371,40 @@ export class Player {
 
       region.ctx.drawImage(
         image,
-        perceivedX * Settings.tileSize + projectile.offsetX,
-        (perceivedY) * Settings.tileSize + projectile.offsetY - 8,
+        projectile.offsetX - 12, 
+        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY,
         24,
         23
       );
-
-
       region.ctx.fillStyle = "#FFFFFF";
       region.ctx.font = "16px Stats_11";
       region.ctx.textAlign="center";
       region.ctx.fillText(
         projectile.damage, 
-        perceivedX * Settings.tileSize + projectile.offsetX + 12,
-        (perceivedY) * Settings.tileSize + projectile.offsetY + 15 - 8
+        projectile.offsetX, 
+        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY + 15,
       );
       region.ctx.textAlign="left";
-
       
     });
+
+
     ////
-
-
-    region.ctx.fillStyle = "red";
-    region.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Settings.tileSize, 5);
-    region.ctx.fillStyle = "green";
-    region.ctx.fillRect(perceivedX * Settings.tileSize, (perceivedY * Settings.tileSize) - Settings.tileSize, Math.min(1, (this.currentStats.hitpoint / this.stats.hitpoint)) * Settings.tileSize, 5);
-
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
     if (overheads.length){
 
       region.ctx.drawImage(
         overheads[0].overheadImage(),
-        perceivedX * Settings.tileSize,
-        (perceivedY - 2) * Settings.tileSize,
+        -Settings.tileSize / 2,
+        -Settings.tileSize * 3,
         Settings.tileSize,
         Settings.tileSize
       );
     }
 
+    region.ctx.restore();
 
-    // Destination location
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.strokeRect(
-      this.destinationLocation.x * Settings.tileSize, 
-      this.destinationLocation.y * Settings.tileSize, 
-      Settings.tileSize, 
-      Settings.tileSize
-    );
-    
     
   }
 }
