@@ -9,7 +9,7 @@ import _ from "lodash";
 
 export class Player {
 
-  constructor(location) {
+  constructor(location, weapon) {
     this.prayers = [];
 
     this.dying = -1;
@@ -66,7 +66,7 @@ export class Player {
     this.perceivedLocation = location;
     this.destinationLocation = -1;
     this.path = null;
-    this.weapon = new TwistedBow();
+    this.weapon = weapon;
     this.incomingProjectiles = [];
 
 
@@ -229,7 +229,27 @@ export class Player {
     }
 
     this.perceivedLocation = this.location;
-    this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.seeking);
+    if (this.destinationLocation) {
+      this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.seeking);
+    }    
+  }
+
+  // Returns true if this player is in melee range of its target.
+  isWithinMeleeRange() {
+    const targetX = this.seeking.location.x;
+    const targetY = this.seeking.location.y;
+    let isWithinMeleeRange = false;
+
+    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }
+    return isWithinMeleeRange;
   }
 
   setPrayers(prayers){

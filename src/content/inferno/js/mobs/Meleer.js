@@ -99,9 +99,9 @@ export class Meleer extends Mob{
   movementStep(region) {
     super.movementStep(region);
     if (!this.hasLOS){
-      if (((this.cd <= -38) & (Math.random() < 0.1)) | (this.cd <= -50)) {
+      if (((this.attackCooldownTicks <= -38) & (Math.random() < 0.1)) | (this.attackCooldownTicks <= -50)) {
           this.dig(region);
-          this.cd = 8;
+          this.attackCooldownTicks = 8;
       }
     }
   }

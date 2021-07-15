@@ -42,6 +42,11 @@ export class Mob {
     return null;
   }
 
+  // TODO more modular
+  get rangeAttackAnimation() {
+    return null;
+  }
+
   get sound() {
     return null;
   }
@@ -104,9 +109,10 @@ export class Mob {
     this.aggro = aggro;
     this.perceivedLocation = location;
     this.location = location;
-    this.cd = 0;
+    this.attackCooldownTicks = 0;
     this.hasLOS = false;
     this.frozen = 0;
+    // Number of ticks until NPC dies. If -1, the NPC is not dying.
     this.dying = -1;
     this.incomingProjectiles = [];
 
@@ -121,6 +127,15 @@ export class Mob {
       this.mobImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
       this.mobImage.src = this.image;
     }
+    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
+      this.mobRangeAttackAnimation = _.map(this.rangeAttackAnimation, image => {
+        let img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
+        img.src = image;
+        return img;
+      });
+    }
+    this.currentAnimation = null;
+    this.currentAnimationTickLength = 0;
     this.setStats();
     this.currentStats.hitpoint = this.stats.hitpoint;
 
@@ -144,6 +159,15 @@ export class Mob {
     }
   }
 
+  isDying() {
+    return (this.dying > 0);
+  }
+
+  // Returns true if the NPC can move towards the unit it is aggro'd against.
+  getCanMove(region) {
+    return (!this.hasLOS && this.frozen <= 0 && !this.isDying())
+  }
+
   movementStep(region) {
 
     if (this.dying === 0) {
@@ -152,12 +176,12 @@ export class Mob {
     this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
     this.setHasLOS(region);
-    if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {
+    if (this.getCanMove(region)) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
       if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
-          // Random movement if player is under the mob
+          // Random movement if player is under the mob.
           if (Math.random() < 0.5) {
               dy = this.location.y;
               if (Math.random() < 0.5) {
@@ -178,7 +202,7 @@ export class Mob {
           dy = this.location.y;
       }
 
-      if (this.cd > this.cooldown) {
+      if (this.attackCooldownTicks > this.cooldown) {
           // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
           dx = this.location.x;
           dy = this.location.y;
@@ -213,6 +237,11 @@ export class Mob {
   }
 
   attackStep(region, playerPrayers = []) {
+    if (this.currentAnimationTickLength > 0) {
+      if (--this.currentAnimationTickLength == 0) {
+        this.currentAnimation = null;
+      }
+    }
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
     
@@ -232,7 +261,7 @@ export class Mob {
       return this.dead(region);
     }
     
-    this.cd--;
+    this.attackCooldownTicks--;
 
     this.hadLOS = this.hasLOS;
     this.setHasLOS(region);
@@ -254,12 +283,15 @@ export class Mob {
     return 'slash';
   }
 
-
   attackIfPossible(region){
-    let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    let weaponIsAreaAttack = this.weapons[this.attackStyle()].isAreaAttack;
+    let isUnderAggro = false;
+    if (!weaponIsAreaAttack) {
+      isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    }
     this.attackFeedback = Mob.attackIndicators.NONE;
 
-    if (!isUnderAggro && this.hasLOS && this.cd <= 0){
+    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
       this.attack(region);
     }
   }
@@ -268,24 +300,40 @@ export class Mob {
     return 0;
   }
 
+  // Returns true if this mob is in melee range of its target.
+  isWithinMeleeRange() {
+    const targetX = this.aggro.location.x;
+    const targetY = this.aggro.location.y;
+    let isWithinMeleeRange = false;
+
+    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }
+    return isWithinMeleeRange;
+  }
+
+  // Returns true if this mob is on the specified tile.
+  isOnTile(x, y) {
+    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size);
+  }
+
+  // Returns the closest tile on this mob to the specified point.
+  getClosestTileTo(x, y) {
+    // We simply clamp the target point to our own boundary box.
+    return [_.clamp(x, this.location.x, this.location.x + this.size), _.clamp(y, this.location.y, this.location.y - this.size)];
+  }
+
   attack(region){
     let attackStyle = this.attackStyle();
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
-      const playerX = this.aggro.location.x;
-      const playerY = this.aggro.location.y;
-      let isWithinMeleeRange = false;
-
-      if (playerX === this.location.x - 1 && (playerY <= this.location.y + 1 && playerY > this.location.y - this.size - 1)) {
-        isWithinMeleeRange = true;
-      }else if (playerY === this.location.y + 1 && (playerX >= this.location.x && playerX < this.location.x + this.size)){
-        isWithinMeleeRange = true;
-      }else if (playerX === this.location.x + this.size && (playerY <= this.location.y + 1 && playerY > this.location.y - this.size - 1)) {
-        isWithinMeleeRange = true;
-      }else if (playerY === this.location.y - this.size && (playerX >= this.location.x && playerX < this.location.x + this.size)){
-        isWithinMeleeRange = true;
-      }
-      if (isWithinMeleeRange && Math.random() < 0.5) { 
+      if (this.isWithinMeleeRange() && Math.random() < 0.5) { 
         attackStyle = this.canMeleeIfClose();
       }
     }
@@ -302,13 +350,20 @@ export class Mob {
     }
     this.weapons[attackStyle].attack(region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
+    // hack hack
+    if (attackStyle == 'range' && !this.currentAnimation) {
+      console.log("animate range");
+      this.currentAnimation = this.mobRangeAttackAnimation;
+      this.currentAnimationTickLength = 1;
+    }
+
     this.playAttackSound();
 
-    this.cd = this.cooldown;
+    this.attackCooldownTicks = this.cooldown;
   }
 
   shouldShowAttackAnimation() {
-    return this.cd === this.cooldown && this.dying === -1
+    return this.attackCooldownTicks === this.cooldown && this.dying === -1
   }
 
   get consumesSpace() {
@@ -380,11 +435,21 @@ export class Mob {
       this.size * Settings.tileSize
     );
 
+    let currentImage = this.mobImage;
+    if (this.currentAnimation != null) {
+      const animationLength = this.currentAnimation.length;
+      // TODO multi-tick animations.
+      const currentFrame = Math.floor(framePercent * animationLength);
+      if (currentFrame < animationLength) {
+        currentImage = this.currentAnimation[currentFrame];
+      } else {
+        this.currentAnimation = null;
+      }
+    }
+
     if (this.shouldShowAttackAnimation()){
       this.attackAnimation(region, framePercent);
     }
-
-
 
     region.ctx.restore();
 
@@ -400,7 +465,7 @@ export class Mob {
     }
 
     region.ctx.drawImage(
-      this.mobImage,
+      currentImage,
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -465,19 +530,22 @@ export class Mob {
       }
       projectileCounter++;
       const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage;
+    
       if (!projectile.offsetX && !projectile.offsetY){
         projectile.offsetX = projectileOffsets[0][0];
         projectile.offsetY = projectileOffsets[0][1];
       }
-    
       projectileOffsets = _.remove(projectileOffsets, (offset) => {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
+      let hitsplatOriginX = 0 + projectile.offsetX;
+      let hitsplatOriginY = 0 + projectile.offsetY;
+
       region.ctx.drawImage(
         image,
-        -12,
-        -((this.size) * Settings.tileSize) / 2,
+        hitsplatOriginX - 12,
+        hitsplatOriginY - 12,
         24,
         23
       );
@@ -486,12 +554,11 @@ export class Mob {
       region.ctx.textAlign="center";
       region.ctx.fillText(
         projectile.damage, 
-        0,
-        -((this.size) * Settings.tileSize) / 2 + 15,
+        hitsplatOriginX,
+        hitsplatOriginY + 3,
       );
       region.ctx.textAlign="left";
     });
-
 
     region.ctx.restore();
   }
