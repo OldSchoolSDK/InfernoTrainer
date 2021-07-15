@@ -246,9 +246,7 @@ export class Player extends Unit{
       return;
     }
     this.setHasLOS(region);
-    console.log('goin');
     if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
-      console.log('gone!');
       this.attack(region)
       this.attackCooldownTicks = this.attackSpeed;
     }
