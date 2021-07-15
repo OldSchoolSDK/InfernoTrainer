@@ -5,12 +5,12 @@ export class ContextMenu {
   
   constructor() {
     this.isActive = false;
-    this.position = new Point(0, 0);
+    this.position = { x: 0, y: 0 };
     this.cursorPosition = { x:0, y:0 }; 
     this.menuOptions = [];
     this.width = 0;
     this.height = 0;
-    this.activatedPosition = new Point(0, 0);
+    this.activatedPosition = { x: 0, y: 0 };
   }
 
   setPosition(position){

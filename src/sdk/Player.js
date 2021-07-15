@@ -119,10 +119,10 @@ export class Player {
       }
       const winner = _.minBy(bestDistances, (distance) => Pathing.dist(distance.x, distance.y, this.location.x, this.location.y));
       if (winner){
-        this.destinationLocation = new Point(winner.x, winner.y);
+        this.destinationLocation = { x: winner.x, y: winner.y };
       }
     }else{
-      this.destinationLocation = new Point(x, y);
+      this.destinationLocation = {x, y};
     }
   }
 
@@ -182,7 +182,7 @@ export class Player {
           }
         }
         if (winner){
-          this.destinationLocation = new Point(winner.x, winner.y);
+          this.destinationLocation = { x: winner.x, y: winner.y };
         }
 
       }else {
@@ -198,7 +198,7 @@ export class Player {
             }
           }
           // Create paths to all npc tiles
-          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(stage, this.location, new Point(point.x, point.y)).length);
+          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(stage, this.location, { x: point.x, y: point.y }).length);
           // Figure out what the min distance is
           const shortestPathLength = _.min(potentialPaths);
           // Get all of the paths of the same minimum distance (can be more than 1)

@@ -27,7 +27,7 @@ Pillar.addPillarsToStage(stage);
 
 
 // Add player
-const player = new Player(new Point(parseInt(BrowserUtils.getQueryVar("x")) || 17, parseInt(BrowserUtils.getQueryVar("y")) || 3));
+const player = new Player({ x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3});
 stage.setPlayer(player);
 
 // Add mobs
@@ -42,11 +42,11 @@ if (bat || blob || melee || ranger || mager) {
   // Backwards compatibility layer for runelite plugin
   stage.wave = "imported";
 
-  (JSON.parse(mager) || []).forEach((spawn) => stage.addMob(new Mager(new Point(spawn[0], spawn[1]), player)));
-  (JSON.parse(ranger) || []).forEach((spawn) => stage.addMob(new Ranger(new Point(spawn[0], spawn[1]), player)));
-  (JSON.parse(melee) || []).forEach((spawn) => stage.addMob(new Meleer(new Point(spawn[0], spawn[1]), player)));
-  (JSON.parse(blob) || []).forEach((spawn) => stage.addMob(new Blob(new Point(spawn[0], spawn[1]), player)));
-  (JSON.parse(bat) || []).forEach((spawn) => stage.addMob(new Bat(new Point(spawn[0], spawn[1]), player)));
+  (JSON.parse(mager) || []).forEach((spawn) => stage.addMob(new Mager({x: spawn[0], y: spawn[1]}, player)));
+  (JSON.parse(ranger) || []).forEach((spawn) => stage.addMob(new Ranger({x: spawn[0], y: spawn[1]}, player)));
+  (JSON.parse(melee) || []).forEach((spawn) => stage.addMob(new Meleer({x: spawn[0], y: spawn[1]}, player)));
+  (JSON.parse(blob) || []).forEach((spawn) => stage.addMob(new Blob({x: spawn[0], y: spawn[1]}, player)));
+  (JSON.parse(bat) || []).forEach((spawn) => stage.addMob(new Bat({x: spawn[0], y: spawn[1]}, player)));
   document.getElementById("replayLink").href = `/${window.location.search}`;
 
 }else{

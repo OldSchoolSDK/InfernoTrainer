@@ -43,7 +43,7 @@ export class Stage {
     this.map.addEventListener('contextmenu', (e) =>{
       const x = e.offsetX;
       const y = e.offsetY;
-      this.contextMenu.setPosition(new Point(x, y));
+      this.contextMenu.setPosition({x, y});
       /*gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];

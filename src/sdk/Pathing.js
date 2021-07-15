@@ -219,6 +219,6 @@ export class Pathing {
       x = path[path.length - speed - 1].x;
       y = path[path.length - speed - 1].y;
     }
-    return new Point(x, y);
+    return {x, y};
   }
 }

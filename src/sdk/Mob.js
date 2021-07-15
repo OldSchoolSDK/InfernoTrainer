@@ -150,7 +150,7 @@ export class Mob {
     if (this.dying === 0) {
       return;
     }
-    this.perceivedLocation = new Point(this.location.x, this.location.y);
+    this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
     this.setHasLOS(stage);
     if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {

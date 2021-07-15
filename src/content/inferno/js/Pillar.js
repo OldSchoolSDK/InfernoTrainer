@@ -145,9 +145,9 @@ export class Pillar extends Entity{
 
   static addPillarsToStage(stage) {
     [
-      new Point(0, 9),
-      new Point(17, 7),
-      new Point(10, 23)
+      { x: 0, y: 9},
+      { x: 17, y: 7},
+      { x: 10, y: 23}
     ].forEach((position) => stage.addEntity(new Pillar(position, 3)));    
   }
 }
