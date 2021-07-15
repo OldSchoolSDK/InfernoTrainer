@@ -11,6 +11,7 @@ import { Projectile } from "../../../../sdk/Weapons/Projectile";
 
 class NibblerWeapon extends MeleeWeapon {
   attack(region, from, to, bonuses) {
+    console.log('nib attack');
     const damage = Math.floor(Math.random() * 5);
     to.addProjectile(new Projectile(damage, from, to, 'crush'));
   }
@@ -123,7 +124,7 @@ export class Nibbler extends Mob{
 
     const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro);
 
-    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.cd <= 0){
+    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0){
       this.attack(region);
     }
   }
