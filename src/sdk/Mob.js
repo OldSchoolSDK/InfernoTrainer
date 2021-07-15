@@ -104,9 +104,10 @@ export class Mob {
     this.aggro = aggro;
     this.perceivedLocation = location;
     this.location = location;
-    this.cd = 0;
+    this.attackCooldownTicks = 0;
     this.hasLOS = false;
     this.frozen = 0;
+    // Number of ticks until NPC dies. If -1, the NPC is not dying.
     this.dying = -1;
     this.incomingProjectiles = [];
 
@@ -144,6 +145,15 @@ export class Mob {
     }
   }
 
+  isDying() {
+    return (this.dying > 0);
+  }
+
+  // Returns true if the NPC can move towards the unit it is aggro'd against.
+  getCanMove(region) {
+    return (!this.hasLOS && this.frozen <= 0 && !this.isDying())
+  }
+
   movementStep(region) {
 
     if (this.dying === 0) {
@@ -152,12 +162,12 @@ export class Mob {
     this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
     this.setHasLOS(region);
-    if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {
+    if (this.getCanMove(region)) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
       if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
-          // Random movement if player is under the mob
+          // Random movement if player is under the mob.
           if (Math.random() < 0.5) {
               dy = this.location.y;
               if (Math.random() < 0.5) {
@@ -178,7 +188,7 @@ export class Mob {
           dy = this.location.y;
       }
 
-      if (this.cd > this.cooldown) {
+      if (this.attackCooldownTicks > this.cooldown) {
           // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
           dx = this.location.x;
           dy = this.location.y;
@@ -232,7 +242,7 @@ export class Mob {
       return this.dead(region);
     }
     
-    this.cd--;
+    this.attackCooldownTicks--;
 
     this.hadLOS = this.hasLOS;
     this.setHasLOS(region);
@@ -254,12 +264,15 @@ export class Mob {
     return 'slash';
   }
 
-
   attackIfPossible(region){
-    let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    let weaponIsAreaAttack = this.weapons[this.attackStyle()].isAreaAttack;
+    let isUnderAggro = false;
+    if (!weaponIsAreaAttack) {
+      isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    }
     this.attackFeedback = Mob.attackIndicators.NONE;
 
-    if (!isUnderAggro && this.hasLOS && this.cd <= 0){
+    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
       this.attack(region);
     }
   }
@@ -268,24 +281,29 @@ export class Mob {
     return 0;
   }
 
+  // Returns true if this mob is in melee range of its target.
+  isWithinMeleeRange() {
+    const targetX = this.aggro.location.x;
+    const targetY = this.aggro.location.y;
+    let isWithinMeleeRange = false;
+
+    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
+      isWithinMeleeRange = true;
+    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
+      isWithinMeleeRange = true;
+    }
+    return isWithinMeleeRange;
+  }
+
   attack(region){
     let attackStyle = this.attackStyle();
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
-      const playerX = this.aggro.location.x;
-      const playerY = this.aggro.location.y;
-      let isWithinMeleeRange = false;
-
-      if (playerX === this.location.x - 1 && (playerY <= this.location.y + 1 && playerY > this.location.y - this.size - 1)) {
-        isWithinMeleeRange = true;
-      }else if (playerY === this.location.y + 1 && (playerX >= this.location.x && playerX < this.location.x + this.size)){
-        isWithinMeleeRange = true;
-      }else if (playerX === this.location.x + this.size && (playerY <= this.location.y + 1 && playerY > this.location.y - this.size - 1)) {
-        isWithinMeleeRange = true;
-      }else if (playerY === this.location.y - this.size && (playerX >= this.location.x && playerX < this.location.x + this.size)){
-        isWithinMeleeRange = true;
-      }
-      if (isWithinMeleeRange && Math.random() < 0.5) { 
+      if (this.isWithinMeleeRange() && Math.random() < 0.5) { 
         attackStyle = this.canMeleeIfClose();
       }
     }
@@ -304,11 +322,11 @@ export class Mob {
 
     this.playAttackSound();
 
-    this.cd = this.cooldown;
+    this.attackCooldownTicks = this.cooldown;
   }
 
   shouldShowAttackAnimation() {
-    return this.cd === this.cooldown && this.dying === -1
+    return this.attackCooldownTicks === this.cooldown && this.dying === -1
   }
 
   get consumesSpace() {
@@ -474,10 +492,13 @@ export class Mob {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
+      let hitsplatOriginX = 0;
+      let hitsplatOriginY = 0;
+
       region.ctx.drawImage(
         image,
-        -12,
-        -((this.size) * Settings.tileSize) / 2,
+        hitsplatOriginX - 12,
+        hitsplatOriginY - 12,
         24,
         23
       );
@@ -486,12 +507,11 @@ export class Mob {
       region.ctx.textAlign="center";
       region.ctx.fillText(
         projectile.damage, 
-        0,
-        -((this.size) * Settings.tileSize) / 2 + 15,
+        hitsplatOriginX,
+        hitsplatOriginY + 3,
       );
       region.ctx.textAlign="left";
     });
-
 
     region.ctx.restore();
   }

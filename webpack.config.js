@@ -11,7 +11,7 @@ if (!process.env.BUILD_DATE) {
   isDevBuild = true;
   process.env.BUILD_DATE = "n/a";
 }
-const content = 'verzik';
+const content = 'inferno';
 module.exports = {
   mode: isDevBuild ? 'development' : 'production',
   entry: './src/content/' + content + '/index.js',

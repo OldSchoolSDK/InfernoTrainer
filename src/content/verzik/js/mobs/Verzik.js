@@ -4,6 +4,7 @@ import { Mob } from "../../../../sdk/Mob";
 import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import VerzikImage from "../../assets/images/verzik.png";
 import BatSound from "../../assets/sounds/bat.ogg";
+import { AoeRangedWeapon } from "../../../../sdk/Weapons/AoeRangedWeapon";
 
 export class Verzik extends Mob{
 
@@ -19,12 +20,12 @@ export class Verzik extends Mob{
     return 'red';
   }
 
-
   setStats () {
     this.frozen = 1;
 
     this.weapons = {
-      melee: new MeleeWeapon()
+      melee: new MeleeWeapon(),
+      range: new AoeRangedWeapon(),
     }
 
     // non boosted numbers
@@ -69,7 +70,7 @@ export class Verzik extends Mob{
   }
 
   get attackRange() {
-    return 1;
+    return 20;
   }
 
   get size() {
@@ -87,9 +88,22 @@ export class Verzik extends Mob{
   get color() {
     return "#aadd7333";
   }
+  // Verzik always has line-of-sight.
+  setHasLOS(region) {
+    this.hasLOS = true;
+  }
+
+  // Verzik can always move towards its target, even if it has LOS.
+  getCanMove(region) {
+    return !this.isWithinMeleeRange() && !this.isDying();
+  }
+
+  canMeleeIfClose() {
+    return 'melee';
+  }
 
   attackStyle() {
-    return 'melee';
+    return 'range';
   }
   
   attackAnimation(region, framePercent){

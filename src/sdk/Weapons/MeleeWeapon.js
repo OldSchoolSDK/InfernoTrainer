@@ -157,5 +157,9 @@ export class MeleeWeapon extends Weapon {
     const defenceRoll = this._defenceRoll(from, to, bonuses);
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
+
+  isMeleeAttack() {
+    return true;
+  }
 }
 
