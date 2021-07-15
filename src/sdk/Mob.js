@@ -17,8 +17,8 @@ export class Mob extends Unit{
     SCAN: 3,
   });
 
-  get isMob() {
-    return true;
+  get type() {
+    return Unit.types.MOB;
   }
 
 
@@ -83,7 +83,7 @@ export class Mob extends Unit{
   setHasLOS(region){
     if (this.aggro === region.player) {
       this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
-    }else if (this.aggro.isMob){
+    }else if (this.aggro.type === Unit.types.MOB){
       this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, true);
     }else if (this.aggro.isEntity) {
       this.hasLOS = false;
@@ -197,12 +197,12 @@ export class Mob extends Unit{
     }
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'slash';
   }
 
   attackIfPossible(region){
-    let weaponIsAreaAttack = this.weapons[this.attackStyle()].isAreaAttack;
+    let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
     if (!weaponIsAreaAttack) {
       isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
@@ -248,7 +248,7 @@ export class Mob extends Unit{
   }
 
   attack(region){
-    let attackStyle = this.attackStyle();
+    let attackStyle = this.attackStyle;
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
       if (this.isWithinMeleeRange() && Math.random() < 0.5) { 

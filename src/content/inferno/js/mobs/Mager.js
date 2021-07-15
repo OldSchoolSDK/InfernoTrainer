@@ -90,7 +90,7 @@ export class Mager extends Mob{
     return "#ffffff33";
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'magic';
   }
   

@@ -93,7 +93,7 @@ export class Ranger extends Mob {
   }
 
 
-  attackStyle() {
+  get attackStyle() {
     return 'range';
   }
 

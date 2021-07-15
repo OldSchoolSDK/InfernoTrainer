@@ -86,7 +86,7 @@ export class JalAkRekKet extends Mob{
     return "#aadd7333";
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'crush';
   }
   

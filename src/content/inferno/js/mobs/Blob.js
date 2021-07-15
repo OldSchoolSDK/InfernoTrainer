@@ -108,7 +108,7 @@ export class Blob extends Mob{
     return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null;
   }
 
-  attackStyle() {
+  get attackStyle() {
     if (this.playerPrayerScan !== 'magic' && this.playerPrayerScan != 'range'){
       return (Math.random() < 0.5) ? 'magic' : 'range';
     }

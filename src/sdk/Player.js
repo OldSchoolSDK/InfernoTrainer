@@ -63,8 +63,8 @@ export class Player extends Unit{
     }
   }
 
-  get isMob() {
-    return false;
+  get type() {
+    return Unit.types.PLAYER;
   }
   
   get size() {

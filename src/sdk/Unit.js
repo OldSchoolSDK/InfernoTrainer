@@ -7,6 +7,12 @@ import { Settings } from "./Settings";
 export class Unit {
 
 
+  static types = Object.freeze({
+    MOB: 0,
+    PLAYER: 1,
+    ENTITY: 2
+  });
+
   constructor(location, options) {
 
     this.prayers = [];
