@@ -297,6 +297,15 @@ export class Player {
     );
     region.ctx.globalAlpha = 1;
 
+    // Destination location
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.strokeRect(
+      this.destinationLocation.x * Settings.tileSize, 
+      this.destinationLocation.y * Settings.tileSize, 
+      Settings.tileSize, 
+      Settings.tileSize
+    );
 
 
 
@@ -345,7 +354,7 @@ export class Player {
 
     let projectileCounter = 0;
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0 ) {
+      if (projectile.delay >= 0 ) {
         return;
       }
       if (projectileCounter > 3){
@@ -396,16 +405,6 @@ export class Player {
       );
     }
 
-
-    // Destination location
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.strokeRect(
-      this.destinationLocation.x * Settings.tileSize, 
-      this.destinationLocation.y * Settings.tileSize, 
-      Settings.tileSize, 
-      Settings.tileSize
-    );
     region.ctx.restore();
 
     

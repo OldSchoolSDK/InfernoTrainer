@@ -395,6 +395,7 @@ export class Mob {
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
+    region.ctx.scale(-1, -1);
 
     region.ctx.drawImage(
       this.mobImage,
@@ -403,6 +404,7 @@ export class Mob {
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     );
+    region.ctx.scale(-1, -1);
 
 
 

@@ -1,10 +1,11 @@
 import _ from "lodash";
+import { Settings } from "./Settings";
 
 export class ContextMenu {
   
   constructor() {
     this.isActive = false;
-    this.position = { x: 0, y: 0 };
+    this.location = { x: 0, y: 0 };
     this.cursorPosition = { x:0, y:0 }; 
     this.menuOptions = [];
     this.width = 0;
@@ -13,7 +14,7 @@ export class ContextMenu {
   }
 
   setPosition(position){
-    this.position = position;
+    this.location = position;
   }
 
   setActive() {
@@ -38,16 +39,28 @@ export class ContextMenu {
     this.cursorPosition.y = canvasY;
 
     // cursor veering too far away, make inactive again
-    if (Math.abs(canvasX - this.position.x) > this.width * 0.6) {
+    if (Math.abs(canvasX - this.location.x) > this.width * 0.6) {
       this.setInactive();
     }
-    if ((canvasY - this.position.y) < -10|| canvasY - this.position.y > this.height * 1.2){
+    if ((canvasY - this.location.y) < -10|| canvasY - this.location.y > this.height * 1.2){
       this.setInactive();
     }
   }
 
 
   draw(region) {
+
+
+    // region.ctx.save();
+
+    // region.ctx.translate(
+    //   (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
+    //   ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2),
+    // );
+
+    // if (Settings.rotated === 'south'){
+    //   region.ctx.rotate(Math.PI)
+    // }
 
     if (this.isActive){
       this.linesOfText = [
@@ -62,7 +75,7 @@ export class ContextMenu {
           text: [{text: "Walk Here", fillStyle: "white"}],
           action: () => {
             region.yellowClick();
-            region.playerWalkClick(this.position.x, this.position.y);
+            region.playerWalkClick(this.location.x, this.location.y);
           }
         },
         {
@@ -82,19 +95,20 @@ export class ContextMenu {
       this.height = 22 + (this.linesOfText.length - 1) * 20;
 
       region.ctx.fillStyle = "#5f5445";
-      region.ctx.fillRect(this.position.x - this.width / 2, this.position.y, this.width, this.height);
+      region.ctx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height);
 
       region.ctx.fillStyle = "black";
-      region.ctx.fillRect(this.position.x - this.width / 2 + 1, this.position.y + 1, this.width - 2, 17);
+      region.ctx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17);
 
       region.ctx.lineWidth = 1;
       region.ctx.strokeStyle = "black";
-      region.ctx.strokeRect(this.position.x - this.width / 2 + 2, this.position.y + 20, this.width - 4, this.height - 22);
+      region.ctx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22);
 
       for (let i=0; i<this.linesOfText.length;i++){
         this.drawLineOfText(region.ctx, this.linesOfText[i].text, this.width, i * 20);
       }
     }
+    region.ctx.restore();
   }
 
   fillMixedText (ctx, args, x, y, inputColor) {
@@ -131,16 +145,16 @@ export class ContextMenu {
 
   drawLineOfText(ctx, text, width, y) {
 
-    const isXAligned = this.cursorPosition.x > this.position.x - width / 2 && this.cursorPosition.x < this.position.x + width / 2;
-    const isYAligned = this.cursorPosition.y > this.position.y + y + 2 && this.cursorPosition.y < this.position.y + 21 + y;
+    const isXAligned = this.cursorPosition.x > this.location.x - width / 2 && this.cursorPosition.x < this.location.x + width / 2;
+    const isYAligned = this.cursorPosition.y > this.location.y + y + 2 && this.cursorPosition.y < this.location.y + 21 + y;
     const isHovered = isXAligned && isYAligned;
 
-    this.fillMixedText(ctx, text, this.position.x - width / 2 + 4, this.position.y + 15 + y, isHovered ? "yellow" : "white");
+    this.fillMixedText(ctx, text, this.location.x - width / 2 + 4, this.location.y + 15 + y, isHovered ? "yellow" : "white");
 
   }
 
   clicked(region, x, y){
-    const index = Math.floor((y - this.position.y) / 20);
+    const index = Math.floor((y - this.location.y) / 20);
     this.linesOfText[index].action();
 
   }
