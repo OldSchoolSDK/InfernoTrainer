@@ -105,7 +105,7 @@ export class Blob extends Mob{
   }
 
   shouldShowAttackAnimation() {
-    return this.cd === this.cooldown && this.playerPrayerScan === null;
+    return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null;
   }
 
   attackStyle() {
@@ -126,19 +126,19 @@ export class Blob extends Mob{
   attackIfPossible(region){
     this.attackFeedback = Mob.attackIndicators.NONE;
     // Scan when appropriate
-    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.cd <= 0))) {
+    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
       const overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'; 
       this.attackFeedback = Mob.attackIndicators.SCAN;
-      this.cd = this.cooldown;
+      this.attackCooldownTicks = this.cooldown;
       return;
     }
     
     // Perform attack. Blobs can hit through LoS if they got a scan.
-    if (this.playerPrayerScan && this.cd <=0) {
+    if (this.playerPrayerScan && this.attackCooldownTicks <=0) {
       this.attack(region);
-      this.cd = this.cooldown;
+      this.attackCooldownTicks = this.cooldown;
       this.playerPrayerScan = null;
     }
   }

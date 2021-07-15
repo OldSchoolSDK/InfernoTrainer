@@ -2,17 +2,19 @@
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
 import { LineOfSight } from "./LineOfSight";
-import { TwistedBow } from "../content/weapons/TwistedBow";
-import MissSplat from "../assets/images/hitsplats/miss.png"
-import DamageSplat from "../assets/images/hitsplats/damage.png"
 import _ from "lodash";
+import { Unit } from "./Unit";
 
-export class Player {
+export class Player extends Unit{
 
-  constructor(location, weapon) {
-    this.prayers = [];
+  constructor(location, options) {
+    super(location, options);
+    this.destinationLocation = -1;
+    this.weapon = options.weapon;
+  }
 
-    this.dying = -1;
+  setStats() {
+
     // non boosted numbers
     this.stats = {
       attack: 99,
@@ -59,24 +61,6 @@ export class Player {
         slayer: 0
       }
     }
-
-    this.lastOverhead = null;
-    this.location = location;
-    this.seeking = false;
-    this.perceivedLocation = location;
-    this.destinationLocation = -1;
-    this.path = null;
-    this.weapon = weapon;
-    this.incomingProjectiles = [];
-
-
-    this.cd = 0;
-    
-    this.missedHitsplatImage = new Image();
-    this.missedHitsplatImage.src = MissSplat;
-    this.damageHitsplatImage = new Image();
-    this.damageHitsplatImage.src = DamageSplat;
-    
   }
 
   get isMob() {
@@ -88,7 +72,7 @@ export class Player {
   }
 
   moveTo(region, x, y) {
-    this.seeking = null;
+    this.aggro = null;
     this.manualSpellCastSelection = null;
 
 
@@ -129,19 +113,16 @@ export class Player {
 
     
     if (this.manualSpellCastSelection){
-      this.manualSpellCastSelection.cast(region, this, this.seeking);
+      this.manualSpellCastSelection.cast(region, this, this.aggro);
       this.manualSpellCastSelection = null;
     }else{
       // use equipped weapon
-      this.weapon.attack(region, this, this.seeking);
+      this.weapon.attack(region, this, this.aggro);
     }
 
     // this.playAttackSound();
   }
 
-  addProjectile(projectile) {
-    this.incomingProjectiles.push(projectile);
-  }
 
   movementStep(region) {
     this.lastOverhead = this.overhead; 
@@ -154,17 +135,17 @@ export class Player {
       this.overhead.playOnSound();
     }
 
-    let isUnderSeekingMob = false;
+    let isUnderAggrodMob = false;
 
-    if (this.seeking && this.seeking.dying > -1){
-      this.seeking = null;
+    if (this.aggro && this.aggro.dying > -1){
+      this.aggro = null;
     }
 
-    if (this.seeking) {
-      isUnderSeekingMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.seeking.location.x, this.seeking.location.y, this.seeking.size);
+    if (this.aggro) {
+      isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size);
 
-      if (isUnderSeekingMob) {
-        const maxDist = Math.ceil(this.seeking.size / 2);
+      if (isUnderAggrodMob) {
+        const maxDist = Math.ceil(this.aggro.size / 2);
         let bestDistance = 9999;
         let winner = null;
         for (let yy=-maxDist; yy < maxDist; yy++){
@@ -185,19 +166,19 @@ export class Player {
         }
 
       } else {
-        this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange());
+        this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange);
         if (!this.hasLOS) {
           const seekingTiles = [];
           // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
           // "within melee range of the npc, object, or player."
-          for (let xx=-1; xx <= this.seeking.size; xx++){
-            for (let yy=-1; yy <= this.seeking.size; yy++){
+          for (let xx=-1; xx <= this.aggro.size; xx++){
+            for (let yy=-1; yy <= this.aggro.size; yy++){
               // Edges only, and no corners.
-              if ((xx == -1 || xx == this.seeking.size || yy == -1 || yy == this.seeking.size)
-                && ((xx != yy) && (xx != -1 || yy != this.seeking.size) && (xx != this.seeking.size || yy != -1))) {
+              if ((xx == -1 || xx == this.aggro.size || yy == -1 || yy == this.aggro.size)
+                && ((xx != yy) && (xx != -1 || yy != this.aggro.size) && (xx != this.aggro.size || yy != -1))) {
                 // Don't path into an unpathable object.
-                const px = this.seeking.location.x + xx;
-                const py = this.seeking.location.y - yy;
+                const px = this.aggro.location.x + xx;
+                const py = this.aggro.location.y - yy;
                 if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
                   seekingTiles.push({
                     x: px,
@@ -224,20 +205,20 @@ export class Player {
       }
     }
 
-    if (this.seeking && !isUnderSeekingMob && LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange())){
+    if (this.aggro && !isUnderAggrodMob && LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange)){
       this.destinationLocation = this.location;
     }
 
     this.perceivedLocation = this.location;
     if (this.destinationLocation) {
-      this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.seeking);
+      this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.aggro);
     }    
   }
 
   // Returns true if this player is in melee range of its target.
   isWithinMeleeRange() {
-    const targetX = this.seeking.location.x;
-    const targetY = this.seeking.location.y;
+    const targetX = this.aggro.location.x;
+    const targetY = this.aggro.location.y;
     let isWithinMeleeRange = false;
 
     if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
@@ -256,14 +237,14 @@ export class Player {
     this.prayers = prayers;
   }
 
-  attackRange() {
+  get attackRange() {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange;
     }
     return this.weapon.attackRange;
   }
 
-  attackSpeed() {
+  get attackSpeed() {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed;
     }
@@ -282,21 +263,21 @@ export class Player {
     });
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    this.cd--;
-    if (!this.seeking){
+    this.attackCooldownTicks--;
+    if (!this.aggro){
       return;
     }
 
-    this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.seeking, this.attackRange());
-    if (this.hasLOS && this.seeking && this.cd <= 0) {
+    this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange);
+    if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
       this.attack(region)
-      this.cd = this.attackSpeed();
+      this.attackCooldownTicks = this.attackSpeed;
     }
   }
 
   draw(region, framePercent) {
 
-    LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange());
+    LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange);
 
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
@@ -318,7 +299,7 @@ export class Player {
     region.ctx.fillStyle = "#fff";
     
     // feedback for when you shoot
-    if (this.cd == this.weapon.attackSpeed) {
+    if (this.attackCooldownTicks == this.weapon.attackSpeed) {
       region.ctx.fillStyle = "#00FFFF";
     }
 

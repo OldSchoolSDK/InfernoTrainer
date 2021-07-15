@@ -31,7 +31,7 @@ export class Inferno extends Scenario {
     // Add player
     const player = new Player(
       { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
-      new TwistedBow());
+      { weapon: new TwistedBow() });
     region.setPlayer(player);
 
     // Add mobs
@@ -46,11 +46,11 @@ export class Inferno extends Scenario {
       // Backwards compatibility layer for runelite plugin
       region.wave = "imported";
 
-      (JSON.parse(mager) || []).forEach((spawn) => region.addMob(new Mager({x: spawn[0], y: spawn[1]}, player)));
-      (JSON.parse(ranger) || []).forEach((spawn) => region.addMob(new Ranger({x: spawn[0], y: spawn[1]}, player)));
-      (JSON.parse(melee) || []).forEach((spawn) => region.addMob(new Meleer({x: spawn[0], y: spawn[1]}, player)));
-      (JSON.parse(blob) || []).forEach((spawn) => region.addMob(new Blob({x: spawn[0], y: spawn[1]}, player)));
-      (JSON.parse(bat) || []).forEach((spawn) => region.addMob(new Bat({x: spawn[0], y: spawn[1]}, player)));
+      (JSON.parse(mager) || []).forEach((spawn) => region.addMob(new Mager({x: spawn[0], y: spawn[1]}, { aggro: player })));
+      (JSON.parse(ranger) || []).forEach((spawn) => region.addMob(new Ranger({x: spawn[0], y: spawn[1]}, { aggro: player })));
+      (JSON.parse(melee) || []).forEach((spawn) => region.addMob(new Meleer({x: spawn[0], y: spawn[1]}, { aggro: player })));
+      (JSON.parse(blob) || []).forEach((spawn) => region.addMob(new Blob({x: spawn[0], y: spawn[1]}, { aggro: player })));
+      (JSON.parse(bat) || []).forEach((spawn) => region.addMob(new Bat({x: spawn[0], y: spawn[1]}, { aggro: player })));
       document.getElementById("replayLink").href = `/${window.location.search}`;
 
     } else {

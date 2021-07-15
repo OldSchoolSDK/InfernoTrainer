@@ -11,9 +11,6 @@ export class Pillar extends Entity{
   constructor(point, size) {
     super(point, size);
     this.incomingProjectiles = []    
-    this.cd = 0;
-
-
 
     this.missedHitsplatImage = new Image();
     this.missedHitsplatImage.src = MissSplat;
