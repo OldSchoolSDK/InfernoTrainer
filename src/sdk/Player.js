@@ -195,8 +195,6 @@ export class Player {
               // Edges only, and no corners.
               if ((xx == -1 || xx == this.seeking.size || yy == -1 || yy == this.seeking.size)
                 && ((xx != yy) && (xx != -1 || yy != this.seeking.size) && (xx != this.seeking.size || yy != -1))) {
-
-                console.log("seeking " + xx + "," + yy);
                 // Don't path into an unpathable object.
                 const px = this.seeking.location.x + xx;
                 const py = this.seeking.location.y - yy;
