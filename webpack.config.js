@@ -2,7 +2,7 @@ const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack');
 
-const isDevBuild = false;
+let isDevBuild = false;
 if (!process.env.COMMIT_REF) {
   isDevBuild = true;
   process.env.COMMIT_REF = "local build"
