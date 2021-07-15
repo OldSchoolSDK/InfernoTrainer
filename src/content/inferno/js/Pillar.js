@@ -47,6 +47,7 @@ export class Pillar extends Entity{
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
     this.incomingProjectiles.forEach((projectile) => {
+      console.log('pillar has projectile', projectile)
       projectile.delay--;
       if (projectile.delay <= 0) {
         this.currentStats.hitpoint -= projectile.damage;
