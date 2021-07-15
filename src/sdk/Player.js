@@ -202,7 +202,7 @@ export class Player {
                 const py = this.seeking.location.y - yy;
                 if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
                   seekingTiles.push({
-                    x: px, 
+                    x: px,
                     y: py
                   });
                 }
