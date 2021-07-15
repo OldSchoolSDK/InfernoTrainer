@@ -9,4 +9,5 @@ export class Settings {
   static playsAudio = false
   static inputDelay = 100;
   static rotated = BrowserUtils.getQueryVar("cam_direction") || "south";
+  static scenario = BrowserUtils.getQueryVar("scenario") || "inferno";
 }

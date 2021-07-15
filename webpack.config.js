@@ -11,10 +11,9 @@ if (!process.env.BUILD_DATE) {
   isDevBuild = true;
   process.env.BUILD_DATE = "n/a";
 }
-const content = 'verzik';
 module.exports = {
   mode: isDevBuild ? 'development' : 'production',
-  entry: './src/content/' + content + '/index.js',
+  entry: './src/index.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
