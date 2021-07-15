@@ -53,7 +53,7 @@ export class InventoryControls extends BaseControls{
         const currentWeapon = region.player.weapon;
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon;
         region.player.weapon = clickedItem;
-        region.player.seeking = null;
+        region.player.aggro = null;
         region.player.bonuses = clickedItem.bonuses; // temp code 
       }else{
         clickedItem.selected = true;

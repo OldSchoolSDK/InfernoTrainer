@@ -92,7 +92,7 @@ export class Region {
       }
 
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
-      this.player.seeking = false;
+      this.player.aggro = false;
       if (mobs.length) {
         this.redClick();
         this.playerAttackClick(mobs[0])
@@ -108,7 +108,7 @@ export class Region {
 
   playerAttackClick(mob) {
     this.inputDelay = setTimeout(() => {
-      this.player.seeking = mob;
+      this.player.aggro = mob;
     }, Settings.inputDelay);
   }
   

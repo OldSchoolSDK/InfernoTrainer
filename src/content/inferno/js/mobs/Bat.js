@@ -88,7 +88,7 @@ export class Bat extends Mob{
     return "#aadd7333";
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'range';
   }
   

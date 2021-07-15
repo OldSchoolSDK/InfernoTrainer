@@ -123,7 +123,7 @@ export class Verzik extends Mob{
 
   // Verzik can always move towards its target, even if it has LOS.
   // Verzik does not move if does a range attack on top of the target.
-  getCanMove(region) {
+  canMove(region) {
     return !this.isWithinMeleeRange()
       && !this.isDying()
       && (this.attackCooldownTicks != 1 || !this.isOnTile(this.aggro.location.x, this.aggro.location.y));
@@ -133,7 +133,7 @@ export class Verzik extends Mob{
     return 'melee';
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'range';
   }
   

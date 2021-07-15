@@ -5,11 +5,10 @@ import { Settings } from "./Settings";
 import { LineOfSight } from "./LineOfSight";
 import { Pathing } from "./Pathing";
 
-import MissSplat from "../assets/images/hitsplats/miss.png"
-import DamageSplat from "../assets/images/hitsplats/damage.png"
 import { Weapon } from "./Weapons/Weapon";
+import { Unit } from "./Unit";
 
-export class Mob {
+export class Mob extends Unit{
 
   static attackIndicators = Object.freeze({
     NONE: 0,
@@ -18,46 +17,10 @@ export class Mob {
     SCAN: 3,
   });
 
-  get isMob() {
-    return true;
+  get type() {
+    return Unit.types.MOB;
   }
 
-  get cooldown() {
-    return 0;
-  }
-
-  get attackRange() {
-    return 0;
-  }
-
-  get maxHit() {
-    return 0;
-  }
-
-  get size() {
-    return 0;
-  }
-
-  get image() {
-    return null;
-  }
-
-  // TODO more modular
-  get rangeAttackAnimation() {
-    return null;
-  }
-
-  get sound() {
-    return null;
-  }
-
-  get color() {
-    return "#FFFFFF";
-  }
-
-  attackAnimation(region, framePercent){
-    // override pls
-  }
 
   setStats () {
 
@@ -105,28 +68,9 @@ export class Mob {
     }
   }
   
-  constructor(location, aggro) {
-    this.aggro = aggro;
-    this.perceivedLocation = location;
-    this.location = location;
-    this.attackCooldownTicks = 0;
-    this.hasLOS = false;
-    this.frozen = 0;
-    // Number of ticks until NPC dies. If -1, the NPC is not dying.
-    this.dying = -1;
-    this.incomingProjectiles = [];
-
-
-    this.missedHitsplatImage = new Image();
-    this.missedHitsplatImage.src = MissSplat;
-    this.damageHitsplatImage = new Image();
-    this.damageHitsplatImage.src = DamageSplat;
+  constructor(location, options) {
+    super(location, options);
     
-
-    if (!this.mobImage){
-      this.mobImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
-      this.mobImage.src = this.image;
-    }
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
       this.mobRangeAttackAnimation = _.map(this.rangeAttackAnimation, image => {
         let img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
@@ -134,38 +78,16 @@ export class Mob {
         return img;
       });
     }
-    this.currentAnimation = null;
-    this.currentAnimationTickLength = 0;
-    this.setStats();
-    this.currentStats.hitpoint = this.stats.hitpoint;
-
-  }
-
-  addProjectile(projectile) {
-    this.incomingProjectiles.push(projectile);
-  }
-
-  setLocation(location) {
-      this.location = location;
   }
 
   setHasLOS(region){
     if (this.aggro === region.player) {
       this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
-    }else if (this.aggro.isMob){
+    }else if (this.aggro.type === Unit.types.MOB){
       this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, true);
     }else if (this.aggro.isEntity) {
       this.hasLOS = false;
     }
-  }
-
-  isDying() {
-    return (this.dying > 0);
-  }
-
-  // Returns true if the NPC can move towards the unit it is aggro'd against.
-  getCanMove(region) {
-    return (!this.hasLOS && this.frozen <= 0 && !this.isDying())
   }
 
   movementStep(region) {
@@ -176,7 +98,7 @@ export class Mob {
     this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
     this.setHasLOS(region);
-    if (this.getCanMove(region)) {
+    if (this.canMove(region)) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
@@ -275,16 +197,12 @@ export class Mob {
     }
   }
 
-  removedFromRegion(region){
-
-  }
-
-  attackStyle() {
+  get attackStyle() {
     return 'slash';
   }
 
   attackIfPossible(region){
-    let weaponIsAreaAttack = this.weapons[this.attackStyle()].isAreaAttack;
+    let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
     if (!weaponIsAreaAttack) {
       isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
@@ -330,7 +248,7 @@ export class Mob {
   }
 
   attack(region){
-    let attackStyle = this.attackStyle();
+    let attackStyle = this.attackStyle;
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
       if (this.isWithinMeleeRange() && Math.random() < 0.5) { 
@@ -435,7 +353,7 @@ export class Mob {
       this.size * Settings.tileSize
     );
 
-    let currentImage = this.mobImage;
+    let currentImage = this.unitImage;
     if (this.currentAnimation != null) {
       const animationLength = this.currentAnimation.length;
       // TODO multi-tick animations.
@@ -478,7 +396,7 @@ export class Mob {
 
 
 
-    if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange())){
+    if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange)){
       region.ctx.strokeStyle = "#00FF0073"
       region.ctx.lineWidth = 1;
       region.ctx.strokeRect(
