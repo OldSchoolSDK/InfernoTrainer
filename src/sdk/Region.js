@@ -40,9 +40,19 @@ export class Region {
 
     this.map.addEventListener('click', this.mapClick.bind(this));
     this.map.addEventListener('contextmenu', (e) =>{
-      const x = e.offsetX;
-      const y = e.offsetY;
+      
+
+
+      let x = e.offsetX;
+      let y = e.offsetY;
+
       this.contextMenu.setPosition({x, y});
+      if (Settings.rotated === 'south') {
+        x = this.width * Settings.tileSize - e.offsetX;
+        y = this.height * Settings.tileSize - e.offsetY;
+      }
+  
+    
       /*gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];
@@ -64,11 +74,18 @@ export class Region {
 
     const framePercent = this.frameCounter / Settings.framesPerTick;
 
+
     let x = e.offsetX;
     let y = e.offsetY;
+    if (Settings.rotated === 'south') {
+      x = this.width * Settings.tileSize - e.offsetX;
+      y = this.height * Settings.tileSize - e.offsetY;
+    }
 
-    const xAlign = this.contextMenu.position.x - (this.contextMenu.width / 2) < x && x < this.contextMenu.position.x + this.contextMenu.width / 2;
-    const yAlign = this.contextMenu.position.y < y && y < this.contextMenu.position.y + this.contextMenu.height;
+    // console.log('x', x, y, this.width * Settings.tileSize, this.height * Settings.tileSize);
+
+    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < x && x < this.contextMenu.location.x + this.contextMenu.width / 2;
+    const yAlign = this.contextMenu.location.y < y && y < this.contextMenu.location.y + this.contextMenu.height;
 
     if (this.contextMenu.isActive && xAlign && yAlign) {
       this.contextMenu.clicked(this, x, y);
@@ -138,8 +155,10 @@ export class Region {
     }
     this.player.draw(this, framePercent);
     
-    this.contextMenu.draw(this);
+    this.ctx.restore();
 
+
+    this.contextMenu.draw(this);
     if (this.clickAnimation) {
       this.clickAnimation.draw(this, framePercent)
     }
@@ -169,6 +188,13 @@ export class Region {
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = "black";
 
+    this.ctx.restore();
+    this.ctx.save();
+    if (Settings.rotated === 'south'){
+      this.ctx.rotate(Math.PI);
+      this.ctx.translate(-this.map.width, -this.map.height)  
+    }
+
     if (!this.hasCalcedGrid){
       // This is a GIGANTIC performance improvement ... 
       this.gridCtx.fillRect(0, 0, this.map.width, this.map.height);
@@ -187,6 +213,10 @@ export class Region {
     this.ctx.drawImage(this.grid, 0, 0);
     
     this.drawGame(framePercent);
+    
+
+    this.ctx.restore();
+    this.ctx.save();
     
     // Performance info
     this.ctx.fillStyle = "#FFFF0066";
