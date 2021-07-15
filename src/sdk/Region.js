@@ -82,8 +82,6 @@ export class Region {
       y = this.height * Settings.tileSize - e.offsetY;
     }
 
-    // console.log('x', x, y, this.width * Settings.tileSize, this.height * Settings.tileSize);
-
     const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < x && x < this.contextMenu.location.x + this.contextMenu.width / 2;
     const yAlign = this.contextMenu.location.y < y && y < this.contextMenu.location.y + this.contextMenu.height;
 
@@ -93,8 +91,8 @@ export class Region {
       if (this.inputDelay){
         clearTimeout(this.inputDelay);
       }
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
 
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
       this.player.seeking = false;
       if (mobs.length) {
         this.redClick();
@@ -211,10 +209,8 @@ export class Region {
     }
 
     this.ctx.drawImage(this.grid, 0, 0);
-    
     this.drawGame(framePercent);
     
-
     this.ctx.restore();
     this.ctx.save();
     
@@ -230,13 +226,11 @@ export class Region {
     this.ctx.fillText(`Wave: ${this.wave}`, 0, 112);
 
     if (this.heldDown){
-
       this.ctx.fillStyle = "#FFFFFF";
       this.ctx.font = "72px OSRS";
       this.ctx.textAlign="center";
       this.ctx.fillText(`GET READY...${this.heldDown}`, this.map.width / 2, this.map.height / 2 - 50);
       this.ctx.textAlign="left";
-  
     }
   }
 
