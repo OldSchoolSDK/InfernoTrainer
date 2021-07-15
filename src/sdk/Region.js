@@ -71,7 +71,6 @@ export class Region {
   }
 
   mapClick(e) {
-
     const framePercent = this.frameCounter / Settings.framesPerTick;
 
 
@@ -82,11 +81,11 @@ export class Region {
       y = this.height * Settings.tileSize - e.offsetY;
     }
 
-    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < x && x < this.contextMenu.location.x + this.contextMenu.width / 2;
-    const yAlign = this.contextMenu.location.y < y && y < this.contextMenu.location.y + this.contextMenu.height;
+    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2;
+    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height;
 
     if (this.contextMenu.isActive && xAlign && yAlign) {
-      this.contextMenu.clicked(this, x, y);
+      this.contextMenu.clicked(this, e.offsetX, e.offsetY);
     } else {
       if (this.inputDelay){
         clearTimeout(this.inputDelay);
