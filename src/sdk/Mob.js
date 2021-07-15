@@ -209,35 +209,6 @@ export class Mob extends Unit{
     return 0;
   }
 
-  // Returns true if this mob is in melee range of its target.
-  isWithinMeleeRange() {
-    const targetX = this.aggro.location.x;
-    const targetY = this.aggro.location.y;
-    let isWithinMeleeRange = false;
-
-    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }
-    return isWithinMeleeRange;
-  }
-
-  // Returns true if this mob is on the specified tile.
-  isOnTile(x, y) {
-    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size);
-  }
-
-  // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo(x, y) {
-    // We simply clamp the target point to our own boundary box.
-    return [_.clamp(x, this.location.x, this.location.x + this.size), _.clamp(y, this.location.y, this.location.y - this.size)];
-  }
-
   attack(region){
     let attackStyle = this.attackStyle;
 
@@ -252,6 +223,7 @@ export class Mob extends Unit{
     //   console.log('WEAPON FAILURE?', this, attackStyle);
     //   klsfjlksdjf; // Intentionally crash JS so no values update
     // }
+    
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
@@ -269,10 +241,6 @@ export class Mob extends Unit{
     this.playAttackSound();
 
     this.attackCooldownTicks = this.cooldown;
-  }
-
-  shouldShowAttackAnimation() {
-    return this.attackCooldownTicks === this.cooldown && this.dying === -1
   }
 
   get consumesSpace() {

@@ -215,28 +215,6 @@ export class Player extends Unit{
     }    
   }
 
-  // Returns true if this player is in melee range of its target.
-  isWithinMeleeRange() {
-    const targetX = this.aggro.location.x;
-    const targetY = this.aggro.location.y;
-    let isWithinMeleeRange = false;
-
-    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }
-    return isWithinMeleeRange;
-  }
-
-  setPrayers(prayers){
-    this.prayers = prayers;
-  }
-
   get attackRange() {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange;
@@ -298,7 +276,7 @@ export class Player extends Unit{
     region.ctx.fillStyle = "#fff";
     
     // feedback for when you shoot
-    if (this.attackCooldownTicks == this.weapon.attackSpeed) {
+    if (this.shouldShowAttackAnimation()) {
       region.ctx.fillStyle = "#00FFFF";
     }
 
