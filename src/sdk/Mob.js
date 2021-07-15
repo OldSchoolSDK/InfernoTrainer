@@ -323,6 +323,12 @@ export class Mob {
     return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size);
   }
 
+  // Returns the closest tile on this mob to the specified point.
+  getClosestTileTo(x, y) {
+    // We simply clamp the target point to our own boundary box.
+    return [_.clamp(x, this.location.x, this.location.x + this.size), _.clamp(y, this.location.y, this.location.y - this.size)];
+  }
+
   attack(region){
     let attackStyle = this.attackStyle();
 

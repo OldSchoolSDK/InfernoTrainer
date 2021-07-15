@@ -52,25 +52,15 @@ export class ScytheOfVitur extends MeleeWeapon {
     // As there is no concept of player direction yet, we dynamically calculate this based on the relative location of 
     // the attacker.
     // Find the closest tile on the npc to us.
-    const seekingTiles = [];
-    for (let xx=0; xx < to.size; xx++){
-      for (let yy=0; yy < to.size; yy++){
-        seekingTiles.push({
-          x: to.location.x + xx,
-          y: to.location.y - yy
-        });
-      }
-    }
-    const targetTile = _.minBy(seekingTiles, (point) => Pathing.dist(from.location.x, from.location.y, point.x, point.y));
-
+    const targetTile = to.getClosestTileTo(from.location.x, from.location.y);
     const extraHitLocations = [
       [[-1, -1], [1, -1]], // North
       [[1, 1], [1, -1]], // East
       [[-1, 1], [1, 1]], // South
       [[-1, 1], [-1, -1]], // West
     ];
-    let dx = from.location.x - targetTile.x;
-    let dy = from.location.y - targetTile.y;
+    let dx = from.location.x - targetTile[0];
+    let dy = from.location.y - targetTile[1];
     let direction;
     if (dx < 0) {
       direction = 1; // East
