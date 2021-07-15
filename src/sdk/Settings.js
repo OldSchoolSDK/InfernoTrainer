@@ -3,7 +3,7 @@
 import { BrowserUtils } from "./Utils/BrowserUtils";
 
 export class Settings {
-  static tileSize = 23;
+  static tileSize = BrowserUtils.getQueryVar("tile_size") || 23;
   static framesPerTick = 30;
   static tickMs =  600;
   static playsAudio = false
