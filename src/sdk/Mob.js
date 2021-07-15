@@ -80,15 +80,6 @@ export class Mob extends Unit{
     }
   }
 
-  setHasLOS(region){
-    if (this.aggro === region.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
-    }else if (this.aggro.type === Unit.types.MOB){
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, true);
-    }else if (this.aggro.isEntity) {
-      this.hasLOS = false;
-    }
-  }
 
   movementStep(region) {
 
@@ -147,12 +138,6 @@ export class Mob extends Unit{
 
     this.frozen--;
   }
-
-  dead(region) {
-    this.perceivedLocation = this.location;
-    this.dying = 3;
-  }
-
   // todo: Rename this possibly? it returns the attack style if it's possible
   canMeleeIfClose() {
     return false;
@@ -165,43 +150,28 @@ export class Mob extends Unit{
       }
     }
 
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
-    
     if (this.dying === 0) {
       return;
     }
-
-    this.incomingProjectiles.forEach((projectile) => {
-      projectile.delay--;
-      if (projectile.delay == 0) {
-        this.currentStats.hitpoint -= projectile.damage;
-      }
-    });
-    this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
-    if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
-      return this.dead(region);
-    }
-    
-    this.attackCooldownTicks--;
-
-    this.hadLOS = this.hasLOS;
-    this.setHasLOS(region);
-
+    this.processIncomingAttacks();
     this.attackIfPossible(region);
-    if (this.dying > 0){
-      this.dying--;
-    }
-    if (this.dying === 0 ){
-      this.removedFromRegion(region);
-    }
+    this.detectDeath();
   }
+  
 
   get attackStyle() {
     return 'slash';
   }
 
+
   attackIfPossible(region){
+
+    this.attackCooldownTicks--;
+
+    this.hadLOS = this.hasLOS;
+    this.setHasLOS(region);
+
     let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
     if (!weaponIsAreaAttack) {
@@ -218,35 +188,6 @@ export class Mob extends Unit{
     return 0;
   }
 
-  // Returns true if this mob is in melee range of its target.
-  isWithinMeleeRange() {
-    const targetX = this.aggro.location.x;
-    const targetY = this.aggro.location.y;
-    let isWithinMeleeRange = false;
-
-    if (targetX === this.location.x - 1 && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y + 1 && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }else if (targetX === this.location.x + this.size && (targetY <= this.location.y + 1 && targetY > this.location.y - this.size - 1)) {
-      isWithinMeleeRange = true;
-    }else if (targetY === this.location.y - this.size && (targetX >= this.location.x && targetX < this.location.x + this.size)){
-      isWithinMeleeRange = true;
-    }
-    return isWithinMeleeRange;
-  }
-
-  // Returns true if this mob is on the specified tile.
-  isOnTile(x, y) {
-    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size);
-  }
-
-  // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo(x, y) {
-    // We simply clamp the target point to our own boundary box.
-    return [_.clamp(x, this.location.x, this.location.x + this.size), _.clamp(y, this.location.y, this.location.y - this.size)];
-  }
-
   attack(region){
     let attackStyle = this.attackStyle;
 
@@ -255,12 +196,7 @@ export class Mob extends Unit{
         attackStyle = this.canMeleeIfClose();
       }
     }
-
-    // if (!this.weapons[attackStyle])
-    // {
-    //   console.log('WEAPON FAILURE?', this, attackStyle);
-    //   klsfjlksdjf; // Intentionally crash JS so no values update
-    // }
+    
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
@@ -270,7 +206,6 @@ export class Mob extends Unit{
 
     // hack hack
     if (attackStyle == 'range' && !this.currentAnimation) {
-      console.log("animate range");
       this.currentAnimation = this.mobRangeAttackAnimation;
       this.currentAnimationTickLength = 1;
     }
@@ -278,10 +213,6 @@ export class Mob extends Unit{
     this.playAttackSound();
 
     this.attackCooldownTicks = this.cooldown;
-  }
-
-  shouldShowAttackAnimation() {
-    return this.attackCooldownTicks === this.cooldown && this.dying === -1
   }
 
   get consumesSpace() {
@@ -320,9 +251,17 @@ export class Mob extends Unit{
 
   draw(region, framePercent) {
 
-
-    LineOfSight.drawMobLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
+    LineOfSight.drawLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF73", this.type === Unit.types.MOB);
         
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
+    region.ctx.save();
+    region.ctx.translate(
+      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
+      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
+    )
+
+
     if (this.dying > -1) {
       region.ctx.fillStyle = "#964B00";
     }else if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
@@ -337,15 +276,7 @@ export class Mob extends Unit{
       region.ctx.fillStyle="#FFFFFF22";
     }
 
-    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
-    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
-
-    region.ctx.save();
-    
-    region.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
-
-
-
+    // Draw mob
     region.ctx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
@@ -377,9 +308,11 @@ export class Mob extends Unit{
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
-
     if (Settings.rotated === 'south'){
-      region.ctx.scale(-1, -1);
+      region.ctx.rotate(Math.PI)
+    }
+    if (Settings.rotated === 'south'){
+      region.ctx.scale(-1, 1);
     }
 
     region.ctx.drawImage(
@@ -390,11 +323,8 @@ export class Mob extends Unit{
       this.size * Settings.tileSize
     );
     if (Settings.rotated === 'south'){
-      region.ctx.scale(-1, -1);
+      region.ctx.scale(-1, 1);
     }
-
-
-
 
     if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange)){
       region.ctx.strokeStyle = "#00FF0073"
@@ -409,74 +339,12 @@ export class Mob extends Unit{
     
 
 
-    if (Settings.rotated === 'south'){
-      region.ctx.rotate(Math.PI)
-    }
 
+    this.drawHPBar(region);
 
-    region.ctx.fillStyle = "red";
-    region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize, 
-      (-this.size / 2) * Settings.tileSize,
-      Settings.tileSize * this.size, 
-      5
-    );
+    this.drawIncomingProjectiles(region);
 
-    region.ctx.fillStyle = "green";
-    const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
-    region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize,
-      (-this.size / 2) * Settings.tileSize,
-      w, 
-      5
-    );
-    
-    let projectileOffsets = [
-      [0, 0],
-      [0, -16],
-      [-12, -8],
-      [12, -8]
-    ];
-
-    let projectileCounter = 0;
-    this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0 ) {
-        return;
-      }
-      if (projectileCounter > 3){
-        return;
-      }
-      projectileCounter++;
-      const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage;
-    
-      if (!projectile.offsetX && !projectile.offsetY){
-        projectile.offsetX = projectileOffsets[0][0];
-        projectile.offsetY = projectileOffsets[0][1];
-      }
-      projectileOffsets = _.remove(projectileOffsets, (offset) => {
-        return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
-      });
-
-      let hitsplatOriginX = 0 + projectile.offsetX;
-      let hitsplatOriginY = 0 + projectile.offsetY;
-
-      region.ctx.drawImage(
-        image,
-        hitsplatOriginX - 12,
-        hitsplatOriginY - 12,
-        24,
-        23
-      );
-      region.ctx.fillStyle = "#FFFFFF";
-      region.ctx.font = "16px Stats_11";
-      region.ctx.textAlign="center";
-      region.ctx.fillText(
-        projectile.damage, 
-        hitsplatOriginX,
-        hitsplatOriginY + 3,
-      );
-      region.ctx.textAlign="left";
-    });
+    this.drawOverheadPrayers(region);
 
     region.ctx.restore();
   }
