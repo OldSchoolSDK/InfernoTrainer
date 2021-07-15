@@ -1,7 +1,8 @@
 # Inferno Trainer
 
-[Click here to try the Inferno Trainer](https://www.infernotrainer.com/)
-[Click here to beta test the Inferno Trainer](https://beta.infernotrainer.com/)
+* [Click here to try the Inferno Trainer](https://www.infernotrainer.com/)
+* [Click here to beta test the Inferno Trainer](https://beta.infernotrainer.com/)
+* [Join our Discord](https://discord.gg/Z3ZyY7Yzt5)
 
 ## What is this project?
 

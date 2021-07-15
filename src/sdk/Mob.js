@@ -290,11 +290,11 @@ export class Mob {
       }
     }
 
-    if (!this.weapons[attackStyle])
-    {
-      console.log('WEAPON FAILURE?', this, attackStyle);
-      klsfjlksdjf; // Intentionally crash JS so no values update
-    }
+    // if (!this.weapons[attackStyle])
+    // {
+    //   console.log('WEAPON FAILURE?', this, attackStyle);
+    //   klsfjlksdjf; // Intentionally crash JS so no values update
+    // }
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
