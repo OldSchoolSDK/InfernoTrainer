@@ -265,22 +265,6 @@ export class Player {
 
     LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange());
 
-    // Draw player
-    region.ctx.fillStyle = "#fff";
-    
-    // feedback for when you shoot
-    if (this.cd == this.weapon.attackSpeed) {
-      region.ctx.fillStyle = "#00FFFF";
-    }
-
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.strokeRect(
-      this.location.x * Settings.tileSize,
-      this.location.y * Settings.tileSize,
-      Settings.tileSize,
-      Settings.tileSize
-    );
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
@@ -296,6 +280,23 @@ export class Player {
       Settings.tileSize
     );
     region.ctx.globalAlpha = 1;
+    
+    // Draw player
+    region.ctx.fillStyle = "#fff";
+    
+    // feedback for when you shoot
+    if (this.cd == this.weapon.attackSpeed) {
+      region.ctx.fillStyle = "#00FFFF";
+    }
+
+    region.ctx.strokeStyle = "#FFFFFF73"
+    region.ctx.lineWidth = 3;
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize,
+      this.location.y * Settings.tileSize,
+      Settings.tileSize,
+      Settings.tileSize
+    );
 
     // Destination location
     region.ctx.strokeStyle = "#FFFFFF73"
