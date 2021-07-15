@@ -331,7 +331,6 @@ export class Player {
       5
     );
 
-    region.ctx.scale(-1, 1);
     region.ctx.fillStyle = "green";
     region.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize, 
@@ -339,8 +338,6 @@ export class Player {
       (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
-
-    region.ctx.scale(-1, 1);
 
     
 

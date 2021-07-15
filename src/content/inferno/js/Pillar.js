@@ -96,16 +96,15 @@ export class Pillar extends Entity{
 
 
 
-    region.ctx.scale(-1, 1);
     region.ctx.fillStyle = "green";
+    const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
     region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize, 
       (-this.size / 2) * Settings.tileSize,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
+      (-this.size / 2) * Settings.tileSize,
+      w, 
       5
     );
 
-    region.ctx.scale(-1, 1);
 
     let projectileOffsets = [
       [0, 0],

@@ -395,7 +395,9 @@ export class Mob {
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
-    region.ctx.scale(-1, -1);
+    if (Settings.rotated === 'south'){
+      region.ctx.scale(-1, -1);
+    }
 
     region.ctx.drawImage(
       this.mobImage,
@@ -404,7 +406,9 @@ export class Mob {
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     );
-    region.ctx.scale(-1, -1);
+    if (Settings.rotated === 'south'){
+      region.ctx.scale(-1, -1);
+    }
 
 
 
@@ -435,16 +439,14 @@ export class Mob {
       5
     );
 
-    region.ctx.scale(-1, 1);
     region.ctx.fillStyle = "green";
+    const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
     region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize, 
       (-this.size / 2) * Settings.tileSize,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
+      (-this.size / 2) * Settings.tileSize,
+      w, 
       5
     );
-    region.ctx.scale(-1, 1);
-
     
     let projectileOffsets = [
       [0, 0],
