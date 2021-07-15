@@ -1,7 +1,7 @@
-import Pathing from "../Pathing";
-import MagicWeapon from "./MagicWeapon";
+import { Pathing } from "../Pathing";
+import { MagicWeapon } from "./MagicWeapon";
 
-export default class BarrageMagicWeapon extends MagicWeapon {
+export class BarrageMagicWeapon extends MagicWeapon {
   get name() {
     return "Ice Barrage";
   }
@@ -32,14 +32,14 @@ export default class BarrageMagicWeapon extends MagicWeapon {
     return 9;
   }
 
-  cast(stage, from, to) {
+  cast(region, from, to) {
 
     // calculate AoE magic effects
     if (this.aoe.length) {
       let castsAllowed = this.maxConcurrentHits;
       const alreadyCastedOn = [];
       this.aoe.forEach((point) => {
-        Pathing.mobsAroundMob(stage, to, point)
+        Pathing.mobsAroundMob(region, to, point)
         .forEach((mob) =>{
           if (castsAllowed <= 0) {
             return;
@@ -49,16 +49,16 @@ export default class BarrageMagicWeapon extends MagicWeapon {
           }
           alreadyCastedOn.push(mob);
           castsAllowed--;
-          this.attack(stage, from, mob, {magicBaseSpellDamage: 30});
+          this.attack(region, from, mob, {magicBaseSpellDamage: 30});
         })
       });
     }else{
-      this.attack(stage, from, to, {magicBaseSpellDamage: 30});
+      this.attack(region, from, to, {magicBaseSpellDamage: 30});
     }
   }
 
-  attack(stage, from, to, bonuses = {}){
-    super.attack(stage, from, to, bonuses, true)
+  attack(region, from, to, bonuses = {}){
+    super.attack(region, from, to, bonuses, true)
     if (this.damage > 0){
       to.frozen = 32;
     }

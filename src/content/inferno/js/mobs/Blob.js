@@ -1,16 +1,15 @@
 'use strict';
 
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
+import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
-import JalAkRekKet from "../../js/mobs/JalAkRekKet";
-import JalAkRekMej from "../../js/mobs/JalAkRekMej";
-import JalAkRekXil from "../../js/mobs/JalAkRekXil";
-import Point from "../../../../sdk/Utils/Point";
+import { JalAkRekKet } from "../../js/mobs/JalAkRekKet";
+import { JalAkRekMej } from "../../js/mobs/JalAkRekMej";
+import { JalAkRekXil } from "../../js/mobs/JalAkRekXil";
 
 export class Blob extends Mob{
 
@@ -101,8 +100,8 @@ export class Blob extends Mob{
     return "#7300FF33";
   }
 
-  attackAnimation(stage, framePercent){
-    stage.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
+  attackAnimation(region, framePercent){
+    region.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation() {
@@ -124,12 +123,12 @@ export class Blob extends Mob{
     return 29;
   }
    
-  attackIfPossible(stage){
+  attackIfPossible(region){
     this.attackFeedback = Mob.attackIndicators.NONE;
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.cd <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = _.find(stage.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
+      const overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'; 
       this.attackFeedback = Mob.attackIndicators.SCAN;
       this.cd = this.cooldown;
@@ -138,22 +137,22 @@ export class Blob extends Mob{
     
     // Perform attack. Blobs can hit through LoS if they got a scan.
     if (this.playerPrayerScan && this.cd <=0) {
-      this.attack(stage);
+      this.attack(region);
       this.cd = this.cooldown;
       this.playerPrayerScan = null;
     }
   }
   
-  removedFromStage(stage){
+  removedFromRegion(region){
 
-    const xil = new JalAkRekXil(new Point(this.location.x+1, this.location.y - 1), this.aggro);
-    stage.addMob(xil);
+    const xil = new JalAkRekXil({ x: this.location.x+1, y: this.location.y - 1}, this.aggro);
+    region.addMob(xil);
 
     const ket = new JalAkRekKet(this.location, this.aggro);
-    stage.addMob(ket);
+    region.addMob(ket);
 
-    const mej = new JalAkRekMej(new Point(this.location.x+2, this.location.y - 2), this.aggro);
-    stage.addMob(mej);
+    const mej = new JalAkRekMej({ x: this.location.x+2, y: this.location.y - 2}, this.aggro);
+    region.addMob(mej);
   }
 
 }

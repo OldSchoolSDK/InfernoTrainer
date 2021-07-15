@@ -1,10 +1,10 @@
 'use strict';
 
 import _ from "lodash";
-import Settings from "../../../../sdk/Settings";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { Settings } from "../../../../sdk/Settings";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
+import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/ranger.ogg";
 
@@ -107,7 +107,7 @@ export class Ranger extends Mob {
     }
   }
 
-  attackAnimation(stage, framePercent){
-    stage.ctx.rotate(Math.sin(-framePercent * Math.PI))
+  attackAnimation(region, framePercent){
+    region.ctx.rotate(Math.sin(-framePercent * Math.PI))
   }
 }

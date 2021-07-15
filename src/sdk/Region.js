@@ -1,14 +1,13 @@
 'use strict';
 import _ from 'lodash';
-import ClickAnimation from './ClickAnimation';
-import Settings from "./Settings";
-import ContextMenu from './ContextMenu';
-import ControlPanelController from './ControlPanelController';
-import Pathing from './Pathing';
-import Point from './Utils/Point';
+import { ClickAnimation } from './ClickAnimation';
+import { Settings } from "./Settings";
+import { ContextMenu } from './ContextMenu';
+import { ControlPanelController } from './ControlPanelController';
+import { Pathing } from './Pathing';
 
 
-export default class Stage {
+export class Region {
 
   constructor(selector, width, height) {
     this.inputDelay = null;
@@ -43,7 +42,7 @@ export default class Stage {
     this.map.addEventListener('contextmenu', (e) =>{
       const x = e.offsetX;
       const y = e.offsetY;
-      this.contextMenu.setPosition(new Point(x, y));
+      this.contextMenu.setPosition({x, y});
       /*gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];
@@ -96,13 +95,13 @@ export default class Stage {
   playerAttackClick(mob) {
     this.inputDelay = setTimeout(() => {
       this.player.seeking = mob;
-    }, 100);
+    }, Settings.inputDelay);
   }
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(this, Math.floor(x / Constants.tileSize), Math.floor(y / Constants.tileSize));
-    }, 100);
+      this.player.moveTo(this, Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+    }, Settings.inputDelay);
   }
 
   redClick() {
@@ -112,25 +111,48 @@ export default class Stage {
     this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y);
   }
 
+  gameTick() {
+    this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
+    this.entities.forEach((entity) => entity.tick(this));
+    this.mobs.forEach((mob) => mob.movementStep(this));
+    this.mobs.forEach((mob) => mob.attackStep(this));
+    this.player.movementStep(this);
+    this.player.attackStep(this);
+    
+    // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
+    const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
+    const deadEntities = this.entities.filter((mob) => mob.dying === 0);
+    deadMobs.forEach((mob) => this.removeMob(mob));
+    deadEntities.forEach((entity) => this.removeEntity(entity));
+  }
+
+  drawGame(framePercent) {
+    // Give control panel a chance to draw, canvas -> canvas 
+    this.controlPanel.draw(this);
+
+    // Draw all things on the map
+    this.entities.forEach((entity) => entity.draw(this, framePercent));
+
+    if (this.heldDown <= 0){
+      this.mobs.forEach((mob) => mob.draw(this, framePercent));
+    }
+    this.player.draw(this, framePercent);
+    
+    this.contextMenu.draw(this);
+
+    if (this.clickAnimation) {
+      this.clickAnimation.draw(this, framePercent)
+    }
+  }
+
   gameLoop() {
+    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
+    // Everything else is just measuring performance
     let t = performance.now();
     if (this.frameCounter === 0 && this.heldDown <=0) {
       this.timeBetweenTicks = t - this.lastT;
       this.lastT = t;
-
-      this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
-      this.entities.forEach((entity) => entity.tick(this));
-      this.mobs.forEach((mob) => mob.movementStep(this));
-      this.mobs.forEach((mob) => mob.attackStep(this));
-      this.player.movementStep(this);
-      this.player.attackStep(this);
-      
-      // Safely remove the mobs from the stage. If we do it while iterating we can cause ticks to be stole'd
-      const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
-      const deadEntities = this.entities.filter((mob) => mob.dying === 0);
-      deadMobs.forEach((mob) => this.removeMob(mob));
-      deadEntities.forEach((entity) => this.removeEntity(entity));
-
+      this.gameTick();
       this.tickTime = performance.now() - t;
     }
     let t2 = performance.now();
@@ -146,8 +168,6 @@ export default class Stage {
   draw(framePercent) {
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = "black";
-
-    this.controlPanel.draw(this);
 
     if (!this.hasCalcedGrid){
       // This is a GIGANTIC performance improvement ... 
@@ -165,19 +185,8 @@ export default class Stage {
     }
 
     this.ctx.drawImage(this.grid, 0, 0);
-    // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(this, framePercent));
-
-    if (this.heldDown <= 0){
-      this.mobs.forEach((mob) => mob.draw(this, framePercent));
-    }
-    this.player.draw(this, framePercent);
     
-    this.contextMenu.draw(this);
-
-    if (this.clickAnimation) {
-      this.clickAnimation.draw(this, framePercent)
-    }
+    this.drawGame(framePercent);
     
     // Performance info
     this.ctx.fillStyle = "#FFFF0066";

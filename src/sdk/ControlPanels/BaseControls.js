@@ -1,5 +1,5 @@
 
-export default class BaseControls {
+export class BaseControls {
   constructor() {
 
     this.panelImage = new Image(204, 275);
@@ -19,11 +19,11 @@ export default class BaseControls {
     return null;
   }
 
-  clickedPanel(stage, x, y){
+  clickedPanel(region, x, y){
     console.log(x, y);
   }
 
-  draw(stage, ctrl, x, y) {
+  draw(region, ctrl, x, y) {
     ctrl.ctx.drawImage(this.panelImage, x, y);
   }
 

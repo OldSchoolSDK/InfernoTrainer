@@ -2,7 +2,7 @@
 import chebyshev from "chebyshev";
 import { Weapon } from "./Weapon";
 
-export default class Projectile {
+export class Projectile {
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */

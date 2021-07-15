@@ -1,12 +1,12 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OverheadImg from "../../assets/images/prayers/mageOver.png"
 import OnSound from "../../assets/sounds/mageOn.ogg"
 import OffSound from "../../assets/sounds/mageOff.ogg"
-import Settings from "../Settings";
+import { Settings } from "../Settings";
 
-export default class ProtectMage extends BasePrayer{
+export class ProtectMage extends BasePrayer{
   
   get name() {
     return 'Protect from Magic';

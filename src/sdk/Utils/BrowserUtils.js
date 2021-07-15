@@ -1,4 +1,4 @@
-export default class BrowserUtils {
+export class BrowserUtils {
   static getQueryVar(varName){
     // Grab and unescape the query string - appending an '&' keeps the RegExp simple
     // for the sake of this example.
