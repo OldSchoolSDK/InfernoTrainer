@@ -42,6 +42,11 @@ export class Mob {
     return null;
   }
 
+  // TODO more modular
+  get rangeAttackAnimation() {
+    return null;
+  }
+
   get sound() {
     return null;
   }
@@ -122,6 +127,15 @@ export class Mob {
       this.mobImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
       this.mobImage.src = this.image;
     }
+    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
+      this.mobRangeAttackAnimation = _.map(this.rangeAttackAnimation, image => {
+        let img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
+        img.src = image;
+        return img;
+      });
+    }
+    this.currentAnimation = null;
+    this.currentAnimationTickLength = 0;
     this.setStats();
     this.currentStats.hitpoint = this.stats.hitpoint;
 
@@ -223,6 +237,11 @@ export class Mob {
   }
 
   attackStep(region, playerPrayers = []) {
+    if (this.currentAnimationTickLength > 0) {
+      if (--this.currentAnimationTickLength == 0) {
+        this.currentAnimation = null;
+      }
+    }
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
     
@@ -325,6 +344,13 @@ export class Mob {
     }
     this.weapons[attackStyle].attack(region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
+    // hack hack
+    if (attackStyle == 'range' && !this.currentAnimation) {
+      console.log("animate range");
+      this.currentAnimation = this.mobRangeAttackAnimation;
+      this.currentAnimationTickLength = 1;
+    }
+
     this.playAttackSound();
 
     this.attackCooldownTicks = this.cooldown;
@@ -403,11 +429,21 @@ export class Mob {
       this.size * Settings.tileSize
     );
 
+    let currentImage = this.mobImage;
+    if (this.currentAnimation != null) {
+      const animationLength = this.currentAnimation.length;
+      // TODO multi-tick animations.
+      const currentFrame = Math.floor(framePercent * animationLength);
+      if (currentFrame < animationLength) {
+        currentImage = this.currentAnimation[currentFrame];
+      } else {
+        this.currentAnimation = null;
+      }
+    }
+
     if (this.shouldShowAttackAnimation()){
       this.attackAnimation(region, framePercent);
     }
-
-
 
     region.ctx.restore();
 
@@ -423,7 +459,7 @@ export class Mob {
     }
 
     region.ctx.drawImage(
-      this.mobImage,
+      currentImage,
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,

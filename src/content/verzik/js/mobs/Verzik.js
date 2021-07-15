@@ -3,10 +3,25 @@
 import { Mob } from "../../../../sdk/Mob";
 import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import VerzikImage from "../../assets/images/verzik.png";
+
+import VerzikRange1 from "../../assets/images/verzik-range0000.png";
+import VerzikRange2 from "../../assets/images/verzik-range0001.png";
+import VerzikRange3 from "../../assets/images/verzik-range0002.png";
+import VerzikRange4 from "../../assets/images/verzik-range0003.png";
+import VerzikRange5 from "../../assets/images/verzik-range0004.png";
+import VerzikRange6 from "../../assets/images/verzik-range0005.png";
+import VerzikRange7 from "../../assets/images/verzik-range0006.png";
+import VerzikRange8 from "../../assets/images/verzik-range0007.png";
+
 import BatSound from "../../assets/sounds/bat.ogg";
 import { AoeRangedWeapon } from "../../../../sdk/Weapons/AoeRangedWeapon";
 
 export class Verzik extends Mob{
+
+  constructor(location, aggro) {
+    super(location, aggro);
+    this.wasPlayerInMeleeRange = false;
+  }
 
   get displayName(){
     return "Verzik";
@@ -66,7 +81,7 @@ export class Verzik extends Mob{
   }
   
   get cooldown() {
-    return 7;
+    return (this.currentStats.hitpoint <= this.stats.hitpoint * 0.2) ? 5 : 7;
   }
 
   get attackRange() {
@@ -79,6 +94,19 @@ export class Verzik extends Mob{
 
   get image() {
     return VerzikImage;
+  }
+
+  get rangeAttackAnimation() {
+    return [
+      VerzikRange1,
+      VerzikRange2,
+      VerzikRange3,
+      VerzikRange4,
+      VerzikRange5,
+      VerzikRange6,
+      VerzikRange7,
+      VerzikRange8,
+    ];
   }
 
   get sound() {
@@ -94,8 +122,11 @@ export class Verzik extends Mob{
   }
 
   // Verzik can always move towards its target, even if it has LOS.
+  // Verzik does not move if does a range attack on top of the target.
   getCanMove(region) {
-    return !this.isWithinMeleeRange() && !this.isDying() && this.attackCooldownTicks != 1;
+    return !this.isWithinMeleeRange()
+      && !this.isDying()
+      && (this.attackCooldownTicks != 1 || !this.isOnTile(this.aggro.location.x, this.aggro.location.y));
   }
 
   canMeleeIfClose() {
