@@ -5,6 +5,7 @@ import { Pathing } from "../Pathing";
 import { BaseControls } from "./BaseControls";
 import { BrowserUtils } from "../Utils/BrowserUtils";
 import { Blowpipe } from "../../content/weapons/Blowpipe";
+import { ScytheOfVitur } from "../../content/weapons/ScytheOfVitur";
 
 
 export class InventoryControls extends BaseControls{
@@ -13,6 +14,7 @@ export class InventoryControls extends BaseControls{
     super();
 
     InventoryControls.inventory[0] = new Blowpipe();
+    InventoryControls.inventory[1] = new ScytheOfVitur();
 
   }
 
