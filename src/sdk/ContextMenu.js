@@ -1,16 +1,15 @@
 import _ from "lodash";
-import Point from "./Utils/Point";
 
-export default class ContextMenu {
+export class ContextMenu {
   
   constructor() {
     this.isActive = false;
-    this.position = new Point(0, 0);
+    this.position = { x: 0, y: 0 };
     this.cursorPosition = { x:0, y:0 }; 
     this.menuOptions = [];
     this.width = 0;
     this.height = 0;
-    this.activatedPosition = new Point(0, 0);
+    this.activatedPosition = { x: 0, y: 0 };
   }
 
   setPosition(position){
@@ -29,9 +28,9 @@ export default class ContextMenu {
     this.menuOptions = menuOptions;
   }
   
-  cursorMovedTo(stage, x, y){
+  cursorMovedTo(region, x, y){
 
-    const cRect = stage.map.getBoundingClientRect();        // Gets CSS pos, and width/height
+    const cRect = region.map.getBoundingClientRect();        // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left);  // Subtract the 'left' of the canvas 
     const canvasY = Math.round(y - cRect.top);   // from the X/Y positions to make  
 
@@ -48,52 +47,52 @@ export default class ContextMenu {
   }
 
 
-  draw(stage) {
+  draw(region) {
 
     if (this.isActive){
       this.linesOfText = [
         {
           text: [{text: "Choose Option", fillStyle: "#5f5445"}],
           action: () => {
-            stage.yellowClick();
+            region.yellowClick();
           }
         },
         ...this.menuOptions,
         {
           text: [{text: "Walk Here", fillStyle: "white"}],
           action: () => {
-            stage.yellowClick();
-            stage.playerWalkClick(this.position.x, this.position.y);
+            region.yellowClick();
+            region.playerWalkClick(this.position.x, this.position.y);
           }
         },
         {
           text: [{text: "Cancel", fillStyle: "white"}],
           action: () => {
-            stage.yellowClick();
+            region.yellowClick();
           }
         }
       ];
-      stage.ctx.font = "17px OSRS";
+      region.ctx.font = "17px OSRS";
 
       this.width = 0;
       this.linesOfText.forEach((line) => {
-         this.width = Math.max(this.width, this.fillMixedTextWidth(stage.ctx, line.text) + 10);
+         this.width = Math.max(this.width, this.fillMixedTextWidth(region.ctx, line.text) + 10);
       });
 
       this.height = 22 + (this.linesOfText.length - 1) * 20;
 
-      stage.ctx.fillStyle = "#5f5445";
-      stage.ctx.fillRect(this.position.x - this.width / 2, this.position.y, this.width, this.height);
+      region.ctx.fillStyle = "#5f5445";
+      region.ctx.fillRect(this.position.x - this.width / 2, this.position.y, this.width, this.height);
 
-      stage.ctx.fillStyle = "black";
-      stage.ctx.fillRect(this.position.x - this.width / 2 + 1, this.position.y + 1, this.width - 2, 17);
+      region.ctx.fillStyle = "black";
+      region.ctx.fillRect(this.position.x - this.width / 2 + 1, this.position.y + 1, this.width - 2, 17);
 
-      stage.ctx.lineWidth = 1;
-      stage.ctx.strokeStyle = "black";
-      stage.ctx.strokeRect(this.position.x - this.width / 2 + 2, this.position.y + 20, this.width - 4, this.height - 22);
+      region.ctx.lineWidth = 1;
+      region.ctx.strokeStyle = "black";
+      region.ctx.strokeRect(this.position.x - this.width / 2 + 2, this.position.y + 20, this.width - 4, this.height - 22);
 
       for (let i=0; i<this.linesOfText.length;i++){
-        this.drawLineOfText(stage.ctx, this.linesOfText[i].text, this.width, i * 20);
+        this.drawLineOfText(region.ctx, this.linesOfText[i].text, this.width, i * 20);
       }
     }
   }
@@ -140,7 +139,7 @@ export default class ContextMenu {
 
   }
 
-  clicked(stage, x, y){
+  clicked(region, x, y){
     const index = Math.floor((y - this.position.y) / 20);
     this.linesOfText[index].action();
 

@@ -1,21 +1,20 @@
 'use strict';
-import AccountControls from "./ControlPanels/AccountControls";
-import AncientsSpellbookControls from "./ControlPanels/AncientsSpellbookControls";
-import ClanChatControls from "./ControlPanels/ClanChatControls";
-import CombatControls from "./ControlPanels/CombatControls";
-import EmotesControls from "./ControlPanels/EmotesControls";
-import EmptyControls from "./ControlPanels/EmptyControls";
-import EquipmentControls from "./ControlPanels/EquipmentControls";
-import FriendsControls from "./ControlPanels/FriendsControls";
-import InventoryControls from "./ControlPanels/InventoryControls";
-import MusicControls from "./ControlPanels/MusicControls";
-import PrayerControls from "./ControlPanels/PrayerControls";
-import QuestsControls from "./ControlPanels/QuestsControls";
-import SettingsControls from "./ControlPanels/SettingsControls";
-import StandardSpellbookControls from "./ControlPanels/StandardSpellbookControls";
-import StatsControls from "./ControlPanels/StatsControls";
+import { AccountControls } from "./ControlPanels/AccountControls";
+import { AncientsSpellbookControls } from "./ControlPanels/AncientsSpellbookControls";
+import { ClanChatControls } from "./ControlPanels/ClanChatControls";
+import { CombatControls } from "./ControlPanels/CombatControls";
+import { EmotesControls } from "./ControlPanels/EmotesControls";
+import { EmptyControls } from "./ControlPanels/EmptyControls";
+import { EquipmentControls } from "./ControlPanels/EquipmentControls";
+import { FriendsControls } from "./ControlPanels/FriendsControls";
+import { InventoryControls } from "./ControlPanels/InventoryControls";
+import { MusicControls } from "./ControlPanels/MusicControls";
+import { PrayerControls } from "./ControlPanels/PrayerControls";
+import { QuestsControls } from "./ControlPanels/QuestsControls";
+import { SettingsControls } from "./ControlPanels/SettingsControls";
+import { StatsControls } from "./ControlPanels/StatsControls";
 
-export default class ControlPanelController {
+export class ControlPanelController {
   static controls = Object.freeze({
     INVENTORY: new InventoryControls(),
     PRAYER: new PrayerControls(),
@@ -30,7 +29,7 @@ export default class ControlPanelController {
     this.canvas.width = 33 * 7;
     this.canvas.height = 36 * 2 + 275;
 
-    this.stage = null;
+    this.region = null;
 
 
     this.canvas.addEventListener('mousedown', this.controlPanelClick.bind(this));
@@ -64,8 +63,8 @@ export default class ControlPanelController {
 
   }
 
-  setStage(stage){
-    this.stage = stage;
+  setRegion(region){
+    this.region = region;
   }
 
   tabPosition(i, compact) {
@@ -109,18 +108,18 @@ export default class ControlPanelController {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX;
         const relativeY = y - panelY;
-        this.selectedControl.clickedPanel(this.stage, relativeX, relativeY);
+        this.selectedControl.clickedPanel(this.region, relativeX, relativeY);
       }
     }
   }
   
-  draw(stage) {
+  draw(region) {
     this.ctx.fillStyle = "#000";
 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(stage, this, this.canvas.width - 204, 0);
+      this.selectedControl.draw(region, this, this.canvas.width - 204, 0);
     }
 
     let selectedPosition = null;

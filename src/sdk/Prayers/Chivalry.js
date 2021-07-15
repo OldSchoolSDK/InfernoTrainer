@@ -1,11 +1,11 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Constants from "../Constants";
+import { Settings } from "../Settings";
 
-export default class Chivalry extends BasePrayer{
+export class Chivalry extends BasePrayer{
   
   get name() {
     return 'Chivalry';
@@ -24,13 +24,13 @@ export default class Chivalry extends BasePrayer{
   }
 
   playOnSound(){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OnSound).play();
     }
   }
   
   playOffSound() {
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OffSound).play();
     }
   }

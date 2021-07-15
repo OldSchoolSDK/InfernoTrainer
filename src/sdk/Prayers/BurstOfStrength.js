@@ -1,11 +1,11 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Constants from "../Constants";
+import { Settings } from "../Settings";
 
-export default class BurstOfStrength extends BasePrayer{
+export class BurstOfStrength extends BasePrayer{
   
   get name() {
     return 'Burst of Strength';
@@ -24,13 +24,13 @@ export default class BurstOfStrength extends BasePrayer{
   }
 
   playOnSound(){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OnSound).play();
     }
   }
   
   playOffSound() {
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OffSound).play();
     }
   }

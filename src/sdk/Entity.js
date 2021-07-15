@@ -1,6 +1,5 @@
 'use strict';
-import Constants from "./Constants";
-import Point from "./Utils/Point";
+import { Settings } from "./Settings";
 
 export class Entity {
   constructor(point, size) {
@@ -12,18 +11,18 @@ export class Entity {
     return true;
   }
 
-  tick(stage) {
+  tick(region) {
       
   }
 
-  draw(stage) {
-    stage.ctx.fillStyle = "#000073";
+  draw(region) {
+    region.ctx.fillStyle = "#000073";
 
-    stage.ctx.fillRect(
-      this.location.x * Constants.tileSize,
-      (this.location.y - this.size + 1) * Constants.tileSize,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize,
+      (this.location.y - this.size + 1) * Settings.tileSize,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
     
   }

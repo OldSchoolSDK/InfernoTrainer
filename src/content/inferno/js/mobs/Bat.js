@@ -1,9 +1,7 @@
 'use strict';
 
-import Constants from "../../../../sdk/Constants";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
+import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";
 
@@ -94,7 +92,7 @@ export class Bat extends Mob{
     return 'range';
   }
   
-  attackAnimation(stage, framePercent){
-    stage.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(region, framePercent){
+    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

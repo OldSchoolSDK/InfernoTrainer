@@ -2,9 +2,9 @@
 
 import { Mob } from "../../../../sdk/Mob";
 import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
 
-export default class JalAkRekMej extends Mob{
+export class JalAkRekMej extends Mob{
 
   get displayName(){
     return "Jal-AkRek-Mej";
@@ -90,7 +90,7 @@ export default class JalAkRekMej extends Mob{
     return 'magic';
   }
   
-  attackAnimation(stage, framePercent){
-    stage.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(region, framePercent){
+    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

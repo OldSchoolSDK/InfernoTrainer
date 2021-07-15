@@ -15,16 +15,16 @@ export class Waves {
       return _.shuffle(Waves.spawns);
   }
 
-  static spawn(stage, randomPillar, spawns, wave){
+  static spawn(region, randomPillar, spawns, wave){
     Waves.currentSpawn = spawns;
     const mobCounts = Waves.waves[wave - 1];
     const mobs = [];
     let i=0;
-    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(spawns[i++], stage.player)));
-    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(spawns[i++], stage.player)));
-    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(spawns[i++], stage.player)));
-    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(spawns[i++], stage.player)));
-    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(spawns[i++], stage.player)));
+    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(spawns[i++], region.player)));
+    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(spawns[i++], region.player)));
+    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(spawns[i++], region.player)));
+    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(spawns[i++], region.player)));
+    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(spawns[i++], region.player)));
 
     const nibblerSpawns = _.shuffle([
       { x: 8, y: 13},
@@ -39,7 +39,7 @@ export class Waves {
     ]);
     
 
-    Array(mobCounts[0]).fill(0).forEach(() => mobs.push(new Nibbler(nibblerSpawns.shift(), randomPillar || stage.player)));
+    Array(mobCounts[0]).fill(0).forEach(() => mobs.push(new Nibbler(nibblerSpawns.shift(), randomPillar || region.player)));
     return mobs;  
   }
   

@@ -1,10 +1,10 @@
 'use strict';
 
 import { Mob } from "../../../../sdk/Mob";
-import RangedWeapon from "../../../../sdk/Weapons/RangedWeapon";
+import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
 
-export default class JalAkRekXil extends Mob{
+export class JalAkRekXil extends Mob{
 
   get displayName(){
     return "Jal-AkRek-Xil";
@@ -90,7 +90,7 @@ export default class JalAkRekXil extends Mob{
     return 'range';
   }
   
-  attackAnimation(stage, framePercent){
-    stage.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(region, framePercent){
+    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

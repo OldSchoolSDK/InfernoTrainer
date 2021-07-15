@@ -1,13 +1,13 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OverheadImg from "../../assets/images/prayers/rangeOver.png"
 
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Constants from "../Constants";
+import { Settings } from "../Settings";
 
-export default class EagleEye extends BasePrayer{
+export class EagleEye extends BasePrayer{
   
   get name() {
     return 'Eagle Eye';
@@ -26,13 +26,13 @@ export default class EagleEye extends BasePrayer{
   }
 
   playOnSound(){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OnSound).play();
     }
   }
   
   playOffSound() {
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       // new Audio(OffSound).play();
     }
   }

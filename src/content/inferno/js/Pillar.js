@@ -1,8 +1,7 @@
 'use strict';
 
-import Constants from "../../../sdk/Constants";
+import { Settings } from "../../../sdk/Settings";
 import { Entity } from "../../../sdk/Entity";
-import Point from "../../../sdk/Utils/Point";
 
 import MissSplat from "../../../assets/images/hitsplats/miss.png"
 import DamageSplat from "../../../assets/images/hitsplats/damage.png"
@@ -43,7 +42,7 @@ export class Pillar extends Entity{
 
   }
 
-  tick(stage) {
+  tick(region) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
@@ -56,35 +55,35 @@ export class Pillar extends Entity{
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     if (this.currentStats.hitpoint <= 0) {
-      return this.dead(stage);
+      return this.dead(region);
     }
     
   }
 
 
-  draw(stage) {
-    stage.ctx.fillStyle = "#000073";
+  draw(region) {
+    region.ctx.fillStyle = "#000073";
 
-    stage.ctx.fillRect(
-      this.location.x * Constants.tileSize,
-      (this.location.y - this.size + 1) * Constants.tileSize,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize,
+      (this.location.y - this.size + 1) * Settings.tileSize,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
 
-    stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
-      Constants.tileSize * this.size, 
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize, 
+      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      Settings.tileSize * this.size, 
       5
     );
-    stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(
-      this.location.x * Constants.tileSize, 
-      ((this.location.y - this.size + 1) * Constants.tileSize), 
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(
+      this.location.x * Settings.tileSize, 
+      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
     
@@ -114,27 +113,27 @@ export class Pillar extends Entity{
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      stage.ctx.drawImage(
+      region.ctx.drawImage(
         image,
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX - 12,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY,
+        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX - 12,
+        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY,
         24,
         23
       );
-      stage.ctx.fillStyle = "#FFFFFF";
-      stage.ctx.font = "16px Stats_11";
-      stage.ctx.textAlign="center";
-      stage.ctx.fillText(
+      region.ctx.fillStyle = "#FFFFFF";
+      region.ctx.font = "16px Stats_11";
+      region.ctx.textAlign="center";
+      region.ctx.fillText(
         projectile.damage, 
-        (this.location.x + (this.size / 2) ) * Constants.tileSize + projectile.offsetX,
-        (this.location.y - this.size + 1) * Constants.tileSize + projectile.offsetY + 15
+        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX,
+        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY + 15
       );
-      stage.ctx.textAlign="left";
+      region.ctx.textAlign="left";
     });
   }
 
 
-  dead(stage){
+  dead(region){
     this.dying = 3;
     // TODO: needs to AOE the nibblers around it 
   }
@@ -143,11 +142,11 @@ export class Pillar extends Entity{
     this.incomingProjectiles.push(projectile);
   }
 
-  static addPillarsToStage(stage) {
+  static addPillarsToRegion(region) {
     [
-      new Point(0, 9),
-      new Point(17, 7),
-      new Point(10, 23)
-    ].forEach((position) => stage.addEntity(new Pillar(position, 3)));    
+      { x: 0, y: 9},
+      { x: 17, y: 7},
+      { x: 10, y: 23}
+    ].forEach((position) => region.addEntity(new Pillar(position, 3)));    
   }
 }

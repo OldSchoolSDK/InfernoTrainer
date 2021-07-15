@@ -1,14 +1,13 @@
 'use strict';
 import _ from "lodash";
 
-import Constants from "./Constants";
-import LineOfSight from "./LineOfSight";
-import Pathing from "./Pathing";
+import { Settings } from "./Settings";
+import { LineOfSight } from "./LineOfSight";
+import { Pathing } from "./Pathing";
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
 import { Weapon } from "./Weapons/Weapon";
-import Point from "./Utils/Point";
 
 export class Mob {
 
@@ -51,7 +50,7 @@ export class Mob {
     return "#FFFFFF";
   }
 
-  attackAnimation(stage, framePercent){
+  attackAnimation(region, framePercent){
     // override pls
   }
 
@@ -119,7 +118,7 @@ export class Mob {
     
 
     if (!this.mobImage){
-      this.mobImage = new Image(Constants.tileSize * this.size, Constants.tileSize * this.size);
+      this.mobImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size);
       this.mobImage.src = this.image;
     }
     this.setStats();
@@ -135,24 +134,24 @@ export class Mob {
       this.location = location;
   }
 
-  setHasLOS(stage){
-    if (this.aggro === stage.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(stage, this.location.x, this.location.y, this.size, this.attackRange, true)
+  setHasLOS(region){
+    if (this.aggro === region.player) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
     }else if (this.aggro.isMob){
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(stage, this.location.x, this.location.y, this.aggro, this.size, true);
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, true);
     }else if (this.aggro.isEntity) {
       this.hasLOS = false;
     }
   }
 
-  movementStep(stage) {
+  movementStep(region) {
 
     if (this.dying === 0) {
       return;
     }
-    this.perceivedLocation = new Point(this.location.x, this.location.y);
+    this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
-    this.setHasLOS(stage);
+    this.setHasLOS(region);
     if (!this.hasLOS && this.frozen <= 0 && this.dying == -1) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
@@ -185,9 +184,9 @@ export class Mob {
           dy = this.location.y;
       }
 
-      const both = Pathing.canTileBePathedTo(stage, dx, dy, this.size, this.consumesSpace);
-      const xSpace = Pathing.canTileBePathedTo(stage, dx, this.location.y, this.size, this.consumesSpace);
-      const ySpace = Pathing.canTileBePathedTo(stage, this.location.x, dy, this.size, this.consumesSpace);
+      const both = Pathing.canTileBePathedTo(region, dx, dy, this.size, this.consumesSpace);
+      const xSpace = Pathing.canTileBePathedTo(region, dx, this.location.y, this.size, this.consumesSpace);
+      const ySpace = Pathing.canTileBePathedTo(region, this.location.x, dy, this.size, this.consumesSpace);
       const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace);
       if (both && cornerFilter) {
         this.location.x = dx;
@@ -203,7 +202,7 @@ export class Mob {
     this.frozen--;
   }
 
-  dead(stage) {
+  dead(region) {
     this.perceivedLocation = this.location;
     this.dying = 3;
   }
@@ -213,7 +212,7 @@ export class Mob {
     return false;
   }
 
-  attackStep(stage, playerPrayers = []) {
+  attackStep(region, playerPrayers = []) {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
     
@@ -230,24 +229,24 @@ export class Mob {
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
     
     if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
-      return this.dead(stage);
+      return this.dead(region);
     }
     
     this.cd--;
 
     this.hadLOS = this.hasLOS;
-    this.setHasLOS(stage);
+    this.setHasLOS(region);
 
-    this.attackIfPossible(stage);
+    this.attackIfPossible(region);
     if (this.dying > 0){
       this.dying--;
     }
     if (this.dying === 0 ){
-      this.removedFromStage(stage);
+      this.removedFromRegion(region);
     }
   }
 
-  removedFromStage(stage){
+  removedFromRegion(region){
 
   }
 
@@ -256,12 +255,12 @@ export class Mob {
   }
 
 
-  attackIfPossible(stage){
+  attackIfPossible(region){
     let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
     this.attackFeedback = Mob.attackIndicators.NONE;
 
     if (!isUnderAggro && this.hasLOS && this.cd <= 0){
-      this.attack(stage);
+      this.attack(region);
     }
   }
 
@@ -269,7 +268,7 @@ export class Mob {
     return 0;
   }
 
-  attack(stage){
+  attack(region){
     let attackStyle = this.attackStyle();
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
@@ -293,14 +292,15 @@ export class Mob {
 
     if (!this.weapons[attackStyle])
     {
-      klasdjflak;
+      console.log('WEAPON FAILURE?', this, attackStyle);
+      klsfjlksdjf; // Intentionally crash JS so no values update
     }
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, {attackStyle})){
       this.attackFeedback = Mob.attackIndicators.BLOCKED;
     }else{
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
-    this.weapons[attackStyle].attack(stage, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     this.playAttackSound();
 
@@ -316,7 +316,7 @@ export class Mob {
   }
 
   playAttackSound (){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       new Audio(this.sound).play();
     }
   }
@@ -333,96 +333,96 @@ export class Mob {
     return 'red';
   }
 
-  contextActions(stage, x, y){
+  contextActions(region, x, y){
     return [
       {
         text: [{text: "Attack ", fillStyle: "white"}, {text: this.displayName, fillStyle: "yellow"},{text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor}],
         action: () => {
-          stage.redClick();
-          stage.playerAttackClick(this);
+          region.redClick();
+          region.playerAttackClick(this);
         }
       }
     ]
   }
 
-  draw(stage, framePercent) {
+  draw(region, framePercent) {
 
 
-    LineOfSight.drawMobLOS(stage, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
+    LineOfSight.drawMobLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF33");
         
     if (this.dying > -1) {
-      stage.ctx.fillStyle = "#964B00";
+      region.ctx.fillStyle = "#964B00";
     }else if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
-      stage.ctx.fillStyle = "#00FF00";
+      region.ctx.fillStyle = "#00FF00";
     } else if (this.attackFeedback === Mob.attackIndicators.HIT){
-      stage.ctx.fillStyle = "#FF0000";
+      region.ctx.fillStyle = "#FF0000";
     } else if (this.attackFeedback === Mob.attackIndicators.SCAN){
-      stage.ctx.fillStyle = "#FFFF00";
+      region.ctx.fillStyle = "#FFFF00";
     } else if (this.hasLOS){
-      stage.ctx.fillStyle = "#FF7300";
+      region.ctx.fillStyle = "#FF7300";
     } else {
-      stage.ctx.fillStyle="#FFFFFF22";
+      region.ctx.fillStyle="#FFFFFF22";
     }
 
-    stage.ctx.save();
+    region.ctx.save();
 
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
 
-    stage.ctx.save();
+    region.ctx.save();
     
-    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+    region.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
 
 
 
-    stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+    region.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
     if (this.shouldShowAttackAnimation()){
-      this.attackAnimation(stage, framePercent);
+      this.attackAnimation(region, framePercent);
     }
 
-    stage.ctx.drawImage(
+    region.ctx.drawImage(
       this.mobImage,
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      this.size * Constants.tileSize,
-      this.size * Constants.tileSize
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
     );
 
-    stage.ctx.restore();
+    region.ctx.restore();
 
-    stage.ctx.translate(perceivedX * Constants.tileSize + (this.size * Constants.tileSize) / 2, (perceivedY - this.size + 1) * Constants.tileSize + (this.size * Constants.tileSize) / 2)
+    region.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
 
-    stage.ctx.fillStyle = "red";
-    stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      Constants.tileSize * this.size, 
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      Settings.tileSize * this.size, 
       5
     );
-    stage.ctx.fillStyle = "green";
-    stage.ctx.fillRect(
-      -(this.size * Constants.tileSize) / 2,
-      -(this.size * Constants.tileSize) / 2,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Constants.tileSize * this.size), 
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
     
 
-    if (LineOfSight.hasLineOfSightOfMob(stage, this.aggro.location.x, this.aggro.location.y, this, stage.player.attackRange())){
-      stage.ctx.strokeStyle = "#00FF0073"
-      stage.ctx.lineWidth = 1;
-      stage.ctx.strokeRect(
-        -(this.size * Constants.tileSize) / 2,
-        -(this.size * Constants.tileSize) / 2,
-        this.size * Constants.tileSize,
-        this.size * Constants.tileSize
+    if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange())){
+      region.ctx.strokeStyle = "#00FF0073"
+      region.ctx.lineWidth = 1;
+      region.ctx.strokeRect(
+        -(this.size * Settings.tileSize) / 2,
+        -(this.size * Settings.tileSize) / 2,
+        this.size * Settings.tileSize,
+        this.size * Settings.tileSize
       );
     }
 
@@ -455,27 +455,27 @@ export class Mob {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      stage.ctx.drawImage(
+      region.ctx.drawImage(
         image,
         
         -12,
-        -((this.size) * Constants.tileSize) / 2,
+        -((this.size) * Settings.tileSize) / 2,
         24,
         23
       );
-      stage.ctx.fillStyle = "#FFFFFF";
-      stage.ctx.font = "16px Stats_11";
-      stage.ctx.textAlign="center";
-      stage.ctx.fillText(
+      region.ctx.fillStyle = "#FFFFFF";
+      region.ctx.font = "16px Stats_11";
+      region.ctx.textAlign="center";
+      region.ctx.fillText(
         projectile.damage, 
         0,
-        -((this.size) * Constants.tileSize) / 2 + 15,
+        -((this.size) * Settings.tileSize) / 2 + 15,
       );
-      stage.ctx.textAlign="left";
+      region.ctx.textAlign="left";
     });
 
 
-    stage.ctx.restore();
+    region.ctx.restore();
   }
 
 }

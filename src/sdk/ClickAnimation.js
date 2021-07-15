@@ -7,10 +7,10 @@ import RedX1 from "../assets/images/interface/red_x_1.png";
 import RedX2 from "../assets/images/interface/red_x_2.png";
 import RedX3 from "../assets/images/interface/red_x_3.png";
 import RedX4 from "../assets/images/interface/red_x_4.png";
-import Constants from "./Constants";
+import { Settings } from "./Settings";
 
 
-export default class ClickAnimation {
+export class ClickAnimation {
 
   constructor(color, x, y) {
     this.color = color;
@@ -47,18 +47,18 @@ export default class ClickAnimation {
     }
   }
 
-  draw(stage, framePercent) {
+  draw(region, framePercent) {
     if (this.ttl <= 0) {
       return;
     }
     const frameNumber = Math.floor((1-this.ttl) * 4) 
-    stage.ctx.drawImage(
+    region.ctx.drawImage(
       ClickAnimation.frames[this.color][frameNumber],
       this.x - 9,
       this.y - 9
     );
 
-    this.ttl -= 1.65 / Constants.framesPerTick;
+    this.ttl -= 1.65 / Settings.framesPerTick;
 
 
   }

@@ -1,7 +1,7 @@
 'use strict';
 
-import MagicWeapon from "../../../../sdk/Weapons/MagicWeapon";
-import MeleeWeapon from "../../../../sdk/Weapons/MeleeWeapon";
+import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
+import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mager.ogg";
@@ -105,7 +105,7 @@ export class Mager extends Mob{
   get maxHit() {
     return 70;
   }
-  attackAnimation(stage, framePercent){
-    stage.ctx.rotate(framePercent * Math.PI * 2);
+  attackAnimation(region, framePercent){
+    region.ctx.rotate(framePercent * Math.PI * 2);
   }
 }

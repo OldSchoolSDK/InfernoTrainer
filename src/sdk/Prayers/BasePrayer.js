@@ -1,6 +1,6 @@
 'use strict';
 
-export default class BasePrayer {
+export class BasePrayer {
 
   static groups = {
     OVERHEADS: "overheads",

@@ -1,9 +1,9 @@
 
 import InventoryPanel from "../../assets/images/panels/inventory.png";
 import StandardSpellbookTab from "../../assets/images/tabs/standard_spellbook.png";
-import BaseControls from "./BaseControls";
+import { BaseControls } from "./BaseControls";
 
-export default class StandardSpellbookControls extends BaseControls{
+export class StandardSpellbookControls extends BaseControls{
 
   get panelImageReference() {
     return InventoryPanel;

@@ -1,13 +1,13 @@
 'use strict';
 
-import BasePrayer from "./BasePrayer";
+import { BasePrayer } from "./BasePrayer";
 import OverheadImg from "../../assets/images/prayers/rangeOver.png"
 
 import OnSound from "../../assets/sounds/rangeOn.ogg"
 import OffSound from "../../assets/sounds/rangeOff.ogg"
-import Constants from "../Constants";
+import { Settings } from "../Settings";
 
-export default class ProtectRange extends BasePrayer{
+export class ProtectRange extends BasePrayer{
   
   get name() {
     return 'Protect from Range';
@@ -30,13 +30,13 @@ export default class ProtectRange extends BasePrayer{
   }
 
   playOnSound(){
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       new Audio(OnSound).play();
     }
   }
   
   playOffSound() {
-    if (Constants.playsAudio){
+    if (Settings.playsAudio){
       new Audio(OffSound).play();
     }
   }

@@ -1,9 +1,9 @@
 
 import InventoryPanel from "../../assets/images/panels/inventory.png";
 import EmotesTab from "../../assets/images/tabs/emotes.png";
-import BaseControls from "./BaseControls";
+import { BaseControls } from "./BaseControls";
 
-export default class EmotesControls extends BaseControls{
+export class EmotesControls extends BaseControls{
 
   get panelImageReference() {
     return InventoryPanel;
