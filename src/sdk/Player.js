@@ -246,7 +246,9 @@ export class Player extends Unit{
       return;
     }
     this.setHasLOS(region);
+    console.log('goin');
     if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
+      console.log('gone!');
       this.attack(region)
       this.attackCooldownTicks = this.attackSpeed;
     }
@@ -254,8 +256,7 @@ export class Player extends Unit{
 
   draw(region, framePercent) {
 
-    LineOfSight.drawLOS(region, this.location.x, this.location.y, 1, this.attackRange);
-
+    LineOfSight.drawLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FF000099", this.type === Unit.types.MOB);
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
@@ -272,14 +273,12 @@ export class Player extends Unit{
     );
     region.ctx.globalAlpha = 1;
     
-    // Draw player
+    // Draw player on true tile
     region.ctx.fillStyle = "#fff";
-    
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
       region.ctx.fillStyle = "#00FFFF";
     }
-
     region.ctx.strokeStyle = "#FFFFFF73"
     region.ctx.lineWidth = 3;
     region.ctx.fillRect(
@@ -313,86 +312,9 @@ export class Player extends Unit{
       region.ctx.rotate(Math.PI)
     }
 
-
-
-    region.ctx.fillStyle = "red";
-    region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize, 
-      (-this.size / 2) * Settings.tileSize,
-      Settings.tileSize * this.size, 
-      5
-    );
-
-    region.ctx.fillStyle = "green";
-    region.ctx.fillRect(
-      (-this.size / 2) * Settings.tileSize, 
-      (-this.size / 2) * Settings.tileSize,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
-      5
-    );
-
-    
-
-    //
-    let projectileOffsets = [
-      [0, 12],
-      [0, 28],
-      [-14, 20],
-      [14, 20]
-    ];
-
-    let projectileCounter = 0;
-    this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay >= 0 ) {
-        return;
-      }
-      if (projectileCounter > 3){
-        return;
-      }
-      projectileCounter++;
-      const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage;
-      if (!projectile.offsetX && !projectile.offsetY){
-        projectile.offsetX = projectileOffsets[0][0];
-        projectile.offsetY = projectileOffsets[0][1];
-      }
-    
-      projectileOffsets = _.remove(projectileOffsets, (offset) => {
-        return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
-      });
-
-      region.ctx.drawImage(
-        image,
-        projectile.offsetX - 12, 
-        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY,
-        24,
-        23
-      );
-      region.ctx.fillStyle = "#FFFFFF";
-      region.ctx.font = "16px Stats_11";
-      region.ctx.textAlign="center";
-      region.ctx.fillText(
-        projectile.damage, 
-        projectile.offsetX, 
-        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY + 15,
-      );
-      region.ctx.textAlign="left";
-      
-    });
-
-
-    ////
-
-    const overheads = this.prayers.filter(prayer => prayer.isOverhead());
-    if (overheads.length){
-
-      region.ctx.drawImage(
-        overheads[0].overheadImage(),
-        -Settings.tileSize / 2,
-        -Settings.tileSize * 3,
-        Settings.tileSize,
-        Settings.tileSize
-      );
-    }
+    this.drawHPBar(region);
+    this.drawIncomingProjectiles(region);
+    this.drawOverheadPrayers(region)
 
     region.ctx.restore();
 
