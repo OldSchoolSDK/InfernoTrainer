@@ -112,7 +112,7 @@ export class Player extends Unit{
   dead(region) {
 
   }
-  
+
   attack(region) {
 
     
@@ -127,26 +127,23 @@ export class Player extends Unit{
     // this.playAttackSound();
   }
 
-
-  movementStep(region) {
-    this.lastOverhead = this.overhead; 
-
-    this.overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive); 
-
+  activatePrayers(region){
+    this.lastOverhead = this.overhead;
+    this.overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
     if (this.lastOverhead && !this.overhead){
       this.lastOverhead.playOffSound();
     }else if (this.lastOverhead !== this.overhead ){
       this.overhead.playOnSound();
     }
+  }
 
-    let isUnderAggrodMob = false;
-
-    if (this.aggro && this.aggro.dying > -1){
-      this.aggro = null;
-    }
-
+  pathToAggro() {
     if (this.aggro) {
-      isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size);
+      if (this.aggro.dying > -1) {
+        this.aggro = null;
+      }
+      const isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size);
+      this.setHasLOS(region);
 
       if (isUnderAggrodMob) {
         const maxDist = Math.ceil(this.aggro.size / 2);
@@ -167,56 +164,64 @@ export class Player extends Unit{
         }
         if (winner){
           this.destinationLocation = { x: winner.x, y: winner.y };
+        }else{
+          console.log("I don't understand what could cause this, but i'd like to find out")
         }
 
-      } else {
-        this.setHasLOS(region);
-        if (!this.hasLOS) {
-          const seekingTiles = [];
-          // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
-          // "within melee range of the npc, object, or player."
-          for (let xx=-1; xx <= this.aggro.size; xx++){
-            for (let yy=-1; yy <= this.aggro.size; yy++){
-              // Edges only, and no corners.
-              if ((xx == -1 || xx == this.aggro.size || yy == -1 || yy == this.aggro.size)
-                && ((xx != yy) && (xx != -1 || yy != this.aggro.size) && (xx != this.aggro.size || yy != -1))) {
-                // Don't path into an unpathable object.
-                const px = this.aggro.location.x + xx;
-                const py = this.aggro.location.y - yy;
-                if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
-                  seekingTiles.push({
-                    x: px,
-                    y: py
-                  });
-                }
+      } else if (!this.hasLOS) {
+        const seekingTiles = [];
+        // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
+        // "within melee range of the npc, object, or player."
+        for (let xx=-1; xx <= this.aggro.size; xx++){
+          for (let yy=-1; yy <= this.aggro.size; yy++){
+            // Edges only, and no corners.
+            if ((xx == -1 || xx == this.aggro.size || yy == -1 || yy == this.aggro.size)
+              && ((xx != yy) && (xx != -1 || yy != this.aggro.size) && (xx != this.aggro.size || yy != -1))) {
+              // Don't path into an unpathable object.
+              const px = this.aggro.location.x + xx;
+              const py = this.aggro.location.y - yy;
+              if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
+                seekingTiles.push({
+                  x: px,
+                  y: py
+                });
               }
             }
           }
-          // Create paths to all npc tiles
-          const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }));
-          const validPaths = _.filter(potentialPaths, (path) => {
-            return true;
-          });
-          const validPathLengths = _.map(validPaths, (path) => path.length);
-          // Figure out what the min distance is
-          const shortestPathLength = _.min(validPathLengths);
-          // Get all of the paths of the same minimum distance (can be more than 1)
-          const shortestPaths = _.filter(_.map(validPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
-          // Take the path that is the shortest absolute distance from player
-          this.destinationLocation = _.minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
-  
         }
+        // Create paths to all npc tiles
+        const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }));
+        const validPaths = _.filter(potentialPaths, (path) => {
+          return true;
+        });
+        const validPathLengths = _.map(validPaths, (path) => path.length);
+        // Figure out what the min distance is
+        const shortestPathLength = _.min(validPathLengths);
+        // Get all of the paths of the same minimum distance (can be more than 1)
+        const shortestPaths = _.filter(_.map(validPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
+        // Take the path that is the shortest absolute distance from player
+        this.destinationLocation = _.minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
+      }else{
+        this.destinationLocation = this.location;
       }
     }
+  }
 
-    if (this.aggro && !isUnderAggrodMob && LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange)){
-      this.destinationLocation = this.location;
-    }
-
+  moveTorwardsDestination() {
     this.perceivedLocation = this.location;
+    // Actually move the player forward by run speed. 
     if (this.destinationLocation) {
       this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.aggro);
-    }    
+    }
+  }
+
+  movementStep(region) {
+
+    this.activatePrayers(region);
+
+    this.pathToAggro();
+
+    this.moveTorwardsDestination();
   }
 
   get attackRange() {
