@@ -364,9 +364,6 @@ export class Mob {
       region.ctx.fillStyle="#FFFFFF22";
     }
 
-    region.ctx.save();
-
-
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
 
@@ -387,6 +384,18 @@ export class Mob {
       this.attackAnimation(region, framePercent);
     }
 
+
+
+    region.ctx.restore();
+
+    region.ctx.save();
+
+    region.ctx.translate(
+      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
+      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
+    )
+
+
     region.ctx.drawImage(
       this.mobImage,
       -(this.size * Settings.tileSize) / 2,
@@ -395,25 +404,8 @@ export class Mob {
       this.size * Settings.tileSize
     );
 
-    region.ctx.restore();
 
-    region.ctx.translate(perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2)
 
-    region.ctx.fillStyle = "red";
-    region.ctx.fillRect(
-      -(this.size * Settings.tileSize) / 2,
-      -(this.size * Settings.tileSize) / 2,
-      Settings.tileSize * this.size, 
-      5
-    );
-    region.ctx.fillStyle = "green";
-    region.ctx.fillRect(
-      -(this.size * Settings.tileSize) / 2,
-      -(this.size * Settings.tileSize) / 2,
-      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
-      5
-    );
-    
 
     if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange())){
       region.ctx.strokeStyle = "#00FF0073"
@@ -425,8 +417,31 @@ export class Mob {
         this.size * Settings.tileSize
       );
     }
+    
 
 
+    if (Settings.rotated === 'south'){
+      region.ctx.rotate(Math.PI)
+    }
+
+
+    region.ctx.fillStyle = "red";
+    region.ctx.fillRect(
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
+      Settings.tileSize * this.size, 
+      5
+    );
+
+    region.ctx.scale(-1, 1);
+    region.ctx.fillStyle = "green";
+    region.ctx.fillRect(
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
+      (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
+      5
+    );
+    region.ctx.scale(-1, 1);
 
     
     let projectileOffsets = [
@@ -457,7 +472,6 @@ export class Mob {
 
       region.ctx.drawImage(
         image,
-        
         -12,
         -((this.size) * Settings.tileSize) / 2,
         24,

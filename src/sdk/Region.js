@@ -169,6 +169,13 @@ export class Region {
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = "black";
 
+    this.ctx.restore();
+    this.ctx.save();
+    if (Settings.rotated === 'south'){
+      this.ctx.rotate(Math.PI);
+      this.ctx.translate(-this.map.width, -this.map.height)  
+    }
+
     if (!this.hasCalcedGrid){
       // This is a GIGANTIC performance improvement ... 
       this.gridCtx.fillRect(0, 0, this.map.width, this.map.height);
@@ -187,6 +194,10 @@ export class Region {
     this.ctx.drawImage(this.grid, 0, 0);
     
     this.drawGame(framePercent);
+    
+
+    this.ctx.restore();
+    this.ctx.save();
     
     // Performance info
     this.ctx.fillStyle = "#FFFF0066";

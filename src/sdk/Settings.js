@@ -6,4 +6,5 @@ export class Settings {
   static tickMs =  600;
   static playsAudio = false
   static inputDelay = 100;
+  static rotated = 'south';
 }

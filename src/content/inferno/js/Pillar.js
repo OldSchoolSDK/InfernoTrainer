@@ -72,21 +72,41 @@ export class Pillar extends Entity{
     );
 
 
+
+
+
+    region.ctx.save();
+
+    region.ctx.translate(
+      (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
+      ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2),
+    );
+
+    if (Settings.rotated === 'south'){
+      region.ctx.rotate(Math.PI)
+    }
+
     region.ctx.fillStyle = "red";
     region.ctx.fillRect(
-      this.location.x * Settings.tileSize, 
-      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size, 
       5
     );
+
+
+
+    region.ctx.scale(-1, 1);
     region.ctx.fillStyle = "green";
     region.ctx.fillRect(
-      this.location.x * Settings.tileSize, 
-      ((this.location.y - this.size + 1) * Settings.tileSize), 
+      (-this.size / 2) * Settings.tileSize, 
+      (-this.size / 2) * Settings.tileSize,
       (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size), 
       5
     );
-    
+
+    region.ctx.scale(-1, 1);
+
     let projectileOffsets = [
       [0, 0],
       [0, -16],
@@ -115,8 +135,8 @@ export class Pillar extends Entity{
 
       region.ctx.drawImage(
         image,
-        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX - 12,
-        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY,
+        projectile.offsetX - 12, 
+        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY,
         24,
         23
       );
@@ -125,11 +145,12 @@ export class Pillar extends Entity{
       region.ctx.textAlign="center";
       region.ctx.fillText(
         projectile.damage, 
-        (this.location.x + (this.size / 2) ) * Settings.tileSize + projectile.offsetX,
-        (this.location.y - this.size + 1) * Settings.tileSize + projectile.offsetY + 15
+        projectile.offsetX, 
+        -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY + 15,
       );
       region.ctx.textAlign="left";
     });
+    region.ctx.restore();
   }
 
 
