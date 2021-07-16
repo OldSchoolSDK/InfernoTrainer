@@ -136,7 +136,7 @@ export class Player extends Unit{
     }
   }
 
-  pathToAggro(region) {
+  pathToAggro() {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
         this.aggro = null;
@@ -206,7 +206,7 @@ export class Player extends Unit{
     }
   }
 
-  moveTorwardsDestination(region) {
+  moveTorwardsDestination() {
     this.perceivedLocation = this.location;
     // Actually move the player forward by run speed. 
     if (this.destinationLocation) {
@@ -218,9 +218,9 @@ export class Player extends Unit{
 
     this.activatePrayers();
 
-    this.pathToAggro(region);
+    this.pathToAggro();
 
-    this.moveTorwardsDestination(region);
+    this.moveTorwardsDestination();
   }
 
   get attackRange() {
