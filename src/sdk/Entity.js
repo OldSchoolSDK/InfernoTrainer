@@ -6,7 +6,7 @@ import { Unit } from "./Unit";
 export class Entity {
   static collisionType = Object.freeze({
     NONE: 0,
-    BLOCK_MOVEMENT: 1, // like a fence
+    //BLOCK_MOVEMENT: 1, // like a fence. Not implemented yet.
     BLOCK_LOS: 2 // like a pillar
   });
 
