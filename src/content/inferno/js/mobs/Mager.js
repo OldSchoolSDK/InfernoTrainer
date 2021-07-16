@@ -155,6 +155,7 @@ export class Mager extends Mob{
           mobToResurrect.perceivedLocation = mobToResurrect.location;
           this.region.addMob(mobToResurrect);
           //(15, 10) to  (21 , 22)
+          this.attackCooldownTicks = this.cooldown;
 
         }
       }else{
