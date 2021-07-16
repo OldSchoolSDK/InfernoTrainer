@@ -178,10 +178,10 @@ export class Unit {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
     this.incomingProjectiles.forEach((projectile) => {
-      projectile.delay--;
       if (projectile.delay == 0) {
         this.currentStats.hitpoint -= projectile.damage;
       }
+      projectile.delay--;
     });
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
 
