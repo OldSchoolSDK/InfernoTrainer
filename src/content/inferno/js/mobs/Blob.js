@@ -13,6 +13,10 @@ import { JalAkRekXil } from "../../js/mobs/JalAkRekXil";
 
 export class Blob extends Mob{
 
+  constructor(region, location, options) {
+    super(region, location, options);
+    this.playerPrayerScan = null;
+  }
 
   get displayName(){
     return "Jal-Ak";
@@ -124,7 +128,11 @@ export class Blob extends Mob{
   }
    
   attackIfPossible(){
+    this.attackCooldownTicks--;
     this.attackFeedback = Mob.attackIndicators.NONE;
+
+    this.hadLOS = this.hasLOS;
+    this.setHasLOS();
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
