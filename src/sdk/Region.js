@@ -114,7 +114,7 @@ export class Region {
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(this, Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
     }, Settings.inputDelay);
   }
 
@@ -127,11 +127,11 @@ export class Region {
 
   gameTick() {
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
-    this.entities.forEach((entity) => entity.tick(this));
-    this.mobs.forEach((mob) => mob.movementStep(this));
-    this.mobs.forEach((mob) => mob.attackStep(this));
-    this.player.movementStep(this);
-    this.player.attackStep(this);
+    this.entities.forEach((entity) => entity.tick());
+    this.mobs.forEach((mob) => mob.movementStep());
+    this.mobs.forEach((mob) => mob.attackStep());
+    this.player.movementStep();
+    this.player.attackStep();
     
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
@@ -145,12 +145,12 @@ export class Region {
     this.controlPanel.draw(this);
 
     // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(this, framePercent));
+    this.entities.forEach((entity) => entity.draw(framePercent));
 
     if (this.heldDown <= 0){
-      this.mobs.forEach((mob) => mob.draw(this, framePercent));
+      this.mobs.forEach((mob) => mob.draw(framePercent));
     }
-    this.player.draw(this, framePercent);
+    this.player.draw(framePercent);
     
     this.ctx.restore();
 

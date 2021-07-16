@@ -4,7 +4,8 @@ import { Unit } from "./Unit";
 
 
 export class Entity {
-  constructor(point, size) {
+  constructor(region, point, size) {
+    this.region = region;
     this.location = point;
     this.size = size;
   }

@@ -105,7 +105,7 @@ export class Mager extends Mob{
   get maxHit() {
     return 70;
   }
-  attackAnimation(region, framePercent){
-    region.ctx.rotate(framePercent * Math.PI * 2);
+  attackAnimation(framePercent){
+    this.region.ctx.rotate(framePercent * Math.PI * 2);
   }
 }

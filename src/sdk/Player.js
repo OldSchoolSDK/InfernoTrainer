@@ -7,8 +7,8 @@ import { Unit } from "./Unit";
 
 export class Player extends Unit{
 
-  constructor(location, options) {
-    super(location, options);
+  constructor(region, location, options) {
+    super(region, location, options);
     this.destinationLocation = -1;
     this.weapon = options.weapon;
   }
@@ -71,12 +71,12 @@ export class Player extends Unit{
     return 1;
   }
 
-  moveTo(region, x, y) {
+  moveTo(x, y) {
     this.aggro = null;
     this.manualSpellCastSelection = null;
 
 
-    const clickedOnEntities = Pathing.entitiesAtPoint(region, x, y, 1);
+    const clickedOnEntities = Pathing.entitiesAtPoint(this.region, x, y, 1);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0];
@@ -87,7 +87,7 @@ export class Player extends Unit{
         for (let xOff=-maxDist; xOff < maxDist; xOff++){
           const potentialX = x + xOff;
           const potentialY = y + yOff;
-          const e = Pathing.entitiesAtPoint(region, potentialX, potentialY, 1);
+          const e = Pathing.entitiesAtPoint(this.region, potentialX, potentialY, 1);
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y);
             if (distance <= bestDistance){
@@ -109,27 +109,26 @@ export class Player extends Unit{
     }
   }
 
-  dead(region) {
+  dead() {
 
   }
-
-  attack(region) {
+  attack() {
 
     
     if (this.manualSpellCastSelection){
-      this.manualSpellCastSelection.cast(region, this, this.aggro);
+      this.manualSpellCastSelection.cast(this.region, this, this.aggro);
       this.manualSpellCastSelection = null;
     }else{
       // use equipped weapon
-      this.weapon.attack(region, this, this.aggro);
+      this.weapon.attack(this.region, this, this.aggro);
     }
 
     // this.playAttackSound();
   }
 
-  activatePrayers(region){
+  activatePrayers(){
     this.lastOverhead = this.overhead;
-    this.overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
+    this.overhead = _.find(this.region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
     if (this.lastOverhead && !this.overhead){
       this.lastOverhead.playOffSound();
     }else if (this.lastOverhead !== this.overhead ){
@@ -137,13 +136,13 @@ export class Player extends Unit{
     }
   }
 
-  pathToAggro(region) {
+  pathToAggro() {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
         this.aggro = null;
       }
       const isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size);
-      this.setHasLOS(region);
+      this.setHasLOS();
 
       if (isUnderAggrodMob) {
         const maxDist = Math.ceil(this.aggro.size / 2);
@@ -153,7 +152,7 @@ export class Player extends Unit{
           for (let xx=-maxDist; xx < maxDist; xx++){
             const x = this.location.x + xx;
             const y = this.location.y + yy;
-            if (Pathing.canTileBePathedTo(region, x, y, 1, true)) {
+            if (Pathing.canTileBePathedTo(this.region, x, y, 1, true)) {
               const distance = Pathing.dist(this.location.x, this.location.y, x, y);
               if (distance > 0 && distance < bestDistance){
                 bestDistance = distance;
@@ -180,7 +179,7 @@ export class Player extends Unit{
               // Don't path into an unpathable object.
               const px = this.aggro.location.x + xx;
               const py = this.aggro.location.y - yy;
-              if (!Pathing.collidesWithAnyEntities(region, px, py, 1)) {
+              if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
                 seekingTiles.push({
                   x: px,
                   y: py
@@ -190,7 +189,7 @@ export class Player extends Unit{
           }
         }
         // Create paths to all npc tiles
-        const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(region, this.location, { x: point.x, y: point.y }));
+        const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }));
         const validPaths = _.filter(potentialPaths, (path) => {
           return true;
         });
@@ -207,21 +206,21 @@ export class Player extends Unit{
     }
   }
 
-  moveTorwardsDestination(region) {
+  moveTorwardsDestination() {
     this.perceivedLocation = this.location;
     // Actually move the player forward by run speed. 
     if (this.destinationLocation) {
-      this.location = Pathing.path(region, this.location, this.destinationLocation, 2, this.aggro);
+      this.location = Pathing.path(this.region, this.location, this.destinationLocation, 2, this.aggro);
     }
   }
 
-  movementStep(region) {
+  movementStep() {
 
-    this.activatePrayers(region);
+    this.activatePrayers();
 
-    this.pathToAggro(region);
+    this.pathToAggro();
 
-    this.moveTorwardsDestination(region);
+    this.moveTorwardsDestination();
   }
 
   get attackRange() {
@@ -238,7 +237,7 @@ export class Player extends Unit{
     return this.weapon.attackSpeed;
   }
   
-  attackStep(region) {
+  attackStep() {
 
     this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
 
@@ -250,42 +249,42 @@ export class Player extends Unit{
   attackIfPossible() {
     this.attackCooldownTicks--;
     if (this.aggro){
-      this.setHasLOS(region);
+      this.setHasLOS();
       if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
-        this.attack(region)
+        this.attack()
         this.attackCooldownTicks = this.attackSpeed;
       }
     }
   }
 
-  draw(region, framePercent) {
+  draw(framePercent) {
 
-    LineOfSight.drawLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FF000099", this.type === Unit.types.MOB);
+    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, "#FF000099", this.type === Unit.types.MOB);
 
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
 
     // Perceived location
 
-    region.ctx.globalAlpha = .7;
-    region.ctx.fillStyle = "#FFFF00"
-    region.ctx.fillRect(
+    this.region.ctx.globalAlpha = .7;
+    this.region.ctx.fillStyle = "#FFFF00"
+    this.region.ctx.fillRect(
       perceivedX * Settings.tileSize, 
       perceivedY * Settings.tileSize, 
       Settings.tileSize, 
       Settings.tileSize
     );
-    region.ctx.globalAlpha = 1;
+    this.region.ctx.globalAlpha = 1;
     
     // Draw player on true tile
-    region.ctx.fillStyle = "#fff";
+    this.region.ctx.fillStyle = "#fff";
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      region.ctx.fillStyle = "#00FFFF";
+      this.region.ctx.fillStyle = "#00FFFF";
     }
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.fillRect(
+    this.region.ctx.strokeStyle = "#FFFFFF73"
+    this.region.ctx.lineWidth = 3;
+    this.region.ctx.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -293,9 +292,9 @@ export class Player extends Unit{
     );
 
     // Destination location
-    region.ctx.strokeStyle = "#FFFFFF73"
-    region.ctx.lineWidth = 3;
-    region.ctx.strokeRect(
+    this.region.ctx.strokeStyle = "#FFFFFF73"
+    this.region.ctx.lineWidth = 3;
+    this.region.ctx.strokeRect(
       this.destinationLocation.x * Settings.tileSize, 
       this.destinationLocation.y * Settings.tileSize, 
       Settings.tileSize, 
@@ -304,23 +303,23 @@ export class Player extends Unit{
 
 
 
-    region.ctx.save();
+    this.region.ctx.save();
 
-    region.ctx.translate(
+    this.region.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (Settings.rotated === 'south'){
-      region.ctx.rotate(Math.PI)
+      this.region.ctx.rotate(Math.PI)
     }
 
-    this.drawHPBar(region);
-    this.drawIncomingProjectiles(region);
-    this.drawOverheadPrayers(region)
+    this.drawHPBar();
+    this.drawIncomingProjectiles();
+    this.drawOverheadPrayers()
 
-    region.ctx.restore();
+    this.region.ctx.restore();
 
     
   }

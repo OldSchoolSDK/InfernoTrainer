@@ -90,7 +90,7 @@ export class JalAkRekKet extends Mob{
     return 'crush';
   }
   
-  attackAnimation(region, framePercent){
-    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(framePercent){
+    this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

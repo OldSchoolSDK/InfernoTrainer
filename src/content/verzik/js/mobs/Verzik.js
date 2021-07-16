@@ -18,8 +18,8 @@ import { AoeRangedWeapon } from "../../../../sdk/Weapons/AoeRangedWeapon";
 
 export class Verzik extends Mob{
 
-  constructor(location, aggro) {
-    super(location, aggro);
+  constructor(region, location, aggro) {
+    super(region, location, aggro);
     this.wasPlayerInMeleeRange = false;
   }
 
@@ -117,13 +117,13 @@ export class Verzik extends Mob{
     return "#aadd7333";
   }
   // Verzik always has line-of-sight.
-  setHasLOS(region) {
+  setHasLOS() {
     this.hasLOS = true;
   }
 
   // Verzik can always move towards its target, even if it has LOS.
   // Verzik does not move if does a range attack on top of the target.
-  canMove(region) {
+  canMove() {
     return !this.isWithinMeleeRange()
       && !this.isDying()
       && (this.attackCooldownTicks != 1 || !this.isOnTile(this.aggro.location.x, this.aggro.location.y));
@@ -137,7 +137,7 @@ export class Verzik extends Mob{
     return 'range';
   }
   
-  attackAnimation(region, framePercent){
-    region.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
+  attackAnimation(framePercent){
+    this.region.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 }
