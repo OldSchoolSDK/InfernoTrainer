@@ -40,9 +40,6 @@ export class Region {
 
     this.map.addEventListener('click', this.mapClick.bind(this));
     this.map.addEventListener('contextmenu', (e) =>{
-      
-
-
       let x = e.offsetX;
       let y = e.offsetY;
 
@@ -52,7 +49,6 @@ export class Region {
         y = this.height * Settings.tileSize - e.offsetY;
       }
   
-    
       /*gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];
@@ -63,11 +59,7 @@ export class Region {
       this.contextMenu.setActive();
     });
 
-    this.map.addEventListener("mousemove", (e) => {      
-      const x = e.clientX;
-      const y = e.clientY;
-      this.contextMenu.cursorMovedTo(this, x, y);
-    })
+    this.map.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY));
   }
 
   mapClick(e) {

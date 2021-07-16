@@ -10,6 +10,7 @@ import BlobSound from "../../assets/sounds/blob.ogg";
 import { JalAkRekKet } from "../../js/mobs/JalAkRekKet";
 import { JalAkRekMej } from "../../js/mobs/JalAkRekMej";
 import { JalAkRekXil } from "../../js/mobs/JalAkRekXil";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Blob extends Mob{
 
@@ -28,6 +29,12 @@ export class Blob extends Mob{
 
   get combatLevelColor() {
     return 'red';
+  }
+  
+
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
   }
   
   setStats () {
