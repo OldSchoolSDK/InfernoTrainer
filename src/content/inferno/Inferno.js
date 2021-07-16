@@ -67,6 +67,7 @@ export class Inferno extends Scenario {
       const encodedSpawn = encodeURIComponent(JSON.stringify(spawns));
       document.getElementById("replayLink").href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`;
       document.getElementById("waveinput").value = wave;
+
     }
     ////////////////////////////////////////////////////////////
     // UI controls

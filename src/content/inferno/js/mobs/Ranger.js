@@ -7,6 +7,7 @@ import { Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/ranger.ogg";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Ranger extends Mob {
 
@@ -21,6 +22,11 @@ export class Ranger extends Mob {
 
   get combatLevelColor() {
     return 'red';
+  }
+
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
   }
   
   setStats () {

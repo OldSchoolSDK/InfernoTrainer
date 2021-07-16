@@ -5,6 +5,8 @@ import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mager.ogg";
+import { Pathing } from "../../../../sdk/Pathing";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Mager extends Mob{
 
@@ -20,6 +22,13 @@ export class Mager extends Mob{
   get combatLevelColor() {
     return 'red';
   }
+
+
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
+  }
+
   
   setStats () {
     this.frozen = 1;
@@ -105,7 +114,53 @@ export class Mager extends Mob{
   get maxHit() {
     return 70;
   }
+
   attackAnimation(framePercent){
     this.region.ctx.rotate(framePercent * Math.PI * 2);
+  }
+
+  respawnLocation(mobToResurrect) {
+    for (let x = 15; x < 21; x++){
+      for (let y = 10; y < 22; y++){
+        if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)){
+          return {x, y};
+        }
+      }
+    }
+
+    return { x: 21, y: 22 };
+  }
+
+  attackIfPossible(){
+    this.attackCooldownTicks--;
+    this.attackFeedback = Mob.attackIndicators.NONE;
+
+    this.hadLOS = this.hasLOS;
+    this.setHasLOS();
+
+    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+
+    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
+      if (Math.random() < 0.1) {
+        const mobToResurrect = MobDeathStore.selectMobToResurect();
+        if (!mobToResurrect) {
+          this.attack();
+        }else{
+          // Set to 50% health
+          mobToResurrect.currentStats.hitpoint = mobToResurrect.stats.hitpoint / 2;
+          mobToResurrect.dying = -1;
+          
+          mobToResurrect.setLocation(this.respawnLocation(mobToResurrect));
+
+          mobToResurrect.perceivedLocation = mobToResurrect.location;
+          this.region.addMob(mobToResurrect);
+          //(15, 10) to  (21 , 22)
+
+        }
+      }else{
+        this.attack();
+      }
+    }
+
   }
 }

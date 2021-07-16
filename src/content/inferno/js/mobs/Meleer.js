@@ -5,6 +5,7 @@ import { Mob } from "../../../../sdk/Mob";
 import { Pathing } from "../../../../sdk/Pathing";
 import MeleerImage from "../../assets/images/meleer.png";
 import MeleerSound from "../../assets/sounds/meleer.ogg";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Meleer extends Mob{
 
@@ -19,6 +20,12 @@ export class Meleer extends Mob{
 
   get combatLevelColor() {
     return 'red';
+  }
+
+
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
   }
   
   setStats () {
