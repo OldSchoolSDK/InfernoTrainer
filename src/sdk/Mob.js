@@ -251,7 +251,7 @@ export class Mob extends Unit{
 
   draw(framePercent) {
 
-    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF73", this.type === Unit.types.MOB);
+    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, "#FF000055", this.type === Unit.types.MOB);
         
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
