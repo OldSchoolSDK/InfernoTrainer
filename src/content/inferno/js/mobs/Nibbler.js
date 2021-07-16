@@ -115,6 +115,8 @@ export class Nibbler extends Mob{
   }
 
   attackIfPossible(){
+    this.attackCooldownTicks--;
+
     if (this.aggro.dying === 0) {
       this.dead(); // cheat way for now. pillar should AOE 
     }
@@ -122,7 +124,6 @@ export class Nibbler extends Mob{
     this.attackFeedback = Mob.attackIndicators.NONE;
 
     const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro);
-
     if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0){
       this.attack();
     }

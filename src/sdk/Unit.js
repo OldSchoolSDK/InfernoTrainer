@@ -28,6 +28,7 @@ export class Unit {
     this.incomingProjectiles = [];
 
 
+
     this.missedHitsplatImage = new Image();
     this.missedHitsplatImage.src = MissSplat;
     this.damageHitsplatImage = new Image();
@@ -44,6 +45,10 @@ export class Unit {
     this.setStats();
     this.currentStats.hitpoint = this.stats.hitpoint;
 
+
+    if (options.weapon) {
+      this.bonuses = options.weapon.bonuses; // temp code 
+    }
   }
   get cooldown() {
     return 0;
@@ -101,7 +106,7 @@ export class Unit {
     } else if (this.type === Unit.types.PLAYER) {
       this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange);
     } else if (this.aggro.type === Unit.types.MOB){
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.size, this.type === Unit.types.MOB);
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === Unit.types.MOB);
     } else if (this.aggro.isEntity) {
       this.hasLOS = false;
     }

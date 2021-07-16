@@ -172,7 +172,7 @@ export class Mob extends Unit{
     this.hadLOS = this.hasLOS;
     this.setHasLOS();
 
-    let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
+    const weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
     if (!weaponIsAreaAttack) {
       isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
@@ -296,9 +296,6 @@ export class Mob extends Unit{
       }
     }
 
-    if (this.shouldShowAttackAnimation()){
-      this.attackAnimation(framePercent);
-    }
 
     this.region.ctx.restore();
 
@@ -315,6 +312,11 @@ export class Mob extends Unit{
       this.region.ctx.scale(-1, 1);
     }
 
+    this.region.ctx.save();
+    if (this.shouldShowAttackAnimation()){
+      this.attackAnimation(framePercent);
+    }
+
     this.region.ctx.drawImage(
       currentImage,
       -(this.size * Settings.tileSize) / 2,
@@ -322,6 +324,9 @@ export class Mob extends Unit{
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     );
+
+    this.region.ctx.restore();
+    
     if (Settings.rotated === 'south'){
       this.region.ctx.scale(-1, 1);
     }
