@@ -145,13 +145,13 @@ export class Blob extends Mob{
   
   removedFromRegion(){
 
-    const xil = new JalAkRekXil(this.region, { x: this.location.x+1, y: this.location.y - 1}, this.aggro);
+    const xil = new JalAkRekXil(this.region, { x: this.location.x+1, y: this.location.y - 1}, { aggro: this.aggro });
     this.region.addMob(xil);
 
-    const ket = new JalAkRekKet(this.region, this.location, this.aggro);
+    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro });
     this.region.addMob(ket);
 
-    const mej = new JalAkRekMej(this.region, { x: this.location.x+2, y: this.location.y - 2}, this.aggro);
+    const mej = new JalAkRekMej(this.region, { x: this.location.x+2, y: this.location.y - 2}, { aggro: this.aggro });
     this.region.addMob(mej);
   }
 
