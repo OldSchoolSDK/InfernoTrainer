@@ -122,9 +122,7 @@ export class Mager extends Mob{
   respawnLocation(mobToResurrect) {
     for (let x = 15; x < 21; x++){
       for (let y = 10; y < 22; y++){
-        const available = Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)
-        console.log(x, y, available);
-        if (!available){
+        if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)){
           return {x, y};
         }
       }
@@ -143,9 +141,8 @@ export class Mager extends Mob{
     const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
-      if (Math.random() < 0.5) {
+      if (Math.random() < 0.1) {
         const mobToResurrect = MobDeathStore.selectMobToResurect();
-        console.log('resurrecting', mobToResurrect);
         if (!mobToResurrect) {
           this.attack();
         }else{
