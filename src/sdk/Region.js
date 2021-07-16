@@ -114,7 +114,7 @@ export class Region {
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(this, Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
     }, Settings.inputDelay);
   }
 
