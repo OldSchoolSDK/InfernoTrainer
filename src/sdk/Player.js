@@ -140,6 +140,8 @@ export class Player extends Unit{
     if (this.aggro) {
       if (this.aggro.dying > -1) {
         this.aggro = null;
+        this.destinationLocation = this.location;
+        return;
       }
       const isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size);
       this.setHasLOS();
