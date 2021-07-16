@@ -25,7 +25,11 @@ switch (selectedScenarioName) {
 }
 
 // Create region
-const region = new Region("map", selectedScenario.getRegionWidth(), selectedScenario.getRegionHeight());
+const region = new Region("map",
+  selectedScenario.getRegionWidth(),
+  selectedScenario.getRegionHeight(),
+  selectedScenario.getGridColor1(),
+  selectedScenario.getGridColor2());
 
 const controlPanel = new ControlPanelController(selectedScenario);
 InventoryControls.inventory = selectedScenario.getInventory();

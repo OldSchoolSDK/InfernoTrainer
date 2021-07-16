@@ -16,6 +16,14 @@ export class XarpusP2 extends Scenario {
     return 15;
   }
 
+  getGridColor1() {
+    return "#333";
+  }
+
+  getGridColor2() {
+    return "#222";
+  }
+
   getName() {
     return "Xarpus P2";
   }

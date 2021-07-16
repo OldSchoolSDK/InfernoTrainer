@@ -20,6 +20,14 @@ export class Scenario {
     return 30;
   }
 
+  getGridColor1() {
+    return "#100";
+  }
+
+  getGridColor2() {
+    return "#210";
+  }
+
   getInventory() {
     return [];
   }

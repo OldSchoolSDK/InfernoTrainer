@@ -9,7 +9,7 @@ import { Pathing } from './Pathing';
 
 export class Region {
 
-  constructor(selector, width, height) {
+  constructor(selector, width, height, color1, color2) {
     this.inputDelay = null;
     this.frameCounter = 0;
     this.heldDown = 6;
@@ -30,6 +30,8 @@ export class Region {
     this.grid.width = Settings.tileSize * width;
     this.grid.height = Settings.tileSize * height;
     this.hasCalcedGrid = false;
+    this.color1 = color1;
+    this.color2 = color2;
 
 
     this.width = width;
@@ -196,7 +198,7 @@ export class Region {
       // This is a GIGANTIC performance improvement ... 
       this.gridCtx.fillRect(0, 0, this.map.width, this.map.height);
       for (var i = 0; i < this.map.width * this.map.height; i++) {
-        this.gridCtx.fillStyle = (i % 2) ? "#100" : "#210";
+        this.gridCtx.fillStyle = (i % 2) ? this.color1 : this.color2;
         this.gridCtx.fillRect(
           i % this.width * Settings.tileSize, 
           Math.floor(i / this.width) * Settings.tileSize, 
