@@ -1,6 +1,7 @@
 'use strict';
 import _ from "lodash";
 import { Settings } from "./Settings";
+import { Entity } from "./Entity";
 
 export class Pathing {
 
@@ -18,9 +19,10 @@ export class Pathing {
 
   static collidesWithAnyEntities(region, x, y, s) {
     for (var i = 0; i < region.entities.length; i++) {
-        if (Pathing.collisionMath(x, y, s, region.entities[i].location.x, region.entities[i].location.y, region.entities[i].size)) {
-          return true;
-        }
+      let entity = region.entities[i];
+      if (entity.collisionType != Entity.collisionType.NONE && Pathing.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
+        return true;
+      }
     }
     return false;
   }
@@ -34,7 +36,10 @@ export class Pathing {
     return entities;
   }
 
-
+  // Same as above but only returns entities with collision enabled.
+  static collideableEntitiesAtPoint(region, x, y, s) {
+    return _.filter(Pathing.entitiesAtPoint(region, x, y, s), (entity) => entity.collisionType != Entity.collisionType.NONE);
+  }
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, framePercent) {
     const mobs = [];

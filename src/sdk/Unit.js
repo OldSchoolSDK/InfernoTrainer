@@ -2,6 +2,7 @@
 
 import MissSplat from "../assets/images/hitsplats/miss.png"
 import DamageSplat from "../assets/images/hitsplats/damage.png"
+import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
 import { LineOfSight } from "./LineOfSight";
 import _ from "lodash";
@@ -181,12 +182,12 @@ export class Unit {
 
   processIncomingAttacks() {
 
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
+    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.remainingDelay > -1);
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay == 0) {
+      if (projectile.remainingDelay == 0) {
         this.currentStats.hitpoint -= projectile.damage;
       }
-      projectile.delay--;
+      projectile.remainingDelay--;
     });
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint);
 
@@ -213,8 +214,43 @@ export class Unit {
     
   }
 
-  drawIncomingProjectiles() {
-    let projectileOffsets = [
+  // The rendering context is the world.
+  drawIncomingProjectiles(tickPercent) {
+
+    this.incomingProjectiles.forEach((projectile) => {
+      if (projectile.remainingDelay < 0) {
+        return;
+      }
+      if (projectile.image) {
+        let projectilePercent = (projectile.initialDelay - projectile.remainingDelay - 1) / projectile.initialDelay + (tickPercent * (1 / projectile.initialDelay));
+        let startX = projectile.fromLocation.x + projectile.fromSize / 2;
+        let startY = projectile.fromLocation.y - projectile.fromSize / 2;
+        let endX = projectile.toLocation.x + projectile.toSize / 2;
+        let endY = projectile.toLocation.y - projectile.toSize / 2;
+        
+        let perceivedX = Pathing.linearInterpolation(startX, endX, projectilePercent);
+        let perceivedY = Pathing.linearInterpolation(startY, endY, projectilePercent);
+
+        this.region.ctx.save();
+        this.region.ctx.translate(
+          perceivedX * Settings.tileSize - Settings.tileSize / 2, 
+          (perceivedY) * Settings.tileSize + Settings.tileSize / 2
+        )
+        this.region.ctx.drawImage(
+          projectile.image,
+          0, 
+          0,
+          Settings.tileSize,
+          Settings.tileSize
+        );
+        this.region.ctx.restore();
+      }
+    });
+  }
+
+  // The rendering context is the unit's game square.
+  drawIncomingHitsplats(tickPercent) {
+    let hitsplatOffsets = [
       [0, 12],
       [0, 28],
       [-14, 20],
@@ -222,8 +258,9 @@ export class Unit {
     ];
 
     let projectileCounter = 0;
-    this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0 ) {
+    this.incomingProjectiles.forEach((projectile) => {      
+      
+      if (projectile.remainingDelay > 0 ) {
         return;
       }
       if (projectileCounter > 3){
@@ -232,11 +269,11 @@ export class Unit {
       projectileCounter++;
       const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage;
       if (!projectile.offsetX && !projectile.offsetY){
-        projectile.offsetX = projectileOffsets[0][0];
-        projectile.offsetY = projectileOffsets[0][1];
+        projectile.offsetX = hitsplatOffsets[0][0];
+        projectile.offsetY = hitsplatOffsets[0][1];
       }
     
-      projectileOffsets = _.remove(projectileOffsets, (offset) => {
+      hitsplatOffsets = _.remove(hitsplatOffsets, (offset) => {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 

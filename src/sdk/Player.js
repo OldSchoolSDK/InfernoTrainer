@@ -76,7 +76,7 @@ export class Player extends Unit{
     this.manualSpellCastSelection = null;
 
 
-    const clickedOnEntities = Pathing.entitiesAtPoint(this.region, x, y, 1);
+    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.region, x, y, 1);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0];
@@ -87,7 +87,7 @@ export class Player extends Unit{
         for (let xOff=-maxDist; xOff < maxDist; xOff++){
           const potentialX = x + xOff;
           const potentialY = y + yOff;
-          const e = Pathing.entitiesAtPoint(this.region, potentialX, potentialY, 1);
+          const e = Pathing.collideableEntitiesAtPoint(this.region, potentialX, potentialY, 1);
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y);
             if (distance <= bestDistance){
@@ -240,9 +240,6 @@ export class Player extends Unit{
   }
   
   attackStep() {
-
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1);
-
     this.processIncomingAttacks();
 
     this.attackIfPossible();
@@ -259,12 +256,12 @@ export class Player extends Unit{
     }
   }
 
-  draw(framePercent) {
+  draw(tickPercent) {
 
     LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, "#00FF0099", this.type === Unit.types.MOB);
 
-    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
-    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent);
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent);
 
     // Perceived location
 
@@ -303,8 +300,6 @@ export class Player extends Unit{
       Settings.tileSize
     );
 
-
-
     this.region.ctx.save();
 
     this.region.ctx.translate(
@@ -312,17 +307,16 @@ export class Player extends Unit{
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
-
     if (Settings.rotated === 'south'){
       this.region.ctx.rotate(Math.PI)
     }
 
     this.drawHPBar();
-    this.drawIncomingProjectiles();
+    this.drawIncomingHitsplats(tickPercent);
     this.drawOverheadPrayers()
 
     this.region.ctx.restore();
 
-    
+    this.drawIncomingProjectiles(tickPercent);
   }
 }

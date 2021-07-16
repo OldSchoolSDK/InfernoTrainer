@@ -29,6 +29,11 @@ export class Weapon {
     return false;
   }
 
+  // Returns the projectile image for this weapon.
+  get image() {
+    return null;
+  }
+
   static isMeleeAttackStyle(style){
     return style === 'crush' || style === 'slash' || style === 'stab';
   }

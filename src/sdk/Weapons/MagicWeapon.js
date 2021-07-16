@@ -4,6 +4,11 @@ import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export class MagicWeapon extends Weapon {
+
+  get image() {
+    return null;
+  }
+
   attack(region, from, to, bonuses = {}, forceSWOnly = false){
 
     this._calculatePrayerEffects(from, to, bonuses, forceSWOnly);
@@ -17,7 +22,7 @@ export class MagicWeapon extends Weapon {
       damage = 0;
     }
     this.damage = damage;
-    to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly ));
+    to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly, this.image));
   }
 
   isBlockable(from, to, bonuses, forceSWOnly) {

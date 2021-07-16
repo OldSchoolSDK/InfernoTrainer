@@ -21,7 +21,7 @@ export class MeleeWeapon extends Weapon {
       damage = 0;
     }
 
-    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle ));
+    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle, false, null));
   }
 
   _calculatePrayerEffects(from, to, bonuses){

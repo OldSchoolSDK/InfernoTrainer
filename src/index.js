@@ -2,6 +2,7 @@
 
 import { Inferno } from "./content/inferno/Inferno";
 import { VerzikP3 } from "./content/verzik/VerzikP3";
+import { XarpusP2 } from "./content/xarpus/XarpusP2";
 import { Region } from './sdk/Region';
 import { ControlPanelController } from './sdk/ControlPanelController';
 import { BrowserUtils } from './sdk/Utils/BrowserUtils';
@@ -14,6 +15,9 @@ console.log("selected scenario is " + selectedScenarioName);
 switch (selectedScenarioName) {
     case "verzikp3":
         selectedScenario = new VerzikP3();
+        break;
+    case "xarpusp2":
+        selectedScenario = new XarpusP2();
         break;
     case "inferno":
     default:
