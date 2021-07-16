@@ -23,7 +23,7 @@ export class Entity {
 
   // Specify how pathing and LOS calculations interact with this entity.
   get collisionType() {
-    return collisionType.BLOCK_LOS;
+    return Entity.collisionType.BLOCK_LOS;
   }
 
   get color() {
