@@ -68,8 +68,8 @@ export class Mob extends Unit{
     }
   }
   
-  constructor(location, options) {
-    super(location, options);
+  constructor(region, location, options) {
+    super(region, location, options);
     
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
       this.mobRangeAttackAnimation = _.map(this.rangeAttackAnimation, image => {
@@ -81,15 +81,15 @@ export class Mob extends Unit{
   }
 
 
-  movementStep(region) {
+  movementStep() {
 
     if (this.dying === 0) {
       return;
     }
     this.perceivedLocation = { x:this.location.x, y: this.location.y };
 
-    this.setHasLOS(region);
-    if (this.canMove(region)) {
+    this.setHasLOS();
+    if (this.canMove()) {
       var dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
       var dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
 
@@ -121,9 +121,9 @@ export class Mob extends Unit{
           dy = this.location.y;
       }
 
-      const both = Pathing.canTileBePathedTo(region, dx, dy, this.size, this.consumesSpace);
-      const xSpace = Pathing.canTileBePathedTo(region, dx, this.location.y, this.size, this.consumesSpace);
-      const ySpace = Pathing.canTileBePathedTo(region, this.location.x, dy, this.size, this.consumesSpace);
+      const both = Pathing.canTileBePathedTo(this.region, dx, dy, this.size, this.consumesSpace);
+      const xSpace = Pathing.canTileBePathedTo(this.region, dx, this.location.y, this.size, this.consumesSpace);
+      const ySpace = Pathing.canTileBePathedTo(this.region, this.location.x, dy, this.size, this.consumesSpace);
       const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace);
       if (both && cornerFilter) {
         this.location.x = dx;
@@ -155,7 +155,7 @@ export class Mob extends Unit{
     }
     
     this.processIncomingAttacks();
-    this.attackIfPossible(region);
+    this.attackIfPossible();
     this.detectDeath();
   }
   
@@ -165,12 +165,12 @@ export class Mob extends Unit{
   }
 
 
-  attackIfPossible(region){
+  attackIfPossible(){
 
     this.attackCooldownTicks--;
 
     this.hadLOS = this.hasLOS;
-    this.setHasLOS(region);
+    this.setHasLOS();
 
     let weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack;
     let isUnderAggro = false;
@@ -180,7 +180,7 @@ export class Mob extends Unit{
     this.attackFeedback = Mob.attackIndicators.NONE;
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
-      this.attack(region);
+      this.attack();
     }
   }
 
@@ -188,7 +188,7 @@ export class Mob extends Unit{
     return 0;
   }
 
-  attack(region){
+  attack(){
     let attackStyle = this.attackStyle;
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false){
@@ -202,7 +202,7 @@ export class Mob extends Unit{
     }else{
       this.attackFeedback = Mob.attackIndicators.HIT;
     }
-    this.weapons[attackStyle].attack(region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(this.region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
     if (attackStyle == 'range' && !this.currentAnimation) {
@@ -237,47 +237,47 @@ export class Mob extends Unit{
     return 'red';
   }
 
-  contextActions(region, x, y){
+  contextActions(x, y){
     return [
       {
         text: [{text: "Attack ", fillStyle: "white"}, {text: this.displayName, fillStyle: "yellow"},{text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor}],
         action: () => {
-          region.redClick();
-          region.playerAttackClick(this);
+          this.region.redClick();
+          this.region.playerAttackClick(this);
         }
       }
     ]
   }
 
-  draw(region, framePercent) {
+  draw(framePercent) {
 
-    LineOfSight.drawLOS(region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF73", this.type === Unit.types.MOB);
+    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, "#FFFFFF73", this.type === Unit.types.MOB);
         
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent);
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent);
-    region.ctx.save();
-    region.ctx.translate(
+    this.region.ctx.save();
+    this.region.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (this.dying > -1) {
-      region.ctx.fillStyle = "#964B00";
+      this.region.ctx.fillStyle = "#964B00";
     }else if (this.attackFeedback === Mob.attackIndicators.BLOCKED){
-      region.ctx.fillStyle = "#00FF00";
+      this.region.ctx.fillStyle = "#00FF00";
     } else if (this.attackFeedback === Mob.attackIndicators.HIT){
-      region.ctx.fillStyle = "#FF0000";
+      this.region.ctx.fillStyle = "#FF0000";
     } else if (this.attackFeedback === Mob.attackIndicators.SCAN){
-      region.ctx.fillStyle = "#FFFF00";
+      this.region.ctx.fillStyle = "#FFFF00";
     } else if (this.hasLOS){
-      region.ctx.fillStyle = "#FF7300";
+      this.region.ctx.fillStyle = "#FF7300";
     } else {
-      region.ctx.fillStyle="#FFFFFF22";
+      this.region.ctx.fillStyle="#FFFFFF22";
     }
 
     // Draw mob
-    region.ctx.fillRect(
+    this.region.ctx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -297,25 +297,25 @@ export class Mob extends Unit{
     }
 
     if (this.shouldShowAttackAnimation()){
-      this.attackAnimation(region, framePercent);
+      this.attackAnimation(framePercent);
     }
 
-    region.ctx.restore();
+    this.region.ctx.restore();
 
-    region.ctx.save();
+    this.region.ctx.save();
 
-    region.ctx.translate(
+    this.region.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2, 
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
     if (Settings.rotated === 'south'){
-      region.ctx.rotate(Math.PI)
+      this.region.ctx.rotate(Math.PI)
     }
     if (Settings.rotated === 'south'){
-      region.ctx.scale(-1, 1);
+      this.region.ctx.scale(-1, 1);
     }
 
-    region.ctx.drawImage(
+    this.region.ctx.drawImage(
       currentImage,
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
@@ -323,13 +323,13 @@ export class Mob extends Unit{
       this.size * Settings.tileSize
     );
     if (Settings.rotated === 'south'){
-      region.ctx.scale(-1, 1);
+      this.region.ctx.scale(-1, 1);
     }
 
-    if (LineOfSight.hasLineOfSightOfMob(region, this.aggro.location.x, this.aggro.location.y, this, region.player.attackRange)){
-      region.ctx.strokeStyle = "#00FF0073"
-      region.ctx.lineWidth = 1;
-      region.ctx.strokeRect(
+    if (LineOfSight.hasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, this.region.player.attackRange)){
+      this.region.ctx.strokeStyle = "#00FF0073"
+      this.region.ctx.lineWidth = 1;
+      this.region.ctx.strokeRect(
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
         this.size * Settings.tileSize,
@@ -340,13 +340,13 @@ export class Mob extends Unit{
 
 
 
-    this.drawHPBar(region);
+    this.drawHPBar();
 
-    this.drawIncomingProjectiles(region);
+    this.drawIncomingProjectiles();
 
-    this.drawOverheadPrayers(region);
+    this.drawOverheadPrayers();
 
-    region.ctx.restore();
+    this.region.ctx.restore();
   }
 
 }

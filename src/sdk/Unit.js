@@ -13,8 +13,8 @@ export class Unit {
     ENTITY: 2
   });
 
-  constructor(location, options) {
-
+  constructor(region, location, options) {
+    this.region = region;
     this.prayers = [];
     this.lastOverhead = null;
     this.aggro = options.aggro || null;
@@ -69,12 +69,12 @@ export class Unit {
     return (this.dying > 0);
   }
 
-  removedFromRegion(region){
+  removedFromRegion(){
 
   }
 
   // Returns true if the NPC can move towards the unit it is aggro'd against.
-  canMove(region) {
+  canMove() {
     return (!this.hasLOS && this.frozen <= 0 && !this.isDying())
   }
   
@@ -95,13 +95,13 @@ export class Unit {
     return this.attackCooldownTicks === this.cooldown && this.dying === -1
   }
 
-  setHasLOS(region){
-    if (this.aggro === region.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(region, this.location.x, this.location.y, this.size, this.attackRange, true)
+  setHasLOS(){
+    if (this.aggro === this.region.player) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.region, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === Unit.types.PLAYER) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.attackRange);
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange);
     } else if (this.aggro.type === Unit.types.MOB){
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(region, this.location.x, this.location.y, this.aggro, this.size, this.type === Unit.types.MOB);
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.size, this.type === Unit.types.MOB);
     } else if (this.aggro.isEntity) {
       this.hasLOS = false;
     }
@@ -150,18 +150,18 @@ export class Unit {
     this.prayers = prayers;
   }
 
-  attackAnimation(region, framePercent){
+  attackAnimation(framePercent){
     // override pls
   }
 
-  dead(region) {
+  dead() {
     this.perceivedLocation = this.location;
     this.dying = 3;
   }
 
   detectDeath(){
     if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
-      this.dead(region);
+      this.dead();
       return;
     }
     
@@ -169,7 +169,7 @@ export class Unit {
       this.dying--;
     }
     if (this.dying === 0 ){
-      this.removedFromRegion(region);
+      this.removedFromRegion();
     }
   }
 
@@ -187,19 +187,19 @@ export class Unit {
 
   }
 
-  drawHPBar(region){
+  drawHPBar(){
 
-    region.ctx.fillStyle = "red";
-    region.ctx.fillRect(
+    this.region.ctx.fillStyle = "red";
+    this.region.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize, 
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size, 
       5
     );
 
-    region.ctx.fillStyle = "green";
+    this.region.ctx.fillStyle = "green";
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
-    region.ctx.fillRect(
+    this.region.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w, 
@@ -208,7 +208,7 @@ export class Unit {
     
   }
 
-  drawIncomingProjectiles(region) {
+  drawIncomingProjectiles() {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -235,33 +235,33 @@ export class Unit {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      region.ctx.drawImage(
+      this.region.ctx.drawImage(
         image,
         projectile.offsetX - 12, 
         -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY,
         24,
         23
       );
-      region.ctx.fillStyle = "#FFFFFF";
-      region.ctx.font = "16px Stats_11";
-      region.ctx.textAlign="center";
-      region.ctx.fillText(
+      this.region.ctx.fillStyle = "#FFFFFF";
+      this.region.ctx.font = "16px Stats_11";
+      this.region.ctx.textAlign="center";
+      this.region.ctx.fillText(
         projectile.damage, 
         projectile.offsetX, 
         -((this.size + 1) * Settings.tileSize) / 2  - projectile.offsetY + 15,
       );
-      region.ctx.textAlign="left";
+      this.region.ctx.textAlign="left";
       
     });
 
   }
 
-  drawOverheadPrayers(region) {
+  drawOverheadPrayers() {
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead());
     if (overheads.length){
 
-      region.ctx.drawImage(
+      this.region.ctx.drawImage(
         overheads[0].overheadImage(),
         -Settings.tileSize / 2,
         -Settings.tileSize * 3,
