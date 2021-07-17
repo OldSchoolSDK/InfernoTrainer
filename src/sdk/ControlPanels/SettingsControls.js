@@ -100,10 +100,14 @@ export class SettingsControls extends BaseControls{
       }else{
         Settings.rotated = 'south';
       }
-
+    }else if (x > 20 && x < 60 && y > 80 && y < 120) {
+      Settings.scenario = "inferno";
+    }else if (x > 80 && x < 120 && y > 80 && y < 120) {
+      Settings.scenario = "verzikp3";
+    }else if (x > 140 && x < 180 && y > 80 && y < 120) {
+      Settings.scenario = "xarpusp2";
     }
     
-
     Settings.inputDelay = Math.max(0, Settings.inputDelay);
     Settings.persistToStorage();
   }
@@ -141,7 +145,7 @@ export class SettingsControls extends BaseControls{
     
     ctrl.ctx.drawImage(Settings.scenario === "xarpusp2" ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 80);
     ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 82, 36, 36);
-    ctrl.ctx.fillText("Reload to change", x + 100, y + 140);
+    ctrl.ctx.fillText("Reload to change scenario", x + 100, y + 140);
 
 
   }
