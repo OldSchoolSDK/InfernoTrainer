@@ -59,7 +59,7 @@ export class Region {
       this.contextMenu.setActive();
     });
 
-    this.canvas.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(e.clientX, e.clientY));
+    this.canvas.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY));
   }
 
   mapClick(e) {

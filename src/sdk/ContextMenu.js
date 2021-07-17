@@ -29,9 +29,9 @@ export class ContextMenu {
     this.menuOptions = menuOptions;
   }
   
-  cursorMovedTo(x, y){
+  cursorMovedTo(region, x, y){
 
-    const cRect = this.canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+    const cRect = region.canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left);  // Subtract the 'left' of the canvas 
     const canvasY = Math.round(y - cRect.top);   // from the X/Y positions to make  
 
