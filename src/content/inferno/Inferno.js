@@ -42,6 +42,7 @@ export class Inferno extends Scenario {
     const melee = BrowserUtils.getQueryVar("melee")
     const ranger = BrowserUtils.getQueryVar("ranger")
     const mager = BrowserUtils.getQueryVar("mager")
+    const randomPillar = _.shuffle(region.entities)[0];
 
     if (bat || blob || melee || ranger || mager) {
       // Backwards compatibility layer for runelite plugin
@@ -52,6 +53,9 @@ export class Inferno extends Scenario {
       (JSON.parse(melee) || []).forEach((spawn) => region.addMob(new Meleer(region, {x: spawn[0], y: spawn[1]}, { aggro: player })));
       (JSON.parse(blob) || []).forEach((spawn) => region.addMob(new Blob(region, {x: spawn[0], y: spawn[1]}, { aggro: player })));
       (JSON.parse(bat) || []).forEach((spawn) => region.addMob(new Bat(region, {x: spawn[0], y: spawn[1]}, { aggro: player })));
+
+      Waves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region));
+
       document.getElementById("replayLink").href = `/${window.location.search}`;
 
     } else {
@@ -60,7 +64,6 @@ export class Inferno extends Scenario {
       const wave = parseInt(BrowserUtils.getQueryVar("wave")) || 62;
       const spawns = BrowserUtils.getQueryVar("spawns") ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar("spawns"))) : Waves.getRandomSpawns();
 
-      const randomPillar = _.shuffle(region.entities)[0];
       Waves.spawn(region, randomPillar, spawns, wave).forEach(region.addMob.bind(region));
       region.wave = wave;
 
