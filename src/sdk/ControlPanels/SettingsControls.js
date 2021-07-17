@@ -107,8 +107,22 @@ export class SettingsControls extends BaseControls{
     ctrl.ctx.fillText(Settings.inputDelay, x + 81, y + 48);
     ctrl.ctx.drawImage(this.greenDownImage, x + 75, y + 51);
 
-    if (this.compassCanvas){
+    if (this.compassImage){
+      ctrl.ctx.save();
+
+
+      ctrl.ctx.translate(x + 100 + 25, y + 20 + 25 );
+
+      if (Settings.rotated === 'south'){
+        ctrl.ctx.rotate(Math.PI)
+        // ctrl.ctx.translate(-51,51)
+
+
+      }
+      ctrl.ctx.translate(-x - 100 - 25, y - 20 - 25 );
       ctrl.ctx.drawImage(this.compassCanvas, x + 100, y + 20)
+
+      ctrl.ctx.restore();
 
     }
 
