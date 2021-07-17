@@ -18,7 +18,7 @@ export class Waves {
   static spawn(region, randomPillar, spawns, wave){
     Waves.currentSpawn = spawns;
     const mobCounts = Waves.waves[wave - 1];
-    const mobs = [];
+    let mobs = [];
     let i=0;
     Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(region, spawns[i++], { aggro: region.player })));
     Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(region, spawns[i++], { aggro: region.player })));
@@ -26,6 +26,12 @@ export class Waves {
     Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(region, spawns[i++], { aggro: region.player })));
     Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(region, spawns[i++], { aggro: region.player })));
 
+    mobs = mobs.concat(Waves.spawnNibblers(mobCounts[0], region, randomPillar));
+    return mobs;  
+  }
+
+  static spawnNibblers(n, region, pillar) {
+    const mobs = [];
     const nibblerSpawns = _.shuffle([
       { x: 8, y: 13},
       { x: 9, y: 13},
@@ -38,9 +44,8 @@ export class Waves {
       { x: 10, y: 11}      
     ]);
     
-
-    Array(mobCounts[0]).fill(0).forEach(() => mobs.push(new Nibbler(region, nibblerSpawns.shift(), { aggro: randomPillar || region.player })));
-    return mobs;  
+    Array(n).fill(0).forEach(() => mobs.push(new Nibbler(region, nibblerSpawns.shift(), { aggro: pillar || region.player })));
+    return mobs;
   }
   
 
