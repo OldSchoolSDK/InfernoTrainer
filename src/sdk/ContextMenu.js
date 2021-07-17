@@ -31,7 +31,7 @@ export class ContextMenu {
   
   cursorMovedTo(region, x, y){
 
-    const cRect = region.map.getBoundingClientRect();        // Gets CSS pos, and width/height
+    const cRect = region.canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left);  // Subtract the 'left' of the canvas 
     const canvasY = Math.round(y - cRect.top);   // from the X/Y positions to make  
 
@@ -50,17 +50,6 @@ export class ContextMenu {
 
   draw(region) {
 
-
-    // region.ctx.save();
-
-    // region.ctx.translate(
-    //   (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
-    //   ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2),
-    // );
-
-    // if (Settings.rotated === 'south'){
-    //   region.ctx.rotate(Math.PI)
-    // }
 
     if (this.isActive){
       this.linesOfText = [
