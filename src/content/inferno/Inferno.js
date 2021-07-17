@@ -12,7 +12,6 @@ import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
 import { TwistedBow } from "../weapons/TwistedBow";
 import { Blowpipe } from "../weapons/Blowpipe";
 import { Scenario } from "../../sdk/Scenario";
-import { random } from "lodash";
 
 export class Inferno extends Scenario {
 
