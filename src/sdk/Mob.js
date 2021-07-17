@@ -221,7 +221,9 @@ export class Mob extends Unit{
 
   playAttackSound (){
     if (Settings.playsAudio){
-      new Audio(this.sound).play();
+      const sound = new Audio(this.sound);
+      sound.volume = 1/Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y);
+      sound.play();
     }
   }
 
