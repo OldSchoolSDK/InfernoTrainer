@@ -10,9 +10,14 @@ import BlobSound from "../../assets/sounds/blob.ogg";
 import { JalAkRekKet } from "../../js/mobs/JalAkRekKet";
 import { JalAkRekMej } from "../../js/mobs/JalAkRekMej";
 import { JalAkRekXil } from "../../js/mobs/JalAkRekXil";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Blob extends Mob{
 
+  constructor(region, location, options) {
+    super(region, location, options);
+    this.playerPrayerScan = null;
+  }
 
   get displayName(){
     return "Jal-Ak";
@@ -24,6 +29,12 @@ export class Blob extends Mob{
 
   get combatLevelColor() {
     return 'red';
+  }
+  
+
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
   }
   
   setStats () {
@@ -100,15 +111,15 @@ export class Blob extends Mob{
     return "#7300FF33";
   }
 
-  attackAnimation(region, framePercent){
-    region.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
+  attackAnimation(framePercent){
+    this.region.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation() {
-    return this.cd === this.cooldown && this.playerPrayerScan === null;
+    return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null;
   }
 
-  attackStyle() {
+  get attackStyle() {
     if (this.playerPrayerScan !== 'magic' && this.playerPrayerScan != 'range'){
       return (Math.random() < 0.5) ? 'magic' : 'range';
     }
@@ -123,36 +134,40 @@ export class Blob extends Mob{
     return 29;
   }
    
-  attackIfPossible(region){
+  attackIfPossible(){
+    this.attackCooldownTicks--;
     this.attackFeedback = Mob.attackIndicators.NONE;
+
+    this.hadLOS = this.hasLOS;
+    this.setHasLOS();
     // Scan when appropriate
-    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.cd <= 0))) {
+    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = _.find(region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
+      const overhead = _.find(this.region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive);
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'; 
       this.attackFeedback = Mob.attackIndicators.SCAN;
-      this.cd = this.cooldown;
+      this.attackCooldownTicks = this.cooldown;
       return;
     }
     
     // Perform attack. Blobs can hit through LoS if they got a scan.
-    if (this.playerPrayerScan && this.cd <=0) {
-      this.attack(region);
-      this.cd = this.cooldown;
+    if (this.playerPrayerScan && this.attackCooldownTicks <=0) {
+      this.attack();
+      this.attackCooldownTicks = this.cooldown;
       this.playerPrayerScan = null;
     }
   }
   
-  removedFromRegion(region){
+  removedFromRegion(){
 
-    const xil = new JalAkRekXil({ x: this.location.x+1, y: this.location.y - 1}, this.aggro);
-    region.addMob(xil);
+    const xil = new JalAkRekXil(this.region, { x: this.location.x+1, y: this.location.y - 1}, { aggro: this.aggro });
+    this.region.addMob(xil);
 
-    const ket = new JalAkRekKet(this.location, this.aggro);
-    region.addMob(ket);
+    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro });
+    this.region.addMob(ket);
 
-    const mej = new JalAkRekMej({ x: this.location.x+2, y: this.location.y - 2}, this.aggro);
-    region.addMob(mej);
+    const mej = new JalAkRekMej(this.region, { x: this.location.x+2, y: this.location.y - 2}, { aggro: this.aggro });
+    this.region.addMob(mej);
   }
 
 }

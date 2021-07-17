@@ -1,9 +1,10 @@
 import { BasePrayer } from "../Prayers/BasePrayer";
+import { Unit } from "../Unit";
 import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
 export class RangedWeapon extends Weapon {
-  attack(region, from, to, bonuses = {}){
+  attack(stage, from, to, bonuses = {}){
     this._calculatePrayerEffects(from, to, bonuses);
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
@@ -21,7 +22,7 @@ export class RangedWeapon extends Weapon {
   _calculatePrayerEffects(from, to, bonuses){
 
     bonuses.effectivePrayers = {};
-    if (from.isMob === false){
+    if (from.type !== Unit.types.MOB){
       const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange');
       if (offensiveRange) {
         bonuses.effectivePrayers['range'] = offensiveRange;
@@ -31,7 +32,7 @@ export class RangedWeapon extends Weapon {
         bonuses.effectivePrayers['defence'] = defence;
       }
     }
-    if (to.isMob === false) {
+    if (to.type !== Unit.types.MOB) {
       const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
       if (overhead) {
         bonuses.effectivePrayers['overhead'] = overhead;

@@ -1,14 +1,19 @@
 'use strict';
 import { Settings } from "./Settings";
+import { Unit } from "./Unit";
+
 
 export class Entity {
-  constructor(point, size) {
+  constructor(region, point, size) {
+    this.region = region;
     this.location = point;
     this.size = size;
   }
 
-  get isEntity() {
-    return true;
+
+  get type() {
+    // Kind of odd that Units live inside the unit class, but this isn't a unit
+    return Unit.types.ENTITY;
   }
 
   tick(region) {

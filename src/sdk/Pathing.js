@@ -108,7 +108,7 @@ export class Pathing {
     return !collision;
   }
 
-  static constructPath(region, startPoint, endPoint, seeking) {
+  static constructPath(region, startPoint, endPoint) {
 
     if (endPoint === -1) {
       return [];

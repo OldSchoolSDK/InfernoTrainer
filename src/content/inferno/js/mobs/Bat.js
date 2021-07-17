@@ -4,6 +4,7 @@ import { Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";
+import { MobDeathStore } from "../MobDeathStore";
 
 export class Bat extends Mob{
 
@@ -19,6 +20,10 @@ export class Bat extends Mob{
     return 'lime';
   }
 
+  dead(){
+    super.dead();
+    MobDeathStore.npcDied(this);
+  }
 
   setStats () {
     this.frozen = 1;
@@ -88,11 +93,11 @@ export class Bat extends Mob{
     return "#aadd7333";
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'range';
   }
   
-  attackAnimation(region, framePercent){
-    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(framePercent){
+    this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

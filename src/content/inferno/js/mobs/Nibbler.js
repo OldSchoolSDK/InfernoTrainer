@@ -106,25 +106,26 @@ export class Nibbler extends Mob{
     return "#aadd7333";
   }
 
-  attackStyle() {
+  get attackStyle() {
     return 'crush';
   }
   
-  attackAnimation(region, framePercent){
-    region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation(framePercent){
+    this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 
-  attackIfPossible(region){
+  attackIfPossible(){
+    this.attackCooldownTicks--;
+
     if (this.aggro.dying === 0) {
-      this.dead(region); // cheat way for now. pillar should AOE 
+      this.dead(); // cheat way for now. pillar should AOE 
     }
     let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
     this.attackFeedback = Mob.attackIndicators.NONE;
 
     const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro);
-
-    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.cd <= 0){
-      this.attack(region);
+    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0){
+      this.attack();
     }
   }
 }

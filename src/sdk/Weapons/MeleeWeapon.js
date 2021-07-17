@@ -1,6 +1,7 @@
 import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 import { BasePrayer } from "../Prayers/BasePrayer";
+import { Unit } from "../Unit";
 
 export class MeleeWeapon extends Weapon {
   attack(region, from, to, bonuses = {}){
@@ -11,6 +12,7 @@ export class MeleeWeapon extends Weapon {
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+    bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0;
 
     let damage = this._rollAttack(from, to, bonuses);
 
@@ -24,7 +26,7 @@ export class MeleeWeapon extends Weapon {
 
   _calculatePrayerEffects(from, to, bonuses){
     bonuses.effectivePrayers = {};
-    if (from.isMob === false){
+    if (from.type != Unit.types.MOB){
       const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack');
       if (offensiveAttack) {
         bonuses.effectivePrayers['attack'] = offensiveAttack;
@@ -41,7 +43,7 @@ export class MeleeWeapon extends Weapon {
       }
     }
 
-    if (to.isMob === false){
+    if (to.type != Unit.types.MOB){
       const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
       if (overhead) {
         bonuses.effectivePrayers['overhead'] = overhead;
@@ -88,7 +90,11 @@ export class MeleeWeapon extends Weapon {
   }
 
   _maxHit(from, to, bonuses) {
-    return Math.floor(Math.floor((this._strengthLevel(from,to,bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640) * bonuses.gearMultiplier)
+    return Math.floor(
+      Math.floor(
+        (this._strengthLevel(from,to,bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640
+      ) * bonuses.gearMultiplier * bonuses.overallMultiplier
+    )
   }
 
   _attackLevel(from, to, bonuses) {
@@ -116,7 +122,7 @@ export class MeleeWeapon extends Weapon {
   }
 
   _defenceRoll(from, to, bonuses) {
-    if (to.isMob || to.isEntity) {
+    if (to.type === Unit.types.MOB || to.type === Unit.types.ENTITY) {
       return (to.currentStats.defence + 9) * (to.bonuses.defence[bonuses.attackStyle] + 64);
     }else{
       return this._defenceLevel(from, to, bonuses) * (to.bonuses.defence[bonuses.attackStyle] + 64);
@@ -156,6 +162,10 @@ export class MeleeWeapon extends Weapon {
     const attackRoll = this._attackRoll(from, to, bonuses) ;
     const defenceRoll = this._defenceRoll(from, to, bonuses);
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
+  }
+
+  isMeleeAttack() {
+    return true;
   }
 }
 

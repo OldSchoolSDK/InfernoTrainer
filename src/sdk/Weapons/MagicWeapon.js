@@ -1,4 +1,5 @@
 import { BasePrayer } from "../Prayers/BasePrayer";
+import { Unit } from "../Unit";
 import { Projectile } from "./Projectile";
 import { Weapon } from "./Weapon";
 
@@ -31,7 +32,7 @@ export class MagicWeapon extends Weapon {
   _calculatePrayerEffects(from, to, bonuses){
 
     bonuses.effectivePrayers = {};
-    if (from.isMob === false){
+    if (from.type != Unit.types.MOB){
       const offensiveMagic = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveMagic');
       if (offensiveMagic) {
         bonuses.effectivePrayers['magic'] = offensiveMagic;
@@ -41,7 +42,7 @@ export class MagicWeapon extends Weapon {
         bonuses.effectivePrayers['defence'] = defence;
       }
     }
-    if (to.isMob === false) {
+    if (to.type != Unit.types.MOB) {
       const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length);
       if (overhead) {
         bonuses.effectivePrayers['overhead'] = overhead;

@@ -40,9 +40,6 @@ export class Region {
 
     this.map.addEventListener('click', this.mapClick.bind(this));
     this.map.addEventListener('contextmenu', (e) =>{
-      
-
-
       let x = e.offsetX;
       let y = e.offsetY;
 
@@ -52,7 +49,6 @@ export class Region {
         y = this.height * Settings.tileSize - e.offsetY;
       }
   
-    
       /*gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
       let menuOptions = [];
@@ -63,11 +59,7 @@ export class Region {
       this.contextMenu.setActive();
     });
 
-    this.map.addEventListener("mousemove", (e) => {      
-      const x = e.clientX;
-      const y = e.clientY;
-      this.contextMenu.cursorMovedTo(this, x, y);
-    })
+    this.map.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY));
   }
 
   mapClick(e) {
@@ -92,7 +84,7 @@ export class Region {
       }
 
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
-      this.player.seeking = false;
+      this.player.aggro = false;
       if (mobs.length) {
         this.redClick();
         this.playerAttackClick(mobs[0])
@@ -108,13 +100,13 @@ export class Region {
 
   playerAttackClick(mob) {
     this.inputDelay = setTimeout(() => {
-      this.player.seeking = mob;
+      this.player.aggro = mob;
     }, Settings.inputDelay);
   }
   
   playerWalkClick(x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(this, Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
     }, Settings.inputDelay);
   }
 
@@ -127,11 +119,11 @@ export class Region {
 
   gameTick() {
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
-    this.entities.forEach((entity) => entity.tick(this));
-    this.mobs.forEach((mob) => mob.movementStep(this));
-    this.mobs.forEach((mob) => mob.attackStep(this));
-    this.player.movementStep(this);
-    this.player.attackStep(this);
+    this.entities.forEach((entity) => entity.tick());
+    this.mobs.forEach((mob) => mob.movementStep());
+    this.mobs.forEach((mob) => mob.attackStep());
+    this.player.movementStep();
+    this.player.attackStep();
     
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
@@ -145,12 +137,12 @@ export class Region {
     this.controlPanel.draw(this);
 
     // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(this, framePercent));
+    this.entities.forEach((entity) => entity.draw(framePercent));
 
     if (this.heldDown <= 0){
-      this.mobs.forEach((mob) => mob.draw(this, framePercent));
+      this.mobs.forEach((mob) => mob.draw(framePercent));
     }
-    this.player.draw(this, framePercent);
+    this.player.draw(framePercent);
     
     this.ctx.restore();
 

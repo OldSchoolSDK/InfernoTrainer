@@ -10,34 +10,15 @@ import { Pathing } from "./Pathing";
  I have no clue how it works, nor do I care. 
 */
 export class LineOfSight {
-    static drawLOS(region, x, y, s, r, isNPC) {
-        region.ctx.globalAlpha = 0.4;
-        for (var i = 0; i < 870; i++) {
-            region.ctx.fillStyle = "#FF000073";
-
-            var x2 = i % 29;
-            var y2 = Math.floor(i / 29);
-
-            if (LineOfSight.hasLineOfSight(region, x, y, x2, y2, s, r, isNPC)) {
-                region.ctx.fillRect(
-                    x2 * Settings.tileSize, 
-                    y2 * Settings.tileSize, 
-                    Settings.tileSize, 
-                    Settings.tileSize
-                );
-            }
-        }
-        region.ctx.globalAlpha = 1;
-    }
-
-    static drawMobLOS(region, x, y, s, r, c) {
+    static drawLOS(region, x, y, s, r, c, isNPC) {
         region.ctx.globalAlpha = 0.4;
         for (var i = 0; i < 870; i++) {
             region.ctx.fillStyle = c;
 
             var x2 = i % 29;
             var y2 = Math.floor(i / 29);
-            if (LineOfSight.hasLineOfSight(region, x, y, x2, y2, s, r, true)) {
+
+            if (LineOfSight.hasLineOfSight(region, x, y, x2, y2, s, r, isNPC)) {
                 region.ctx.fillRect(
                     x2 * Settings.tileSize, 
                     y2 * Settings.tileSize, 
