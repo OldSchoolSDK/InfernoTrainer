@@ -16,14 +16,14 @@ export class Entity {
     return Unit.types.ENTITY;
   }
 
-  tick(region) {
+  tick() {
       
   }
 
-  draw(region) {
-    region.ctx.fillStyle = "#000073";
+  draw() {
+    this.region.ctx.fillStyle = "#000073";
 
-    region.ctx.fillRect(
+    this.region.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

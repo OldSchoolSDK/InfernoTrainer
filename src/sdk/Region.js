@@ -20,10 +20,10 @@ export class Region {
     this.clickAnimation = null;
     this.contextMenu = new ContextMenu();
 
-    this.map = document.getElementById(selector);
-    this.ctx = this.map.getContext("2d");
-    this.map.width = Settings.tileSize * width;
-    this.map.height = Settings.tileSize * height;
+    this.canvas = document.getElementById(selector);
+    this.ctx = this.canvas.getContext("2d");
+    this.canvas.width = Settings.tileSize * width;
+    this.canvas.height = Settings.tileSize * height;
 
     this.grid = document.getElementById("grid");
     this.gridCtx = this.grid.getContext("2d");
@@ -38,8 +38,8 @@ export class Region {
     this.offPerformanceDelta = 0;
     this.offPerformanceCount = 0;
 
-    this.map.addEventListener('click', this.mapClick.bind(this));
-    this.map.addEventListener('contextmenu', (e) =>{
+    this.canvas.addEventListener('click', this.mapClick.bind(this));
+    this.canvas.addEventListener('contextmenu', (e) =>{
       let x = e.offsetX;
       let y = e.offsetY;
 
@@ -59,7 +59,7 @@ export class Region {
       this.contextMenu.setActive();
     });
 
-    this.map.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY));
+    this.canvas.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(e.clientX, e.clientY));
   }
 
   mapClick(e) {
@@ -181,13 +181,13 @@ export class Region {
     this.ctx.save();
     if (Settings.rotated === 'south'){
       this.ctx.rotate(Math.PI);
-      this.ctx.translate(-this.map.width, -this.map.height)  
+      this.ctx.translate(-this.canvas.width, -this.canvas.height)  
     }
 
     if (!this.hasCalcedGrid){
       // This is a GIGANTIC performance improvement ... 
-      this.gridCtx.fillRect(0, 0, this.map.width, this.map.height);
-      for (var i = 0; i < this.map.width * this.map.height; i++) {
+      this.gridCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      for (var i = 0; i < this.canvas.width * this.canvas.height; i++) {
         this.gridCtx.fillStyle = (i % 2) ? "#100" : "#210";
         this.gridCtx.fillRect(
           i % this.width * Settings.tileSize, 
@@ -220,7 +220,7 @@ export class Region {
       this.ctx.fillStyle = "#FFFFFF";
       this.ctx.font = "72px OSRS";
       this.ctx.textAlign="center";
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.map.width / 2, this.map.height / 2 - 50);
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50);
       this.ctx.textAlign="left";
     }
   }
