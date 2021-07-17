@@ -9,7 +9,12 @@ import MusicOffIcon from "../../assets/images/interface/button_music_off.png"
 import ButtonRedUpIcon from "../../assets/images/interface/button_red_up.png"
 import ButtonGreenDownIcon from "../../assets/images/interface/button_green_down.png"
 import CompassIcon from "../../assets/images/interface/compass.png"
+import ButtonActiveIcon from "../../assets/images/interface/button_active.png";
+import ButtonInactiveIcon from "../../assets/images/interface/button_inactive.png";
 
+import InfernoIcon from "../../assets/images/settings/inferno.png"
+import VerzikIcon from "../../assets/images/settings/verzik.png"
+import XarpusIcon from "../../assets/images/settings/xarpus.png"
 import {Settings} from "../Settings";
 
 export class SettingsControls extends BaseControls{
@@ -34,6 +39,16 @@ export class SettingsControls extends BaseControls{
     this.greenDownImage.src = ButtonGreenDownIcon;
     this.compassImage = new Image();
     this.compassImage.src = CompassIcon;
+    this.activeButtonImage = new Image();
+    this.activeButtonImage.src = ButtonActiveIcon;
+    this.inactiveButtonImage = new Image();
+    this.inactiveButtonImage.src = ButtonInactiveIcon;
+    this.infernoImage = new Image();
+    this.infernoImage.src = InfernoIcon;
+    this.verzikImage = new Image();
+    this.verzikImage.src = VerzikIcon;
+    this.xarpusImage = new Image();
+    this.xarpusImage.src = XarpusIcon;
 
     this.compassImage.addEventListener('load', () => {
       console.log('load', this);
@@ -101,7 +116,7 @@ export class SettingsControls extends BaseControls{
 
 
     ctrl.ctx.drawImage(this.redUpImage, x + 75, y + 20);
-    ctrl.ctx.fillStyle = "#FFFF0066";
+    ctrl.ctx.fillStyle = "#FFFF00";
     ctrl.ctx.font = "16px OSRS";
     ctrl.ctx.textAlign = "center";
     ctrl.ctx.fillText(Settings.inputDelay, x + 81, y + 48);
@@ -109,22 +124,25 @@ export class SettingsControls extends BaseControls{
 
     if (this.compassImage){
       ctrl.ctx.save();
-
-
       ctrl.ctx.translate(x + 100 + 25, y + 20 + 25 );
-
       if (Settings.rotated === 'south'){
         ctrl.ctx.rotate(Math.PI)
-        // ctrl.ctx.translate(-51,51)
-
-
       }
       ctrl.ctx.translate(-x - 100 - 25, y - 20 - 25 );
       ctrl.ctx.drawImage(this.compassCanvas, x + 100, y + 20)
-
       ctrl.ctx.restore();
-
     }
+
+    ctrl.ctx.drawImage(Settings.scenario === "inferno" ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 80);
+    ctrl.ctx.drawImage(this.infernoImage, x + 22, y + 82, 36, 36);
+
+    ctrl.ctx.drawImage(Settings.scenario === "verzikp3" ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 80);
+    ctrl.ctx.drawImage(this.verzikImage, x + 82, y + 82, 36, 36);
+    
+    ctrl.ctx.drawImage(Settings.scenario === "xarpusp2" ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 80);
+    ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 82, 36, 36);
+    ctrl.ctx.fillText("Reload to change", x + 100, y + 140);
+
 
   }
 }
