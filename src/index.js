@@ -4,10 +4,10 @@ import { Inferno } from "./content/inferno/Inferno";
 import { VerzikP3 } from "./content/verzik/VerzikP3";
 import { Region } from './sdk/Region';
 import { ControlPanelController } from './sdk/ControlPanelController';
-import { BrowserUtils } from './sdk/Utils/BrowserUtils';
 import { Settings } from './sdk/Settings';
 import { InventoryControls } from "./sdk/ControlPanels/InventoryControls";
 
+Settings.readFromStorage();
 const selectedScenarioName = Settings.scenario;
 let selectedScenario;
 console.log("selected scenario is " + selectedScenarioName);
@@ -42,8 +42,5 @@ const timer = setInterval(() => {
 }, 600)
 
 ////////////////////////////////////////////////////////////
-// UI controls
-
-document.getElementById("soundToggle").addEventListener("click", () => Settings.playsAudio = !Settings.playsAudio);
 
 document.getElementById("version").innerHTML = "Version " + process.env.COMMIT_REF + " - " + process.env.BUILD_DATE;

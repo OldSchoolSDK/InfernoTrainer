@@ -109,7 +109,11 @@ export class Ranger extends Mob {
   
   playAttackSound (){
     if (Settings.playsAudio){
-      setTimeout(() => new Audio(this.sound).play(), 1.75 * Settings.tickMs)
+      setTimeout(() => {
+        const sound = new Audio(this.sound);
+        sound.volume = 1/Math.min(3, Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y) / 5);
+        sound.play();
+      }, 1.75 * Settings.tickMs)
     }
   }
 
