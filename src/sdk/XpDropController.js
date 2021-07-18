@@ -28,6 +28,16 @@ export class XpDropController {
 
     this.drops = [{},{},{},{}]
     this.lastDropSkill = null;
+    this.startupTimeout();
+  }
+
+  startupTimeout(){
+    if (this.timeout){
+      clearTimeout(this.timeout);
+    }
+    this.timeout = setTimeout(() => {
+      this.lastDropSkill = null;
+    }, 1000 * 16); // Not sure if 16 seconds is correct but good enough for now
   }
 
   registerXpDrop(drop){
