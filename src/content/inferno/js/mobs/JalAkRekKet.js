@@ -1,25 +1,24 @@
-'use strict';
+'use strict'
 
-import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
-import JalAkRekKetImage from "../../assets/images/Jal-AkRek-Ket.png";
+import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { Mob } from '../../../../sdk/Mob'
+import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
 
-export class JalAkRekKet extends Mob{
-
-  get displayName(){
-    return "Jal-AkRek-Ket";
+export class JalAkRekKet extends Mob {
+  get displayName () {
+    return 'Jal-AkRek-Ket'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 70
   }
 
-  get combatLevelColor() {
-    return 'lime';
+  get combatLevelColor () {
+    return 'lime'
   }
-  
+
   setStats () {
-    this.frozen = 0;
+    this.frozen = 0
 
     this.weapons = {
       crush: new MeleeWeapon()
@@ -33,7 +32,7 @@ export class JalAkRekKet extends Mob{
       range: 1,
       magic: 1,
       hitpoint: 15
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -61,36 +60,36 @@ export class JalAkRekKet extends Mob{
       }
     }
   }
-  
-  get cooldown() {
-    return 4;
+
+  get cooldown () {
+    return 4
   }
 
-  get attackRange() {
-    return 1;
+  get attackRange () {
+    return 1
   }
 
-  get size() {
-    return 1;
+  get size () {
+    return 1
   }
 
-  get image() {
-    return JalAkRekKetImage;
+  get image () {
+    return JalAkRekKetImage
   }
 
-  get sound() {
-    return null;
-  }
-  
-  get color() {
-    return "#aadd7333";
+  get sound () {
+    return null
   }
 
-  get attackStyle() {
-    return 'crush';
+  get color () {
+    return '#aadd7333'
   }
-  
-  attackAnimation(framePercent){
+
+  get attackStyle () {
+    return 'crush'
+  }
+
+  attackAnimation (framePercent) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

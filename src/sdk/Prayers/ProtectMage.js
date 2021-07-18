@@ -1,42 +1,41 @@
-'use strict';
+'use strict'
 
-import { BasePrayer } from "./BasePrayer";
-import OverheadImg from "../../assets/images/prayers/mageOver.png"
-import OnSound from "../../assets/sounds/mageOn.ogg"
-import OffSound from "../../assets/sounds/mageOff.ogg"
-import { Settings } from "../Settings";
+import { BasePrayer } from './BasePrayer'
+import OverheadImg from '../../assets/images/prayers/mageOver.png'
+import OnSound from '../../assets/sounds/mageOn.ogg'
+import OffSound from '../../assets/sounds/mageOff.ogg'
+import { Settings } from '../Settings'
 
-export class ProtectMage extends BasePrayer{
-  
-  get name() {
-    return 'Protect from Magic';
+export class ProtectMage extends BasePrayer {
+  get name () {
+    return 'Protect from Magic'
   }
 
-  get groups(){
-    return [BasePrayer.groups.OVERHEADS];
+  get groups () {
+    return [BasePrayer.groups.OVERHEADS]
   }
-  
-  isOverhead() {
-    return true;
+
+  isOverhead () {
+    return true
   }
-  
-  overheadImageReference(){
-    return OverheadImg;
+
+  overheadImageReference () {
+    return OverheadImg
   }
-  
+
   feature () {
-    return 'magic';
+    return 'magic'
   }
 
-  playOnSound(){
-    if (Settings.playsAudio){
-      new Audio(OnSound).play();
+  playOnSound () {
+    if (Settings.playsAudio) {
+      new Audio(OnSound).play()
     }
   }
-  
-  playOffSound() {
-    if (Settings.playsAudio){
-      new Audio(OffSound).play();
+
+  playOffSound () {
+    if (Settings.playsAudio) {
+      new Audio(OffSound).play()
     }
   }
 }

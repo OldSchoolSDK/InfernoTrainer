@@ -1,23 +1,21 @@
-import _ from "lodash";
+import _ from 'lodash'
 
 export class MobDeathStore {
   static mobDeathStore = new MobDeathStore();
   static deadMobs = [];
-  static npcDied(mob) {
-    console.log('ded', mob);
-    if (!mob.hasResurrected){
-      console.log('adding')
-      MobDeathStore.deadMobs.push(mob);
+  static npcDied (mob) {
+    if (!mob.hasResurrected) {
+      MobDeathStore.deadMobs.push(mob)
     }
   }
 
-  static selectMobToResurect(){
+  static selectMobToResurect () {
     if (MobDeathStore.deadMobs.length) {
-      const mobToResurrect = _.shuffle(MobDeathStore.deadMobs)[0];
-      mobToResurrect.hasResurrected = true;
-      _.remove(MobDeathStore.deadMobs, mobToResurrect);
-      return mobToResurrect;
+      const mobToResurrect = _.shuffle(MobDeathStore.deadMobs)[0]
+      mobToResurrect.hasResurrected = true
+      _.remove(MobDeathStore.deadMobs, mobToResurrect)
+      return mobToResurrect
     }
-    return null;
+    return null
   }
 }

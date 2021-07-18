@@ -1,255 +1,251 @@
-'use strict';
-import _ from 'lodash';
-import { ClickAnimation } from './ClickAnimation';
-import { Settings } from "./Settings";
-import { ContextMenu } from './ContextMenu';
-import { ControlPanelController } from './ControlPanelController';
-import { Pathing } from './Pathing';
-
+'use strict'
+import _ from 'lodash'
+import { ClickAnimation } from './ClickAnimation'
+import { Settings } from './Settings'
+import { ContextMenu } from './ContextMenu'
+import { ControlPanelController } from './ControlPanelController'
+import { Pathing } from './Pathing'
+import { XpDropController } from './XpDropController'
 
 export class Region {
+  constructor (selector, width, height) {
+    this.inputDelay = null
+    this.frameCounter = 0
+    this.heldDown = 6
+    this.controlPanel = null
+    this.player = null
+    this.entities = []
+    this.mobs = []
+    this.clickAnimation = null
+    this.contextMenu = new ContextMenu()
 
-  constructor(selector, width, height) {
-    this.inputDelay = null;
-    this.frameCounter = 0;
-    this.heldDown = 6;
-    this.controlPanel = null;
-    this.player = null;
-    this.entities = [];
-    this.mobs = [];
-    this.clickAnimation = null;
-    this.contextMenu = new ContextMenu();
+    this.canvas = document.getElementById(selector)
+    this.ctx = this.canvas.getContext('2d')
+    this.canvas.width = Settings.tileSize * width
+    this.canvas.height = Settings.tileSize * height
+    this.width = width
+    this.height = height
 
-    this.canvas = document.getElementById(selector);
-    this.ctx = this.canvas.getContext("2d");
-    this.canvas.width = Settings.tileSize * width;
-    this.canvas.height = Settings.tileSize * height;
+    this.gridCanvas = new OffscreenCanvas(this.canvas.width, this.canvas.height)
+    const gridContext = this.gridCanvas.getContext('2d')
 
-    this.grid = document.getElementById("grid");
-    this.gridCtx = this.grid.getContext("2d");
-    this.grid.width = Settings.tileSize * width;
-    this.grid.height = Settings.tileSize * height;
-    this.hasCalcedGrid = false;
+    gridContext.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    for (let i = 0; i < this.width * this.height; i++) {
+      gridContext.fillStyle = (i % 2) ? '#100' : '#210'
+      gridContext.fillRect(
+        i % this.width * Settings.tileSize,
+        Math.floor(i / this.width) * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
+    }
 
+    this.offPerformanceDelta = 0
+    this.offPerformanceCount = 0
 
-    this.width = width;
-    this.height = height;
+    this.canvas.addEventListener('click', this.mapClick.bind(this))
+    this.canvas.addEventListener('contextmenu', (e) => {
+      let x = e.offsetX
+      let y = e.offsetY
 
-    this.offPerformanceDelta = 0;
-    this.offPerformanceCount = 0;
-
-    this.canvas.addEventListener('click', this.mapClick.bind(this));
-    this.canvas.addEventListener('contextmenu', (e) =>{
-      let x = e.offsetX;
-      let y = e.offsetY;
-
-      this.contextMenu.setPosition({x, y});
+      this.contextMenu.setPosition({ x, y })
       if (Settings.rotated === 'south') {
-        x = this.width * Settings.tileSize - e.offsetX;
-        y = this.height * Settings.tileSize - e.offsetY;
+        x = this.width * Settings.tileSize - e.offsetX
+        y = this.height * Settings.tileSize - e.offsetY
       }
-  
-      /*gather options */
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick);
-      let menuOptions = [];
+
+      /* gather options */
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
+      let menuOptions = []
       mobs.forEach((mob) => {
         menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
       })
-      this.contextMenu.setMenuOptions(menuOptions);
-      this.contextMenu.setActive();
-    });
+      this.contextMenu.setMenuOptions(menuOptions)
+      this.contextMenu.setActive()
+    })
 
-    this.canvas.addEventListener("mousemove", (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY));
+    this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
   }
 
-  mapClick(e) {
-    const framePercent = this.frameCounter / Settings.framesPerTick;
+  mapClick (e) {
+    const framePercent = this.frameCounter / Settings.framesPerTick
 
-
-    let x = e.offsetX;
-    let y = e.offsetY;
+    let x = e.offsetX
+    let y = e.offsetY
     if (Settings.rotated === 'south') {
-      x = this.width * Settings.tileSize - e.offsetX;
-      y = this.height * Settings.tileSize - e.offsetY;
+      x = this.width * Settings.tileSize - e.offsetX
+      y = this.height * Settings.tileSize - e.offsetY
     }
 
-    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2;
-    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height;
+    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
+    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
 
     if (this.contextMenu.isActive && xAlign && yAlign) {
-      this.contextMenu.clicked(this, e.offsetX, e.offsetY);
+      this.contextMenu.clicked(this, e.offsetX, e.offsetY)
     } else {
-      if (this.inputDelay){
-        clearTimeout(this.inputDelay);
+      if (this.inputDelay) {
+        clearTimeout(this.inputDelay)
       }
 
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent);
-      this.player.aggro = false;
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent)
+      this.player.aggro = false
       if (mobs.length) {
-        this.redClick();
+        this.redClick()
         this.playerAttackClick(mobs[0])
-      }else {
-        this.yellowClick();
-        this.playerWalkClick(x, y);
+      } else {
+        this.yellowClick()
+        this.playerWalkClick(x, y)
       }
-      
     }
-    this.contextMenu.setInactive();
-
+    this.contextMenu.setInactive()
   }
 
-  playerAttackClick(mob) {
+  playerAttackClick (mob) {
     this.inputDelay = setTimeout(() => {
-      this.player.aggro = mob;
-    }, Settings.inputDelay);
+      this.player.aggro = mob
+    }, Settings.inputDelay)
   }
-  
-  playerWalkClick(x, y) {
+
+  playerWalkClick (x, y) {
     this.inputDelay = setTimeout(() => {
-      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
-    }, Settings.inputDelay);
+      this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
+    }, Settings.inputDelay)
   }
 
-  redClick() {
-    this.clickAnimation = new ClickAnimation('red', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y);
-  }
-  yellowClick() {
-    this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y);
+  redClick () {
+    this.clickAnimation = new ClickAnimation('red', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y)
   }
 
-  gameTick() {
-    this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers());
-    this.entities.forEach((entity) => entity.tick());
-    this.mobs.forEach((mob) => mob.movementStep());
-    this.mobs.forEach((mob) => mob.attackStep());
-    this.player.movementStep();
-    this.player.attackStep();
+  yellowClick () {
+    this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y)
+  }
+
+  gameTick () {
+    XpDropController.controller.tick();
+
     
+    this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
+    this.entities.forEach((entity) => entity.tick())
+    this.mobs.forEach((mob) => mob.movementStep())
+    this.mobs.forEach((mob) => mob.attackStep())
+    this.player.movementStep()
+    this.player.attackStep()
+
+
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
-    const deadMobs = this.mobs.filter((mob) => mob.dying === 0);
-    const deadEntities = this.entities.filter((mob) => mob.dying === 0);
-    deadMobs.forEach((mob) => this.removeMob(mob));
-    deadEntities.forEach((entity) => this.removeEntity(entity));
+    const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
+    const deadEntities = this.entities.filter((mob) => mob.dying === 0)
+    deadMobs.forEach((mob) => this.removeMob(mob))
+    deadEntities.forEach((entity) => this.removeEntity(entity))
   }
 
-  drawGame(framePercent) {
-    // Give control panel a chance to draw, canvas -> canvas 
-    this.controlPanel.draw(this);
+  drawGame (framePercent) {
+    // Give control panel a chance to draw, canvas -> canvas
+    this.controlPanel.draw(this)
 
     // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(framePercent));
+    this.entities.forEach((entity) => entity.draw(framePercent))
 
-    if (this.heldDown <= 0){
-      this.mobs.forEach((mob) => mob.draw(framePercent));
+    if (this.heldDown <= 0) {
+      this.mobs.forEach((mob) => mob.draw(framePercent))
     }
-    this.player.draw(framePercent);
-    
-    this.ctx.restore();
+    this.player.draw(framePercent)
 
+    this.ctx.restore()
 
-    this.contextMenu.draw(this);
+    this.contextMenu.draw(this)
     if (this.clickAnimation) {
       this.clickAnimation.draw(this, framePercent)
     }
   }
 
-  gameLoop() {
+  gameLoop () {
     // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
     // Everything else is just measuring performance
-    let t = performance.now();
-    if (this.frameCounter === 0 && this.heldDown <=0) {
-      this.timeBetweenTicks = t - this.lastT;
-      this.lastT = t;
-      this.gameTick();
-      this.tickTime = performance.now() - t;
+    const t = performance.now()
+    if (this.frameCounter === 0 && this.heldDown <= 0) {
+      this.timeBetweenTicks = t - this.lastT
+      this.lastT = t
+      this.gameTick()
+      this.tickTime = performance.now() - t
     }
-    let t2 = performance.now();
-    this.draw(this.frameCounter / Settings.framesPerTick);
-    this.drawTime = performance.now() - t2;
-    this.frameCounter++;
+    const t2 = performance.now()
+    this.draw(this.frameCounter / Settings.framesPerTick)
+    this.drawTime = performance.now() - t2
+    this.frameCounter++
     if (this.frameCounter >= Settings.framesPerTick) {
-      this.fps = this.frameCounter / this.timeBetweenTicks * 1000;
-      this.frameCounter = 0;
+      this.fps = this.frameCounter / this.timeBetweenTicks * 1000
+      this.frameCounter = 0
     }
-    this.frameTime = performance.now() - t;
+    this.frameTime = performance.now() - t
   }
-  draw(framePercent) {
-    this.ctx.globalAlpha = 1;
-    this.ctx.fillStyle = "black";
 
-    this.ctx.restore();
-    this.ctx.save();
-    if (Settings.rotated === 'south'){
-      this.ctx.rotate(Math.PI);
-      this.ctx.translate(-this.canvas.width, -this.canvas.height)  
+  draw (framePercent) {
+    this.ctx.globalAlpha = 1
+    this.ctx.fillStyle = 'black'
+
+    this.ctx.restore()
+    this.ctx.save()
+    if (Settings.rotated === 'south') {
+      this.ctx.rotate(Math.PI)
+      this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
 
-    if (!this.hasCalcedGrid){
-      // This is a GIGANTIC performance improvement ... 
-      this.gridCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      for (var i = 0; i < this.canvas.width * this.canvas.height; i++) {
-        this.gridCtx.fillStyle = (i % 2) ? "#100" : "#210";
-        this.gridCtx.fillRect(
-          i % this.width * Settings.tileSize, 
-          Math.floor(i / this.width) * Settings.tileSize, 
-          Settings.tileSize, 
-          Settings.tileSize
-        );
-      }
-      this.hasCalcedGrid = true;
-    }
+    
+    this.ctx.drawImage(this.gridCanvas, 0, 0);
 
-    this.ctx.drawImage(this.grid, 0, 0);
-    this.drawGame(framePercent);
-    
-    this.ctx.restore();
-    this.ctx.save();
-    
+    this.drawGame(framePercent)
+
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, framePercent);
+
+    this.ctx.restore()
+    this.ctx.save()
+
     // Performance info
-    this.ctx.fillStyle = "#FFFF0066";
-    this.ctx.font = "16px OSRS";
-    this.ctx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16);
-    this.ctx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32);
-    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48);
-    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64);
-    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80);
-    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96);
-    this.ctx.fillText(`Wave: ${this.wave}`, 0, 112);
+    this.ctx.fillStyle = '#FFFF0066'
+    this.ctx.font = '16px OSRS'
+    this.ctx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
+    this.ctx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
+    this.ctx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
+    this.ctx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
+    this.ctx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
+    this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
+    this.ctx.fillText(`Wave: ${this.wave}`, 0, 112)
 
-    if (this.heldDown){
-      this.ctx.fillStyle = "#FFFFFF";
-      this.ctx.font = "72px OSRS";
-      this.ctx.textAlign="center";
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50);
-      this.ctx.textAlign="left";
+    if (this.heldDown) {
+      this.ctx.fillStyle = '#FFFFFF'
+      this.ctx.font = '72px OSRS'
+      this.ctx.textAlign = 'center'
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50)
+      this.ctx.textAlign = 'left'
     }
   }
 
-  setPlayer(player) {
-    this.player = player;
+  setPlayer (player) {
+    this.player = player
   }
 
-  setControlPanel(controlPanel){
-    this.controlPanel = controlPanel;
+  setControlPanel (controlPanel) {
+    this.controlPanel = controlPanel
   }
 
-  addEntity(entity) {
-    this.entities.push(entity);
+  addEntity (entity) {
+    this.entities.push(entity)
   }
 
-  removeEntity(entity) {
-    _.remove(this.entities, entity);
+  removeEntity (entity) {
+    _.remove(this.entities, entity)
   }
 
-  addMob(mob) {
-    this.mobs.push(mob);
+  addMob (mob) {
+    this.mobs.push(mob)
   }
 
-  removeMob(mob) {
-    _.remove(this.mobs, mob);
+  removeMob (mob) {
+    _.remove(this.mobs, mob)
   }
 
-  startTicking() {
-    setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick); 
+  startTicking () {
+    setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
   }
 }

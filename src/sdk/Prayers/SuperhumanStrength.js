@@ -1,38 +1,34 @@
-'use strict';
+'use strict'
 
-import { BasePrayer } from "./BasePrayer";
-import OnSound from "../../assets/sounds/rangeOn.ogg"
-import OffSound from "../../assets/sounds/rangeOff.ogg"
-import { Settings } from "../Settings";
+import { BasePrayer } from './BasePrayer'
+import { Settings } from '../Settings'
 
-export class SuperhumanStrength extends BasePrayer{
-  
-  get name() {
-    return 'Superhuman Strength';
+export class SuperhumanStrength extends BasePrayer {
+  get name () {
+    return 'Superhuman Strength'
   }
 
-  get groups(){
-    return [BasePrayer.groups.STRENGTH];
+  get groups () {
+    return [BasePrayer.groups.STRENGTH]
   }
-  
-  isOverhead() {
-    return false;
+
+  isOverhead () {
+    return false
   }
 
   feature () {
-    return 'offensiveStrength';
+    return 'offensiveStrength'
   }
 
-  playOnSound(){
-    if (Settings.playsAudio){
+  playOnSound () {
+    if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
-  
-  playOffSound() {
-    if (Settings.playsAudio){
+
+  playOffSound () {
+    if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }
   }
-  
 }

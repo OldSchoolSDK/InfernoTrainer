@@ -1,36 +1,34 @@
-import YellowX1 from "../assets/images/interface/yellow_x_1.png";
-import YellowX2 from "../assets/images/interface/yellow_x_2.png";
-import YellowX3 from "../assets/images/interface/yellow_x_3.png";
-import YellowX4 from "../assets/images/interface/yellow_x_4.png";
+import YellowX1 from '../assets/images/interface/yellow_x_1.png'
+import YellowX2 from '../assets/images/interface/yellow_x_2.png'
+import YellowX3 from '../assets/images/interface/yellow_x_3.png'
+import YellowX4 from '../assets/images/interface/yellow_x_4.png'
 
-import RedX1 from "../assets/images/interface/red_x_1.png";
-import RedX2 from "../assets/images/interface/red_x_2.png";
-import RedX3 from "../assets/images/interface/red_x_3.png";
-import RedX4 from "../assets/images/interface/red_x_4.png";
-import { Settings } from "./Settings";
-
+import RedX1 from '../assets/images/interface/red_x_1.png'
+import RedX2 from '../assets/images/interface/red_x_2.png'
+import RedX3 from '../assets/images/interface/red_x_3.png'
+import RedX4 from '../assets/images/interface/red_x_4.png'
+import { Settings } from './Settings'
 
 export class ClickAnimation {
+  constructor (color, x, y) {
+    this.color = color
+    this.x = x
+    this.y = y
+    this.ttl = 1
 
-  constructor(color, x, y) {
-    this.color = color;
-    this.x = x;
-    this.y = y;
-    this.ttl = 1;
-
-    if (!ClickAnimation.frames){
-      ClickAnimation.setFrames();
+    if (!ClickAnimation.frames) {
+      ClickAnimation.setFrames()
     }
   }
 
   static frames;
-  static createImage(url) {
-    const image = new Image();
-    image.src = url;
-    return image;
+  static createImage (url) {
+    const image = new Image()
+    image.src = url
+    return image
   }
 
-  static setFrames() {
+  static setFrames () {
     ClickAnimation.frames = {
       red: [
         ClickAnimation.createImage(RedX1),
@@ -47,19 +45,17 @@ export class ClickAnimation {
     }
   }
 
-  draw(region, framePercent) {
+  draw (region, framePercent) {
     if (this.ttl <= 0) {
-      return;
+      return
     }
-    const frameNumber = Math.floor((1-this.ttl) * 4) 
+    const frameNumber = Math.floor((1 - this.ttl) * 4)
     region.ctx.drawImage(
       ClickAnimation.frames[this.color][frameNumber],
       this.x - 9,
       this.y - 9
-    );
+    )
 
-    this.ttl -= 1.65 / Settings.framesPerTick;
-
-
+    this.ttl -= 1.65 / Settings.framesPerTick
   }
 }

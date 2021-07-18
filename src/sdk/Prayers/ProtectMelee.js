@@ -1,43 +1,42 @@
-'use strict';
+'use strict'
 
-import { BasePrayer } from "./BasePrayer";
-import OverheadImg from "../../assets/images/prayers/meleeOver.png"
+import { BasePrayer } from './BasePrayer'
+import OverheadImg from '../../assets/images/prayers/meleeOver.png'
 
-import OnSound from "../../assets/sounds/meleeOn.ogg"
-import OffSound from "../../assets/sounds/meleeOff.ogg"
-import { Settings } from "../Settings";
+import OnSound from '../../assets/sounds/meleeOn.ogg'
+import OffSound from '../../assets/sounds/meleeOff.ogg'
+import { Settings } from '../Settings'
 
-export class ProtectMelee extends BasePrayer{
-  
-  get name() {
-    return 'Protect from Melee';
+export class ProtectMelee extends BasePrayer {
+  get name () {
+    return 'Protect from Melee'
   }
 
-  get groups(){
-    return [BasePrayer.groups.OVERHEADS];
+  get groups () {
+    return [BasePrayer.groups.OVERHEADS]
   }
-  
-  isOverhead() {
-    return true;
+
+  isOverhead () {
+    return true
   }
-  
-  overheadImageReference(){
-    return OverheadImg;
+
+  overheadImageReference () {
+    return OverheadImg
   }
-  
+
   feature () {
-    return 'melee';
+    return 'melee'
   }
 
-  playOnSound(){
-    if (Settings.playsAudio){
-      new Audio(OnSound).play();
+  playOnSound () {
+    if (Settings.playsAudio) {
+      new Audio(OnSound).play()
     }
   }
-  
-  playOffSound() {
-    if (Settings.playsAudio){
-      new Audio(OffSound).play();
+
+  playOffSound () {
+    if (Settings.playsAudio) {
+      new Audio(OffSound).play()
     }
   }
 }

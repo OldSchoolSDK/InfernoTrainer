@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <title>Inferno Trainer</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2D64CQ3M8D"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2D64CQ3M8D');
+    </script>
     <style>
       @font-face {
         font-family: 'OSRS';
@@ -65,7 +74,6 @@
 
     <canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
     <canvas id="controlPanel" onselectstart="return false" oncontextmenu="return false"></canvas>
-    <canvas id="grid" onselectstart="return false" oncontextmenu="return false" style="display:none;"></canvas>
     
     <br />
     <a href="https://github.com/OldSchoolSDK/Engine" target="_blank">Explore Source on GitHub</a>

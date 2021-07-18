@@ -1,41 +1,39 @@
-'use strict';
+'use strict'
 
-import _ from "lodash";
-import { Settings } from "../../../../sdk/Settings";
-import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
-import RangeImage from "../../assets/images/ranger.png";
-import RangerSound from "../../assets/sounds/ranger.ogg";
-import { MobDeathStore } from "../MobDeathStore";
+import { Settings } from '../../../../sdk/Settings'
+import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { Mob } from '../../../../sdk/Mob'
+import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import RangeImage from '../../assets/images/ranger.png'
+import RangerSound from '../../assets/sounds/ranger.ogg'
+import { MobDeathStore } from '../MobDeathStore'
+import { Pathing } from '../../../../sdk/Pathing'
 
 export class Ranger extends Mob {
-
-
-  get displayName(){
-    return "Jal-Xil";
+  get displayName () {
+    return 'Jal-Xil'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 370
   }
 
-  get combatLevelColor() {
-    return 'red';
+  get combatLevelColor () {
+    return 'red'
   }
 
-  dead(){
-    super.dead();
-    MobDeathStore.npcDied(this);
+  dead () {
+    super.dead()
+    MobDeathStore.npcDied(this)
   }
-  
+
   setStats () {
-    this.frozen = 1;
+    this.frozen = 1
 
     this.weapons = {
       crush: new MeleeWeapon(),
       range: new RangedWeapon()
-    };
+    }
 
     // non boosted numbers
     this.stats = {
@@ -45,7 +43,7 @@ export class Ranger extends Mob {
       range: 250,
       magic: 90,
       hitpoint: 125
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -73,52 +71,50 @@ export class Ranger extends Mob {
       }
     }
   }
-  
-  get cooldown() {
-    return 4;
+
+  get cooldown () {
+    return 4
   }
 
-  get attackRange() {
-    return 15;
+  get attackRange () {
+    return 15
   }
 
-  get size() {
-    return 3;
+  get size () {
+    return 3
   }
 
-  get image() {
-    return RangeImage;
+  get image () {
+    return RangeImage
   }
 
-  get sound() {
-    return RangerSound;
+  get sound () {
+    return RangerSound
   }
 
-  get color() {
-    return "#AC88B933";
+  get color () {
+    return '#AC88B933'
   }
 
-
-  get attackStyle() {
-    return 'range';
+  get attackStyle () {
+    return 'range'
   }
 
-  canMeleeIfClose() {
-    return 'crush';
+  canMeleeIfClose () {
+    return 'crush'
   }
-  
-  playAttackSound (){
-    if (Settings.playsAudio){
+
+  playAttackSound () {
+    if (Settings.playsAudio) {
       setTimeout(() => {
-        const sound = new Audio(this.sound);
-        sound.volume = 1/Math.min(3, Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y) / 5);
-        sound.play();
+        const sound = new Audio(this.sound)
+        sound.volume = 1 / Math.min(3, Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y) / 5)
+        sound.play()
       }, 1.75 * Settings.tickMs)
     }
   }
 
-  attackAnimation(framePercent){
-
+  attackAnimation (framePercent) {
     this.region.ctx.rotate(Math.sin(-framePercent * Math.PI))
   }
 }
