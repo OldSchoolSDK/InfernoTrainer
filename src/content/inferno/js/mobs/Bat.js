@@ -1,32 +1,31 @@
-'use strict';
+'use strict'
 
-import { Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
-import BatImage from "../../assets/images/bat.png";
-import BatSound from "../../assets/sounds/bat.ogg";
-import { MobDeathStore } from "../MobDeathStore";
+import { Mob } from '../../../../sdk/Mob'
+import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import BatImage from '../../assets/images/bat.png'
+import BatSound from '../../assets/sounds/bat.ogg'
+import { MobDeathStore } from '../MobDeathStore'
 
-export class Bat extends Mob{
-
-  get displayName(){
-    return "Jal-MejRah";
+export class Bat extends Mob {
+  get displayName () {
+    return 'Jal-MejRah'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 85
   }
 
-  get combatLevelColor() {
-    return 'lime';
+  get combatLevelColor () {
+    return 'lime'
   }
 
-  dead(){
-    super.dead();
-    MobDeathStore.npcDied(this);
+  dead () {
+    super.dead()
+    MobDeathStore.npcDied(this)
   }
 
   setStats () {
-    this.frozen = 1;
+    this.frozen = 1
 
     this.weapons = {
       range: new RangedWeapon()
@@ -40,7 +39,7 @@ export class Bat extends Mob{
       range: 120,
       magic: 120,
       hitpoint: 25
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -68,36 +67,36 @@ export class Bat extends Mob{
       }
     }
   }
-  
-  get cooldown() {
-    return 3;
+
+  get cooldown () {
+    return 3
   }
 
-  get attackRange() {
-    return 4;
+  get attackRange () {
+    return 4
   }
 
-  get size() {
-    return 2;
+  get size () {
+    return 2
   }
 
-  get image() {
-    return BatImage;
+  get image () {
+    return BatImage
   }
 
-  get sound() {
-    return BatSound;
-  }
-  
-  get color() {
-    return "#aadd7333";
+  get sound () {
+    return BatSound
   }
 
-  get attackStyle() {
-    return 'range';
+  get color () {
+    return '#aadd7333'
   }
-  
-  attackAnimation(framePercent){
+
+  get attackStyle () {
+    return 'range'
+  }
+
+  attackAnimation (framePercent) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }
