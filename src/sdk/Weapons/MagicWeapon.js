@@ -17,14 +17,13 @@ export class MagicWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses, forceSWOnly)) {
       damage = 0
     }
-    this.damage = damage
-
-    if (from.type === Unit.types.PLAYER && damage > 0) {
-      from.grantXp(new XpDrop('hitpoint', damage));
-      from.grantXp(new XpDrop('magic', damage * 4));
+    this.damage = Math.min(damage, to.currentStats.hitpoint)
+    if (from.type === Unit.types.PLAYER && this.damage > 0) {
+      from.grantXp(new XpDrop('hitpoint', this.damage));
+      from.grantXp(new XpDrop('magic', this.damage * 4));
     }
 
-    to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly))
+    to.addProjectile(new Projectile(this.damage, from, to, 'magic', forceSWOnly))
   }
 
   isBlockable (from, to, bonuses, forceSWOnly) {

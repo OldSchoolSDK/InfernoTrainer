@@ -20,8 +20,8 @@ export class MeleeWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses)) {
       damage = 0
     }
-
-
+    this.damage = Math.min(this.damage, to.currentStats.hitpoint)
+    
     if (from.type === Unit.types.PLAYER && damage > 0) {
       from.grantXp(new XpDrop('hitpoint', damage));
       from.grantXp(new XpDrop('attack', damage * 4));

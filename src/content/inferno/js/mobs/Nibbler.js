@@ -12,7 +12,8 @@ import { Projectile } from '../../../../sdk/Weapons/Projectile'
 class NibblerWeapon extends MeleeWeapon {
   attack (region, from, to, bonuses) {
     const damage = Math.floor(Math.random() * 5)
-    to.addProjectile(new Projectile(damage, from, to, 'crush'))
+    this.damage = damage;
+    to.addProjectile(new Projectile(this.damage, from, to, 'crush'))
   }
 }
 
