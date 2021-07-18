@@ -1,39 +1,36 @@
-'use strict';
+'use strict'
 
-import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
+import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { Mob } from '../../../../sdk/Mob'
 
-import NibblerImage from "../../assets/images/nib.png";
-import NibblerSound from "../../assets/sounds/meleer.ogg";
-import { Pathing } from "../../../../sdk/Pathing";
-import { LineOfSight } from "../../../../sdk/LineOfSight";
-import { Projectile } from "../../../../sdk/Weapons/Projectile";
+import NibblerImage from '../../assets/images/nib.png'
+import NibblerSound from '../../assets/sounds/meleer.ogg'
+import { Pathing } from '../../../../sdk/Pathing'
+import { LineOfSight } from '../../../../sdk/LineOfSight'
+import { Projectile } from '../../../../sdk/Weapons/Projectile'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack(region, from, to, bonuses) {
-    const damage = Math.floor(Math.random() * 5);
-    to.addProjectile(new Projectile(damage, from, to, 'crush'));
+  attack (region, from, to, bonuses) {
+    const damage = Math.floor(Math.random() * 5)
+    to.addProjectile(new Projectile(damage, from, to, 'crush'))
   }
 }
 
-
-export class Nibbler extends Mob{
-
-  get displayName(){
-    return "Jal-Nib";
+export class Nibbler extends Mob {
+  get displayName () {
+    return 'Jal-Nib'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 32
   }
 
-  get combatLevelColor() {
-    return 'lime';
+  get combatLevelColor () {
+    return 'lime'
   }
 
-
   setStats () {
-    this.frozen = 1;
+    this.frozen = 1
     this.weapon = {
       attackRange: 1
     }
@@ -49,7 +46,7 @@ export class Nibbler extends Mob{
       range: 1,
       magic: 15,
       hitpoint: 10
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -77,55 +74,55 @@ export class Nibbler extends Mob{
       }
     }
   }
-  
-  get consumesSpace() {
-    return null;
+
+  get consumesSpace () {
+    return null
   }
 
-  get cooldown() {
-    return 4;
+  get cooldown () {
+    return 4
   }
 
-  get attackRange() {
-    return 1;
+  get attackRange () {
+    return 1
   }
 
-  get size() {
-    return 1;
+  get size () {
+    return 1
   }
 
-  get image() {
-    return NibblerImage;
+  get image () {
+    return NibblerImage
   }
 
-  get sound() {
-    return NibblerSound;
-  }
-  
-  get color() {
-    return "#aadd7333";
+  get sound () {
+    return NibblerSound
   }
 
-  get attackStyle() {
-    return 'crush';
+  get color () {
+    return '#aadd7333'
   }
-  
-  attackAnimation(framePercent){
+
+  get attackStyle () {
+    return 'crush'
+  }
+
+  attackAnimation (framePercent) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 
-  attackIfPossible(){
-    this.attackCooldownTicks--;
+  attackIfPossible () {
+    this.attackCooldownTicks--
 
     if (this.aggro.dying === 0) {
-      this.dead(); // cheat way for now. pillar should AOE 
+      this.dead() // cheat way for now. pillar should AOE
     }
-    let isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
-    this.attackFeedback = Mob.attackIndicators.NONE;
+    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+    this.attackFeedback = Mob.attackIndicators.NONE
 
-    const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro);
-    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0){
-      this.attack();
+    const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro)
+    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0) {
+      this.attack()
     }
   }
 }

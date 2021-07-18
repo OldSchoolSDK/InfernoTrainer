@@ -1,42 +1,38 @@
-'use strict';
+'use strict'
 
-import { MagicWeapon } from "../../../../sdk/Weapons/MagicWeapon";
-import { MeleeWeapon } from "../../../../sdk/Weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
-import MagerImage from "../../assets/images/mager.png";
-import MagerSound from "../../assets/sounds/mager.ogg";
-import { Pathing } from "../../../../sdk/Pathing";
-import { MobDeathStore } from "../MobDeathStore";
+import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
+import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { Mob } from '../../../../sdk/Mob'
+import MagerImage from '../../assets/images/mager.png'
+import MagerSound from '../../assets/sounds/mager.ogg'
+import { Pathing } from '../../../../sdk/Pathing'
+import { MobDeathStore } from '../MobDeathStore'
 
-export class Mager extends Mob{
-
-
-  get displayName(){
-    return "Jal-Zek";
+export class Mager extends Mob {
+  get displayName () {
+    return 'Jal-Zek'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 490
   }
 
-  get combatLevelColor() {
-    return 'red';
+  get combatLevelColor () {
+    return 'red'
   }
 
-
-  dead(){
-    super.dead();
-    MobDeathStore.npcDied(this);
+  dead () {
+    super.dead()
+    MobDeathStore.npcDied(this)
   }
 
-  
   setStats () {
-    this.frozen = 1;
+    this.frozen = 1
 
     this.weapons = {
       stab: new MeleeWeapon(),
       magic: new MagicWeapon()
-    };
+    }
 
     // non boosted numbers
     this.stats = {
@@ -46,7 +42,7 @@ export class Mager extends Mob{
       range: 510,
       magic: 300,
       hitpoint: 220
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -74,94 +70,92 @@ export class Mager extends Mob{
       }
     }
   }
-  
-  get cooldown() {
-    return 4;
+
+  get cooldown () {
+    return 4
   }
 
-  get attackRange() {
-    return 15;
-  }
-  
-  get size() {
-    return 4;
+  get attackRange () {
+    return 15
   }
 
-  get image() {
-    return MagerImage;
+  get size () {
+    return 4
   }
 
-  get sound() {
-    return MagerSound;
-  }
-  
-  get color() {
-    return "#ffffff33";
+  get image () {
+    return MagerImage
   }
 
-  get attackStyle() {
-    return 'magic';
-  }
-  
-  canMeleeIfClose() {
-    return 'stab';
+  get sound () {
+    return MagerSound
   }
 
-  magicMaxHit() {
-    return 70;
+  get color () {
+    return '#ffffff33'
   }
 
-  get maxHit() {
-    return 70;
+  get attackStyle () {
+    return 'magic'
   }
 
-  attackAnimation(framePercent){
-    this.region.ctx.rotate(framePercent * Math.PI * 2);
+  canMeleeIfClose () {
+    return 'stab'
   }
 
-  respawnLocation(mobToResurrect) {
-    for (let x = 15; x < 21; x++){
-      for (let y = 10; y < 22; y++){
-        if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)){
-          return {x, y};
+  magicMaxHit () {
+    return 70
+  }
+
+  get maxHit () {
+    return 70
+  }
+
+  attackAnimation (framePercent) {
+    this.region.ctx.rotate(framePercent * Math.PI * 2)
+  }
+
+  respawnLocation (mobToResurrect) {
+    for (let x = 15; x < 21; x++) {
+      for (let y = 10; y < 22; y++) {
+        if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)) {
+          return { x, y }
         }
       }
     }
 
-    return { x: 21, y: 22 };
+    return { x: 21, y: 22 }
   }
 
-  attackIfPossible(){
-    this.attackCooldownTicks--;
-    this.attackFeedback = Mob.attackIndicators.NONE;
+  attackIfPossible () {
+    this.attackCooldownTicks--
+    this.attackFeedback = Mob.attackIndicators.NONE
 
-    this.hadLOS = this.hasLOS;
-    this.setHasLOS();
+    this.hadLOS = this.hasLOS
+    this.setHasLOS()
 
-    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
-    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0){
+    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
       if (Math.random() < 0.1) {
-        const mobToResurrect = MobDeathStore.selectMobToResurect();
+        const mobToResurrect = MobDeathStore.selectMobToResurect()
         if (!mobToResurrect) {
-          this.attack();
-        }else{
+          this.attack()
+        } else {
           // Set to 50% health
-          mobToResurrect.currentStats.hitpoint = mobToResurrect.stats.hitpoint / 2;
-          mobToResurrect.dying = -1;
-          
-          mobToResurrect.setLocation(this.respawnLocation(mobToResurrect));
+          mobToResurrect.currentStats.hitpoint = mobToResurrect.stats.hitpoint / 2
+          mobToResurrect.dying = -1
 
-          mobToResurrect.perceivedLocation = mobToResurrect.location;
-          this.region.addMob(mobToResurrect);
-          //(15, 10) to  (21 , 22)
-          this.attackCooldownTicks = this.cooldown;
+          mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
+          mobToResurrect.perceivedLocation = mobToResurrect.location
+          this.region.addMob(mobToResurrect)
+          // (15, 10) to  (21 , 22)
+          this.attackCooldownTicks = this.cooldown
         }
-      }else{
-        this.attack();
+      } else {
+        this.attack()
       }
     }
-
   }
 }

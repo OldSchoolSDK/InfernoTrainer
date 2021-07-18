@@ -1,30 +1,28 @@
 
 export class BaseControls {
-  constructor() {
+  constructor () {
+    this.panelImage = new Image(204, 275)
+    this.panelImage.src = this.panelImageReference
 
-    this.panelImage = new Image(204, 275);
-    this.panelImage.src = this.panelImageReference;
+    this.tabImage = new Image(33, 36)
+    this.tabImage.src = this.tabImageReference
 
-    this.tabImage = new Image(33, 36);
-    this.tabImage.src = this.tabImageReference;
-
-    this.selected = false;
+    this.selected = false
   }
 
-  get panelImageReference() {
-    return null;
+  get panelImageReference () {
+    return null
   }
 
-  get tabImageReference() {
-    return null;
+  get tabImageReference () {
+    return null
   }
 
-  clickedPanel(region, x, y){
-    console.log(x, y);
+  clickedPanel (region, x, y) {
+    console.log(x, y)
   }
 
-  draw(region, ctrl, x, y) {
-    ctrl.ctx.drawImage(this.panelImage, x, y);
+  draw (region, ctrl, x, y) {
+    ctrl.ctx.drawImage(this.panelImage, x, y)
   }
-
 }

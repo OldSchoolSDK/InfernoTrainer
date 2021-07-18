@@ -1,25 +1,24 @@
-'use strict';
+'use strict'
 
-import { Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/Weapons/RangedWeapon";
-import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
+import { Mob } from '../../../../sdk/Mob'
+import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
-export class JalAkRekXil extends Mob{
-
-  get displayName(){
-    return "Jal-AkRek-Xil";
+export class JalAkRekXil extends Mob {
+  get displayName () {
+    return 'Jal-AkRek-Xil'
   }
 
-  get combatLevel() {
+  get combatLevel () {
     return 70
   }
 
-  get combatLevelColor() {
-    return 'lime';
+  get combatLevelColor () {
+    return 'lime'
   }
 
   setStats () {
-    this.frozen = 0;
+    this.frozen = 0
 
     this.weapons = {
       range: new RangedWeapon()
@@ -33,7 +32,7 @@ export class JalAkRekXil extends Mob{
       range: 120,
       magic: 1,
       hitpoint: 15
-    };
+    }
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
@@ -61,36 +60,36 @@ export class JalAkRekXil extends Mob{
       }
     }
   }
-  
-  get cooldown() {
-    return 4;
+
+  get cooldown () {
+    return 4
   }
 
-  get attackRange() {
-    return 5;
+  get attackRange () {
+    return 5
   }
 
-  get size() {
-    return 1;
+  get size () {
+    return 1
   }
 
-  get image() {
-    return JalAkRekMejImage;
+  get image () {
+    return JalAkRekMejImage
   }
 
-  get sound() {
-    return null;
-  }
-  
-  get color() {
-    return "#aadd7333";
+  get sound () {
+    return null
   }
 
-  get attackStyle() {
-    return 'range';
+  get color () {
+    return '#aadd7333'
   }
-  
-  attackAnimation(framePercent){
+
+  get attackStyle () {
+    return 'range'
+  }
+
+  attackAnimation (framePercent) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

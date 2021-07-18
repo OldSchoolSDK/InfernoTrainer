@@ -1,34 +1,31 @@
-'use strict';
-import { Settings } from "./Settings";
-import { Unit } from "./Unit";
-
+'use strict'
+import { Settings } from './Settings'
+import { Unit } from './Unit'
 
 export class Entity {
-  constructor(region, point, size) {
-    this.region = region;
-    this.location = point;
-    this.size = size;
+  constructor (region, point, size) {
+    this.region = region
+    this.location = point
+    this.size = size
   }
 
-
-  get type() {
+  get type () {
     // Kind of odd that Units live inside the unit class, but this isn't a unit
-    return Unit.types.ENTITY;
+    return Unit.types.ENTITY
   }
 
-  tick() {
-      
+  tick () {
+
   }
 
-  draw() {
-    this.region.ctx.fillStyle = "#000073";
+  draw () {
+    this.region.ctx.fillStyle = '#000073'
 
     this.region.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
-    );
-    
+    )
   }
 }

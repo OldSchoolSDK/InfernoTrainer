@@ -1,23 +1,22 @@
-'use strict';
+'use strict'
 
-import TbowInventImage from "../../assets/images/weapons/twistedBow.png"
-import { RangedWeapon } from "../../sdk/Weapons/RangedWeapon";
+import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
+import { RangedWeapon } from '../../sdk/Weapons/RangedWeapon'
 
-export class TwistedBow extends RangedWeapon{
-
-  get attackRange() {
-      return 10;
+export class TwistedBow extends RangedWeapon {
+  get attackRange () {
+    return 10
   }
 
-  get attackSpeed() {
-    return 5;
+  get attackSpeed () {
+    return 5
   }
 
-  get inventoryImage() {
-    return TbowInventImage;    
+  get inventoryImage () {
+    return TbowInventImage
   }
 
-  get bonuses() {
+  get bonuses () {
     return {
       attack: {
         stab: -1,
@@ -46,16 +45,15 @@ export class TwistedBow extends RangedWeapon{
     }
   }
 
-
-  _accuracyMultiplier(from, to, bonuses) {
-    const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic);
-    const multiplier = (140 + ((10 * 3 * magic / 10 - 10) / 100) - (Math.pow(3 * magic / 10 - 100) / 100, 2) ) / 100;
-    return Math.min(1.40, Math.max(0, multiplier));
+  _accuracyMultiplier (from, to, bonuses) {
+    const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic)
+    const multiplier = (140 + ((10 * 3 * magic / 10 - 10) / 100) - (Math.pow(3 * magic / 10 - 100) / 100, 2)) / 100
+    return Math.min(1.40, Math.max(0, multiplier))
   }
 
-  _damageMultiplier(from, to, bonuses) {
-    const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic);
-    const multiplier = (250 + ((10 * 3 * magic / 10 - 14) / 100) - (Math.pow(3 * magic / 10 - 140) / 100, 2) ) / 100;
-    return Math.min(2.50, Math.max(0, multiplier));  
+  _damageMultiplier (from, to, bonuses) {
+    const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic)
+    const multiplier = (250 + ((10 * 3 * magic / 10 - 14) / 100) - (Math.pow(3 * magic / 10 - 140) / 100, 2)) / 100
+    return Math.min(2.50, Math.max(0, multiplier))
   }
 }

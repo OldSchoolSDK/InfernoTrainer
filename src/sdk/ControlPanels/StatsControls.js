@@ -1,16 +1,14 @@
 
-import StatsPanel from "../../assets/images/panels/stats.png";
-import StatsTab from "../../assets/images/tabs/stats.png";
-import { BaseControls } from "./BaseControls";
+import StatsPanel from '../../assets/images/panels/stats.png'
+import StatsTab from '../../assets/images/tabs/stats.png'
+import { BaseControls } from './BaseControls'
 
-export class StatsControls extends BaseControls{
-
-  get panelImageReference() {
-    return StatsPanel;
+export class StatsControls extends BaseControls {
+  get panelImageReference () {
+    return StatsPanel
   }
 
-  get tabImageReference() {
-    return StatsTab;
+  get tabImageReference () {
+    return StatsTab
   }
-
 }

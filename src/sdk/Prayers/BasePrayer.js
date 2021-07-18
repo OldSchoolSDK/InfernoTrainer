@@ -1,54 +1,52 @@
-'use strict';
+'use strict'
 
 export class BasePrayer {
-
   static groups = {
-    OVERHEADS: "overheads",
-    DEFENCE: "defence",
-    STRENGTH: "strength",
-    ATTACK: "attack",
-    MAGIC: "magic",
-    RANGE: "range",
-    HEARTS: "hearts",
-    PROTECTITEM: "protectitem",
-    PRESERVE: "preserve"
+    OVERHEADS: 'overheads',
+    DEFENCE: 'defence',
+    STRENGTH: 'strength',
+    ATTACK: 'attack',
+    MAGIC: 'magic',
+    RANGE: 'range',
+    HEARTS: 'hearts',
+    PROTECTITEM: 'protectitem',
+    PRESERVE: 'preserve'
   };
 
-  constructor() {
-    this.deactivate();
-  }
-  
-  get name() {
-    return 'Protect from Magic';
+  constructor () {
+    this.deactivate()
   }
 
-  get groups(){
-    return [];
+  get name () {
+    return 'Protect from Magic'
   }
 
-  activate() {
-    this.isActive = !this.isActive;
+  get groups () {
+    return []
   }
 
-  deactivate() {
-    this.isActive = false;
+  activate () {
+    this.isActive = !this.isActive
   }
 
-  isOverhead() {
-    return false;
+  deactivate () {
+    this.isActive = false
   }
 
-  overheadImageReference() {
-    return null;
+  isOverhead () {
+    return false
   }
 
-  overheadImage() {
-    if (!this.cachedImage && this.overheadImageReference()){
-      this.cachedImage = new Image(34, 34);
-      this.cachedImage.src = this.overheadImageReference();
+  overheadImageReference () {
+    return null
+  }
+
+  overheadImage () {
+    if (!this.cachedImage && this.overheadImageReference()) {
+      this.cachedImage = new Image(34, 34)
+      this.cachedImage.src = this.overheadImageReference()
     }
 
-    return this.cachedImage;
+    return this.cachedImage
   }
-  
 }

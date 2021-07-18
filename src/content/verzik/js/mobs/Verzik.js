@@ -126,7 +126,7 @@ export class Verzik extends Mob{
   canMove() {
     return !this.isWithinMeleeRange()
       && !this.isDying()
-      && (this.attackCooldownTicks != 1 || !this.isOnTile(this.aggro.location.x, this.aggro.location.y));
+      && (this.attackCooldownTicks !== 1 || !this.isOnTile(this.aggro.location.x, this.aggro.location.y));
   }
 
   canMeleeIfClose() {

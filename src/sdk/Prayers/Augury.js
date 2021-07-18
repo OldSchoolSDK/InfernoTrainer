@@ -1,38 +1,34 @@
-'use strict';
+'use strict'
 
-import { BasePrayer } from "./BasePrayer";
-import OnSound from "../../assets/sounds/rangeOn.ogg"
-import OffSound from "../../assets/sounds/rangeOff.ogg"
-import { Settings } from "../Settings";
+import { BasePrayer } from './BasePrayer'
+import { Settings } from '../Settings'
 
-export class Augury extends BasePrayer{
-  
-  get name() {
-    return 'Augury';
+export class Augury extends BasePrayer {
+  get name () {
+    return 'Augury'
   }
 
-  get groups(){
-    return [BasePrayer.groups.MAGIC, BasePrayer.groups.DEFENCE];
+  get groups () {
+    return [BasePrayer.groups.MAGIC, BasePrayer.groups.DEFENCE]
   }
-  
-  isOverhead() {
-    return false;
+
+  isOverhead () {
+    return false
   }
 
   feature () {
-    return 'offensiveMagic';
+    return 'offensiveMagic'
   }
 
-  playOnSound(){
-    if (Settings.playsAudio){
+  playOnSound () {
+    if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
-  
-  playOffSound() {
-    if (Settings.playsAudio){
+
+  playOffSound () {
+    if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }
   }
-  
 }
