@@ -77,14 +77,14 @@ export class XpDropController {
 
       this.ctx.fillStyle = '#FFFFFF'
       this.ctx.font = '16px Stats_11'
-      this.ctx.textAlign = 'left'
+      this.ctx.textAlign = 'right'
 
       this.ctx.drawImage(skillInfo.image, 4, 2, 26, 26)
       this.ctx.fillStyle = '#000000'
 
-      this.ctx.fillText("200,000,000", 35, 21);
+      this.ctx.fillText("200,000,000", this.canvas.width - 4, 21);
       this.ctx.fillStyle = '#FFFFFF'
-      this.ctx.fillText("200,000,000", 34, 20);
+      this.ctx.fillText("200,000,000", this.canvas.width - 5, 20);
     }
 
 
