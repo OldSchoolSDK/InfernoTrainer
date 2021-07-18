@@ -2,6 +2,7 @@
 export class XpDrop {
   constructor(skill, xp){
     this.skill = skill;
-    this.xp = Math.floor(xp);
+    this.xp = Math.floor(xp); // Actual game allows precise-ish XP gains, but it only rounds on display
+    // Fix this once we have actual stats / xp 
   }
 }
