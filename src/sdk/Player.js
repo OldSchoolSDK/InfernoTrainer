@@ -83,13 +83,11 @@ export class Player extends Unit {
   }
 
   sendXpToController() {
-    if (!_.isEmpty(this.xpDrops)){
-      XpDropController.controller.registerXpDrop({
-        delay: 6,
-        xpDrops: this.xpDrops
-      });
-      this.clearXpDrops();
-    }
+    Object.keys(this.xpDrops).forEach((skill) => {
+      XpDropController.controller.registerXpDrop({ skill, xp: this.xpDrops[skill]});
+    })
+    
+    this.clearXpDrops();
   }
 
   moveTo (x, y) {

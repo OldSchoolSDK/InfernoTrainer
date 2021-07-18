@@ -121,6 +121,9 @@ export class Region {
   }
 
   gameTick () {
+    XpDropController.controller.tick();
+
+    
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
     this.mobs.forEach((mob) => mob.movementStep())
@@ -128,7 +131,6 @@ export class Region {
     this.player.movementStep()
     this.player.attackStep()
 
-    XpDropController.controller.tick();
 
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
@@ -194,7 +196,7 @@ export class Region {
 
     this.drawGame(framePercent)
 
-    XpDropController.controller.draw(this.ctx, this.canvas.width - 100, 0, framePercent);
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, framePercent);
 
     this.ctx.restore()
     this.ctx.save()

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { BasePrayer } from '../Prayers/BasePrayer'
 import { Unit } from '../Unit'
+import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 
@@ -19,8 +20,8 @@ export class MagicWeapon extends Weapon {
     this.damage = damage
 
     if (from.type === Unit.types.PLAYER && damage > 0) {
-      from.grantXp(new XpDrop('magic', damage * 4));
       from.grantXp(new XpDrop('hitpoint', damage));
+      from.grantXp(new XpDrop('magic', damage * 4));
     }
 
     to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly))

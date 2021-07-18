@@ -18,8 +18,8 @@ export class RangedWeapon extends Weapon {
     }
 
     if (from.type === Unit.types.PLAYER && damage > 0) {
-      from.grantXp(new XpDrop('range', damage * 4));
       from.grantXp(new XpDrop('hitpoint', damage));
+      from.grantXp(new XpDrop('range', damage * 4));
     }
 
     to.addProjectile(new Projectile(damage, from, to, 'range'))
