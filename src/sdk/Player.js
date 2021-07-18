@@ -4,7 +4,7 @@ import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import _ from 'lodash'
 import { Unit } from './Unit'
-import { XpDropController } from './XPDropController'
+import { XpDropController } from './XpDropController'
 
 export class Player extends Unit {
   constructor (region, location, options) {
