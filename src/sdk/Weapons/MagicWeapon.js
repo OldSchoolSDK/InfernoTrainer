@@ -19,7 +19,7 @@ export class MagicWeapon extends Weapon {
     }
     this.damage = Math.min(damage, to.currentStats.hitpoint)
     if (from.type === Unit.types.PLAYER && this.damage > 0) {
-      from.grantXp(new XpDrop('hitpoint', this.damage));
+      from.grantXp(new XpDrop('hitpoint', this.damage * 1.3));
       from.grantXp(new XpDrop('magic', this.damage * 4));
     }
 

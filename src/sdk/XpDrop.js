@@ -2,6 +2,6 @@
 export class XpDrop {
   constructor(skill, xp){
     this.skill = skill;
-    this.xp = xp;
+    this.xp = Math.floor(xp);
   }
 }
