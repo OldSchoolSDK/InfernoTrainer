@@ -16,10 +16,11 @@ export class RangedWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses)) {
       damage = 0
     }
+    this.damage = Math.min(damage, to.currentStats.hitpoint)
 
-    if (from.type === Unit.types.PLAYER && damage > 0) {
-      from.grantXp(new XpDrop('hitpoint', damage));
-      from.grantXp(new XpDrop('range', damage * 4));
+    if (from.type === Unit.types.PLAYER && this.damage > 0) {
+      from.grantXp(new XpDrop('hitpoint', this.damage));
+      from.grantXp(new XpDrop('range', this.damage * 4));
     }
 
     to.addProjectile(new Projectile(damage, from, to, 'range'))
