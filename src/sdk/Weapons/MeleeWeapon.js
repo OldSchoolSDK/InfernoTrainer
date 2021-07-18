@@ -20,6 +20,12 @@ export class MeleeWeapon extends Weapon {
       damage = 0
     }
 
+
+    if (from.type === Unit.types.PLAYER && damage > 0) {
+      from.grantXp(new XpDrop('attack', damage * 4));
+      from.grantXp(new XpDrop('hitpoint', damage));
+    }
+
     to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle))
   }
 

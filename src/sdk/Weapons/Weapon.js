@@ -8,7 +8,6 @@ export class Weapon {
   }
 
   attack () {
-
   }
 
   get aoe () {

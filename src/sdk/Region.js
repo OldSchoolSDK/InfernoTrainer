@@ -5,6 +5,7 @@ import { Settings } from './Settings'
 import { ContextMenu } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { Pathing } from './Pathing'
+import { XpDropController } from './XPDropController'
 
 export class Region {
   constructor (selector, width, height) {
@@ -22,15 +23,22 @@ export class Region {
     this.ctx = this.canvas.getContext('2d')
     this.canvas.width = Settings.tileSize * width
     this.canvas.height = Settings.tileSize * height
-
-    this.grid = document.getElementById('grid')
-    this.gridCtx = this.grid.getContext('2d')
-    this.grid.width = Settings.tileSize * width
-    this.grid.height = Settings.tileSize * height
-    this.hasCalcedGrid = false
-
     this.width = width
     this.height = height
+
+    this.gridCanvas = new OffscreenCanvas(this.canvas.width, this.canvas.height)
+    const gridContext = this.gridCanvas.getContext('2d')
+
+    gridContext.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    for (let i = 0; i < this.width * this.height; i++) {
+      gridContext.fillStyle = (i % 2) ? '#100' : '#210'
+      gridContext.fillRect(
+        i % this.width * Settings.tileSize,
+        Math.floor(i / this.width) * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
+    }
 
     this.offPerformanceDelta = 0
     this.offPerformanceCount = 0
@@ -120,6 +128,8 @@ export class Region {
     this.player.movementStep()
     this.player.attackStep()
 
+    XpDropController.controller.tick();
+
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
     const deadEntities = this.entities.filter((mob) => mob.dying === 0)
@@ -179,23 +189,12 @@ export class Region {
       this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
 
-    if (!this.hasCalcedGrid) {
-      // This is a GIGANTIC performance improvement ...
-      this.gridCtx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-      for (let i = 0; i < this.canvas.width * this.canvas.height; i++) {
-        this.gridCtx.fillStyle = (i % 2) ? '#100' : '#210'
-        this.gridCtx.fillRect(
-          i % this.width * Settings.tileSize,
-          Math.floor(i / this.width) * Settings.tileSize,
-          Settings.tileSize,
-          Settings.tileSize
-        )
-      }
-      this.hasCalcedGrid = true
-    }
+    
+    this.ctx.drawImage(this.gridCanvas, 0, 0);
 
-    this.ctx.drawImage(this.grid, 0, 0)
     this.drawGame(framePercent)
+
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 100, 0, framePercent);
 
     this.ctx.restore()
     this.ctx.save()

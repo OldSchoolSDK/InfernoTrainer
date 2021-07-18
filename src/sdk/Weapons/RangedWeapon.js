@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { BasePrayer } from '../Prayers/BasePrayer'
 import { Unit } from '../Unit'
+import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 
@@ -14,6 +15,11 @@ export class RangedWeapon extends Weapon {
     let damage = this._rollAttack(from, to, bonuses)
     if (this.isBlockable(from, to, bonuses)) {
       damage = 0
+    }
+
+    if (from.type === Unit.types.PLAYER && damage > 0) {
+      from.grantXp(new XpDrop('range', damage * 4));
+      from.grantXp(new XpDrop('hitpoint', damage));
     }
 
     to.addProjectile(new Projectile(damage, from, to, 'range'))

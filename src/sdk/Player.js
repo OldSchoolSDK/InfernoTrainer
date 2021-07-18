@@ -4,12 +4,14 @@ import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import _ from 'lodash'
 import { Unit } from './Unit'
+import { XpDropController } from './XPDropController'
 
 export class Player extends Unit {
   constructor (region, location, options) {
     super(region, location, options)
     this.destinationLocation = -1
     this.weapon = options.weapon
+    this.clearXpDrops();
   }
 
   setStats () {
@@ -67,6 +69,27 @@ export class Player extends Unit {
 
   get size () {
     return 1
+  }
+
+  clearXpDrops() {
+    this.xpDrops = {};
+  }
+
+  grantXp(xpDrop) {
+    if (!this.xpDrops[xpDrop.skill]){
+      this.xpDrops[xpDrop.skill] = 0;
+    }
+    this.xpDrops[xpDrop.skill] += xpDrop.xp;
+  }
+
+  sendXpToController() {
+    if (!_.isEmpty(this.xpDrops)){
+      XpDropController.controller.registerXpDrop({
+        delay: 6,
+        xpDrops: this.xpDrops
+      });
+      this.clearXpDrops();
+    }
   }
 
   moveTo (x, y) {
@@ -212,6 +235,7 @@ export class Player extends Unit {
   }
 
   movementStep () {
+
     this.activatePrayers()
 
     this.pathToAggro()
@@ -234,11 +258,13 @@ export class Player extends Unit {
   }
 
   attackStep () {
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1)
+    this.clearXpDrops();
 
     this.processIncomingAttacks()
 
     this.attackIfPossible()
+
+    this.sendXpToController();
   }
 
   attackIfPossible () {

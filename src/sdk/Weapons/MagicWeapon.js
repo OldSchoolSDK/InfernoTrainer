@@ -17,6 +17,12 @@ export class MagicWeapon extends Weapon {
       damage = 0
     }
     this.damage = damage
+
+    if (from.type === Unit.types.PLAYER && damage > 0) {
+      from.grantXp(new XpDrop('magic', damage * 4));
+      from.grantXp(new XpDrop('hitpoint', damage));
+    }
+
     to.addProjectile(new Projectile(damage, from, to, 'magic', forceSWOnly))
   }
 

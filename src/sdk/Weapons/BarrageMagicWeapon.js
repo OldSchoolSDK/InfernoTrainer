@@ -58,6 +58,12 @@ export class BarrageMagicWeapon extends MagicWeapon {
 
   attack (region, from, to, bonuses = {}) {
     super.attack(region, from, to, bonuses, true)
+
+    if (from.type === Unit.types.PLAYER && damage > 0) {
+      from.grantXp(new XpDrop('magic', damage * 4));
+      from.grantXp(new XpDrop('hitpoint', damage));
+    }
+    
     if (this.damage > 0) {
       to.frozen = 32
     }
