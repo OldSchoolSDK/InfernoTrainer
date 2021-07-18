@@ -3,6 +3,7 @@ import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 import { BasePrayer } from '../Prayers/BasePrayer'
 import { Unit } from '../Unit'
+import { XpDrop } from '../XpDrop'
 
 export class MeleeWeapon extends Weapon {
   attack (region, from, to, bonuses = {}) {
@@ -18,6 +19,12 @@ export class MeleeWeapon extends Weapon {
 
     if (this.isBlockable(from, to, bonuses)) {
       damage = 0
+    }
+
+
+    if (from.type === Unit.types.PLAYER && damage > 0) {
+      from.grantXp(new XpDrop('hitpoint', damage));
+      from.grantXp(new XpDrop('attack', damage * 4));
     }
 
     to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle))
