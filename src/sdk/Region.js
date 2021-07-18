@@ -5,7 +5,7 @@ import { Settings } from './Settings'
 import { ContextMenu } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { Pathing } from './Pathing'
-import { XpDropController } from './XPDropController'
+import { XpDropController } from './XpDropController'
 
 export class Region {
   constructor (selector, width, height) {
