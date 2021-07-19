@@ -15,6 +15,14 @@ import ButtonInactiveIcon from '../../assets/images/interface/button_inactive.pn
 import InfernoIcon from '../../assets/images/settings/inferno.png'
 import VerzikIcon from '../../assets/images/settings/verzik.png'
 import XarpusIcon from '../../assets/images/settings/xarpus.png'
+
+import InventoryTab from '../../assets/images/controlTabs/inventory.png'
+import SpellbookTab from '../../assets/images/controlTabs/spellbook.png'
+import PrayerTab from '../../assets/images/controlTabs/prayer.png'
+import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
+
+
+
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../Utils/BrowserUtils'
 
@@ -49,6 +57,14 @@ export class SettingsControls extends BaseControls {
     this.verzikImage.src = VerzikIcon
     this.xarpusImage = new Image()
     this.xarpusImage.src = XarpusIcon
+    this.inventoryImage = new Image()
+    this.inventoryImage.src = InventoryTab
+    this.spellbookImage = new Image()
+    this.spellbookImage.src = SpellbookTab
+    this.prayerImage = new Image()
+    this.prayerImage.src = PrayerTab
+    this.equipmentImage = new Image()
+    this.equipmentImage.src = EquipmentTab
 
     this.compassImage.addEventListener('load', () => {
       console.log('load', this)
@@ -142,5 +158,21 @@ export class SettingsControls extends BaseControls {
     ctrl.ctx.drawImage(Settings.scenario === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
     ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
     ctrl.ctx.fillText('Reload to change scenario', x + 100, y + 160)
+
+    ctrl.ctx.drawImage(this.inactiveButtonImage, x + 22, y + 170)
+    ctrl.ctx.drawImage(this.inventoryImage, x + 25, y + 172)
+    ctrl.ctx.fillText('1', x + 25 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.inactiveButtonImage, x + 82, y + 170)
+    ctrl.ctx.drawImage(this.spellbookImage, x + 85, y + 172)
+    ctrl.ctx.fillText('2', x + 85 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.inactiveButtonImage, x + 142, y + 170)
+    ctrl.ctx.drawImage(this.prayerImage, x + 145, y + 172)
+    ctrl.ctx.fillText('3', x + 145 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.inactiveButtonImage, x + 22, y + 220)
+    ctrl.ctx.drawImage(this.equipmentImage, x + 25, y + 222)
+    ctrl.ctx.fillText('4', x + 25 + 30, y + 222 + 30)
   }
 }
