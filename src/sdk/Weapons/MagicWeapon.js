@@ -17,7 +17,9 @@ export class MagicWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses, forceSWOnly)) {
       damage = 0
     }
-    this.damage = Math.min(damage, to.currentStats.hitpoint)
+
+    this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
+    
     if (from.type === Unit.types.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('magic', this.damage * 4));
