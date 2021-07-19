@@ -13,6 +13,7 @@ import { PrayerControls } from './ControlPanels/PrayerControls'
 import { QuestsControls } from './ControlPanels/QuestsControls'
 import { SettingsControls } from './ControlPanels/SettingsControls'
 import { StatsControls } from './ControlPanels/StatsControls'
+import { Settings } from './Settings'
 
 export class ControlPanelController {
   static controls = Object.freeze({
@@ -54,6 +55,9 @@ export class ControlPanelController {
     this.selectedControl = ControlPanelController.controls.PRAYER
 
     document.addEventListener('keypress', (event) => {
+      if (Settings.is_keybinding){
+        return;
+      }
       this.controls.forEach((control) => {
         if (control.keyBinding === event.key) {
           this.selectedControl = control

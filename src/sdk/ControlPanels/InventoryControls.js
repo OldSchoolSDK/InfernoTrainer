@@ -3,7 +3,7 @@ import InventoryPanel from '../../assets/images/panels/inventory.png'
 import InventoryTab from '../../assets/images/tabs/inventory.png'
 import { Pathing } from '../Pathing'
 import { BaseControls } from './BaseControls'
-import { BrowserUtils } from '../Utils/BrowserUtils'
+import { Settings } from '../Settings'
 
 export class InventoryControls extends BaseControls {
   constructor (inventory) {
@@ -23,7 +23,7 @@ export class InventoryControls extends BaseControls {
   }
 
   get keyBinding () {
-    return BrowserUtils.getQueryVar('inv_key') || '4'
+    return Settings.inventory_key
   }
 
   clickedPanel (region, x, y) {
