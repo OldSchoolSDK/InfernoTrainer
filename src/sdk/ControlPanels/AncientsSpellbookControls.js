@@ -3,7 +3,7 @@ import StandardSpellbookTab from '../../assets/images/tabs/standard_spellbook.pn
 import AncientsPanel from '../../assets/images/panels/ancients.png'
 import { BaseControls } from './BaseControls'
 import { BarrageMagicWeapon } from '../Weapons/BarrageMagicWeapon'
-import { BrowserUtils } from '../Utils/BrowserUtils'
+import { Settings } from '../Settings'
 
 export class AncientsSpellbookControls extends BaseControls {
   get panelImageReference () {
@@ -16,7 +16,7 @@ export class AncientsSpellbookControls extends BaseControls {
   }
 
   get keyBinding () {
-    return BrowserUtils.getQueryVar('spellbook_key') || '2'
+    return Settings.spellbook_key
   }
 
   clickedPanel (region, x, y) {

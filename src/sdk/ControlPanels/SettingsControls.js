@@ -15,6 +15,14 @@ import ButtonInactiveIcon from '../../assets/images/interface/button_inactive.pn
 import InfernoIcon from '../../assets/images/settings/inferno.png'
 import VerzikIcon from '../../assets/images/settings/verzik.png'
 import XarpusIcon from '../../assets/images/settings/xarpus.png'
+
+import InventoryTab from '../../assets/images/controlTabs/inventory.png'
+import SpellbookTab from '../../assets/images/controlTabs/spellbook.png'
+import PrayerTab from '../../assets/images/controlTabs/prayer.png'
+import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
+
+
+
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../Utils/BrowserUtils'
 
@@ -49,6 +57,41 @@ export class SettingsControls extends BaseControls {
     this.verzikImage.src = VerzikIcon
     this.xarpusImage = new Image()
     this.xarpusImage.src = XarpusIcon
+    this.inventoryImage = new Image()
+    this.inventoryImage.src = InventoryTab
+    this.spellbookImage = new Image()
+    this.spellbookImage.src = SpellbookTab
+    this.prayerImage = new Image()
+    this.prayerImage.src = PrayerTab
+    this.equipmentImage = new Image()
+    this.equipmentImage.src = EquipmentTab
+
+    this.bindingKey = null;
+
+
+    document.addEventListener('keypress', (event) => {
+      const key = event.key;
+      if (this.bindingKey){
+
+        if (this.bindingKey === 'inventory') {
+          Settings.inventory_key = key
+        }else if (this.bindingKey === 'spellbook'){
+          Settings.spellbook_key = key
+        }else if (this.bindingKey === 'prayer'){
+          Settings.prayer_key = key
+        }else if (this.bindingKey === 'equipment'){
+          Settings.equipment_key = key
+        }
+        this.bindingKey = null;
+        setTimeout(() => {
+          Settings.is_keybinding = false
+        }, 20)
+        Settings.persistToStorage()
+
+      }
+
+    })
+
 
     this.compassImage.addEventListener('load', () => {
       console.log('load', this)
@@ -102,6 +145,18 @@ export class SettingsControls extends BaseControls {
       Settings.scenario = 'verzikp3'
     } else if (x > 140 && x < 180 && y > 100 && y < 140) {
       Settings.scenario = 'xarpusp2'
+    } else if (x > 20 && x < 60 && y > 170 && y < 210) {
+      Settings.is_keybinding = true;
+      this.bindingKey = 'inventory'
+    } else if (x > 80 && x < 120 && y > 170 && y < 210) {
+      Settings.is_keybinding = true;
+      this.bindingKey = 'spellbook'
+    } else if (x > 140 && x < 180 && y > 170 && y < 210) {
+      Settings.is_keybinding = true;
+      this.bindingKey = 'prayer'
+    } else if (x > 20 && x < 60 && y > 220 && y < 260) {
+      Settings.is_keybinding = true;
+      this.bindingKey = 'equipment'
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay)
@@ -142,5 +197,28 @@ export class SettingsControls extends BaseControls {
     ctrl.ctx.drawImage(Settings.scenario === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
     ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
     ctrl.ctx.fillText('Reload to change scenario', x + 100, y + 160)
+
+
+    ctrl.ctx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
+    ctrl.ctx.drawImage(this.inventoryImage, x + 25, y + 172)
+    ctrl.ctx.fillText(Settings.inventory_key, x + 25 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 170)
+    ctrl.ctx.drawImage(this.spellbookImage, x + 85, y + 172)
+    ctrl.ctx.fillText(Settings.spellbook_key, x + 85 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 170)
+    ctrl.ctx.drawImage(this.prayerImage, x + 145, y + 172)
+    ctrl.ctx.fillText(Settings.prayer_key, x + 145 + 30, y + 172 + 30)
+
+    ctrl.ctx.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
+    ctrl.ctx.drawImage(this.equipmentImage, x + 25, y + 222)
+    ctrl.ctx.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
+  
+    if (this.bindingKey === null){
+      ctrl.ctx.fillText('Key Bindings', x + 125, y + 212 + 30)
+    }else{
+      ctrl.ctx.fillText('Press Key To Bind', x + 135, y + 212 + 30)
+    }
   }
 }
