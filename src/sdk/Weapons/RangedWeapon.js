@@ -16,7 +16,7 @@ export class RangedWeapon extends Weapon {
     if (this.isBlockable(from, to, bonuses)) {
       damage = 0
     }
-    this.damage = Math.min(damage, to.currentStats.hitpoint)
+    this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
 
     if (from.type === Unit.types.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
