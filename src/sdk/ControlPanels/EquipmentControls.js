@@ -3,7 +3,7 @@ import EquipmentPanel from '../../assets/images/panels/equipment.png'
 import EquipmentTab from '../../assets/images/tabs/equipment.png'
 import { BaseControls } from './BaseControls'
 import UsedSpotBackground from '../../assets/images/interface/equipment_spot_used.png'
-import { BrowserUtils } from '../Utils/BrowserUtils'
+import { Settings } from '../Settings'
 
 export class EquipmentControls extends BaseControls {
   constructor () {
@@ -21,7 +21,7 @@ export class EquipmentControls extends BaseControls {
   }
 
   get keyBinding () {
-    return BrowserUtils.getQueryVar('equipment_key') || '1'
+    return Settings.equipment_key
   }
 
   clickedPanel (region, x, y) {

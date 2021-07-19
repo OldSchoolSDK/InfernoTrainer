@@ -2,7 +2,6 @@
 import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
 import _ from 'lodash'
-import { BrowserUtils } from '../Utils/BrowserUtils'
 
 import { BaseControls } from './BaseControls'
 import { ProtectMelee } from '../Prayers/ProtectMelee'
@@ -27,6 +26,7 @@ import { UltimateStrength } from '../Prayers/UltimateStrength'
 import { IncredibleReflexes } from '../Prayers/IncredibleReflexes'
 import { Chivalry } from '../Prayers/Chivalry'
 import { Piety } from '../Prayers/Piety'
+import { Settings } from '../Settings'
 
 export class PrayerControls extends BaseControls {
   get panelImageReference () {
@@ -38,7 +38,7 @@ export class PrayerControls extends BaseControls {
   }
 
   get keyBinding () {
-    return BrowserUtils.getQueryVar('pray_key') || '3'
+    return Settings.prayer_key
   }
 
   static prayers = [
