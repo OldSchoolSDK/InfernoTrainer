@@ -6,7 +6,7 @@ import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
-import { Unit, UnitTypes } from './Unit'
+import { Location, Unit, UnitTypes, WeaponsMap } from './Unit'
 import { Region } from './Region'
 import { BasePrayer } from './Prayers/BasePrayer'
 
@@ -25,7 +25,7 @@ export class Mob extends Unit {
   bonuses: any;
   hadLOS: boolean;
   hasLOS: boolean;
-  weapons: any;
+  weapons: WeaponsMap;
 
   mobRangeAttackAnimation: any;
 
@@ -78,7 +78,7 @@ export class Mob extends Unit {
     }
   }
 
-  constructor (region: Region, location: any, options: any) {
+  constructor (region: Region, location: Location, options: any) {
     super(region, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
@@ -256,7 +256,7 @@ export class Mob extends Unit {
     ]
   }
 
-  draw (framePercent: any) {
+  draw (framePercent: number) {
     LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent)

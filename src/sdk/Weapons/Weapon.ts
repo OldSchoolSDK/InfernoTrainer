@@ -1,12 +1,33 @@
 'use strict'
 
 import { Item } from "../Item"
+import { BasePrayer } from "../Prayers/BasePrayer";
 import { Region } from "../Region";
 import { Unit } from "../Unit";
 
+
+interface EffectivePrayers {
+  magic?: BasePrayer;
+  range?: BasePrayer;
+  attack?: BasePrayer;
+  strength?: BasePrayer;
+  defence?: BasePrayer;
+  overhead?: BasePrayer;
+}
+
+export interface AttackBonuses {
+  styleBonus?: number;
+  isAccurate?: boolean;
+  voidMultiplier?: number;
+  gearMultiplier?: number;
+  attackStyle?: string;
+  magicBaseSpellDamage?: number;
+  overallMultiplier?: number;
+  effectivePrayers?: EffectivePrayers;
+}
+
 export class Weapon extends Item{
   selected: boolean;
-  inventorySprite: HTMLImageElement;
   
   constructor () {
     super();
@@ -19,7 +40,11 @@ export class Weapon extends Item{
 
   }
 
-  attack (stage: Region, from: Unit, to: Unit, bonuses: any = {}) {
+  attack (stage: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  }
+  
+  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses): boolean {
+    return false;
   }
 
   get attackRange(): number {

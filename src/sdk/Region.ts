@@ -2,7 +2,7 @@
 import { remove } from 'lodash'
 import { ClickAnimation } from './ClickAnimation'
 import { Settings } from './Settings'
-import { ContextMenu } from './ContextMenu'
+import { ContextMenu, MenuOption } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { Pathing } from './Pathing'
 import { XpDropController } from './XpDropController'
@@ -77,7 +77,7 @@ export class Region {
 
       /* gather options */
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
-      let menuOptions = []
+      let menuOptions: MenuOption[] = []
       mobs.forEach((mob) => {
         menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
       })

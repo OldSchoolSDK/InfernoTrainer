@@ -3,27 +3,28 @@ import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { minBy, filter, find, map, min } from 'lodash'
-import { Unit, UnitTypes } from './Unit'
+import { Unit, UnitTypes, Location } from './Unit'
 import { XpDropController } from './XpDropController'
 import { Region } from './Region'
 import { Weapon } from './Weapons/Weapon'
 import { BasePrayer } from './Prayers/BasePrayer'
-import { XpDrop } from './XpDrop'
+import { XpDrop, XpDropAggregator } from './XpDrop'
+
 
 export class Player extends Unit {
   weapon?: Weapon;
   manualSpellCastSelection: Weapon;
-  destinationLocation: any;
+  destinationLocation?: Location;
 
   stats: any;
   currentStats: any;
   bonuses: any;
-  xpDrops: any;
+  xpDrops: XpDropAggregator;
   overhead: BasePrayer;
 
-  constructor (region: Region, location: any, options: any) {
+  constructor (region: Region, location: Location, options: any) {
     super(region, location, options)
-    this.destinationLocation = -1
+    this.destinationLocation = location
     this.weapon = options.weapon
     this.clearXpDrops();
   }
@@ -200,7 +201,7 @@ export class Player extends Unit {
           console.log("I don't understand what could cause this, but i'd like to find out")
         }
       } else if (!this.hasLOS) {
-        const seekingTiles: any = []
+        const seekingTiles: Location[] = []
         // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
         // "within melee range of the npc, object, or player."
         for (let xx = -1; xx <= this.aggro.size; xx++) {

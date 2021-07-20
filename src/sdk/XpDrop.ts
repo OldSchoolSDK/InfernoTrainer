@@ -1,4 +1,9 @@
 
+
+export interface XpDropAggregator {
+  [key: string]: number
+}
+
 export class XpDrop {
   skill: string;
   xp: number;

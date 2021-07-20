@@ -4,6 +4,7 @@ import { Region } from '../Region'
 import { Unit } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { MagicWeapon } from './MagicWeapon'
+import { AttackBonuses } from './Weapon'
 
 export class BarrageMagicWeapon extends MagicWeapon {
   get name () {
@@ -60,7 +61,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
     }
   }
 
-  attack (region: Region, from: Unit, to: Unit, bonuses: any = {}) {
+  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     super.attack(region, from, to, bonuses, true)    
     if (this.damage > 0) {
       to.frozen = 32

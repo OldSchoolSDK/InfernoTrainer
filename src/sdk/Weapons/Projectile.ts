@@ -2,14 +2,14 @@
 
 
 import chebyshev from 'chebyshev'
-import { Unit } from '../Unit'
+import { Location, Unit } from '../Unit'
 import { Weapon } from './Weapon'
 
 export class Projectile {
 
   damage: number;
-  fromLocation: any;
-  toLocation: any;
+  fromLocation: Location;
+  toLocation: Location;
   distance: number;
   delay: number;
 

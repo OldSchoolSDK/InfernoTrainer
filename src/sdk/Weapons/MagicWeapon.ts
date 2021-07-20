@@ -4,12 +4,12 @@ import { Region } from '../Region'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
-import { Weapon } from './Weapon'
+import { AttackBonuses, Weapon } from './Weapon'
 
 export class MagicWeapon extends Weapon {
   damage: number;
 
-  attack (region: Region, from: Unit, to: Unit, bonuses: any = {}, forceSWOnly: boolean = false) {
+  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}, forceSWOnly: boolean = false) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     bonuses.isAccurate = bonuses.isAccurate || false
@@ -31,7 +31,7 @@ export class MagicWeapon extends Weapon {
     to.addProjectile(new Projectile(this.damage, from, to, 'magic', forceSWOnly))
   }
 
-  isBlockable (from: Unit, to: Unit, bonuses: any) {
+  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     if (bonuses.effectivePrayers.overhead && bonuses.effectivePrayers.overhead.feature() === 'magic') {
@@ -40,7 +40,7 @@ export class MagicWeapon extends Weapon {
     return false
   }
 
-  _calculatePrayerEffects (from: Unit, to: Unit, bonuses: any) {
+  _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
     if (from.type !== UnitTypes.MOB) {
       const offensiveMagic = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveMagic')
@@ -53,18 +53,18 @@ export class MagicWeapon extends Weapon {
       }
     }
     if (to.type !== UnitTypes.MOB) {
-      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
+      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length) as BasePrayer
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }
     }
   }
 
-  _rollAttack (from: Unit, to: Unit, bonuses: any) {
+  _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
   }
 
-  _magicLevel (from: Unit, to: Unit, bonuses: any) {
+  _magicLevel (from: Unit, to: Unit, bonuses: AttackBonuses) {
     let prayerMultiplier = 1
     const magicPrayer = bonuses.effectivePrayers.magic
 
@@ -82,21 +82,21 @@ export class MagicWeapon extends Weapon {
     return Math.floor(Math.floor(from.currentStats.magic * prayerMultiplier) * bonuses.voidMultiplier + (bonuses.isAccurate ? 2 : 0) + 9)
   }
 
-  _equipmentBonus (from: Unit, to: Unit, bonuses: any) {
+  _equipmentBonus (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return from.bonuses.attack.magic
   }
 
-  _magicDamageBonusMultiplier (from: Unit, to: Unit, bonuses: any) {
+  _magicDamageBonusMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return from.bonuses.other.magicDamage
   }
 
-  _attackRoll (from: Unit, to: Unit, bonuses: any) {
+  _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMultiplier)
   }
 
-  _defenceRoll (from: Unit, to: Unit, bonuses: any) {
+  _defenceRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
     let prayerMultiplier = 1
-    const defencePrayer = bonuses.effectivePrayers.defense
+    const defencePrayer = bonuses.effectivePrayers.defence
 
     if (defencePrayer) {
       if (defencePrayer.name === 'Thick Skin') {
@@ -125,13 +125,13 @@ export class MagicWeapon extends Weapon {
     return (9 + to.currentStats.magic * prayerMultiplier) * (to.bonuses.defence.magic + 64)
   }
 
-  _hitChance (from: Unit, to: Unit, bonuses: any) {
+  _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
     const attackRoll = this._attackRoll(from, to, bonuses)
     const defenceRoll = this._defenceRoll(from, to, bonuses)
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
-  _maxHit (from: Unit, to: Unit, bonuses: any) {
+  _maxHit (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(this._baseSpellDamage(from, to, bonuses) * (this._magicDamageBonusMultiplier(from, to, bonuses)))
     // TODO: Most of this isn't implemented
     // Spell Base damage +3 if casting bolt spells with chaos gauntlets
@@ -148,7 +148,7 @@ export class MagicWeapon extends Weapon {
     // That is the max hit
   }
 
-  _baseSpellDamage (from: Unit, to: Unit, bonuses: any) {
+  _baseSpellDamage (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return bonuses.magicBaseSpellDamage // Jal-Zek specific number for now.
   }
 }

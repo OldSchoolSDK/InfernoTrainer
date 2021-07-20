@@ -1,15 +1,15 @@
 'use strict'
 import { Region } from './Region'
 import { Settings } from './Settings'
-import { Unit, UnitTypes } from './Unit'
+import { Location, Unit, UnitTypes } from './Unit'
 
 export class Entity {
   region: Region;
-  location: any;
+  location: Location;
   size: number;
   dying: number;
 
-  constructor (region: Region, location: any, size: number) {
+  constructor (region: Region, location: Location, size: number) {
     this.region = region
     this.location = location
     this.size = size

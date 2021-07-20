@@ -8,6 +8,7 @@ import { Region } from './Region'
 import { BasePrayer } from './Prayers/BasePrayer'
 import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
+import { Weapon } from './Weapons/Weapon'
 
 export enum UnitTypes {
   MOB = 0,
@@ -15,6 +16,14 @@ export enum UnitTypes {
   ENTITY = 2,
 }
 
+export interface Location {
+  x: number;
+  y: number;
+}
+
+export interface WeaponsMap {
+  [key: string]: Weapon
+}
 
 export class Unit {
 
@@ -22,8 +31,8 @@ export class Unit {
   prayers: BasePrayer[];
   lastOverhead?: BasePrayer;
   aggro?: Unit;
-  perceivedLocation: any;
-  location: any;
+  perceivedLocation: Location;
+  location: Location;
   attackCooldownTicks: number;
   hasLOS: boolean;
   frozen: number;
@@ -42,7 +51,7 @@ export class Unit {
     return UnitTypes.MOB;
   }
 
-  constructor (region: Region, location: any, options?: any) {
+  constructor (region: Region, location: Location, options?: any) {
     this.region = region
     this.prayers = []
     this.lastOverhead = null
@@ -191,7 +200,7 @@ export class Unit {
     this.incomingProjectiles.push(projectile)
   }
 
-  setLocation (location: any) {
+  setLocation (location: Location) {
     this.location = location
   }
 

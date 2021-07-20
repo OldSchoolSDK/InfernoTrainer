@@ -7,10 +7,11 @@ import { Settings } from '../Settings'
 import { Region } from '../Region'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
+import { Weapon } from '../Weapons/Weapon'
 
 export class InventoryControls extends BaseControls {
 
-  static inventory: any[] = new Array(28).fill(null);
+  static inventory: Item[] = new Array(28).fill(null);
 
   get panelImageReference () {
     return InventoryPanel
@@ -36,7 +37,7 @@ export class InventoryControls extends BaseControls {
       itemX = 16 + (x2) * 43
       itemY = 16 + (y2 + 1) * 35
       return Pathing.collisionMath(x, y, 1, itemX, itemY, 35)
-    }))
+    })) as Weapon
 
     InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 
