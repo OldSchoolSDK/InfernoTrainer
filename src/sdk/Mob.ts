@@ -6,9 +6,9 @@ import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
-import { Location, Unit, UnitTypes, WeaponsMap } from './Unit'
+import { Location, Unit, UnitBonuses, UnitOptions, UnitTypes, WeaponsMap } from './Unit'
 import { Region } from './Region'
-import { BasePrayer } from './Prayers/BasePrayer'
+
 
 export enum AttackIndicators {
   NONE = 0,
@@ -22,7 +22,7 @@ export class Mob extends Unit {
   attackFeedback: AttackIndicators;
   stats: any;
   currentStats: any;
-  bonuses: any;
+  bonuses: UnitBonuses;
   hadLOS: boolean;
   hasLOS: boolean;
   weapons: WeaponsMap;
@@ -78,7 +78,7 @@ export class Mob extends Unit {
     }
   }
 
-  constructor (region: Region, location: Location, options: any) {
+  constructor (region: Region, location: Location, options: UnitOptions) {
     super(region, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {

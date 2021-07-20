@@ -1,7 +1,9 @@
+import { UnitBonuses } from "./Unit";
+
 export class Item {
   inventorySprite: HTMLImageElement;
   inventoryImage: string;
   inventoryPosition: number;
-  bonuses: any; //temp
+  bonuses: UnitBonuses; //temp
   selected: boolean;
 }

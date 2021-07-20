@@ -25,6 +25,47 @@ export interface WeaponsMap {
   [key: string]: Weapon
 }
 
+export interface UnitOptions {
+  weapon?: Weapon;
+  aggro?: Unit;
+}
+
+export interface UnitStats {
+  attack: number;
+  strength: number;
+  defence: number;
+  range: number;
+  magic: number;
+  hitpoint: number
+}
+
+export interface UnitBonuses {
+  attack: UnitStyleBonuses;
+  defence: UnitStyleBonuses;
+  other: UnitOtherBonuses;
+  targetSpecific?: UnitTargetBonuses
+}
+
+export interface UnitStyleBonuses {
+  stab: number;
+  slash: number;
+  crush: number;
+  magic: number;
+  range: number;
+}
+
+export interface UnitOtherBonuses {
+  meleeStrength: number;
+  rangedStrength: number;
+  magicDamage: number;
+  prayer: number
+}
+
+export interface UnitTargetBonuses {
+  undead: number;
+  slayer: number;
+}
+
 export class Unit {
 
   region: Region;
@@ -43,15 +84,15 @@ export class Unit {
   unitImage: HTMLImageElement;
   currentAnimation?: any;
   currentAnimationTickLength: number;
-  currentStats: any;
-  stats: any;
-  bonuses: any;
+  currentStats: UnitStats;
+  stats: UnitStats;
+  bonuses: UnitBonuses;
 
   get type(): UnitTypes{
     return UnitTypes.MOB;
   }
 
-  constructor (region: Region, location: Location, options?: any) {
+  constructor (region: Region, location: Location, options?: UnitOptions) {
     this.region = region
     this.prayers = []
     this.lastOverhead = null
