@@ -1,6 +1,6 @@
 'use strict'
 
-import _ from 'lodash'
+import { shuffle } from 'lodash'
 
 import { Pillar } from './js/Pillar'
 import { Player } from '../../sdk/Player'
@@ -14,6 +14,7 @@ import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Scenario } from '../../sdk/Scenario'
+import { Region } from '../../sdk/Region'
 
 export class Inferno extends Scenario {
   getName () {
@@ -23,8 +24,8 @@ export class Inferno extends Scenario {
   getInventory () {
     return [new Blowpipe()]
   }
-
-  initialize (region, document) {
+  
+  initialize (region: Region) {
     // Add pillars
     Pillar.addPillarsToRegion(region)
     const wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
@@ -43,7 +44,9 @@ export class Inferno extends Scenario {
     const melee = BrowserUtils.getQueryVar('melee')
     const ranger = BrowserUtils.getQueryVar('ranger')
     const mager = BrowserUtils.getQueryVar('mager')
-    const randomPillar = _.shuffle(region.entities)[0]
+    const randomPillar = shuffle(region.entities)[0]
+    const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
+    const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
     if (bat || blob || melee || ranger || mager) {
       // Backwards compatibility layer for runelite plugin
@@ -57,23 +60,24 @@ export class Inferno extends Scenario {
 
       Waves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region))
 
-      document.getElementById('replayLink').href = `/${window.location.search}`
+      replayLink.href = `/${window.location.search}`
+
     } else {
       // Native approach
       const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : Waves.getRandomSpawns()
 
       Waves.spawn(region, randomPillar, spawns, wave).forEach(region.addMob.bind(region))
-      region.wave = wave
+      region.wave = String(wave)
 
       const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
-      document.getElementById('replayLink').href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
-      document.getElementById('waveinput').value = wave
+      replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
+      waveInput.value = String(wave);
     }
     /// /////////////////////////////////////////////////////////
     // UI controls
 
     document.getElementById('playWaveNum').addEventListener('click', () => {
-      window.location = `/?wave=${document.getElementById('waveinput').value || wave}`
+      window.location.href = `/?wave=${waveInput.value || wave}`
     })
   }
 }

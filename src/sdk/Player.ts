@@ -2,12 +2,26 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import _ from 'lodash'
-import { Unit } from './Unit'
+import { minBy, filter, find, map, min } from 'lodash'
+import { Unit, UnitTypes } from './Unit'
 import { XpDropController } from './XpDropController'
+import { Region } from './Region'
+import { Weapon } from './Weapons/Weapon'
+import { BasePrayer } from './Prayers/BasePrayer'
+import { XpDrop } from './XpDrop'
 
 export class Player extends Unit {
-  constructor (region, location, options) {
+  weapon?: Weapon;
+  manualSpellCastSelection: Weapon;
+  destinationLocation: any;
+
+  stats: any;
+  currentStats: any;
+  bonuses: any;
+  xpDrops: any;
+  overhead: BasePrayer;
+
+  constructor (region: Region, location: any, options: any) {
     super(region, location, options)
     this.destinationLocation = -1
     this.weapon = options.weapon
@@ -64,7 +78,7 @@ export class Player extends Unit {
   }
 
   get type () {
-    return Unit.types.PLAYER
+    return UnitTypes.PLAYER
   }
 
   get size () {
@@ -75,7 +89,7 @@ export class Player extends Unit {
     this.xpDrops = {};
   }
 
-  grantXp(xpDrop) {
+  grantXp(xpDrop: XpDrop) {
     if (!this.xpDrops[xpDrop.skill]){
       this.xpDrops[xpDrop.skill] = 0;
     }
@@ -90,7 +104,7 @@ export class Player extends Unit {
     this.clearXpDrops();
   }
 
-  moveTo (x, y) {
+  moveTo (x: number, y: number) {
     this.aggro = null
     this.manualSpellCastSelection = null
 
@@ -118,7 +132,7 @@ export class Player extends Unit {
           }
         }
       }
-      const winner = _.minBy(bestDistances, (distance) => Pathing.dist(distance.x, distance.y, this.location.x, this.location.y))
+      const winner = minBy(bestDistances, (distance) => Pathing.dist(distance.x, distance.y, this.location.x, this.location.y))
       if (winner) {
         this.destinationLocation = { x: winner.x, y: winner.y }
       }
@@ -145,7 +159,7 @@ export class Player extends Unit {
 
   activatePrayers () {
     this.lastOverhead = this.overhead
-    this.overhead = _.find(this.region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive)
+    this.overhead = find(this.region.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
     if (this.lastOverhead && !this.overhead) {
       this.lastOverhead.playOffSound()
     } else if (this.lastOverhead !== this.overhead) {
@@ -186,7 +200,7 @@ export class Player extends Unit {
           console.log("I don't understand what could cause this, but i'd like to find out")
         }
       } else if (!this.hasLOS) {
-        const seekingTiles = []
+        const seekingTiles: any = []
         // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
         // "within melee range of the npc, object, or player."
         for (let xx = -1; xx <= this.aggro.size; xx++) {
@@ -207,17 +221,17 @@ export class Player extends Unit {
           }
         }
         // Create paths to all npc tiles
-        const potentialPaths = _.map(seekingTiles, (point) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
-        const validPaths = _.filter(potentialPaths, (path) => {
+        const potentialPaths = map(seekingTiles, (point: any) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
+        const validPaths = filter(potentialPaths, (path: any) => {
           return true
         })
-        const validPathLengths = _.map(validPaths, (path) => path.length)
+        const validPathLengths = map(validPaths, (path: any) => path.length)
         // Figure out what the min distance is
-        const shortestPathLength = _.min(validPathLengths)
+        const shortestPathLength = min(validPathLengths)
         // Get all of the paths of the same minimum distance (can be more than 1)
-        const shortestPaths = _.filter(_.map(validPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null))
+        const shortestPaths = filter(map(validPathLengths, (length: any, index: number) => (length === shortestPathLength) ? seekingTiles[index] : null))
         // Take the path that is the shortest absolute distance from player
-        this.destinationLocation = _.minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y))
+        this.destinationLocation = minBy(shortestPaths, (point: any) => Pathing.dist(this.location.x, this.location.y, point.x, point.y))
       } else {
         this.destinationLocation = this.location
       }
@@ -255,7 +269,7 @@ export class Player extends Unit {
     return this.weapon.attackSpeed
   }
 
-  attackStep () {
+  attackStep (region: Region) {
     this.clearXpDrops();
 
     this.processIncomingAttacks()
@@ -276,8 +290,8 @@ export class Player extends Unit {
     }
   }
 
-  draw (framePercent) {
-    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === Unit.types.MOB)
+  draw (framePercent: number) {
+    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent)

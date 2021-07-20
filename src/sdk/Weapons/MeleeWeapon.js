@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 import { BasePrayer } from '../Prayers/BasePrayer'
-import { Unit } from '../Unit'
+import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 
 export class MeleeWeapon extends Weapon {
@@ -23,7 +23,7 @@ export class MeleeWeapon extends Weapon {
 
     this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
     
-    if (from.type === Unit.types.PLAYER && damage > 0) {
+    if (from.type === UnitTypes.PLAYER && damage > 0) {
       from.grantXp(new XpDrop('hitpoint', damage * 1.33));
       from.grantXp(new XpDrop('attack', damage * 4));
     }
@@ -33,7 +33,7 @@ export class MeleeWeapon extends Weapon {
 
   _calculatePrayerEffects (from, to, bonuses) {
     bonuses.effectivePrayers = {}
-    if (from.type !== Unit.types.MOB) {
+    if (from.type !== UnitTypes.MOB) {
       const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack')
       if (offensiveAttack) {
         bonuses.effectivePrayers.attack = offensiveAttack
@@ -50,7 +50,7 @@ export class MeleeWeapon extends Weapon {
       }
     }
 
-    if (to.type !== Unit.types.MOB) {
+    if (to.type !== UnitTypes.MOB) {
       const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
@@ -129,7 +129,7 @@ export class MeleeWeapon extends Weapon {
   }
 
   _defenceRoll (from, to, bonuses) {
-    if (to.type === Unit.types.MOB || to.type === Unit.types.ENTITY) {
+    if (to.type === UnitTypes.MOB || to.type === UnitTypes.ENTITY) {
       return (to.currentStats.defence + 9) * (to.bonuses.defence[bonuses.attackStyle] + 64)
     } else {
       return this._defenceLevel(from, to, bonuses) * (to.bonuses.defence[bonuses.attackStyle] + 64)

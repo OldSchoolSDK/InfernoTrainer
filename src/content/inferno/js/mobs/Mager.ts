@@ -2,7 +2,7 @@
 
 import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
 import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
-import { Mob } from '../../../../sdk/Mob'
+import { Mob, AttackIndicators } from '../../../../sdk/Mob'
 import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
@@ -129,7 +129,9 @@ export class Mager extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
-    this.attackFeedback = Mob.attackIndicators.NONE
+    
+
+    this.attackFeedback = AttackIndicators.NONE
 
     this.hadLOS = this.hasLOS
     this.setHasLOS()

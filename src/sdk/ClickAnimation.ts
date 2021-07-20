@@ -8,9 +8,15 @@ import RedX2 from '../assets/images/interface/red_x_2.png'
 import RedX3 from '../assets/images/interface/red_x_3.png'
 import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
+import { Region } from './Region'
 
 export class ClickAnimation {
-  constructor (color, x, y) {
+  color: string;
+  x: number;
+  y: number;
+  ttl: number;
+
+  constructor (color: string, x: number, y: number) {
     this.color = color
     this.x = x
     this.y = y
@@ -21,8 +27,8 @@ export class ClickAnimation {
     }
   }
 
-  static frames;
-  static createImage (url) {
+  static frames: any;
+  static createImage (url: string) {
     const image = new Image()
     image.src = url
     return image
@@ -45,7 +51,7 @@ export class ClickAnimation {
     }
   }
 
-  draw (region, framePercent) {
+  draw (region: Region, framePercent: number) {
     if (this.ttl <= 0) {
       return
     }

@@ -1,7 +1,7 @@
 
 import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
-import _ from 'lodash'
+import { intersection } from 'lodash'
 
 import { BaseControls } from './BaseControls'
 import { ProtectMelee } from '../Prayers/ProtectMelee'
@@ -27,6 +27,9 @@ import { IncredibleReflexes } from '../Prayers/IncredibleReflexes'
 import { Chivalry } from '../Prayers/Chivalry'
 import { Piety } from '../Prayers/Piety'
 import { Settings } from '../Settings'
+import { BasePrayer } from '../Prayers/BasePrayer'
+import { Region } from '../Region'
+import { ControlPanelController } from '../ControlPanelController'
 
 export class PrayerControls extends BaseControls {
   get panelImageReference () {
@@ -41,7 +44,7 @@ export class PrayerControls extends BaseControls {
     return Settings.prayer_key
   }
 
-  static prayers = [
+  static prayers: BasePrayer[] = [
     new ThickSkin(),
     new BurstOfStrength(),
     new ClarityOfThought(),
@@ -50,9 +53,9 @@ export class PrayerControls extends BaseControls {
     new RockSkin(),
     new SuperhumanStrength(),
     new ImprovedReflexes(),
-    'Rapid Restore',
-    'Rapid Heal',
-    'Protect Item',
+    // 'Rapid Restore',
+    // 'Rapid Heal',
+    // 'Protect Item', // TODO: Replace these back
     new HawkEye(),
     new MysticLore(),
     new SteelSkin(),
@@ -63,21 +66,21 @@ export class PrayerControls extends BaseControls {
     new ProtectMelee(),
     new EagleEye(),
     new MysticMight(),
-    'Retribution',
-    'Redemption',
-    'Smite',
-    'Preserve',
+    // 'Retribution',
+    // 'Redemption',
+    // 'Smite',
+    // 'Preserve',
     new Chivalry(),
     new Piety(),
     new Rigour(),
     new Augury()
   ];
 
-  getCurrentActivePrayers () {
-    return PrayerControls.prayers.filter((prayer) => prayer.isActive)
+  getCurrentActivePrayers (): BasePrayer[] {
+    return PrayerControls.prayers.filter((prayer) => prayer.isActive);
   }
 
-  clickedPanel (region, x, y) {
+  clickedPanel (region: Region, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 
@@ -87,7 +90,7 @@ export class PrayerControls extends BaseControls {
         if (!prayer || !prayer.groups) {
           return
         }
-        if (_.intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
+        if (intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
           prayer.deactivate()
         }
       })
@@ -96,7 +99,7 @@ export class PrayerControls extends BaseControls {
     }
   }
 
-  draw (region, ctrl, x, y) {
+  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(region, ctrl, x, y)
 
     PrayerControls.prayers.forEach((prayer, index) => {

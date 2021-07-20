@@ -1,24 +1,30 @@
 'use strict'
+import { Region } from './Region'
 import { Settings } from './Settings'
-import { Unit } from './Unit'
+import { Unit, UnitTypes } from './Unit'
 
 export class Entity {
-  constructor (region, point, size) {
+  region: Region;
+  location: any;
+  size: number;
+  dying: number;
+
+  constructor (region: Region, location: any, size: number) {
     this.region = region
-    this.location = point
+    this.location = location
     this.size = size
   }
 
   get type () {
     // Kind of odd that Units live inside the unit class, but this isn't a unit
-    return Unit.types.ENTITY
+    return UnitTypes.ENTITY
   }
 
   tick () {
 
   }
 
-  draw () {
+  draw (framePercent: number) {
     this.region.ctx.fillStyle = '#000073'
 
     this.region.ctx.fillRect(

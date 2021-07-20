@@ -1,23 +1,36 @@
 'use strict'
-import _ from 'lodash'
+import { map } from 'lodash'
 
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
-import { Unit } from './Unit'
+import { Unit, UnitTypes } from './Unit'
+import { Region } from './Region'
+import { BasePrayer } from './Prayers/BasePrayer'
+
+export enum AttackIndicators {
+  NONE = 0,
+  HIT = 1,
+  BLOCKED = 2,
+  SCAN = 3,
+}
 
 export class Mob extends Unit {
-  static attackIndicators = Object.freeze({
-    NONE: 0,
-    HIT: 1,
-    BLOCKED: 2,
-    SCAN: 3
-  });
+
+  attackFeedback: AttackIndicators;
+  stats: any;
+  currentStats: any;
+  bonuses: any;
+  hadLOS: boolean;
+  hasLOS: boolean;
+  weapons: any;
+
+  mobRangeAttackAnimation: any;
 
   get type () {
-    return Unit.types.MOB
+    return UnitTypes.MOB
   }
 
   setStats () {
@@ -65,11 +78,11 @@ export class Mob extends Unit {
     }
   }
 
-  constructor (region, location, options) {
+  constructor (region: Region, location: any, options: any) {
     super(region, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = _.map(this.rangeAttackAnimation, image => {
+      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => {
         const img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
         img.src = image
         return img
@@ -135,10 +148,10 @@ export class Mob extends Unit {
 
   // todo: Rename this possibly? it returns the attack style if it's possible
   canMeleeIfClose () {
-    return false
+    return ''
   }
 
-  attackStep (region, playerPrayers = []) {
+  attackStep (region: Region) {
     if (this.currentAnimationTickLength > 0) {
       if (--this.currentAnimationTickLength === 0) {
         this.currentAnimation = null
@@ -169,7 +182,7 @@ export class Mob extends Unit {
     if (!weaponIsAreaAttack) {
       isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     }
-    this.attackFeedback = Mob.attackIndicators.NONE
+    this.attackFeedback = AttackIndicators.NONE
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
       this.attack()
@@ -190,9 +203,9 @@ export class Mob extends Unit {
     }
 
     if (this.weapons[attackStyle].isBlockable(this, this.aggro, { attackStyle })) {
-      this.attackFeedback = Mob.attackIndicators.BLOCKED
+      this.attackFeedback = AttackIndicators.BLOCKED
     } else {
-      this.attackFeedback = Mob.attackIndicators.HIT
+      this.attackFeedback = AttackIndicators.HIT
     }
     this.weapons[attackStyle].attack(this.region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
@@ -231,7 +244,7 @@ export class Mob extends Unit {
     return 'red'
   }
 
-  contextActions (x, y) {
+  contextActions (x: number, y: number) {
     return [
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.displayName, fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
@@ -243,8 +256,8 @@ export class Mob extends Unit {
     ]
   }
 
-  draw (framePercent) {
-    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === Unit.types.MOB)
+  draw (framePercent: any) {
+    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent)
@@ -256,11 +269,11 @@ export class Mob extends Unit {
 
     if (this.dying > -1) {
       this.region.ctx.fillStyle = '#964B00'
-    } else if (this.attackFeedback === Mob.attackIndicators.BLOCKED) {
+    } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
       this.region.ctx.fillStyle = '#00FF00'
-    } else if (this.attackFeedback === Mob.attackIndicators.HIT) {
+    } else if (this.attackFeedback === AttackIndicators.HIT) {
       this.region.ctx.fillStyle = '#FF0000'
-    } else if (this.attackFeedback === Mob.attackIndicators.SCAN) {
+    } else if (this.attackFeedback === AttackIndicators.SCAN) {
       this.region.ctx.fillStyle = '#FFFF00'
     } else if (this.hasLOS) {
       this.region.ctx.fillStyle = '#FF7300'
@@ -277,16 +290,16 @@ export class Mob extends Unit {
     )
 
     let currentImage = this.unitImage
-    if (this.currentAnimation !== null) {
-      const animationLength = this.currentAnimation.length
-      // TODO multi-tick animations.
-      const currentFrame = Math.floor(framePercent * animationLength)
-      if (currentFrame < animationLength) {
-        currentImage = this.currentAnimation[currentFrame]
-      } else {
-        this.currentAnimation = null
-      }
-    }
+    // if (this.currentAnimation !== null) {
+    //   const animationLength = this.currentAnimation.length
+    //   // TODO multi-tick animations.
+    //   const currentFrame = Math.floor(framePercent * animationLength)
+    //   if (currentFrame < animationLength) {
+    //     currentImage = this.currentAnimation[currentFrame]
+    //   } else {
+    //     this.currentAnimation = null
+    //   }
+    // }
 
     this.region.ctx.restore()
 
@@ -308,13 +321,16 @@ export class Mob extends Unit {
       this.attackAnimation(framePercent)
     }
 
-    this.region.ctx.drawImage(
-      currentImage,
-      -(this.size * Settings.tileSize) / 2,
-      -(this.size * Settings.tileSize) / 2,
-      this.size * Settings.tileSize,
-      this.size * Settings.tileSize
-    )
+    if (currentImage){
+      this.region.ctx.drawImage(
+        currentImage,
+        -(this.size * Settings.tileSize) / 2,
+        -(this.size * Settings.tileSize) / 2,
+        this.size * Settings.tileSize,
+        this.size * Settings.tileSize
+      )
+
+    }
 
     this.region.ctx.restore()
 

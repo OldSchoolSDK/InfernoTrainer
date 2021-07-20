@@ -6,10 +6,12 @@ import { Region } from './sdk/Region'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
+import { Scenario } from './sdk/Scenario'
 
 Settings.readFromStorage()
 const selectedScenarioName = Settings.scenario
-let selectedScenario
+let selectedScenario: Scenario;
+
 console.log('selected scenario is ' + selectedScenarioName)
 switch (selectedScenarioName) {
   case 'verzikp3':
@@ -23,13 +25,13 @@ switch (selectedScenarioName) {
 // Create region
 const region = new Region('map', selectedScenario.getRegionWidth(), selectedScenario.getRegionHeight())
 
-const controlPanel = new ControlPanelController(selectedScenario)
+const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedScenario.getInventory()
 
 region.setControlPanel(controlPanel)
 controlPanel.setRegion(region)
 
-selectedScenario.initialize(region, document)
+selectedScenario.initialize(region)
 
 // Start the engine
 region.startTicking()
@@ -43,4 +45,4 @@ const timer = setInterval(() => {
 
 /// /////////////////////////////////////////////////////////
 
-document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF + ' - ' + process.env.BUILD_DATE
+// document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF || '' + ' - ' + process.env.BUILD_DATE || ''

@@ -128,7 +128,9 @@ export class ControlPanelController {
     let selectedPosition = null
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true)
-      this.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+      if (control.tabImage){
+        this.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+      }
       if (control === this.selectedControl) {
         selectedPosition = tabPosition
       }

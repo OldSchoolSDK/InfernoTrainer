@@ -13,15 +13,22 @@ export class BasePrayer {
     PRESERVE: 'preserve'
   };
 
+  isActive: boolean;
+  cachedImage: HTMLImageElement;
+
   constructor () {
     this.deactivate()
+  }
+
+  feature (): string {
+    return ''
   }
 
   get name () {
     return 'Protect from Magic'
   }
 
-  get groups () {
+  get groups (): string[] {
     return []
   }
 
@@ -37,8 +44,8 @@ export class BasePrayer {
     return false
   }
 
-  overheadImageReference () {
-    return null
+  overheadImageReference (): string {
+    return ''
   }
 
   overheadImage () {
@@ -48,5 +55,12 @@ export class BasePrayer {
     }
 
     return this.cachedImage
+  }
+
+  playOffSound() {
+
+  }
+  playOnSound() {
+
   }
 }

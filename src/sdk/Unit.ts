@@ -3,16 +3,45 @@ import MissSplat from '../assets/images/hitsplats/miss.png'
 import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import _ from 'lodash'
+import { clamp, remove, filter } from 'lodash'
+import { Region } from './Region'
+import { BasePrayer } from './Prayers/BasePrayer'
+import { Projectile } from './Weapons/Projectile'
+
+export enum UnitTypes {
+  MOB = 0,
+  PLAYER = 1,
+  ENTITY = 2,
+}
+
 
 export class Unit {
-  static types = Object.freeze({
-    MOB: 0,
-    PLAYER: 1,
-    ENTITY: 2
-  });
 
-  constructor (region, location, options) {
+  region: Region;
+  prayers: BasePrayer[];
+  lastOverhead?: BasePrayer;
+  aggro?: Unit;
+  perceivedLocation: any;
+  location: any;
+  attackCooldownTicks: number;
+  hasLOS: boolean;
+  frozen: number;
+  dying: number;
+  incomingProjectiles: Projectile[];
+  missedHitsplatImage: HTMLImageElement;
+  damageHitsplatImage: HTMLImageElement;
+  unitImage: HTMLImageElement;
+  currentAnimation?: any;
+  currentAnimationTickLength: number;
+  currentStats: any;
+  stats: any;
+  bonuses: any;
+
+  get type(): UnitTypes{
+    return UnitTypes.MOB;
+  }
+
+  constructor (region: Region, location: any, options?: any) {
     this.region = region
     this.prayers = []
     this.lastOverhead = null
@@ -31,9 +60,11 @@ export class Unit {
     this.damageHitsplatImage = new Image()
     this.damageHitsplatImage.src = DamageSplat
 
-    if (!this.unitImage) {
-      this.unitImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
-      this.unitImage.src = this.image
+
+    const unitImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
+    unitImage.src = this.image
+    unitImage.onload = () => {
+      this.unitImage = unitImage;
     }
 
     this.currentAnimation = null
@@ -46,6 +77,21 @@ export class Unit {
     }
   }
 
+
+  setStats(){
+    
+  }
+
+  movementStep () {
+  }
+
+  attackStep (region: Region) {
+  }
+
+  draw(framePercent: number) {
+    
+    
+  }
   get cooldown () {
     return 0
   }
@@ -62,7 +108,7 @@ export class Unit {
     return 0
   }
 
-  get image () {
+  get image (): string {
     return null
   }
 
@@ -84,11 +130,11 @@ export class Unit {
     return null
   }
 
-  get sound () {
+  get sound (): string {
     return null
   }
 
-  get color () {
+  get color (): string {
     return '#FFFFFF'
   }
 
@@ -99,11 +145,11 @@ export class Unit {
   setHasLOS () {
     if (this.aggro === this.region.player) {
       this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.region, this.location.x, this.location.y, this.size, this.attackRange, true)
-    } else if (this.type === Unit.types.PLAYER) {
+    } else if (this.type === UnitTypes.PLAYER) {
       this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange)
-    } else if (this.aggro.type === Unit.types.MOB) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === Unit.types.MOB)
-    } else if (this.aggro.isEntity) {
+    } else if (this.aggro.type === UnitTypes.MOB) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+    } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
   }
@@ -127,29 +173,29 @@ export class Unit {
   }
 
   // Returns true if this mob is on the specified tile.
-  isOnTile (x, y) {
+  isOnTile (x: number, y: number) {
     return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
   }
 
   // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo (x, y) {
+  getClosestTileTo (x: number, y: number) {
     // We simply clamp the target point to our own boundary box.
-    return [_.clamp(x, this.location.x, this.location.x + this.size), _.clamp(y, this.location.y, this.location.y - this.size)]
+    return [clamp(x, this.location.x, this.location.x + this.size), clamp(y, this.location.y, this.location.y - this.size)]
   }
 
-  addProjectile (projectile) {
+  addProjectile (projectile: Projectile) {
     this.incomingProjectiles.push(projectile)
   }
 
-  setLocation (location) {
+  setLocation (location: any) {
     this.location = location
   }
 
-  setPrayers (prayers) {
+  setPrayers (prayers: BasePrayer[]) {
     this.prayers = prayers
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     // override pls
   }
 
@@ -173,7 +219,7 @@ export class Unit {
   }
 
   processIncomingAttacks () {
-    this.incomingProjectiles = _.filter(this.incomingProjectiles, (projectile) => projectile.delay > -1)
+    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.delay > -1)
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.delay === 0) {
         this.currentStats.hitpoint -= projectile.damage
@@ -225,7 +271,7 @@ export class Unit {
         projectile.offsetY = projectileOffsets[0][1]
       }
 
-      projectileOffsets = _.remove(projectileOffsets, (offset) => {
+      projectileOffsets = remove(projectileOffsets, (offset) => {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
@@ -240,7 +286,7 @@ export class Unit {
       this.region.ctx.font = '16px Stats_11'
       this.region.ctx.textAlign = 'center'
       this.region.ctx.fillText(
-        projectile.damage,
+        String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )

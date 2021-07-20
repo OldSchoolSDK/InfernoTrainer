@@ -1,23 +1,21 @@
 'use strict'
 
-import _ from 'lodash'
+import { find } from 'lodash'
 import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
 import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
-import { Mob } from '../../../../sdk/Mob'
+import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import BlobImage from '../../assets/images/blob.png'
 import BlobSound from '../../assets/sounds/blob.ogg'
 
-import { JalAkRekKet } from '../../js/mobs/JalAkRekKet'
-import { JalAkRekMej } from '../../js/mobs/JalAkRekMej'
-import { JalAkRekXil } from '../../js/mobs/JalAkRekXil'
+import { JalAkRekKet } from './JalAkRekKet'
+import { JalAkRekMej } from './JalAkRekMej'
+import { JalAkRekXil } from './JalAkRekXil'
 import { MobDeathStore } from '../MobDeathStore'
+import { BasePrayer } from '../../../../sdk/Prayers/BasePrayer'
 
 export class Blob extends Mob {
-  constructor (region, location, options) {
-    super(region, location, options)
-    this.playerPrayerScan = null
-  }
+  playerPrayerScan?: string = null;
 
   get displayName () {
     return 'Jal-Ak'
@@ -109,7 +107,7 @@ export class Blob extends Mob {
     return '#7300FF33'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
   }
 
@@ -134,16 +132,17 @@ export class Blob extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
-    this.attackFeedback = Mob.attackIndicators.NONE
+    this.attackFeedback = AttackIndicators.NONE
 
     this.hadLOS = this.hasLOS
     this.setHasLOS()
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = _.find(this.region.player.prayers, prayer => prayer.isOverhead() && prayer.isActive)
+      const overhead = find(this.region.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
-      this.attackFeedback = Mob.attackIndicators.SCAN
+      this.attackFeedback = AttackIndicators.SCAN
+      
       this.attackCooldownTicks = this.cooldown
       return
     }

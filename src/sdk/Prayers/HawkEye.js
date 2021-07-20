@@ -17,7 +17,7 @@ export class HawkEye extends BasePrayer {
   }
 
   feature () {
-    return [BasePrayer.groups.RANGE]
+    return 'offensiveRange'
   }
 
   playOnSound () {

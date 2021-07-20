@@ -1,13 +1,27 @@
 'use strict'
 
-export class Weapon {
+import { Item } from "../Item"
+import { Region } from "../Region";
+import { Unit } from "../Unit";
+
+export class Weapon extends Item{
+  selected: boolean;
+  inventorySprite: HTMLImageElement;
+  attackSpeed: number;
+  attackRange: number;
+  
   constructor () {
+    super();
     this.selected = false
     this.inventorySprite = new Image()
     this.inventorySprite.src = this.inventoryImage
   }
 
-  attack () {
+  cast(region: Region, from: Unit, to: Unit) {
+
+  }
+
+  attack (stage: Region, from: Unit, to: Unit, bonuses: any = {}) {
   }
 
   get aoe () {
@@ -27,7 +41,7 @@ export class Weapon {
     return false
   }
 
-  static isMeleeAttackStyle (style) {
+  static isMeleeAttackStyle (style: string) {
     return style === 'crush' || style === 'slash' || style === 'stab'
   }
 }

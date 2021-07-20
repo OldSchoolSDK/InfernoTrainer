@@ -1,12 +1,25 @@
 'use strict'
+
+
 import chebyshev from 'chebyshev'
+import { Unit } from '../Unit'
 import { Weapon } from './Weapon'
 
 export class Projectile {
+
+  damage: number;
+  fromLocation: any;
+  toLocation: any;
+  distance: number;
+  delay: number;
+
+  offsetX: number;
+  offsetY: number;
+
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */
-  constructor (damage, from, to, attackStyle, forceSWOnly) {
+  constructor (damage: number, from: Unit, to: Unit, attackStyle: string, forceSWOnly: number) {
     this.damage = Math.floor(damage)
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { BasePrayer } from '../Prayers/BasePrayer'
-import { Unit } from '../Unit'
+import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
@@ -18,7 +18,7 @@ export class RangedWeapon extends Weapon {
     }
     this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
 
-    if (from.type === Unit.types.PLAYER && this.damage > 0) {
+    if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('range', this.damage * 4));
     }
@@ -28,7 +28,7 @@ export class RangedWeapon extends Weapon {
 
   _calculatePrayerEffects (from, to, bonuses) {
     bonuses.effectivePrayers = {}
-    if (from.type !== Unit.types.MOB) {
+    if (from.type !== UnitTypes.MOB) {
       const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange')
       if (offensiveRange) {
         bonuses.effectivePrayers.range = offensiveRange
@@ -38,7 +38,7 @@ export class RangedWeapon extends Weapon {
         bonuses.effectivePrayers.defence = defence
       }
     }
-    if (to.type !== Unit.types.MOB) {
+    if (to.type !== UnitTypes.MOB) {
       const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead

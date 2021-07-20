@@ -1,25 +1,46 @@
 'use strict'
-import _ from 'lodash'
+import { remove } from 'lodash'
 import { ClickAnimation } from './ClickAnimation'
 import { Settings } from './Settings'
 import { ContextMenu } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { Pathing } from './Pathing'
 import { XpDropController } from './XpDropController'
+import { Unit } from './Unit'
+import { Player } from './Player'
+import { Entity } from './Entity'
 
 export class Region {
-  constructor (selector, width, height) {
-    this.inputDelay = null
-    this.frameCounter = 0
-    this.heldDown = 6
-    this.controlPanel = null
-    this.player = null
-    this.entities = []
-    this.mobs = []
+  wave: string;
+  mobs: Unit[] = [];
+  inputDelay?: NodeJS.Timeout = null;
+  frameCounter: number = 0
+  heldDown: number = 6
+  controlPanel?: ControlPanelController;
+  player?: Player;
+  entities: Entity[] = [];
+  width: number;
+  height: number;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  contextMenu: ContextMenu;
+  gridCanvas: OffscreenCanvas;
+  offPerformanceDelta: number;
+  offPerformanceCount: number;
+  clickAnimation?: ClickAnimation;
+
+  drawTime: number;
+  frameTime: number;
+  tickTime: number;
+  timeBetweenTicks: number;
+  fps: number;
+  lastT: number;
+
+  constructor (selector: string, width: number, height: number) {
     this.clickAnimation = null
     this.contextMenu = new ContextMenu()
 
-    this.canvas = document.getElementById(selector)
+    this.canvas = document.getElementById(selector) as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d')
     this.canvas.width = Settings.tileSize * width
     this.canvas.height = Settings.tileSize * height
@@ -88,7 +109,7 @@ export class Region {
       }
 
       const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent)
-      this.player.aggro = false
+      this.player.aggro = null
       if (mobs.length) {
         this.redClick()
         this.playerAttackClick(mobs[0])
@@ -100,13 +121,13 @@ export class Region {
     this.contextMenu.setInactive()
   }
 
-  playerAttackClick (mob) {
+  playerAttackClick (mob: Unit) {
     this.inputDelay = setTimeout(() => {
       this.player.aggro = mob
     }, Settings.inputDelay)
   }
 
-  playerWalkClick (x, y) {
+  playerWalkClick (x: number, y: number) {
     this.inputDelay = setTimeout(() => {
       this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
     }, Settings.inputDelay)
@@ -127,9 +148,9 @@ export class Region {
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
     this.mobs.forEach((mob) => mob.movementStep())
-    this.mobs.forEach((mob) => mob.attackStep())
+    this.mobs.forEach((mob) => mob.attackStep(this))
     this.player.movementStep()
-    this.player.attackStep()
+    this.player.attackStep(this)
 
 
     // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
@@ -139,7 +160,7 @@ export class Region {
     deadEntities.forEach((entity) => this.removeEntity(entity))
   }
 
-  drawGame (framePercent) {
+  drawGame (framePercent: number) {
     // Give control panel a chance to draw, canvas -> canvas
     this.controlPanel.draw(this)
 
@@ -180,7 +201,7 @@ export class Region {
     this.frameTime = performance.now() - t
   }
 
-  draw (framePercent) {
+  draw (framePercent: number) {
     this.ctx.globalAlpha = 1
     this.ctx.fillStyle = 'black'
 
@@ -221,28 +242,28 @@ export class Region {
     }
   }
 
-  setPlayer (player) {
+  setPlayer (player: Player) {
     this.player = player
   }
 
-  setControlPanel (controlPanel) {
+  setControlPanel (controlPanel: ControlPanelController) {
     this.controlPanel = controlPanel
   }
 
-  addEntity (entity) {
+  addEntity (entity: Entity) {
     this.entities.push(entity)
   }
 
-  removeEntity (entity) {
-    _.remove(this.entities, entity)
+  removeEntity (entity: Entity) {
+    remove(this.entities, entity)
   }
 
-  addMob (mob) {
+  addMob (mob: Unit) {
     this.mobs.push(mob)
   }
 
-  removeMob (mob) {
-    _.remove(this.mobs, mob)
+  removeMob (mob: Unit) {
+    remove(this.mobs, mob)
   }
 
   startTicking () {
