@@ -45,4 +45,4 @@ const timer = setInterval(() => {
 
 /// /////////////////////////////////////////////////////////
 
-// document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF || '' + ' - ' + process.env.BUILD_DATE || ''
+document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF || '' + ' - ' + process.env.BUILD_DATE || ''
