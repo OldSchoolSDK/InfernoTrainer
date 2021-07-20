@@ -7,8 +7,6 @@ import { Unit } from "../Unit";
 export class Weapon extends Item{
   selected: boolean;
   inventorySprite: HTMLImageElement;
-  attackSpeed: number;
-  attackRange: number;
   
   constructor () {
     super();
@@ -22,6 +20,14 @@ export class Weapon extends Item{
   }
 
   attack (stage: Region, from: Unit, to: Unit, bonuses: any = {}) {
+  }
+
+  get attackRange(): number {
+    return 0
+  }
+  
+  get attackSpeed(): number {
+    return 10
   }
 
   get aoe () {

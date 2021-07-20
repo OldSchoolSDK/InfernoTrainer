@@ -22,6 +22,10 @@ export class BaseControls {
     this.selected = false
   }
 
+  get keyBinding (): string {
+    return '';
+  }
+
   get panelImageReference (): string {
     return ''
   }

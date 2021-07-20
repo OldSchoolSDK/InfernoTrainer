@@ -1,3 +1,4 @@
 export class Item {
-  inventoryImage: string
+  inventoryImage: string;
+  inventoryPosition: number;
 }

@@ -1,12 +1,15 @@
-import _ from 'lodash'
+import { find, intersection } from 'lodash'
 import { BasePrayer } from '../Prayers/BasePrayer'
+import { Region } from '../Region'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 
 export class RangedWeapon extends Weapon {
-  attack (stage, from, to, bonuses = {}) {
+  damage: number;
+
+  attack (region: Region, from: Unit, to: Unit, bonuses: any = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
@@ -23,30 +26,30 @@ export class RangedWeapon extends Weapon {
       from.grantXp(new XpDrop('range', this.damage * 4));
     }
 
-    to.addProjectile(new Projectile(damage, from, to, 'range'))
+    to.addProjectile(new Projectile(damage, from, to, 'range', false))
   }
 
-  _calculatePrayerEffects (from, to, bonuses) {
+  _calculatePrayerEffects (from: Unit, to: Unit, bonuses: any) {
     bonuses.effectivePrayers = {}
     if (from.type !== UnitTypes.MOB) {
-      const offensiveRange = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveRange')
+      const offensiveRange = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveRange')
       if (offensiveRange) {
         bonuses.effectivePrayers.range = offensiveRange
       }
-      const defence = _.find(from.prayers, (prayer) => prayer.feature() === 'defence')
+      const defence = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'defence')
       if (defence) {
         bonuses.effectivePrayers.defence = defence
       }
     }
     if (to.type !== UnitTypes.MOB) {
-      const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
+      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }
     }
   }
 
-  isBlockable (from, to, bonuses) {
+  isBlockable (from: Unit, to: Unit, bonuses: any) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     if (bonuses.effectivePrayers.overhead && bonuses.effectivePrayers.overhead.feature() === 'range') {
@@ -55,17 +58,17 @@ export class RangedWeapon extends Weapon {
     return false
   }
 
-  _rollAttack (from, to, bonuses) {
+  _rollAttack (from: Unit, to: Unit, bonuses: any) {
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
   }
 
-  _hitChance (from, to, bonuses) {
+  _hitChance (from: Unit, to: Unit, bonuses: any) {
     const attackRoll = this._attackRoll(from, to, bonuses)
     const defenceRoll = this._defenceRoll(from, to, bonuses)
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
-  _rangedAttack (from, to, bonuses) {
+  _rangedAttack (from: Unit, to: Unit, bonuses: any) {
     let prayerMultiplier = 1
     const rangePrayer = bonuses.effectivePrayers.range
 
@@ -84,7 +87,7 @@ export class RangedWeapon extends Weapon {
     return Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier
   }
 
-  _maxHit (from, to, bonuses) {
+  _maxHit (from: Unit, to: Unit, bonuses: any) {
     let prayerMultiplier = 1
     const rangePrayer = bonuses.effectivePrayers.range
     if (rangePrayer) {
@@ -102,11 +105,11 @@ export class RangedWeapon extends Weapon {
     return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses))
   }
 
-  _attackRoll (from, to, bonuses) {
+  _attackRoll (from: Unit, to: Unit, bonuses: any) {
     return Math.floor(Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses))
   }
 
-  _defenceRoll (from, to, bonuses) {
+  _defenceRoll (from: Unit, to: Unit, bonuses: any) {
     let prayerMultiplier = 1
     const defencePrayer = bonuses.effectivePrayers.defence
 
@@ -137,11 +140,11 @@ export class RangedWeapon extends Weapon {
     return (to.currentStats.defence * prayerMultiplier + 9) * (to.bonuses.defence.range + 64)
   }
 
-  _accuracyMultiplier (from, to, bonuses) {
+  _accuracyMultiplier (from: Unit, to: Unit, bonuses: any) {
     return 1 // Used for tbow passive effect
   }
 
-  _damageMultiplier (from, to, bonuses) {
+  _damageMultiplier (from: Unit, to: Unit, bonuses: any) {
     return 1 // Used for tbow passive effect
   }
 }

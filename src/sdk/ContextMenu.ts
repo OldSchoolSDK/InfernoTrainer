@@ -1,17 +1,18 @@
+import { Region } from './Region';
 import { Settings } from './Settings'
 
 export class ContextMenu {
-  constructor () {
-    this.isActive = false
-    this.location = { x: 0, y: 0 }
-    this.cursorPosition = { x: 0, y: 0 }
-    this.menuOptions = []
-    this.width = 0
-    this.height = 0
-    this.activatedPosition = { x: 0, y: 0 }
-  }
+  isActive: boolean = false;
+  location: any = { x: 0, y: 0 };
+  cursorPosition: any = { x: 0, y: 0 };
+  activatedPosition: any = { x: 0, y: 0 };
+  width: number = 0;
+  height: number = 0;
+  menuOptions: any[] = []
+  linesOfText: any[] = []
 
-  setPosition (position) {
+
+  setPosition (position: any) {
     this.location = position
   }
 
@@ -23,11 +24,11 @@ export class ContextMenu {
     this.isActive = false
   }
 
-  setMenuOptions (menuOptions) {
+  setMenuOptions (menuOptions: any[]) {
     this.menuOptions = menuOptions
   }
 
-  cursorMovedTo (region, x, y) {
+  cursorMovedTo (region: Region, x: number, y: number) {
     const cRect = region.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
@@ -44,7 +45,7 @@ export class ContextMenu {
     }
   }
 
-  draw (region) {
+  draw (region: Region) {
     if (this.isActive) {
       this.linesOfText = [
         {
@@ -100,12 +101,12 @@ export class ContextMenu {
     region.ctx.restore()
   }
 
-  fillMixedText (ctx, args, x, y, inputColor) {
+  fillMixedText (ctx: CanvasRenderingContext2D, args: any, x: number, y: number, inputColor: string) {
     const defaultFillStyle = ctx.fillStyle
     const defaultFont = ctx.font
 
     ctx.save()
-    args.forEach(({ text, fillStyle, font }) => {
+    args.forEach(({ text, fillStyle, font }: { text: string, fillStyle: string, font: string}) => {
       if (fillStyle === 'white') {
         ctx.fillStyle = inputColor
       } else {
@@ -119,12 +120,12 @@ export class ContextMenu {
     ctx.restore()
   };
 
-  fillMixedTextWidth (ctx, args) {
+  fillMixedTextWidth (ctx: CanvasRenderingContext2D, args: any) {
     const defaultFillStyle = ctx.fillStyle
     const defaultFont = ctx.font
 
     let x = 0
-    args.forEach(({ text, fillStyle, font }) => {
+    args.forEach(({ text, fillStyle, font }: { text: string, fillStyle: string, font: string}) => {
       ctx.fillStyle = fillStyle || defaultFillStyle
       ctx.font = font || defaultFont
       x += ctx.measureText(text).width
@@ -132,7 +133,7 @@ export class ContextMenu {
     return x
   };
 
-  drawLineOfText (ctx, text, width, y) {
+  drawLineOfText (ctx: CanvasRenderingContext2D, text: string, width: number, y: number) {
     const isXAligned = this.cursorPosition.x > this.location.x - width / 2 && this.cursorPosition.x < this.location.x + width / 2
     const isYAligned = this.cursorPosition.y > this.location.y + y + 2 && this.cursorPosition.y < this.location.y + 21 + y
     const isHovered = isXAligned && isYAligned
@@ -140,7 +141,7 @@ export class ContextMenu {
     this.fillMixedText(ctx, text, this.location.x - width / 2 + 4, this.location.y + 15 + y, isHovered ? 'yellow' : 'white')
   }
 
-  clicked (region, x, y) {
+  clicked (region: Region, x: number, y: number) {
     const index = Math.floor((y - this.location.y) / 20)
     this.linesOfText[index].action()
   }

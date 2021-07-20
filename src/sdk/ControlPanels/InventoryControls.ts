@@ -1,18 +1,16 @@
-import _ from 'lodash'
+import { first, filter } from 'lodash'
 import InventoryPanel from '../../assets/images/panels/inventory.png'
 import InventoryTab from '../../assets/images/tabs/inventory.png'
 import { Pathing } from '../Pathing'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
+import { Region } from '../Region'
+import { Item } from '../Item'
+import { ControlPanelController } from '../ControlPanelController'
 
 export class InventoryControls extends BaseControls {
-  constructor (inventory) {
-    super()
 
-    InventoryControls.inventory = []
-  }
-
-  static inventory = new Array(28).fill(null);
+  static inventory: any[] = new Array(28).fill(null);
 
   get panelImageReference () {
     return InventoryPanel
@@ -26,9 +24,9 @@ export class InventoryControls extends BaseControls {
     return Settings.inventory_key
   }
 
-  clickedPanel (region, x, y) {
+  clickedPanel (region: Region, x: number, y: number) {
     let itemX, itemY
-    const clickedItem = _.first(_.filter(InventoryControls.inventory, (inventoryItem, index) => {
+    const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
       }
@@ -56,7 +54,7 @@ export class InventoryControls extends BaseControls {
     }
   }
 
-  draw (region, ctrl, x, y) {
+  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(region, ctrl, x, y)
 
     InventoryControls.inventory.forEach((inventoryItem, index) => {

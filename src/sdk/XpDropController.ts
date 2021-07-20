@@ -4,29 +4,44 @@ import DefenceXpDropImage from "../assets/images/xpdrops/defence.png";
 import RangeXpDropImage from "../assets/images/xpdrops/range.png";
 import MagicXpDropImage from "../assets/images/xpdrops/magic.png";
 import HitpointXpDropImage from "../assets/images/xpdrops/hitpoint.png";
-import _ from "lodash";
+import { find } from "lodash";
+import { XpDrop } from "./XpDrop";
+
+interface SkillTypes {
+  type: string,
+  imgSrc: string,
+  image?: HTMLImageElement;
+}
+
+interface Empty {
+
+}
 
 export class XpDropController {
   static controller = new XpDropController();
-
   static outlineColor = "#3A3021"
   static inlineColor = "#5D5344";
   static fillColor = "#5D534473" // guess ATM
 
-  static skills = [ 
-    { type: "attack", imgSrc: AttackXpDropImage },
-    { type: "strength", imgSrc: StrengthXpDropImage },
-    { type: "defence", imgSrc: DefenceXpDropImage },
-    { type: "range", imgSrc: RangeXpDropImage },
-    { type: "magic", imgSrc: MagicXpDropImage },
-    { type: "hitpoint", imgSrc: HitpointXpDropImage }
+  canvas: OffscreenCanvas = new OffscreenCanvas(110, 200)
+  ctx: OffscreenCanvasRenderingContext2D;
+  drops: XpDrop[] | Empty[]
+  lastDropSkill?: string;
+  timeout: NodeJS.Timeout;
+
+  static skills: SkillTypes[] = [ 
+    { type: "attack", imgSrc: AttackXpDropImage, image: null },
+    { type: "strength", imgSrc: StrengthXpDropImage, image: null },
+    { type: "defence", imgSrc: DefenceXpDropImage, image: null },
+    { type: "range", imgSrc: RangeXpDropImage, image: null },
+    { type: "magic", imgSrc: MagicXpDropImage, image: null },
+    { type: "hitpoint", imgSrc: HitpointXpDropImage, image: null }
   ];
 
   constructor(){
-    this.canvas = new OffscreenCanvas(110, 200)
     this.ctx = this.canvas.getContext('2d')
 
-    this.drops = [{},{},{},{}]
+    this.drops = [{abc: "asdf"},{},{},{}]
     this.lastDropSkill = null;
     this.startupTimeout();
   }
@@ -40,7 +55,7 @@ export class XpDropController {
     }, 1000 * 16); // Not sure if 16 seconds is correct but good enough for now
   }
 
-  registerXpDrop(drop){
+  registerXpDrop(drop: XpDrop){
     this.drops.push(drop)
     if (drop.skill){
       this.lastDropSkill = drop.skill;
@@ -50,13 +65,13 @@ export class XpDropController {
   tick(){
     this.drops.shift();
     if (this.drops.length < 4){
-      this.drops.push({});
+      this.drops.push({} as XpDrop); // TODO: This is bad
     }
   }
 
-  draw(destinationCanvas, x, y, framePercent){
+  draw(destinationCanvas: CanvasRenderingContext2D, x: number, y: number, framePercent: number){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const skillInfo = _.find(XpDropController.skills, {type: this.lastDropSkill});
+    const skillInfo = find(XpDropController.skills, {type: this.lastDropSkill});
 
     if (skillInfo && skillInfo.type){
 
@@ -100,15 +115,15 @@ export class XpDropController {
       }
       const skill = drop.skill
 
-      const skillInfo = _.find(XpDropController.skills, {type: skill});
-      if (skillInfo.image.loaded){
+      const skillInfo = find(XpDropController.skills, {type: skill});
+      if (skillInfo.image){
         this.ctx.drawImage(
           skillInfo.image, 
-          110 - this.ctx.measureText(drop.xp).width - 20, 
+          110 - this.ctx.measureText(String(drop.xp)).width - 20, 
           (index - framePercent) * textSize - 13 + xpDropYOffset, 16, 16)
       }
       
-      this.ctx.fillText(drop.xp, 110, (index - framePercent) * textSize + xpDropYOffset);
+      this.ctx.fillText(String(drop.xp), 110, (index - framePercent) * textSize + xpDropYOffset);
 
     })
     destinationCanvas.drawImage(this.canvas, x, y);
@@ -118,9 +133,9 @@ export class XpDropController {
 
 
 XpDropController.skills.forEach((skill) => {
-  skill.image = new Image();
-  skill.image.src = skill.imgSrc;
-  skill.image.onload = () => {
-    skill.image.loaded = true;
+  const image = new Image();
+  image.src = skill.imgSrc;
+  image.onload = () => {
+    skill.image = image;
   }
 });

@@ -2,7 +2,7 @@
 export class XpDrop {
   skill: string;
   xp: number;
-  constructor(skill, xp){
+  constructor(skill: string, xp: number){
     this.skill = skill;
     this.xp = xp;
   }

@@ -25,6 +25,8 @@ import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
 
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../Utils/BrowserUtils'
+import { Region } from '../Region'
+import { ControlPanelController } from '../ControlPanelController'
 
 export class SettingsControls extends BaseControls {
   get panelImageReference () {
@@ -34,6 +36,23 @@ export class SettingsControls extends BaseControls {
   get tabImageReference () {
     return SettingsTab
   }
+
+  musicOnImage: HTMLImageElement;
+  musicOffImage: HTMLImageElement;
+  redUpImage: HTMLImageElement;
+  greenDownImage: HTMLImageElement;
+  compassImage: HTMLImageElement;
+  activeButtonImage: HTMLImageElement
+  inactiveButtonImage: HTMLImageElement;
+  infernoImage: HTMLImageElement;
+  verzikImage: HTMLImageElement;
+  xarpusImage: HTMLImageElement;
+  inventoryImage: HTMLImageElement;
+  spellbookImage: HTMLImageElement;
+  prayerImage: HTMLImageElement;
+  equipmentImage: HTMLImageElement;
+  bindingKey?: string;
+  compassCanvas: OffscreenCanvas;
 
   constructor () {
     super()
@@ -65,6 +84,7 @@ export class SettingsControls extends BaseControls {
     this.prayerImage.src = PrayerTab
     this.equipmentImage = new Image()
     this.equipmentImage.src = EquipmentTab
+
 
     this.bindingKey = null;
 
@@ -126,7 +146,7 @@ export class SettingsControls extends BaseControls {
     return BrowserUtils.getQueryVar('settings_key') || '5'
   }
 
-  clickedPanel (region, x, y) {
+  clickedPanel (region: Region, x: number, y: number) {
     if (x > 20 && x < 56 && y > 20 && y < 56) {
       Settings.playsAudio = !Settings.playsAudio
     } else if (x > 90 && x < 105 && y > 20 && y < 36) {
@@ -163,7 +183,7 @@ export class SettingsControls extends BaseControls {
     Settings.persistToStorage()
   }
 
-  draw (region, ctrl, x, y) {
+  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(region, ctrl, x, y)
 
     ctrl.ctx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)

@@ -1,12 +1,15 @@
-import _ from 'lodash'
+import { find, intersection } from 'lodash'
 import { Projectile } from './Projectile'
 import { Weapon } from './Weapon'
 import { BasePrayer } from '../Prayers/BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
+import { Region } from '../Region'
 
 export class MeleeWeapon extends Weapon {
-  attack (region, from, to, bonuses = {}) {
+  damage: number;
+  
+  attack (region: Region, from: Unit, to: Unit, bonuses: any = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     bonuses.attackStyle = bonuses.attackStyle || 'slash'
@@ -28,37 +31,37 @@ export class MeleeWeapon extends Weapon {
       from.grantXp(new XpDrop('attack', damage * 4));
     }
 
-    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle))
+    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle, false))
   }
 
-  _calculatePrayerEffects (from, to, bonuses) {
+  _calculatePrayerEffects (from: Unit, to: Unit, bonuses: any) {
     bonuses.effectivePrayers = {}
     if (from.type !== UnitTypes.MOB) {
-      const offensiveAttack = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveAttack')
+      const offensiveAttack = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveAttack')
       if (offensiveAttack) {
         bonuses.effectivePrayers.attack = offensiveAttack
       }
 
-      const offensiveStrength = _.find(from.prayers, (prayer) => prayer.feature() === 'offensiveStrength')
+      const offensiveStrength = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveStrength')
       if (offensiveStrength) {
         bonuses.effectivePrayers.strength = offensiveStrength
       }
 
-      const defence = _.find(from.prayers, (prayer) => prayer.feature() === 'defence')
+      const defence = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'defence')
       if (defence) {
         bonuses.effectivePrayers.defence = defence
       }
     }
 
     if (to.type !== UnitTypes.MOB) {
-      const overhead = _.find(to.prayers, (prayer) => _.intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
+      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length)
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }
     }
   }
 
-  isBlockable (from, to, bonuses) {
+  isBlockable (from: Unit, to: Unit, bonuses: any) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     let prayerAttackBlockStyle = bonuses.attackStyle
@@ -72,11 +75,11 @@ export class MeleeWeapon extends Weapon {
     return false
   }
 
-  _rollAttack (from, to, bonuses) {
+  _rollAttack (from: Unit, to: Unit, bonuses: any) {
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
   }
 
-  _strengthLevel (from, to, bonuses) {
+  _strengthLevel (from: Unit, to: Unit, bonuses: any) {
     let prayerMultiplier = 1
     const strengthPrayer = bonuses.effectivePrayers.strength
 
@@ -96,7 +99,7 @@ export class MeleeWeapon extends Weapon {
     return Math.floor((Math.floor(from.currentStats.strength * prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier)
   }
 
-  _maxHit (from, to, bonuses) {
+  _maxHit (from: Unit, to: Unit, bonuses: any) {
     return Math.floor(
       Math.floor(
         (this._strengthLevel(from, to, bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640
@@ -104,7 +107,7 @@ export class MeleeWeapon extends Weapon {
     )
   }
 
-  _attackLevel (from, to, bonuses) {
+  _attackLevel (from: Unit, to: Unit, bonuses: any) {
     const attackPrayer = bonuses.effectivePrayers.attack
     let prayerMultiplier = 1
     if (attackPrayer) {
@@ -124,11 +127,11 @@ export class MeleeWeapon extends Weapon {
     return Math.floor((Math.floor(from.currentStats.attack * prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier)
   }
 
-  _attackRoll (from, to, bonuses) {
+  _attackRoll (from: Unit, to: Unit, bonuses: any) {
     return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack[bonuses.attackStyle] + 64)) * bonuses.gearMultiplier)
   }
 
-  _defenceRoll (from, to, bonuses) {
+  _defenceRoll (from: Unit, to: Unit, bonuses: any) {
     if (to.type === UnitTypes.MOB || to.type === UnitTypes.ENTITY) {
       return (to.currentStats.defence + 9) * (to.bonuses.defence[bonuses.attackStyle] + 64)
     } else {
@@ -136,7 +139,7 @@ export class MeleeWeapon extends Weapon {
     }
   }
 
-  _defenceLevel (from, to, bonuses) {
+  _defenceLevel (from: Unit, to: Unit, bonuses: any) {
     const defencePrayer = bonuses.effectivePrayers.defence
     let prayerMultiplier = 1
     if (defencePrayer) {
@@ -165,13 +168,13 @@ export class MeleeWeapon extends Weapon {
     return (Math.floor(from.currentStats.defence * prayerMultiplier) + bonuses.styleBonus + 8)
   }
 
-  _hitChance (from, to, bonuses) {
+  _hitChance (from: Unit, to: Unit, bonuses: any) {
     const attackRoll = this._attackRoll(from, to, bonuses)
     const defenceRoll = this._defenceRoll(from, to, bonuses)
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
-  isMeleeAttack () {
+  get isMeleeAttack () {
     return true
   }
 }

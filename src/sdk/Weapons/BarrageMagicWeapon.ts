@@ -1,4 +1,6 @@
+import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
+import { Region } from '../Region'
 import { Unit } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { MagicWeapon } from './MagicWeapon'
@@ -34,14 +36,14 @@ export class BarrageMagicWeapon extends MagicWeapon {
     return 9
   }
 
-  cast (region, from, to) {
+  cast (region: Region, from: Unit, to: Unit) {
     // calculate AoE magic effects
     if (this.aoe.length) {
       let castsAllowed = this.maxConcurrentHits
-      const alreadyCastedOn = []
+      const alreadyCastedOn: Mob[] = []
       this.aoe.forEach((point) => {
         Pathing.mobsAroundMob(region, to, point)
-          .forEach((mob) => {
+          .forEach((mob: Mob) => {
             if (castsAllowed <= 0) {
               return
             }
@@ -58,7 +60,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
     }
   }
 
-  attack (region, from, to, bonuses = {}) {
+  attack (region: Region, from: Unit, to: Unit, bonuses: any = {}) {
     super.attack(region, from, to, bonuses, true)    
     if (this.damage > 0) {
       to.frozen = 32

@@ -19,7 +19,7 @@ export class Projectile {
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */
-  constructor (damage: number, from: Unit, to: Unit, attackStyle: string, forceSWOnly: number) {
+  constructor (damage: number, from: Unit, to: Unit, attackStyle: string, forceSWOnly: boolean) {
     this.damage = Math.floor(damage)
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint

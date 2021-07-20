@@ -1,6 +1,7 @@
 'use strict'
 import { AccountControls } from './ControlPanels/AccountControls'
 import { AncientsSpellbookControls } from './ControlPanels/AncientsSpellbookControls'
+import { BaseControls } from './ControlPanels/BaseControls'
 import { ClanChatControls } from './ControlPanels/ClanChatControls'
 import { CombatControls } from './ControlPanels/CombatControls'
 import { EmotesControls } from './ControlPanels/EmotesControls'
@@ -13,7 +14,13 @@ import { PrayerControls } from './ControlPanels/PrayerControls'
 import { QuestsControls } from './ControlPanels/QuestsControls'
 import { SettingsControls } from './ControlPanels/SettingsControls'
 import { StatsControls } from './ControlPanels/StatsControls'
+import { Region } from './Region'
 import { Settings } from './Settings'
+
+interface TabPosition{
+  x: number;
+  y: number;
+}
 
 export class ControlPanelController {
   static controls = Object.freeze({
@@ -24,8 +31,15 @@ export class ControlPanelController {
     ANCIENTSSPELLBOOK: new AncientsSpellbookControls()
   });
 
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  region?: Region;
+  controls: BaseControls[];
+  selectedControl: BaseControls;
+  
+
   constructor () {
-    this.canvas = document.getElementById('controlPanel')
+    this.canvas = document.getElementById('controlPanel') as HTMLCanvasElement
     this.ctx = this.canvas.getContext('2d')
 
     this.canvas.width = 33 * 7
@@ -66,11 +80,11 @@ export class ControlPanelController {
     })
   }
 
-  setRegion (region) {
+  setRegion (region: Region) {
     this.region = region
   }
 
-  tabPosition (i, compact) {
+  tabPosition (i: number, compact: boolean): TabPosition {
     if (compact) {
       const x = i % 7
       const y = Math.floor(i / 7)
@@ -80,12 +94,12 @@ export class ControlPanelController {
     return { x: i * 33, y: 0 }
   }
 
-  controlPanelClick (e) {
+  controlPanelClick (e: MouseEvent) {
     const x = e.offsetX
     const y = e.offsetY
 
     if (y > 275) {
-      this.controls.forEach((control, index) => {
+      this.controls.forEach((control: BaseControls, index: number) => {
         const tabPosition = this.tabPosition(index, true)
         if (tabPosition.x <= x && x < tabPosition.x + 33) {
           if (tabPosition.y <= y && x < tabPosition.y + 36) {
@@ -116,7 +130,7 @@ export class ControlPanelController {
     }
   }
 
-  draw (region) {
+  draw (region: Region) {
     this.ctx.fillStyle = '#000'
 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
@@ -125,7 +139,7 @@ export class ControlPanelController {
       this.selectedControl.draw(region, this, this.canvas.width - 204, 0)
     }
 
-    let selectedPosition = null
+    let selectedPosition: TabPosition = null
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true)
       if (control.tabImage){

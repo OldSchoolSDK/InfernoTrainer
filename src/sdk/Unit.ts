@@ -7,6 +7,7 @@ import { clamp, remove, filter } from 'lodash'
 import { Region } from './Region'
 import { BasePrayer } from './Prayers/BasePrayer'
 import { Projectile } from './Weapons/Projectile'
+import { XpDrop } from './XpDrop'
 
 export enum UnitTypes {
   MOB = 0,
@@ -77,6 +78,9 @@ export class Unit {
     }
   }
 
+  grantXp(xpDrop: XpDrop) {
+    
+  }
 
   setStats(){
     
