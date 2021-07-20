@@ -13,11 +13,12 @@ if (!process.env.BUILD_DATE) {
 }
 module.exports = {
   mode: isDevBuild ? 'development' : 'production',
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  devtool: "source-map",
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
@@ -35,6 +36,7 @@ module.exports = {
   ],
   module: {
     rules: [
+      { test: /\.tsx?$/, loader: "ts-loader" },
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,

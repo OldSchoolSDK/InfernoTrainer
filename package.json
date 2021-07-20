@@ -34,6 +34,8 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "chebyshev": "^0.2.1"
+    "chebyshev": "^0.2.1",
+    "source-map-loader": "^3.0.0",
+    "ts-loader": "^9.2.3"
   }
 }
