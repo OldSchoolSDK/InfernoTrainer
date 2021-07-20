@@ -4,20 +4,10 @@ import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/Weapons/RangedWeapon'
 
 export class Blowpipe extends RangedWeapon {
-  get attackRange () {
-    return 5
-  }
+  constructor() {
+    super();
 
-  get attackSpeed () {
-    return 2
-  }
-
-  get inventoryImage () {
-    return BPInventImage
-  }
-
-  get bonuses () {
-    return {
+    this.bonuses = {
       attack: {
         stab: -1,
         slash: -1,
@@ -42,6 +32,18 @@ export class Blowpipe extends RangedWeapon {
         undead: 0,
         slayer: 0
       }
-    }
+    };
   }
+  get attackRange () {
+    return 5
+  }
+
+  get attackSpeed () {
+    return 2
+  }
+
+  get inventoryImage () {
+    return BPInventImage
+  }
+
 }
