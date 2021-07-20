@@ -5,6 +5,8 @@ import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
 import { Verzik } from "./js/mobs/Verzik";
 import { Scenario } from "../../sdk/Scenario";
 import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
+import { Region } from '../../sdk/Region';
+import { Item } from '../../sdk/Item';
 
 export class VerzikP3 extends Scenario {
   
@@ -12,11 +14,11 @@ export class VerzikP3 extends Scenario {
     return "Verzik Phase 3";
   }
 
-  getInventory() {
+  getInventory(): Item[] {
     return [];
   }
 
-  initialize(region) {
+  initialize(region: Region) {
     // Add player
     const player = new Player(
       region,
