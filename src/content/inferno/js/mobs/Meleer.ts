@@ -97,14 +97,14 @@ export class Meleer extends Mob {
     return '#ACFF5633'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
   movementStep () {
     super.movementStep()
     if (!this.hasLOS) {
-      if (((this.attackCooldownTicks <= -38) & (Math.random() < 0.1)) | (this.attackCooldownTicks <= -50)) {
+      if (((this.attackCooldownTicks <= -38) && (Math.random() < 0.1)) || (this.attackCooldownTicks <= -50)) {
         this.dig()
         this.attackCooldownTicks = 8
       }

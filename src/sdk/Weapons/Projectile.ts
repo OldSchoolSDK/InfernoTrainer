@@ -2,7 +2,8 @@
 
 
 import chebyshev from 'chebyshev'
-import { Location, Unit } from '../Unit'
+import { Location } from '../GameObject'
+import { Unit } from '../Unit'
 import { Weapon } from './Weapon'
 
 export class Projectile {

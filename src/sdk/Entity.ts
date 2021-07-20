@@ -1,18 +1,18 @@
 'use strict'
+import { GameObject, Location } from './GameObject';
 import { Region } from './Region'
 import { Settings } from './Settings'
-import { Location, Unit, UnitTypes } from './Unit'
+import { Unit, UnitTypes } from './Unit'
 
-export class Entity {
+
+export class Entity extends GameObject{
   region: Region;
   location: Location;
-  size: number;
-  dying: number;
 
-  constructor (region: Region, location: Location, size: number) {
+  constructor (region: Region, location: Location) {
+    super()
     this.region = region
     this.location = location
-    this.size = size
   }
 
   get type () {

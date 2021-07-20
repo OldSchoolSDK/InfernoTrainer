@@ -6,9 +6,9 @@ import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
-import { Location, Unit, UnitBonuses, UnitOptions, UnitTypes, WeaponsMap } from './Unit'
+import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
 import { Region } from './Region'
-
+import { Location } from './GameObject'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -19,9 +19,10 @@ export enum AttackIndicators {
 
 export class Mob extends Unit {
 
+  hasResurrected: boolean = false;
   attackFeedback: AttackIndicators;
-  stats: any;
-  currentStats: any;
+  stats: UnitStats;
+  currentStats: UnitStats;
   bonuses: UnitBonuses;
   hadLOS: boolean;
   hasLOS: boolean;
@@ -220,7 +221,7 @@ export class Mob extends Unit {
     this.attackCooldownTicks = this.cooldown
   }
 
-  get consumesSpace () {
+  get consumesSpace (): Unit {
     return this
   }
 

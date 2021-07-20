@@ -1,12 +1,12 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
+import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
-export class JalAkRekKet extends Mob {
+export class JalAkRekXil extends Mob {
   get displayName () {
-    return 'Jal-AkRek-Ket'
+    return 'Jal-AkRek-Xil'
   }
 
   get combatLevel () {
@@ -21,15 +21,15 @@ export class JalAkRekKet extends Mob {
     this.frozen = 0
 
     this.weapons = {
-      crush: new MeleeWeapon()
+      range: new RangedWeapon()
     }
 
     // non boosted numbers
     this.stats = {
-      attack: 120,
-      strength: 120,
+      attack: 1,
+      strength: 1,
       defence: 95,
-      range: 1,
+      range: 120,
       magic: 1,
       hitpoint: 15
     }
@@ -46,15 +46,15 @@ export class JalAkRekKet extends Mob {
         range: 25
       },
       defence: {
-        stab: 25,
-        slash: 25,
-        crush: 25,
+        stab: 0,
+        slash: 0,
+        crush: 0,
         magic: 0,
-        range: 0
+        range: 25
       },
       other: {
-        meleeStrength: 25,
-        rangedStrength: 0,
+        meleeStrength: 0,
+        rangedStrength: 25,
         magicDamage: 0,
         prayer: 0
       }
@@ -66,7 +66,7 @@ export class JalAkRekKet extends Mob {
   }
 
   get attackRange () {
-    return 1
+    return 5
   }
 
   get size () {
@@ -74,10 +74,10 @@ export class JalAkRekKet extends Mob {
   }
 
   get image () {
-    return JalAkRekKetImage
+    return JalAkRekMejImage
   }
 
-  get sound () {
+  get sound (): string {
     return null
   }
 
@@ -86,10 +86,10 @@ export class JalAkRekKet extends Mob {
   }
 
   get attackStyle () {
-    return 'crush'
+    return 'range'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

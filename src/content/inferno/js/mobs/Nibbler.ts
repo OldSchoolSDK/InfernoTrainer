@@ -8,16 +8,21 @@ import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile } from '../../../../sdk/Weapons/Projectile'
+import { Region } from '../../../../sdk/Region'
+import { Unit } from '../../../../sdk/Unit'
+import { AttackBonuses, Weapon } from '../../../../sdk/Weapons/Weapon'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack (region, from, to, bonuses) {
+  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses) {
     const damage = Math.floor(Math.random() * 5)
     this.damage = damage;
-    to.addProjectile(new Projectile(this.damage, from, to, 'crush'))
+    to.addProjectile(new Projectile(this.damage, from, to, 'crush', false))
   }
 }
 
 export class Nibbler extends Mob {
+  weapon: any;
+
   get displayName () {
     return 'Jal-Nib'
   }
@@ -76,7 +81,7 @@ export class Nibbler extends Mob {
     }
   }
 
-  get consumesSpace () {
+  get consumesSpace (): Unit {
     return null
   }
 
@@ -108,7 +113,7 @@ export class Nibbler extends Mob {
     return 'crush'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 

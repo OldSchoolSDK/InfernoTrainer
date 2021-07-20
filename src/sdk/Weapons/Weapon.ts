@@ -1,5 +1,6 @@
 'use strict'
 
+import { GameObject } from "../GameObject";
 import { Item } from "../Item"
 import { BasePrayer } from "../Prayers/BasePrayer";
 import { Region } from "../Region";
@@ -36,14 +37,14 @@ export class Weapon extends Item{
     this.inventorySprite.src = this.inventoryImage
   }
 
-  cast(region: Region, from: Unit, to: Unit) {
+  cast(region: Region, from: Unit, to: GameObject) {
 
   }
 
-  attack (stage: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack (stage: Region, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
   }
   
-  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses): boolean {
+  isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
     return false;
   }
 

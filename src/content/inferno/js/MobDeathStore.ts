@@ -1,9 +1,10 @@
-import _ from 'lodash'
+import { shuffle, remove } from 'lodash'
+import { Mob } from '../../../sdk/Mob';
 
 export class MobDeathStore {
   static mobDeathStore = new MobDeathStore();
-  static deadMobs = [];
-  static npcDied (mob) {
+  static deadMobs: Mob[] = [];
+  static npcDied (mob: Mob) {
     if (!mob.hasResurrected) {
       MobDeathStore.deadMobs.push(mob)
     }
@@ -11,9 +12,9 @@ export class MobDeathStore {
 
   static selectMobToResurect () {
     if (MobDeathStore.deadMobs.length) {
-      const mobToResurrect = _.shuffle(MobDeathStore.deadMobs)[0]
+      const mobToResurrect = shuffle(MobDeathStore.deadMobs)[0]
       mobToResurrect.hasResurrected = true
-      _.remove(MobDeathStore.deadMobs, mobToResurrect)
+      remove(MobDeathStore.deadMobs, mobToResurrect)
       return mobToResurrect
     }
     return null

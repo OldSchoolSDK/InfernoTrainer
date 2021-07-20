@@ -52,11 +52,11 @@ export class Inferno extends Scenario {
       // Backwards compatibility layer for runelite plugin
       region.wave = 'imported';
 
-      (JSON.parse(mager) || []).forEach((spawn) => region.addMob(new Mager(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(ranger) || []).forEach((spawn) => region.addMob(new Ranger(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(melee) || []).forEach((spawn) => region.addMob(new Meleer(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(blob) || []).forEach((spawn) => region.addMob(new Blob(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(bat) || []).forEach((spawn) => region.addMob(new Bat(region, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+      (JSON.parse(mager) || []).forEach((spawn: number[]) => region.addMob(new Mager(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(ranger) || []).forEach((spawn: number[]) => region.addMob(new Ranger(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(melee) || []).forEach((spawn: number[]) => region.addMob(new Meleer(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(blob) || []).forEach((spawn: number[]) => region.addMob(new Blob(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(bat) || []).forEach((spawn: number[]) => region.addMob(new Bat(region, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
       Waves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region))
 

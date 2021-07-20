@@ -111,11 +111,11 @@ export class Mager extends Mob {
     return 70
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.rotate(framePercent * Math.PI * 2)
   }
 
-  respawnLocation (mobToResurrect) {
+  respawnLocation (mobToResurrect: Mob) {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
         if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)) {

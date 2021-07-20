@@ -3,12 +3,13 @@ import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { minBy, filter, find, map, min } from 'lodash'
-import { Unit, UnitTypes, UnitStats, Location, UnitBonuses, UnitOptions } from './Unit'
+import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
 import { Region } from './Region'
 import { Weapon } from './Weapons/Weapon'
 import { BasePrayer } from './Prayers/BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
+import { Location } from './GameObject'
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -79,10 +80,6 @@ export class Player extends Unit {
 
   get type () {
     return UnitTypes.PLAYER
-  }
-
-  get size () {
-    return 1
   }
 
   clearXpDrops() {
@@ -221,10 +218,8 @@ export class Player extends Unit {
           }
         }
         // Create paths to all npc tiles
-        const potentialPaths = map(seekingTiles, (point: Location) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
-        const validPaths = filter(potentialPaths, (path: any) => {
-          return true
-        })
+        const validPaths = map(seekingTiles, (point: Location) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
+
         const validPathLengths = map(validPaths, (path: any) => path.length)
         // Figure out what the min distance is
         const shortestPathLength = min(validPathLengths)

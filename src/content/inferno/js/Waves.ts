@@ -1,23 +1,27 @@
 'use strict'
-import _ from 'lodash'
+import { shuffle } from 'lodash'
+import { Entity } from '../../../sdk/Entity'
+import { Mob } from '../../../sdk/Mob'
+import { Region } from '../../../sdk/Region'
+import { UnitOptions } from '../../../sdk/Unit'
 import { Bat } from './mobs/Bat'
 import { Blob } from './mobs/Blob'
 import { Mager } from './mobs/Mager'
 import { Meleer } from './mobs/Meleer'
 import { Nibbler } from './mobs/Nibbler'
 import { Ranger } from './mobs/Ranger'
+import { Location } from '../../../sdk/GameObject'
+
 
 export class Waves {
-  static currentSpawn = null;
 
   static getRandomSpawns () {
-    return _.shuffle(Waves.spawns)
+    return shuffle(Waves.spawns)
   }
 
-  static spawn (region, randomPillar, spawns, wave) {
-    Waves.currentSpawn = spawns
+  static spawn (region: Region, randomPillar: Entity, spawns: Location[], wave: number) {
     const mobCounts = Waves.waves[wave - 1]
-    let mobs = []
+    let mobs: Mob[] = []
     let i = 0
     Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(region, spawns[i++], { aggro: region.player })))
     Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(region, spawns[i++], { aggro: region.player })))
@@ -29,9 +33,9 @@ export class Waves {
     return mobs
   }
 
-  static spawnNibblers (n, region, pillar) {
-    const mobs = []
-    const nibblerSpawns = _.shuffle([
+  static spawnNibblers (n: number, region: Region, pillar: Entity) {
+    const mobs: Mob[] = []
+    const nibblerSpawns = shuffle([
       { x: 8, y: 13 },
       { x: 9, y: 13 },
       { x: 10, y: 13 },
@@ -43,7 +47,9 @@ export class Waves {
       { x: 10, y: 11 }
     ])
 
-    Array(n).fill(0).forEach(() => mobs.push(new Nibbler(region, nibblerSpawns.shift(), { aggro: pillar || region.player })))
+    const options: UnitOptions = { aggro: pillar || region.player };
+
+    Array(n).fill(0).forEach(() => mobs.push(new Nibbler(region, nibblerSpawns.shift(), options)))
     return mobs
   }
 

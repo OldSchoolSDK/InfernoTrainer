@@ -1,6 +1,6 @@
 import { Region } from './Region';
 import { Settings } from './Settings'
-import { Location } from './Unit';
+import { Location } from './GameObject';
 
 export interface MultiColorTextBlock {
   text: string;

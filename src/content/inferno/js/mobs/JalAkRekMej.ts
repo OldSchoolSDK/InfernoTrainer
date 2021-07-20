@@ -1,12 +1,12 @@
 'use strict'
 
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
+import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
 
-export class JalAkRekXil extends Mob {
+export class JalAkRekMej extends Mob {
   get displayName () {
-    return 'Jal-AkRek-Xil'
+    return 'Jal-AkRek-Mej'
   }
 
   get combatLevel () {
@@ -21,7 +21,7 @@ export class JalAkRekXil extends Mob {
     this.frozen = 0
 
     this.weapons = {
-      range: new RangedWeapon()
+      magic: new MagicWeapon()
     }
 
     // non boosted numbers
@@ -29,8 +29,8 @@ export class JalAkRekXil extends Mob {
       attack: 1,
       strength: 1,
       defence: 95,
-      range: 120,
-      magic: 1,
+      range: 1,
+      magic: 120,
       hitpoint: 15
     }
 
@@ -42,20 +42,20 @@ export class JalAkRekXil extends Mob {
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 0,
-        range: 25
+        magic: 25,
+        range: 0
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 0,
-        range: 25
+        magic: 25,
+        range: 0
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 25,
-        magicDamage: 0,
+        rangedStrength: 0,
+        magicDamage: 1.25,
         prayer: 0
       }
     }
@@ -77,7 +77,7 @@ export class JalAkRekXil extends Mob {
     return JalAkRekMejImage
   }
 
-  get sound () {
+  get sound (): string {
     return null
   }
 
@@ -86,10 +86,10 @@ export class JalAkRekXil extends Mob {
   }
 
   get attackStyle () {
-    return 'range'
+    return 'magic'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }

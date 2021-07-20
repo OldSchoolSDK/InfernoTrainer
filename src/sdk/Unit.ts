@@ -9,16 +9,12 @@ import { BasePrayer } from './Prayers/BasePrayer'
 import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
 import { Weapon } from './Weapons/Weapon'
+import { GameObject, Location } from './GameObject'
 
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
   ENTITY = 2,
-}
-
-export interface Location {
-  x: number;
-  y: number;
 }
 
 export interface WeaponsMap {
@@ -27,7 +23,7 @@ export interface WeaponsMap {
 
 export interface UnitOptions {
   weapon?: Weapon;
-  aggro?: Unit;
+  aggro?: GameObject;
 }
 
 export interface UnitStats {
@@ -66,18 +62,17 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
-export class Unit {
+
+export class Unit extends GameObject {
 
   region: Region;
   prayers: BasePrayer[];
   lastOverhead?: BasePrayer;
-  aggro?: Unit;
+  aggro?: GameObject;
   perceivedLocation: Location;
-  location: Location;
   attackCooldownTicks: number;
   hasLOS: boolean;
   frozen: number;
-  dying: number;
   incomingProjectiles: Projectile[];
   missedHitsplatImage: HTMLImageElement;
   damageHitsplatImage: HTMLImageElement;
@@ -93,6 +88,8 @@ export class Unit {
   }
 
   constructor (region: Region, location: Location, options?: UnitOptions) {
+    super()
+
     this.region = region
     this.prayers = []
     this.lastOverhead = null
@@ -155,10 +152,6 @@ export class Unit {
   }
 
   get maxHit () {
-    return 0
-  }
-
-  get size () {
     return 0
   }
 

@@ -21,6 +21,7 @@ export class Verzik extends Mob{
   constructor(region, location, aggro) {
     super(region, location, aggro);
     this.wasPlayerInMeleeRange = false;
+    this.size = 7;
   }
 
   get displayName(){
@@ -88,9 +89,6 @@ export class Verzik extends Mob{
     return 20;
   }
 
-  get size() {
-    return 7;
-  }
 
   get image() {
     return VerzikImage;

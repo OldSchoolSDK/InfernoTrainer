@@ -1,37 +1,44 @@
 'use strict'
 
 import { Mob } from '../../../../sdk/Mob'
-import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
-import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
+import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import BatImage from '../../assets/images/bat.png'
+import BatSound from '../../assets/sounds/bat.ogg'
+import { MobDeathStore } from '../MobDeathStore'
 
-export class JalAkRekMej extends Mob {
+export class Bat extends Mob {
   get displayName () {
-    return 'Jal-AkRek-Mej'
+    return 'Jal-MejRah'
   }
 
   get combatLevel () {
-    return 70
+    return 85
   }
 
   get combatLevelColor () {
     return 'lime'
   }
 
+  dead () {
+    super.dead()
+    MobDeathStore.npcDied(this)
+  }
+
   setStats () {
-    this.frozen = 0
+    this.frozen = 1
 
     this.weapons = {
-      magic: new MagicWeapon()
+      range: new RangedWeapon()
     }
 
     // non boosted numbers
     this.stats = {
-      attack: 1,
-      strength: 1,
-      defence: 95,
-      range: 1,
+      attack: 0,
+      strength: 0,
+      defence: 55,
+      range: 120,
       magic: 120,
-      hitpoint: 15
+      hitpoint: 25
     }
 
     // with boosts
@@ -42,43 +49,43 @@ export class JalAkRekMej extends Mob {
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 25,
-        range: 0
+        magic: 0,
+        range: 25
       },
       defence: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 25,
-        range: 0
+        stab: 30,
+        slash: 30,
+        crush: 30,
+        magic: -20,
+        range: 45
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 0,
-        magicDamage: 1.25,
+        rangedStrength: 30,
+        magicDamage: 0,
         prayer: 0
       }
     }
   }
 
   get cooldown () {
-    return 4
+    return 3
   }
 
   get attackRange () {
-    return 5
+    return 4
   }
 
   get size () {
-    return 1
+    return 2
   }
 
   get image () {
-    return JalAkRekMejImage
+    return BatImage
   }
 
   get sound () {
-    return null
+    return BatSound
   }
 
   get color () {
@@ -86,10 +93,10 @@ export class JalAkRekMej extends Mob {
   }
 
   get attackStyle () {
-    return 'magic'
+    return 'range'
   }
 
-  attackAnimation (framePercent) {
+  attackAnimation (framePercent: number) {
     this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
   }
 }
