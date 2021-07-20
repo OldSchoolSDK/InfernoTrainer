@@ -2,7 +2,7 @@
 import { GameObject, Location } from './GameObject';
 import { Region } from './Region'
 import { Settings } from './Settings'
-import { Unit, UnitTypes } from './Unit'
+import { UnitTypes } from './Unit'
 
 
 export class Entity extends GameObject{

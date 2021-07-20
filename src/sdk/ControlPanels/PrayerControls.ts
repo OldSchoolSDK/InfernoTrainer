@@ -30,6 +30,13 @@ import { Settings } from '../Settings'
 import { BasePrayer } from '../Prayers/BasePrayer'
 import { Region } from '../Region'
 import { ControlPanelController } from '../ControlPanelController'
+import { Retribution } from '../Prayers/Retribution'
+import { Redemption } from '../Prayers/Redemption'
+import { Smite } from '../Prayers/Smite'
+import { Preserve } from '../Prayers/Preserve'
+import { RapidRestore } from '../Prayers/RapidRestore'
+import { RapidHeal } from '../Prayers/RapidHeal'
+import { ProtectItem } from '../Prayers/ProtectItem'
 
 export class PrayerControls extends BaseControls {
   get panelImageReference () {
@@ -53,9 +60,9 @@ export class PrayerControls extends BaseControls {
     new RockSkin(),
     new SuperhumanStrength(),
     new ImprovedReflexes(),
-    // 'Rapid Restore',
-    // 'Rapid Heal',
-    // 'Protect Item', // TODO: Replace these back
+    new RapidRestore(),
+    new RapidHeal(),
+    new ProtectItem(),
     new HawkEye(),
     new MysticLore(),
     new SteelSkin(),
@@ -66,10 +73,10 @@ export class PrayerControls extends BaseControls {
     new ProtectMelee(),
     new EagleEye(),
     new MysticMight(),
-    // 'Retribution',
-    // 'Redemption',
-    // 'Smite',
-    // 'Preserve',
+    new Retribution(),
+    new Redemption(),
+    new Smite(),
+    new Preserve(),
     new Chivalry(),
     new Piety(),
     new Rigour(),
