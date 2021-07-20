@@ -10,6 +10,11 @@ import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
 import { Region } from './Region'
 
+interface ClickAnimationFrames {
+  red: HTMLImageElement[];
+  yellow: HTMLImageElement[];
+}
+
 export class ClickAnimation {
   color: string;
   x: number;
@@ -27,7 +32,7 @@ export class ClickAnimation {
     }
   }
 
-  static frames: any;
+  static frames: ClickAnimationFrames;
   static createImage (url: string) {
     const image = new Image()
     image.src = url
@@ -56,8 +61,9 @@ export class ClickAnimation {
       return
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4)
-    region.ctx.drawImage(
-      ClickAnimation.frames[this.color][frameNumber],
+    const frames = this.color === 'red' ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
+    region.ctx.drawImage(      
+      frames[frameNumber],
       this.x - 9,
       this.y - 9
     )
