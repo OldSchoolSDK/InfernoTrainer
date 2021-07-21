@@ -8,6 +8,7 @@ import { Weapon } from './Weapon'
 
 export interface ProjectileOptions {
   forceSWTile?: boolean;
+  hidden?: boolean;
 }
 
 export class Projectile {
@@ -17,8 +18,8 @@ export class Projectile {
   from: Unit;
   to: Unit;
   distance: number;
+  options: ProjectileOptions = {};
   remainingDelay: number;
-  initialDelay: number;
   currentLocation: Location;
 
   offsetX: number;
@@ -33,6 +34,7 @@ export class Projectile {
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint
     }
+    this.options = options;
     this.currentLocation = {
       x: from.location.x + from.size / 2,
       y: from.location.y - from.size / 2 + 1
@@ -44,7 +46,6 @@ export class Projectile {
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0
       this.remainingDelay = 0
-      this.initialDelay = 0;
       return
     }
 
@@ -65,7 +66,6 @@ export class Projectile {
     }
     
     this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6)
-    this.initialDelay = this.remainingDelay;
 
   }
 }

@@ -367,6 +367,10 @@ export class Unit extends GameObject {
   drawIncomingProjectiles(tickPercent: number) {
 
     this.incomingProjectiles.forEach((projectile) => {
+      if (projectile.options.hidden) {
+        return;
+      }
+
       if (projectile.remainingDelay < 0) {
         return;
       }
