@@ -388,7 +388,7 @@ export class Player extends Unit {
     }
 
     this.drawHPBar()
-    this.drawIncomingProjectiles()
+    this.drawHitsplats()
     this.drawOverheadPrayers()
 
     this.region.ctx.restore()

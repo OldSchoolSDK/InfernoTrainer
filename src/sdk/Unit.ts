@@ -295,7 +295,7 @@ export class Unit extends GameObject {
     )
   }
 
-  drawIncomingProjectiles () {
+  drawHitsplats () {
     let projectileOffsets = [
       [0, 12],
       [0, 28],

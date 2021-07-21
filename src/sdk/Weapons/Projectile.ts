@@ -39,11 +39,9 @@ export class Projectile {
       // Things like ice barrage calculate distance to SW tile only
       this.distance = chebyshev([this.fromLocation.x, this.fromLocation.y], [this.toLocation.x, this.toLocation.y])
     } else {
-      for (let yy = 0; yy < to.size; yy++) {
-        for (let xx = 0; xx < to.size; xx++) {
-          this.distance = Math.min(this.distance, chebyshev([this.fromLocation.x, this.fromLocation.y], [this.toLocation.x + xx, this.toLocation.y - yy]))
-        }
-      }
+
+      let closestTile = to.getClosestTileTo(this.fromLocation.x, this.fromLocation.y);
+      this.distance = chebyshev([this.fromLocation.x, this.fromLocation.y], [closestTile[0], closestTile[1]]);  
     }
     this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6)
   }
