@@ -1,6 +1,6 @@
 'use strict'
 import _ from 'lodash'
-import { GameObject, Location } from './GameObject'
+import { CollisionType, GameObject, Location } from './GameObject'
 import { Mob } from './Mob'
 import { Region } from './Region'
 import { Settings } from './Settings'
@@ -25,12 +25,13 @@ export class Pathing {
   }
 
   static collidesWithAnyEntities (region: Region, x: number, y: number, s: number) {
-    for (let i = 0; i < region.entities.length; i++) {
-      if (Pathing.collisionMath(x, y, s, region.entities[i].location.x, region.entities[i].location.y, region.entities[i].size)) {
-        return true
+    for (var i = 0; i < region.entities.length; i++) {
+      let entity = region.entities[i];
+      if (entity.collisionType != CollisionType.NONE && Pathing.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
+        return true;
       }
     }
-    return false
+    return false;
   }
 
   static entitiesAtPoint (region: Region, x: number, y: number, s: number) {
@@ -41,6 +42,11 @@ export class Pathing {
       }
     }
     return entities
+  }
+
+  // Same as above but only returns entities with collision enabled.
+  static collideableEntitiesAtPoint(region: Region, x: number, y: number, s: number) {
+    return _.filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number) {
