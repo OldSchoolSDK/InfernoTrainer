@@ -33,7 +33,10 @@ export class Projectile {
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint
     }
-    this.currentLocation = from.location;
+    this.currentLocation = {
+      x: from.location.x + from.size / 2,
+      y: from.location.y - from.size / 2 + 1
+    }
     this.from = from
     this.to = to
     this.distance = 999999

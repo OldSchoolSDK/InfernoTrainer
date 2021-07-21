@@ -274,12 +274,11 @@ export class Unit extends GameObject {
       }
       if (projectile.remainingDelay != projectile.initialDelay) {
         projectile.currentLocation = {
-          x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x, 1 / (projectile.remainingDelay + 1)),
-          y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y, 1 / (projectile.remainingDelay + 1)),
+          x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
+          y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
         }  
       }
       projectile.remainingDelay--
-      
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
@@ -370,21 +369,23 @@ export class Unit extends GameObject {
       if (projectile.remainingDelay < 0) {
         return;
       }
-      if (projectile.image) {
-        // let projectilePercent = (projectile.initialDelay - projectile.remainingDelay - 1) / projectile.initialDelay + (tickPercent * (1 / projectile.initialDelay));
-        let startX = projectile.currentLocation.x;
-        let startY = projectile.currentLocation.y;
-        let endX = projectile.to.location.x;
-        let endY = projectile.to.location.y;
 
-        let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
-        let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
-    
-        this.region.ctx.save();
-        this.region.ctx.translate(
-          perceivedX * Settings.tileSize - Settings.tileSize / 2, 
-          (perceivedY) * Settings.tileSize + Settings.tileSize / 2
-        )
+      let startX = projectile.currentLocation.x;
+      let startY = projectile.currentLocation.y;
+      let endX = projectile.to.location.x + projectile.to.size / 2;
+      let endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+
+      let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
+      let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
+  
+      this.region.ctx.save();
+      this.region.ctx.translate(
+        perceivedX * Settings.tileSize, 
+        (perceivedY) * Settings.tileSize
+      )
+        
+
+      if (projectile.image) {
         this.region.ctx.rotate(Math.PI)
         this.region.ctx.drawImage(
           projectile.image,
@@ -393,8 +394,13 @@ export class Unit extends GameObject {
           Settings.tileSize,
           Settings.tileSize
         );
-        this.region.ctx.restore();
+      }else{
+        this.region.ctx.beginPath()
+        this.region.ctx.fillStyle = '#D1BB7773'
+        this.region.ctx.arc(0, 0, 5, 0, 2 * Math.PI)
+        this.region.ctx.fill()
       }
+      this.region.ctx.restore();
     });
   }
 
