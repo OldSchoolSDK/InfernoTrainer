@@ -43,10 +43,10 @@ export class Pathing {
     return entities
   }
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, framePercent: number) {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number) {
     const mobs = []
     for (let i = 0; i < region.mobs.length; i++) {
-      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(region, x, y, framePercent, region.mobs[i])
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(region, x, y, tickPercent, region.mobs[i])
       if (collidedWithSpecificMob) {
         mobs.push(region.mobs[i])
       }
@@ -54,9 +54,9 @@ export class Pathing {
     return mobs
   }
 
-  static collidesWithMobAtPerceivedDisplayLocation (region: Region, x: number, y: number, framePercent: number, mob: Unit) {
-    const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, framePercent)
-    const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, framePercent)
+  static collidesWithMobAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number, mob: Unit) {
+    const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
 
     return (Pathing.collisionMath(x, y - Settings.tileSize, 1, perceivedX, perceivedY, (mob.size) * Settings.tileSize))
   }

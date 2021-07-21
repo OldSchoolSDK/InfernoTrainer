@@ -143,7 +143,7 @@ export class Verzik extends Mob{
     return 'range';
   }
   
-  attackAnimation(framePercent: number){
-    this.region.ctx.transform(1, 0, Math.sin(-framePercent * Math.PI * 2) / 2, 1, 0, 0)
+  attackAnimation(tickPercent: number){
+    this.region.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 }

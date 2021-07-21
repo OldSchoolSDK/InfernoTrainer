@@ -139,7 +139,7 @@ export class Unit extends GameObject {
   attackStep (region: Region) {
   }
 
-  draw(framePercent: number) {
+  draw(tickPercent: number) {
     
     
   }
@@ -242,7 +242,7 @@ export class Unit extends GameObject {
     this.prayers = prayers
   }
 
-  attackAnimation (framePercent: number) {
+  attackAnimation (tickPercent: number) {
     // override pls
   }
 

@@ -114,7 +114,7 @@ export class Ranger extends Mob {
     }
   }
 
-  attackAnimation (framePercent: number) {
-    this.region.ctx.rotate(Math.sin(-framePercent * Math.PI))
+  attackAnimation (tickPercent: number) {
+    this.region.ctx.rotate(Math.sin(-tickPercent * Math.PI))
   }
 }

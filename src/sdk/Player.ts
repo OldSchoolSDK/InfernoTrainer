@@ -333,11 +333,11 @@ export class Player extends Unit {
     }
   }
 
-  draw (framePercent: number) {
+  draw (tickPercent: number) {
     LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
 
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent)
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
     // Perceived location
 

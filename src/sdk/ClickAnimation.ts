@@ -56,7 +56,7 @@ export class ClickAnimation {
     }
   }
 
-  draw (region: Region, framePercent: number) {
+  draw (region: Region, tickPercent: number) {
     if (this.ttl <= 0) {
       return
     }
