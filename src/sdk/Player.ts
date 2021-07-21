@@ -242,39 +242,6 @@ export class Player extends Unit {
         // Take the path that is the shortest absolute distance from player
         this.destinationLocation = minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
 
-
-        // const seekingTiles: Location[] = []
-        // // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
-        // // "within melee range of the npc, object, or player."
-        // for (let xx = -1; xx <= this.aggro.size; xx++) {
-        //   for (let yy = -1; yy <= this.aggro.size; yy++) {
-        //     // Edges only, and no corners.
-        //     if ((xx === -1 || xx === this.aggro.size || yy === -1 || yy === this.aggro.size) &&
-        //       ((xx !== yy) && (xx !== -1 || yy !== this.aggro.size) && (xx !== this.aggro.size || yy !== -1))) {
-        //       // Don't path into an unpathable object.
-        //       const px = this.aggro.location.x + xx
-        //       const py = this.aggro.location.y - yy
-        //       if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
-        //         seekingTiles.push({
-        //           x: px,
-        //           y: py
-        //         })
-        //       }
-        //     }
-        //   }
-        // }
-        // // Create paths to all npc tiles
-        // const validPaths = map(seekingTiles, (point: Location) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
-
-        // const validPathLengths = map(validPaths, (path: any) => path.length)
-        // // Figure out what the min distance is
-        // const shortestPathLength = min(validPathLengths)
-        // // Get all of the paths of the same minimum distance (can be more than 1)
-        // const shortestPaths = filter(map(validPathLengths, (length: any, index: number) => (length === shortestPathLength) ? seekingTiles[index] : null))
-        // // Take the path that is the shortest absolute distance from player
-        // this.destinationLocation = minBy(shortestPaths, (point: Location) => Pathing.dist(this.location.x, this.location.y, point.x, point.y))
-
-
       } else {
         this.destinationLocation = this.location
       }
