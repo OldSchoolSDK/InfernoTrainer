@@ -269,16 +269,17 @@ export class Unit extends GameObject {
   processIncomingAttacks () {
     this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.remainingDelay > -1)
     this.incomingProjectiles.forEach((projectile) => {
+      
+      projectile.currentLocation = {
+        x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
+        y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
+      }  
+      
+      projectile.remainingDelay--
+
       if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
-      if (projectile.remainingDelay != projectile.initialDelay) {
-        projectile.currentLocation = {
-          x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
-          y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
-        }  
-      }
-      projectile.remainingDelay--
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
