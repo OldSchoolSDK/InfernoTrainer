@@ -91,7 +91,7 @@ export class Region {
   }
 
   mapClick (e) {
-    const framePercent = this.frameCounter / Settings.framesPerTick
+    const tickPercent = this.frameCounter / Settings.framesPerTick
 
     let x = e.offsetX
     let y = e.offsetY
@@ -110,7 +110,7 @@ export class Region {
         clearTimeout(this.inputDelay)
       }
 
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, framePercent)
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, tickPercent)
       this.player.aggro = null
       if (mobs.length) {
         this.redClick()
@@ -162,23 +162,23 @@ export class Region {
     deadEntities.forEach((entity) => this.removeEntity(entity))
   }
 
-  drawGame (framePercent: number) {
+  drawGame (tickPercent: number) {
     // Give control panel a chance to draw, canvas -> canvas
     this.controlPanel.draw(this)
 
     // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(framePercent))
+    this.entities.forEach((entity) => entity.draw(tickPercent))
 
     if (this.heldDown <= 0) {
-      this.mobs.forEach((mob) => mob.draw(framePercent))
+      this.mobs.forEach((mob) => mob.draw(tickPercent))
     }
-    this.player.draw(framePercent)
+    this.player.draw(tickPercent)
 
     this.ctx.restore()
 
     this.contextMenu.draw(this)
     if (this.clickAnimation) {
-      this.clickAnimation.draw(this, framePercent)
+      this.clickAnimation.draw(this, tickPercent)
     }
   }
 
@@ -203,7 +203,7 @@ export class Region {
     this.frameTime = performance.now() - t
   }
 
-  draw (framePercent: number) {
+  draw (tickPercent: number) {
     this.ctx.globalAlpha = 1
     this.ctx.fillStyle = 'black'
 
@@ -217,9 +217,9 @@ export class Region {
     
     this.ctx.drawImage(this.gridCanvas, 0, 0);
 
-    this.drawGame(framePercent)
+    this.drawGame(tickPercent)
 
-    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, framePercent);
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, tickPercent);
 
     this.ctx.restore()
     this.ctx.save()

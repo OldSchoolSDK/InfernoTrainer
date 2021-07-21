@@ -111,8 +111,8 @@ export class Mager extends Mob {
     return 70
   }
 
-  attackAnimation (framePercent: number) {
-    this.region.ctx.rotate(framePercent * Math.PI * 2)
+  attackAnimation (tickPercent: number) {
+    this.region.ctx.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {

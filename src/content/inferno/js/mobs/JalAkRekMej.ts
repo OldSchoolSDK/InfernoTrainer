@@ -89,7 +89,7 @@ export class JalAkRekMej extends Mob {
     return 'magic'
   }
 
-  attackAnimation (framePercent: number) {
-    this.region.ctx.translate(Math.sin(framePercent * Math.PI * 4) * 2, Math.sin(framePercent * Math.PI * -2))
+  attackAnimation (tickPercent: number) {
+    this.region.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 }

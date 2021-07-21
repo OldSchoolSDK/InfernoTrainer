@@ -43,7 +43,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
       let castsAllowed = this.maxConcurrentHits
       const alreadyCastedOn: Mob[] = []
       this.aoe.forEach((point) => {
-        Pathing.mobsAroundMob(region, to, point)
+        Pathing.mobsInAreaOfEffectOfMob(region, to, point)
           .forEach((mob: Mob) => {
             if (castsAllowed <= 0) {
               return
@@ -62,7 +62,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
   }
 
   attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
-    super.attack(region, from, to, bonuses, true)    
+    super.attack(region, from, to, bonuses, { forceSWTile: true })    
     if (this.damage > 0) {
       to.frozen = 32
     }

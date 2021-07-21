@@ -24,7 +24,7 @@ export class Entity extends GameObject{
 
   }
 
-  draw (framePercent: number) {
+  draw (tickPercent: number) {
     this.region.ctx.fillStyle = '#000073'
 
     this.region.ctx.fillRect(

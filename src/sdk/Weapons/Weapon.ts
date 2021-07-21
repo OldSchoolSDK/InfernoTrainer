@@ -48,6 +48,10 @@ export class Weapon extends Item{
     return false;
   }
 
+  get image(): string {
+    return '';
+  }
+
   get attackRange(): number {
     return 0
   }

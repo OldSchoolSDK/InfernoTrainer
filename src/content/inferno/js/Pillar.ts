@@ -75,11 +75,11 @@ export class Pillar extends Entity {
   }
 
   tick () {
-    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.delay > -1)
+    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.remainingDelay > -1)
 
     this.incomingProjectiles.forEach((projectile) => {
-      projectile.delay--
-      if (projectile.delay <= 0) {
+      projectile.remainingDelay--
+      if (projectile.remainingDelay <= 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
     })
@@ -137,7 +137,7 @@ export class Pillar extends Entity {
 
     let projectileCounter = 0
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0) {
+      if (projectile.remainingDelay > 0) {
         return
       }
       if (projectileCounter > 3) {

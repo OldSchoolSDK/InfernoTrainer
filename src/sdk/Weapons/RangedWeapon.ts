@@ -5,6 +5,7 @@ import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { AttackBonuses, Weapon } from './Weapon'
+import RangerWeaponImage from '../../assets/images/prayers/range.png'
 
 export class RangedWeapon extends Weapon {
   damage: number;
@@ -26,7 +27,11 @@ export class RangedWeapon extends Weapon {
       from.grantXp(new XpDrop('range', this.damage * 4));
     }
 
-    to.addProjectile(new Projectile(damage, from, to, 'range', false))
+    to.addProjectile(new Projectile(this, damage, from, to, 'range'))
+  }
+
+  get image(): string { 
+    return RangerWeaponImage;
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {

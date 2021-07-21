@@ -107,8 +107,8 @@ export class Blob extends Mob {
     return '#7300FF33'
   }
 
-  attackAnimation (framePercent: number) {
-    this.region.ctx.scale(1 + Math.sin(framePercent * Math.PI) / 4, 1 - Math.sin(framePercent * Math.PI) / 4)
+  attackAnimation (tickPercent: number) {
+    this.region.ctx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {

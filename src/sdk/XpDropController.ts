@@ -69,7 +69,7 @@ export class XpDropController {
     }
   }
 
-  draw(destinationCanvas: CanvasRenderingContext2D, x: number, y: number, framePercent: number){
+  draw(destinationCanvas: CanvasRenderingContext2D, x: number, y: number, tickPercent: number){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     const skillInfo = find(XpDropController.skills, {type: this.lastDropSkill});
 
@@ -120,10 +120,10 @@ export class XpDropController {
         this.ctx.drawImage(
           skillInfo.image, 
           110 - this.ctx.measureText(String(drop.xp)).width - 20, 
-          (index - framePercent) * textSize - 13 + xpDropYOffset, 16, 16)
+          (index - tickPercent) * textSize - 13 + xpDropYOffset, 16, 16)
       }
       
-      this.ctx.fillText(String(drop.xp), 110, (index - framePercent) * textSize + xpDropYOffset);
+      this.ctx.fillText(String(drop.xp), 110, (index - tickPercent) * textSize + xpDropYOffset);
 
     })
     destinationCanvas.drawImage(this.canvas, x, y);

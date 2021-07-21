@@ -10,6 +10,7 @@ import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
 import { Weapon } from './Weapons/Weapon'
 import { GameObject, Location } from './GameObject'
+import { Pathing } from './Pathing'
 
 export enum UnitTypes {
   MOB = 0,
@@ -139,7 +140,7 @@ export class Unit extends GameObject {
   attackStep (region: Region) {
   }
 
-  draw(framePercent: number) {
+  draw(tickPercent: number) {
     
     
   }
@@ -242,7 +243,7 @@ export class Unit extends GameObject {
     this.prayers = prayers
   }
 
-  attackAnimation (framePercent: number) {
+  attackAnimation (tickPercent: number) {
     // override pls
   }
 
@@ -266,12 +267,19 @@ export class Unit extends GameObject {
   }
 
   processIncomingAttacks () {
-    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.delay > -1)
+    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.remainingDelay > -1)
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay === 0) {
+      
+      projectile.currentLocation = {
+        x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
+        y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
+      }  
+      
+      projectile.remainingDelay--
+
+      if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
-      projectile.delay--
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
@@ -295,7 +303,7 @@ export class Unit extends GameObject {
     )
   }
 
-  drawIncomingProjectiles () {
+  drawHitsplats () {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -305,7 +313,7 @@ export class Unit extends GameObject {
 
     let projectileCounter = 0
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0) {
+      if (projectile.remainingDelay > 0) {
         return
       }
       if (projectileCounter > 3) {
@@ -353,4 +361,48 @@ export class Unit extends GameObject {
       )
     }
   }
+
+
+  // The rendering context is the world.
+  drawIncomingProjectiles(tickPercent: number) {
+
+    this.incomingProjectiles.forEach((projectile) => {
+      if (projectile.remainingDelay < 0) {
+        return;
+      }
+
+      let startX = projectile.currentLocation.x;
+      let startY = projectile.currentLocation.y;
+      let endX = projectile.to.location.x + projectile.to.size / 2;
+      let endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+
+      let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
+      let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
+  
+      this.region.ctx.save();
+      this.region.ctx.translate(
+        perceivedX * Settings.tileSize, 
+        (perceivedY) * Settings.tileSize
+      )
+        
+
+      if (projectile.image) {
+        this.region.ctx.rotate(Math.PI)
+        this.region.ctx.drawImage(
+          projectile.image,
+          -Settings.tileSize / 2, 
+          -Settings.tileSize / 2,
+          Settings.tileSize,
+          Settings.tileSize
+        );
+      }else{
+        this.region.ctx.beginPath()
+        this.region.ctx.fillStyle = '#D1BB7773'
+        this.region.ctx.arc(0, 0, 5, 0, 2 * Math.PI)
+        this.region.ctx.fill()
+      }
+      this.region.ctx.restore();
+    });
+  }
+
 }

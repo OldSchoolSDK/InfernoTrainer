@@ -95,6 +95,8 @@ export class Mob extends Unit {
     if (this.dying === 0) {
       return
     }
+    this.processIncomingAttacks()
+
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     this.setHasLOS()
@@ -163,7 +165,6 @@ export class Mob extends Unit {
       return
     }
 
-    this.processIncomingAttacks()
     this.attackIfPossible()
     this.detectDeath()
   }
@@ -257,11 +258,12 @@ export class Mob extends Unit {
     ]
   }
 
-  draw (framePercent: number) {
+  draw (tickPercent: number) {
     LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, framePercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, framePercent)
+    
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
     this.region.ctx.save()
     this.region.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
@@ -294,7 +296,7 @@ export class Mob extends Unit {
     // if (this.currentAnimation !== null) {
     //   const animationLength = this.currentAnimation.length
     //   // TODO multi-tick animations.
-    //   const currentFrame = Math.floor(framePercent * animationLength)
+    //   const currentFrame = Math.floor(tickPercent * animationLength)
     //   if (currentFrame < animationLength) {
     //     currentImage = this.currentAnimation[currentFrame]
     //   } else {
@@ -319,7 +321,7 @@ export class Mob extends Unit {
 
     this.region.ctx.save()
     if (this.shouldShowAttackAnimation()) {
-      this.attackAnimation(framePercent)
+      this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
@@ -339,6 +341,7 @@ export class Mob extends Unit {
       this.region.ctx.scale(-1, 1)
     }
 
+    
     if (LineOfSight.hasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, this.region.player.attackRange)) {
       this.region.ctx.strokeStyle = '#00FF0073'
       this.region.ctx.lineWidth = 1
@@ -352,10 +355,12 @@ export class Mob extends Unit {
 
     this.drawHPBar()
 
-    this.drawIncomingProjectiles()
+    this.drawHitsplats()
 
     this.drawOverheadPrayers()
 
     this.region.ctx.restore()
+    this.drawIncomingProjectiles(tickPercent)
+
   }
 }
