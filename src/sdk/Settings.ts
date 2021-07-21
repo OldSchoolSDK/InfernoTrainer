@@ -4,23 +4,23 @@ export class Settings {
   static tileSize = 23;
   static framesPerTick = 30;
   static tickMs = 600;
-  static playsAudio;
-  static inputDelay;
-  static rotated;
-  static scenario;
+  static playsAudio: boolean;
+  static inputDelay: number;
+  static rotated: string;
+  static scenario: string;
 
-  static inventory_key;
-  static spellbook_key;
-  static equipment_key;
-  static prayer_key;
+  static inventory_key: string;
+  static spellbook_key: string;
+  static equipment_key: string;
+  static prayer_key: string;
 
   static is_keybinding = false;
 
   static persistToStorage () {
     // window.localStorage.setItem('tileSize', Settings.tileSize);
     // window.localStorage.setItem('framesPerTick', Settings.framesPerTick);
-    window.localStorage.setItem('playsAudio', Settings.playsAudio)
-    window.localStorage.setItem('inputDelay', Settings.inputDelay)
+    window.localStorage.setItem('playsAudio', String(Settings.playsAudio))
+    window.localStorage.setItem('inputDelay', String(Settings.inputDelay))
     window.localStorage.setItem('rotated', Settings.rotated)
     window.localStorage.setItem('scenario', Settings.scenario)
 

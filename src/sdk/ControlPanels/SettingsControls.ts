@@ -192,7 +192,7 @@ export class SettingsControls extends BaseControls {
     ctrl.ctx.fillStyle = '#FFFF00'
     ctrl.ctx.font = '16px OSRS'
     ctrl.ctx.textAlign = 'center'
-    ctrl.ctx.fillText(Settings.inputDelay, x + 96, y + 48)
+    ctrl.ctx.fillText(String(Settings.inputDelay), x + 96, y + 48)
     ctrl.ctx.drawImage(this.greenDownImage, x + 90, y + 51)
     ctrl.ctx.fillText('Lag', x + 97, y + 81)
 
