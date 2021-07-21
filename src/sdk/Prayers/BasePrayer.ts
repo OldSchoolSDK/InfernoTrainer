@@ -1,17 +1,18 @@
 'use strict'
 
+export enum PrayerGroups {
+  OVERHEADS = 'overheads',
+  DEFENCE = 'defence',
+  STRENGTH ='strength',
+  ATTACK = 'attack',
+  MAGIC = 'magic',
+  RANGE = 'range',
+  HEARTS = 'hearts',
+  PROTECTITEM = 'protectitem',
+  PRESERVE = 'preserve',
+}
+
 export class BasePrayer {
-  static groups = {
-    OVERHEADS: 'overheads',
-    DEFENCE: 'defence',
-    STRENGTH: 'strength',
-    ATTACK: 'attack',
-    MAGIC: 'magic',
-    RANGE: 'range',
-    HEARTS: 'hearts',
-    PROTECTITEM: 'protectitem',
-    PRESERVE: 'preserve'
-  };
 
   isActive: boolean;
   cachedImage: HTMLImageElement;
@@ -28,7 +29,7 @@ export class BasePrayer {
     return 'Protect from Magic'
   }
 
-  get groups (): string[] {
+  get groups (): PrayerGroups[] {
     return []
   }
 

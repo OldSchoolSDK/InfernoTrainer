@@ -1,5 +1,5 @@
 import { find, intersection } from 'lodash'
-import { BasePrayer } from '../Prayers/BasePrayer'
+import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
 import { Region } from '../Region'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
@@ -53,7 +53,7 @@ export class MagicWeapon extends Weapon {
       }
     }
     if (to.type !== UnitTypes.MOB) {
-      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [BasePrayer.groups.OVERHEADS]).length) as BasePrayer
+      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [PrayerGroups.OVERHEADS]).length) as BasePrayer
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }

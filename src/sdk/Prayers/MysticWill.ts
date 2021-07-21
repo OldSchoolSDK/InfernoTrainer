@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class MysticWill extends BasePrayer {
@@ -8,8 +8,8 @@ export class MysticWill extends BasePrayer {
     return 'Mystic Will'
   }
 
-  get groups () {
-    return [BasePrayer.groups.MAGIC, BasePrayer.groups.DEFENCE]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
   }
 
   isOverhead () {

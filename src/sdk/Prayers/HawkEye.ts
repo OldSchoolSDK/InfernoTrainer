@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class HawkEye extends BasePrayer {
@@ -9,7 +9,7 @@ export class HawkEye extends BasePrayer {
   }
 
   get groups () {
-    return [BasePrayer.groups.RANGE]
+    return [PrayerGroups.RANGE]
   }
 
   isOverhead () {

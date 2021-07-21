@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class SharpEye extends BasePrayer {
@@ -8,8 +8,8 @@ export class SharpEye extends BasePrayer {
     return 'Sharp Eye'
   }
 
-  get groups () {
-    return [BasePrayer.groups.RANGE]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.RANGE]
   }
 
   isOverhead () {

@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class SuperhumanStrength extends BasePrayer {
@@ -8,8 +8,8 @@ export class SuperhumanStrength extends BasePrayer {
     return 'Superhuman Strength'
   }
 
-  get groups () {
-    return [BasePrayer.groups.STRENGTH]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.STRENGTH]
   }
 
   isOverhead () {

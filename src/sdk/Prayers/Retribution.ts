@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class Retribution extends BasePrayer {
@@ -8,8 +8,8 @@ export class Retribution extends BasePrayer {
     return 'Retribution'
   }
 
-  get groups (): string[] {
-    return [] // TODO: Incorrect
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS] // TODO: Incorrect
   }
 
   isOverhead () {
