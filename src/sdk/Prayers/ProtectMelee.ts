@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import OverheadImg from '../../assets/images/prayers/meleeOver.png'
 
 import OnSound from '../../assets/sounds/meleeOn.ogg'
@@ -12,8 +12,8 @@ export class ProtectMelee extends BasePrayer {
     return 'Protect from Melee'
   }
 
-  get groups () {
-    return [BasePrayer.groups.OVERHEADS]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS]
   }
 
   isOverhead () {

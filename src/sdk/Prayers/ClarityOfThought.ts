@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class ClarityOfThought extends BasePrayer {
@@ -9,7 +9,7 @@ export class ClarityOfThought extends BasePrayer {
   }
 
   get groups () {
-    return [BasePrayer.groups.ATTACK]
+    return [PrayerGroups.ATTACK]
   }
 
   isOverhead () {

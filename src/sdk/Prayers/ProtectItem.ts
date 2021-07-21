@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class ProtectItem extends BasePrayer {
@@ -8,8 +8,8 @@ export class ProtectItem extends BasePrayer {
     return 'Protect Item'
   }
 
-  get groups (): string[] {
-    return [] // TODO: Incorrect
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.PROTECTITEM] // TODO: Incorrect
   }
 
   isOverhead () {

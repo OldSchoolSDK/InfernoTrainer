@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import { Settings } from '../Settings'
 
 export class IncredibleReflexes extends BasePrayer {
@@ -8,8 +8,8 @@ export class IncredibleReflexes extends BasePrayer {
     return 'Incredible Reflexes'
   }
 
-  get groups () {
-    return [BasePrayer.groups.ATTACK]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.ATTACK]
   }
 
   isOverhead () {

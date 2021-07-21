@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import OverheadImg from '../../assets/images/prayers/mageOver.png'
 import OnSound from '../../assets/sounds/mageOn.ogg'
 import OffSound from '../../assets/sounds/mageOff.ogg'
@@ -11,8 +11,8 @@ export class ProtectMage extends BasePrayer {
     return 'Protect from Magic'
   }
 
-  get groups () {
-    return [BasePrayer.groups.OVERHEADS]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS]
   }
 
   isOverhead () {

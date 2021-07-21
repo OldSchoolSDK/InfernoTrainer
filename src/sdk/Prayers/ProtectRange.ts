@@ -1,6 +1,6 @@
 'use strict'
 
-import { BasePrayer } from './BasePrayer'
+import { BasePrayer, PrayerGroups } from './BasePrayer'
 import OverheadImg from '../../assets/images/prayers/rangeOver.png'
 
 import OnSound from '../../assets/sounds/rangeOn.ogg'
@@ -12,8 +12,8 @@ export class ProtectRange extends BasePrayer {
     return 'Protect from Range'
   }
 
-  get groups () {
-    return [BasePrayer.groups.OVERHEADS]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS]
   }
 
   isOverhead () {
