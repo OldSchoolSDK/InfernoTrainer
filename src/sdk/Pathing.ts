@@ -67,7 +67,7 @@ export class Pathing {
   }
 
   // point.x + to.location.x, point.y + to.location.y
-  static mobsAroundMob (region: Region, mob: GameObject, point: Location) {
+  static mobsInAreaOfEffectOfMob (region: Region, mob: GameObject, point: Location) {
     const mobs = []
     for (let i = 0; i < region.mobs.length; i++) {
       const collidedWithSpecificMob = region.mobs[i].location.x === point.x + mob.location.x && region.mobs[i].location.y === point.y + mob.location.y
