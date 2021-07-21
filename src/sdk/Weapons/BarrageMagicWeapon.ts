@@ -4,6 +4,7 @@ import { Region } from '../Region'
 import { Unit } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { MagicWeapon } from './MagicWeapon'
+import { ProjectileOptions } from './Projectile'
 import { AttackBonuses } from './Weapon'
 
 export class BarrageMagicWeapon extends MagicWeapon {
@@ -25,6 +26,10 @@ export class BarrageMagicWeapon extends MagicWeapon {
     ]
   }
 
+  get image(): string{
+    return null;
+  }
+
   get attackRange () {
     return 10
   }
@@ -40,20 +45,19 @@ export class BarrageMagicWeapon extends MagicWeapon {
   cast (region: Region, from: Unit, to: Unit) {
     // calculate AoE magic effects
     if (this.aoe.length) {
-      let castsAllowed = this.maxConcurrentHits
-      const alreadyCastedOn: Mob[] = []
+      const alreadyCastedOn: Unit[] = [ to ]
+      this.attack(region, from, to, { magicBaseSpellDamage: 30 })
       this.aoe.forEach((point) => {
         Pathing.mobsInAreaOfEffectOfMob(region, to, point)
           .forEach((mob: Mob) => {
-            if (castsAllowed <= 0) {
+            if (alreadyCastedOn.length > this.maxConcurrentHits) {
               return
             }
             if (alreadyCastedOn.indexOf(mob) > -1) {
               return
             }
             alreadyCastedOn.push(mob)
-            castsAllowed--
-            this.attack(region, from, mob, { magicBaseSpellDamage: 30 })
+            this.attack(region, from, mob, { magicBaseSpellDamage: 30 }, {hidden: true})
           })
       })
     } else {
@@ -61,8 +65,9 @@ export class BarrageMagicWeapon extends MagicWeapon {
     }
   }
 
-  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
-    super.attack(region, from, to, bonuses, { forceSWTile: true })    
+  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+    options.forceSWTile = true;
+    super.attack(region, from, to, bonuses, options)    
     if (this.damage > 0) {
       to.frozen = 32
     }
