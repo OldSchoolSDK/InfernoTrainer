@@ -266,12 +266,12 @@ export class Unit extends GameObject {
   }
 
   processIncomingAttacks () {
-    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.delay > -1)
+    this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.remainingDelay > -1)
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay === 0) {
+      if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
-      projectile.delay--
+      projectile.remainingDelay--
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
@@ -305,7 +305,7 @@ export class Unit extends GameObject {
 
     let projectileCounter = 0
     this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.delay > 0) {
+      if (projectile.remainingDelay > 0) {
         return
       }
       if (projectileCounter > 3) {

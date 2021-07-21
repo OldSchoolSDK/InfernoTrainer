@@ -12,7 +12,7 @@ export class Projectile {
   fromLocation: Location;
   toLocation: Location;
   distance: number;
-  delay: number;
+  remainingDelay: number;
 
   offsetX: number;
   offsetY: number;
@@ -31,7 +31,7 @@ export class Projectile {
 
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0
-      this.delay = 0
+      this.remainingDelay = 0
       return
     }
 
@@ -45,6 +45,6 @@ export class Projectile {
         }
       }
     }
-    this.delay = Math.floor(1 + (3 + this.distance) / 6)
+    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6)
   }
 }
