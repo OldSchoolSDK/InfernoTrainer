@@ -2,7 +2,7 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, filter, find, map, min } from 'lodash'
+import { minBy, range, filter, find, map, min } from 'lodash'
 import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
 import { Region } from './Region'
@@ -198,36 +198,83 @@ export class Player extends Unit {
           console.log("I don't understand what could cause this, but i'd like to find out")
         }
       } else if (!this.hasLOS) {
-        const seekingTiles: Location[] = []
+
+
+        const seekingTiles: Location[] = [];
         // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
         // "within melee range of the npc, object, or player."
-        for (let xx = -1; xx <= this.aggro.size; xx++) {
-          for (let yy = -1; yy <= this.aggro.size; yy++) {
-            // Edges only, and no corners.
-            if ((xx === -1 || xx === this.aggro.size || yy === -1 || yy === this.aggro.size) &&
-              ((xx !== yy) && (xx !== -1 || yy !== this.aggro.size) && (xx !== this.aggro.size || yy !== -1))) {
-              // Don't path into an unpathable object.
-              const px = this.aggro.location.x + xx
-              const py = this.aggro.location.y - yy
-              if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
-                seekingTiles.push({
-                  x: px,
-                  y: py
-                })
-              }
+        // For implementation reasons we also ensure the north/south tiles are added to seekingTiles *first* so that
+        // in cases of ties, the north and south tiles are picked by minBy below.
+        const aggroSize = this.aggro.size;
+        range(0, aggroSize).forEach(xx => {
+          [-1, this.aggro.size].forEach(yy => {
+            // Don't path into an unpathable object.
+            const px = this.aggro.location.x + xx;
+            const py = this.aggro.location.y - yy;
+            if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
+              seekingTiles.push({
+                x: px,
+                y: py
+              });
             }
-          }
-        }
+          });
+        });
+        range(0, aggroSize).forEach(yy => {
+          [-1, this.aggro.size].forEach(xx => {
+            // Don't path into an unpathable object.
+            const px = this.aggro.location.x + xx;
+            const py = this.aggro.location.y - yy;
+            if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
+              seekingTiles.push({
+                x: px,
+                y: py
+              });
+            }
+          });
+        });
         // Create paths to all npc tiles
-        const validPaths = map(seekingTiles, (point: Location) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
-
-        const validPathLengths = map(validPaths, (path: any) => path.length)
+        const potentialPaths = map(seekingTiles, (point) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }));
+        const potentialPathLengths = map(potentialPaths, (path) => path.length);
         // Figure out what the min distance is
-        const shortestPathLength = min(validPathLengths)
+        const shortestPathLength = min(potentialPathLengths);
         // Get all of the paths of the same minimum distance (can be more than 1)
-        const shortestPaths = filter(map(validPathLengths, (length: any, index: number) => (length === shortestPathLength) ? seekingTiles[index] : null))
+        const shortestPaths = filter(map(potentialPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
         // Take the path that is the shortest absolute distance from player
-        this.destinationLocation = minBy(shortestPaths, (point: Location) => Pathing.dist(this.location.x, this.location.y, point.x, point.y))
+        this.destinationLocation = minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
+
+
+        // const seekingTiles: Location[] = []
+        // // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
+        // // "within melee range of the npc, object, or player."
+        // for (let xx = -1; xx <= this.aggro.size; xx++) {
+        //   for (let yy = -1; yy <= this.aggro.size; yy++) {
+        //     // Edges only, and no corners.
+        //     if ((xx === -1 || xx === this.aggro.size || yy === -1 || yy === this.aggro.size) &&
+        //       ((xx !== yy) && (xx !== -1 || yy !== this.aggro.size) && (xx !== this.aggro.size || yy !== -1))) {
+        //       // Don't path into an unpathable object.
+        //       const px = this.aggro.location.x + xx
+        //       const py = this.aggro.location.y - yy
+        //       if (!Pathing.collidesWithAnyEntities(this.region, px, py, 1)) {
+        //         seekingTiles.push({
+        //           x: px,
+        //           y: py
+        //         })
+        //       }
+        //     }
+        //   }
+        // }
+        // // Create paths to all npc tiles
+        // const validPaths = map(seekingTiles, (point: Location) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }))
+
+        // const validPathLengths = map(validPaths, (path: any) => path.length)
+        // // Figure out what the min distance is
+        // const shortestPathLength = min(validPathLengths)
+        // // Get all of the paths of the same minimum distance (can be more than 1)
+        // const shortestPaths = filter(map(validPathLengths, (length: any, index: number) => (length === shortestPathLength) ? seekingTiles[index] : null))
+        // // Take the path that is the shortest absolute distance from player
+        // this.destinationLocation = minBy(shortestPaths, (point: Location) => Pathing.dist(this.location.x, this.location.y, point.x, point.y))
+
+
       } else {
         this.destinationLocation = this.location
       }
