@@ -10,6 +10,7 @@ import { Weapon } from './Weapons/Weapon'
 import { BasePrayer } from './Prayers/BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
+import { Mob } from './Mob'
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -182,7 +183,7 @@ export class Player extends Unit {
           for (let xx = -maxDist; xx < maxDist; xx++) {
             const x = this.location.x + xx
             const y = this.location.y + yy
-            if (Pathing.canTileBePathedTo(this.region, x, y, 1, true)) {
+            if (Pathing.canTileBePathedTo(this.region, x, y, 1, {} as Mob)) {
               const distance = Pathing.dist(this.location.x, this.location.y, x, y)
               if (distance > 0 && distance < bestDistance) {
                 bestDistance = distance

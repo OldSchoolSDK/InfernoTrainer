@@ -9,10 +9,12 @@ import { XpDropController } from './XpDropController'
 import { Unit } from './Unit'
 import { Player } from './Player'
 import { Entity } from './Entity'
+import { Mob } from './Mob'
+import { GameObject } from './GameObject'
 
 export class Region {
   wave: string;
-  mobs: Unit[] = [];
+  mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
   frameCounter: number = 0
   heldDown: number = 6
@@ -258,7 +260,7 @@ export class Region {
     remove(this.entities, entity)
   }
 
-  addMob (mob: Unit) {
+  addMob (mob: Mob) {
     this.mobs.push(mob)
   }
 

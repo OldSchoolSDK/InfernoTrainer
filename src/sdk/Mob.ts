@@ -130,9 +130,9 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      const both = Pathing.canTileBePathedTo(this.region, dx, dy, this.size, this.consumesSpace)
-      const xSpace = Pathing.canTileBePathedTo(this.region, dx, this.location.y, this.size, this.consumesSpace)
-      const ySpace = Pathing.canTileBePathedTo(this.region, this.location.x, dy, this.size, this.consumesSpace)
+      const both = Pathing.canTileBePathedTo(this.region, dx, dy, this.size, this.consumesSpace as Mob)
+      const xSpace = Pathing.canTileBePathedTo(this.region, dx, this.location.y, this.size, this.consumesSpace as Mob)
+      const ySpace = Pathing.canTileBePathedTo(this.region, this.location.x, dy, this.size, this.consumesSpace as Mob)
       const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace)
       if (both && cornerFilter) {
         this.location.x = dx

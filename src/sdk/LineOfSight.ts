@@ -1,8 +1,10 @@
 'use strict'
 
-import _ from 'lodash'
+import { minBy } from 'lodash'
 import { Settings } from './Settings'
 import { Pathing } from './Pathing'
+import { Region } from './Region'
+import { GameObject, Location } from './GameObject'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -10,7 +12,7 @@ import { Pathing } from './Pathing'
  I have no clue how it works, nor do I care.
 */
 export class LineOfSight {
-  static drawLOS (region, x, y, s, r, c, isNPC) {
+  static drawLOS (region: Region, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
     region.ctx.globalAlpha = 0.4
     for (let i = 0; i < 870; i++) {
       region.ctx.fillStyle = c
@@ -30,11 +32,11 @@ export class LineOfSight {
     region.ctx.globalAlpha = 1
   }
 
-  static hasLineOfSightOfPlayer (region, x, y, s, r = 1, isNPC = true) {
+  static hasLineOfSightOfPlayer (region: Region, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
     return LineOfSight.hasLineOfSight(region, x, y, region.player.location.x, region.player.location.y, s, r, isNPC)
   }
 
-  static closestPointTo (x, y, mob) {
+  static closestPointTo (x: number, y: number, mob: GameObject) {
     const corners = []
     for (let xx = 0; xx < mob.size; xx++) {
       for (let yy = 0; yy < mob.size; yy++) {
@@ -45,15 +47,15 @@ export class LineOfSight {
       }
     }
 
-    return _.minBy(corners, (point) => Pathing.dist(x, y, point.x, point.y))
+    return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
 
-  static hasLineOfSightOfMob (region, x, y, mob, r = 1, isNPC = false) {
+  static hasLineOfSightOfMob (region: Region, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
     const mobPoint = LineOfSight.closestPointTo(x, y, mob)
     return LineOfSight.hasLineOfSight(region, x, y, mobPoint.x, mobPoint.y, 1, r, false)
   }
 
-  static hasLineOfSight (region, x1, y1, x2, y2, s = 1, r = 1, isNPC = false) {
+  static hasLineOfSight (region: Region, x1: number, y1: number, x2: number, y2: number, s: number = 1, r: number = 1, isNPC: boolean = false): boolean {
     const dx = x2 - x1
     const dy = y2 - y1
     if (Pathing.collidesWithAnyEntities(region, x1, y1, 1) || Pathing.collidesWithAnyEntities(region, x2, y2, 1) || Pathing.collisionMath(x1, y1, s, x2, y2, 1)) {
