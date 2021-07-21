@@ -16,7 +16,7 @@ class NibblerWeapon extends MeleeWeapon {
   attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses) {
     const damage = Math.floor(Math.random() * 5)
     this.damage = damage;
-    to.addProjectile(new Projectile(this.damage, from, to, 'crush', false))
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'crush'))
   }
 }
 

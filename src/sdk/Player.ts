@@ -258,10 +258,14 @@ export class Player extends Unit {
 
   movementStep () {
 
+  
     this.activatePrayers()
 
     this.pathToAggro()
 
+    this.processIncomingAttacks()
+
+    
     this.moveTorwardsDestination()
   }
 
@@ -281,8 +285,6 @@ export class Player extends Unit {
 
   attackStep (region: Region) {
     this.clearXpDrops();
-
-    this.processIncomingAttacks()
 
     this.attackIfPossible()
 
@@ -345,6 +347,8 @@ export class Player extends Unit {
 
     this.region.ctx.save()
 
+    this.drawIncomingProjectiles(tickPercent);
+
     this.region.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
@@ -353,6 +357,8 @@ export class Player extends Unit {
     if (Settings.rotated === 'south') {
       this.region.ctx.rotate(Math.PI)
     }
+
+
 
     this.drawHPBar()
     this.drawHitsplats()

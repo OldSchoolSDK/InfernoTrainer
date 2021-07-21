@@ -9,6 +9,7 @@ import RangerSound from '../../assets/sounds/ranger.ogg'
 import { MobDeathStore } from '../MobDeathStore'
 import { Pathing } from '../../../../sdk/Pathing'
 
+
 export class Ranger extends Mob {
   get displayName () {
     return 'Jal-Xil'

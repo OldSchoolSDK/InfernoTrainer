@@ -10,6 +10,7 @@ import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
 import { Weapon } from './Weapons/Weapon'
 import { GameObject, Location } from './GameObject'
+import { Pathing } from './Pathing'
 
 export enum UnitTypes {
   MOB = 0,
@@ -271,7 +272,14 @@ export class Unit extends GameObject {
       if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
+      if (projectile.remainingDelay != projectile.initialDelay) {
+        projectile.currentLocation = {
+          x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x, 1 / (projectile.remainingDelay + 1)),
+          y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y, 1 / (projectile.remainingDelay + 1)),
+        }  
+      }
       projectile.remainingDelay--
+      
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
@@ -353,4 +361,41 @@ export class Unit extends GameObject {
       )
     }
   }
+
+
+  // The rendering context is the world.
+  drawIncomingProjectiles(tickPercent: number) {
+
+    this.incomingProjectiles.forEach((projectile) => {
+      if (projectile.remainingDelay < 0) {
+        return;
+      }
+      if (projectile.image) {
+        // let projectilePercent = (projectile.initialDelay - projectile.remainingDelay - 1) / projectile.initialDelay + (tickPercent * (1 / projectile.initialDelay));
+        let startX = projectile.currentLocation.x;
+        let startY = projectile.currentLocation.y;
+        let endX = projectile.to.location.x;
+        let endY = projectile.to.location.y;
+
+        let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
+        let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
+    
+        this.region.ctx.save();
+        this.region.ctx.translate(
+          perceivedX * Settings.tileSize - Settings.tileSize / 2, 
+          (perceivedY) * Settings.tileSize + Settings.tileSize / 2
+        )
+        this.region.ctx.rotate(Math.PI)
+        this.region.ctx.drawImage(
+          projectile.image,
+          -Settings.tileSize / 2, 
+          -Settings.tileSize / 2,
+          Settings.tileSize,
+          Settings.tileSize
+        );
+        this.region.ctx.restore();
+      }
+    });
+  }
+
 }

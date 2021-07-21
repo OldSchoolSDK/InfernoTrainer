@@ -3,13 +3,14 @@ import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
 import { Region } from '../Region'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
-import { Projectile } from './Projectile'
+import { Projectile, ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from './Weapon'
+import MagerWeaponImage from '../../assets/images/prayers/mage.png'
 
 export class MagicWeapon extends Weapon {
   damage: number;
 
-  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}, forceSWOnly: boolean = false) {
+  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     bonuses.isAccurate = bonuses.isAccurate || false
@@ -28,7 +29,12 @@ export class MagicWeapon extends Weapon {
       from.grantXp(new XpDrop('magic', this.damage * 4));
     }
 
-    to.addProjectile(new Projectile(this.damage, from, to, 'magic', forceSWOnly))
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'magic', options))
+  }
+
+
+  get image(): string { 
+    return MagerWeaponImage;
   }
 
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {

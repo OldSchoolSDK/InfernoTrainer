@@ -62,7 +62,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
   }
 
   attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
-    super.attack(region, from, to, bonuses, true)    
+    super.attack(region, from, to, bonuses, { forceSWTile: true })    
     if (this.damage > 0) {
       to.frozen = 32
     }

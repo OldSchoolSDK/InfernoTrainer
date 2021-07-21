@@ -31,7 +31,7 @@ export class MeleeWeapon extends Weapon {
       from.grantXp(new XpDrop('attack', damage * 4));
     }
 
-    to.addProjectile(new Projectile(damage, from, to, bonuses.attackStyle, false))
+    to.addProjectile(new Projectile(this, damage, from, to, bonuses.attackStyle))
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
