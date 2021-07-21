@@ -106,7 +106,7 @@ export class Player extends Unit {
     this.aggro = null
     this.manualSpellCastSelection = null
 
-    const clickedOnEntities = Pathing.entitiesAtPoint(this.region, x, y, 1)
+    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.region, x, y, 1)
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0]
@@ -117,7 +117,7 @@ export class Player extends Unit {
         for (let xOff = -maxDist; xOff < maxDist; xOff++) {
           const potentialX = x + xOff
           const potentialY = y + yOff
-          const e = Pathing.entitiesAtPoint(this.region, potentialX, potentialY, 1)
+          const e = Pathing.collideableEntitiesAtPoint(this.region, potentialX, potentialY, 1)
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y)
             if (distance <= bestDistance) {

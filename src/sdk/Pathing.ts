@@ -1,7 +1,6 @@
 'use strict'
-import _ from 'lodash'
+import { filter, sortBy } from 'lodash'
 import { CollisionType, GameObject, Location } from './GameObject'
-import { Mob } from './Mob'
 import { Region } from './Region'
 import { Settings } from './Settings'
 import { Unit } from './Unit'
@@ -46,7 +45,7 @@ export class Pathing {
 
   // Same as above but only returns entities with collision enabled.
   static collideableEntitiesAtPoint(region: Region, x: number, y: number, s: number) {
-    return _.filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
+    return filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number) {
@@ -78,7 +77,7 @@ export class Pathing {
       }
     }
 
-    return _.sortBy(mobs, (m: GameObject) => mob !== m)
+    return sortBy(mobs, (m: GameObject) => mob !== m)
   }
 
   static collidesWithAnyMobs (region: Region, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
