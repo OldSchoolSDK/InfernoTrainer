@@ -41,19 +41,6 @@ export class Inferno extends Region {
     image.onload = () => {
       this._mapImage = image;
     }
-
-    // this.gridCanvas = new OffscreenCanvas(this.width * Settings.tileSize, this.height * Settings.tileSize)
-    // const gridContext = this.gridCanvas.getContext('2d')
-    // gridContext.fillRect(0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
-    // for (let i = 0; i < this.width * this.height; i++) {
-    //   gridContext.fillStyle = (i % 2) ? '#100' : '#210'
-    //   gridContext.fillRect(
-    //     i % this.width * Settings.tileSize,
-    //     Math.floor(i / this.width) * Settings.tileSize,
-    //     Settings.tileSize,
-    //     Settings.tileSize
-    //   )
-    // }
   }
   
   initialize (game: Game) {
