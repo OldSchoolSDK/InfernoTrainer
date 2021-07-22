@@ -25,11 +25,6 @@ export class BarrageMagicWeapon extends MagicWeapon {
       { x: 1, y: 1 }
     ]
   }
-
-  get image(): string{
-    return null;
-  }
-
   get attackRange () {
     return 10
   }

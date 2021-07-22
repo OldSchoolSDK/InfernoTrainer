@@ -17,12 +17,10 @@ export class MagicWeapon extends Weapon {
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1
 
-    let damage = this._rollAttack(from, to, bonuses)
+    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
     if (this.isBlockable(from, to, bonuses)) {
-      damage = 0
+      this.damage = 0
     }
-
-    this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
     
     if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
