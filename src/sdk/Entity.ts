@@ -1,17 +1,17 @@
 'use strict'
 import { GameObject, Location } from './GameObject';
-import { Region } from './Region'
+import { Game } from './Game'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
 
 
 export class Entity extends GameObject{
-  region: Region;
+  game: Game;
   location: Location;
 
-  constructor (region: Region, location: Location) {
+  constructor (game: Game, location: Location) {
     super()
-    this.region = region
+    this.game = game
     this.location = location
   }
 
@@ -25,9 +25,9 @@ export class Entity extends GameObject{
   }
 
   draw (tickPercent: number) {
-    this.region.ctx.fillStyle = '#000073'
+    this.game.ctx.fillStyle = '#000073'
 
-    this.region.ctx.fillRect(
+    this.game.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

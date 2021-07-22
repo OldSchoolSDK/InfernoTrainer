@@ -2,43 +2,46 @@
 
 import { Inferno } from './content/inferno/Inferno'
 import { VerzikP3 } from './content/verzik/VerzikP3'
-import { Region } from './sdk/Region'
+import { Game } from './sdk/Game'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
-import { Scenario } from './sdk/Scenario'
+import { Region } from './sdk/Region'
 
 Settings.readFromStorage()
-const selectedScenarioName = Settings.scenario
-let selectedScenario: Scenario;
+const selectedRegionName = Settings.region
+let selectedRegion: Region;
 
-console.log('selected scenario is ' + selectedScenarioName)
-switch (selectedScenarioName) {
+console.log('selected region is ' + selectedRegionName)
+switch (selectedRegionName) {
   case 'verzikp3':
-    selectedScenario = new VerzikP3()
+    selectedRegion = new VerzikP3()
     break
   case 'inferno':
   default:
-    selectedScenario = new Inferno()
+    selectedRegion = new Inferno()
 }
 
-// Create region
-const region = new Region('map', selectedScenario.getRegionWidth(), selectedScenario.getRegionHeight())
+// Create game
+const game = new Game(
+  'map',
+  selectedRegion
+  )
 
 const controlPanel = new ControlPanelController()
-InventoryControls.inventory = selectedScenario.getInventory()
+InventoryControls.inventory = selectedRegion.getInventory()
 
-region.setControlPanel(controlPanel)
-controlPanel.setRegion(region)
+game.setControlPanel(controlPanel)
+controlPanel.setGame(game)
 
-selectedScenario.initialize(region)
+selectedRegion.initialize(game)
 
 // Start the engine
-region.startTicking()
+game.startTicking()
 
 const timer = setInterval(() => {
-  region.heldDown-- // Release hold down clamps
-  if (region.heldDown <= 0) {
+  game.heldDown-- // Release hold down clamps
+  if (game.heldDown <= 0) {
     clearInterval(timer)
   }
 }, 600)

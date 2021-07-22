@@ -7,7 +7,7 @@ export class Settings {
   static playsAudio: boolean;
   static inputDelay: number;
   static rotated: string;
-  static scenario: string;
+  static region: string;
 
   static inventory_key: string;
   static spellbook_key: string;
@@ -22,7 +22,7 @@ export class Settings {
     window.localStorage.setItem('playsAudio', String(Settings.playsAudio))
     window.localStorage.setItem('inputDelay', String(Settings.inputDelay))
     window.localStorage.setItem('rotated', Settings.rotated)
-    window.localStorage.setItem('scenario', Settings.scenario)
+    window.localStorage.setItem('region', Settings.region)
 
     window.localStorage.setItem('inventory_key', Settings.inventory_key)
     window.localStorage.setItem('spellbook_key', Settings.spellbook_key)
@@ -37,7 +37,7 @@ export class Settings {
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
     Settings.rotated = window.localStorage.getItem('rotated') || 'south'
-    Settings.scenario = window.localStorage.getItem('scenario') || 'inferno'
+    Settings.region = window.localStorage.getItem('region') || 'inferno'
 
     Settings.inventory_key = window.localStorage.getItem('inventory_key') || '4'
     Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || '2'

@@ -1,7 +1,7 @@
 'use strict'
 
 import ScytheInventImage from '../../assets/images/weapons/scytheOfVitur.png'
-import { Region } from '../../sdk/Region'
+import { Game } from '../../sdk/Game'
 import { Unit } from '../../sdk/Unit'
 import { MeleeWeapon } from '../../sdk/Weapons/MeleeWeapon'
 import { AttackBonuses } from '../../sdk/Weapons/Weapon'
@@ -52,7 +52,7 @@ export class ScytheOfVitur extends MeleeWeapon {
 
   // Scythe attacks in a 1x3 arc in front of the player.
   // TODO: Refactor/change method so that it can actually hit multiple targets.
-  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     // As there is no concept of player direction yet, we dynamically calculate this based on the relative location of
     // the attacker.
     // Find the closest tile on the npc to us.
@@ -76,13 +76,13 @@ export class ScytheOfVitur extends MeleeWeapon {
       direction = 0 // North
     }
     // Full damage attack, but each subsequent hit does half of the last.
-    super.attack(region, from, to, bonuses)
+    super.attack(game, from, to, bonuses)
     extraHitLocations[direction].forEach(hit => {
       if (to.isOnTile(from.location.x + hit[0], from.location.y + hit[1])) {
         const extraHitBonuses = {
           overallMultiplier: 0.5
         }
-        super.attack(region, from, to, extraHitBonuses)
+        super.attack(game, from, to, extraHitBonuses)
       }
     })
   }

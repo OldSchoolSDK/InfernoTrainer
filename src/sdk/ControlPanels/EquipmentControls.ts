@@ -4,7 +4,7 @@ import EquipmentTab from '../../assets/images/tabs/equipment.png'
 import { BaseControls } from './BaseControls'
 import UsedSpotBackground from '../../assets/images/interface/equipment_spot_used.png'
 import { Settings } from '../Settings'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
 
 export class EquipmentControls extends BaseControls {
@@ -28,16 +28,16 @@ export class EquipmentControls extends BaseControls {
     return Settings.equipment_key
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
 
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(region, ctrl, x, y)
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(game, ctrl, x, y)
 
-    if (region.player.weapon) {
+    if (game.player.weapon) {
       ctrl.ctx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      ctrl.ctx.drawImage(region.player.weapon.inventorySprite, x + 32, y + 92)
+      ctrl.ctx.drawImage(game.player.weapon.inventorySprite, x + 32, y + 92)
     }
   }
 }

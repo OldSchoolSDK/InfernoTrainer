@@ -1,6 +1,6 @@
 import { find, intersection } from 'lodash'
 import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
@@ -10,7 +10,7 @@ import RangerWeaponImage from '../../assets/images/prayers/range.png'
 export class RangedWeapon extends Weapon {
   damage: number;
 
-  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1

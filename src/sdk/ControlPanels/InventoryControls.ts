@@ -4,7 +4,7 @@ import InventoryTab from '../../assets/images/tabs/inventory.png'
 import { Pathing } from '../Pathing'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../Weapons/Weapon'
@@ -25,7 +25,7 @@ export class InventoryControls extends BaseControls {
     return Settings.inventory_key
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
     let itemX, itemY
     const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -44,19 +44,19 @@ export class InventoryControls extends BaseControls {
     if (clickedItem) {
       const isLeftClickable = true
       if (isLeftClickable) { // "Is this something with a left click action"
-        const currentWeapon = region.player.weapon
+        const currentWeapon = game.player.weapon
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon
-        region.player.weapon = clickedItem
-        region.player.aggro = null
-        region.player.bonuses = clickedItem.bonuses // temp code
+        game.player.weapon = clickedItem
+        game.player.aggro = null
+        game.player.bonuses = clickedItem.bonuses // temp code
       } else {
         clickedItem.selected = true
       }
     }
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(region, ctrl, x, y)
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(game, ctrl, x, y)
 
     InventoryControls.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4

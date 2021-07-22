@@ -112,13 +112,13 @@ export class Mager extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.region.ctx.rotate(tickPercent * Math.PI * 2)
+    this.game.ctx.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
-        if (!Pathing.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)) {
+        if (!Pathing.collidesWithAnyMobs(this.game, x, y, mobToResurrect.size)) {
           return { x, y }
         }
       }
@@ -151,7 +151,7 @@ export class Mager extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
-          this.region.addMob(mobToResurrect)
+          this.game.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
           this.attackCooldownTicks = this.cooldown
         }

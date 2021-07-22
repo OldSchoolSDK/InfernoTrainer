@@ -8,7 +8,7 @@ import RedX2 from '../assets/images/interface/red_x_2.png'
 import RedX3 from '../assets/images/interface/red_x_3.png'
 import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
-import { Region } from './Region'
+import { Game } from './Game'
 
 interface ClickAnimationFrames {
   red: HTMLImageElement[];
@@ -56,13 +56,13 @@ export class ClickAnimation {
     }
   }
 
-  draw (region: Region, tickPercent: number) {
+  draw (game: Game, tickPercent: number) {
     if (this.ttl <= 0) {
       return
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4)
     const frames = this.color === 'red' ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
-    region.ctx.drawImage(      
+    game.ctx.drawImage(      
       frames[frameNumber],
       this.x - 9,
       this.y - 9

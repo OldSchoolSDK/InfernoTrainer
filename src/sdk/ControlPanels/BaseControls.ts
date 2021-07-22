@@ -1,5 +1,5 @@
 import { ControlPanelController } from "../ControlPanelController";
-import { Region } from "../Region";
+import { Game } from "../Game";
 
 export class BaseControls {
   panelImage: HTMLImageElement;
@@ -34,11 +34,11 @@ export class BaseControls {
     return ''
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
     console.log(x, y)
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
     if (this.panelImage) {
       ctrl.ctx.drawImage(this.panelImage, x, y)
     }

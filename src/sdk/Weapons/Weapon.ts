@@ -3,7 +3,7 @@
 import { GameObject } from "../GameObject";
 import { Item } from "../Item"
 import { BasePrayer } from "../Prayers/BasePrayer";
-import { Region } from "../Region";
+import { Game } from "../Game";
 import { Unit } from "../Unit";
 
 
@@ -37,11 +37,11 @@ export class Weapon extends Item{
     this.inventorySprite.src = this.inventoryImage
   }
 
-  cast(region: Region, from: Unit, to: GameObject) {
+  cast(game: Game, from: Unit, to: GameObject) {
 
   }
 
-  attack (stage: Region, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
+  attack (stage: Game, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
   }
   
   isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
