@@ -259,7 +259,7 @@ export class Mob extends Unit {
   }
 
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
+    // LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
