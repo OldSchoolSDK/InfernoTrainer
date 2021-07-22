@@ -3,10 +3,10 @@
 import { Item } from "./Item"
 import { Game } from "./Game"
 
-// Base class for any trainer scenario.
+// Base class for any trainer region.
 export class Region{
   getName (): string {
-    return 'My Scenario'
+    return 'My Region'
   }
 
   get width (): number {

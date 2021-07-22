@@ -13,7 +13,7 @@ import { Mob } from './Mob'
 import { Region } from './Region'
 
 export class Game {
-  scenario: Region;
+  region: Region;
   wave: string;
   mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
@@ -38,18 +38,18 @@ export class Game {
   fps: number;
   lastT: number;
 
-  constructor (selector: string, scenario: Region) {
+  constructor (selector: string, region: Region) {
     this.clickAnimation = null
     this.contextMenu = new ContextMenu()
 
-    this.scenario = scenario;
+    this.region = region;
 
     this.canvas = document.getElementById(selector) as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d')
-    this.canvas.width = Settings.tileSize * scenario.width
-    this.canvas.height = Settings.tileSize * scenario.height
-    this.width = scenario.width
-    this.height = scenario.height
+    this.canvas.width = Settings.tileSize * region.width
+    this.canvas.height = Settings.tileSize * region.height
+    this.width = region.width
+    this.height = region.height
 
 
     this.offPerformanceDelta = 0
@@ -203,7 +203,7 @@ export class Game {
       this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
 
-    this.scenario.drawGameBackground(this.ctx)
+    this.region.drawGameBackground(this.ctx)
     
 
     this.drawGame(tickPercent)

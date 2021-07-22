@@ -9,32 +9,32 @@ import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
 import { Region } from './sdk/Region'
 
 Settings.readFromStorage()
-const selectedScenarioName = Settings.scenario
-let selectedScenario: Region;
+const selectedRegionName = Settings.region
+let selectedRegion: Region;
 
-console.log('selected scenario is ' + selectedScenarioName)
-switch (selectedScenarioName) {
+console.log('selected region is ' + selectedRegionName)
+switch (selectedRegionName) {
   case 'verzikp3':
-    selectedScenario = new VerzikP3()
+    selectedRegion = new VerzikP3()
     break
   case 'inferno':
   default:
-    selectedScenario = new Inferno()
+    selectedRegion = new Inferno()
 }
 
 // Create game
 const game = new Game(
   'map',
-  selectedScenario
+  selectedRegion
   )
 
 const controlPanel = new ControlPanelController()
-InventoryControls.inventory = selectedScenario.getInventory()
+InventoryControls.inventory = selectedRegion.getInventory()
 
 game.setControlPanel(controlPanel)
 controlPanel.setGame(game)
 
-selectedScenario.initialize(game)
+selectedRegion.initialize(game)
 
 // Start the engine
 game.startTicking()

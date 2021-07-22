@@ -160,11 +160,11 @@ export class SettingsControls extends BaseControls {
         Settings.rotated = 'south'
       }
     } else if (x > 20 && x < 60 && y > 100 && y < 140) {
-      Settings.scenario = 'inferno'
+      Settings.region = 'inferno'
     } else if (x > 80 && x < 120 && y > 100 && y < 140) {
-      Settings.scenario = 'verzikp3'
+      Settings.region = 'verzikp3'
     } else if (x > 140 && x < 180 && y > 100 && y < 140) {
-      Settings.scenario = 'xarpusp2'
+      Settings.region = 'xarpusp2'
     } else if (x > 20 && x < 60 && y > 170 && y < 210) {
       Settings.is_keybinding = true;
       this.bindingKey = 'inventory'
@@ -208,15 +208,15 @@ export class SettingsControls extends BaseControls {
       ctrl.ctx.fillText('Compass', x + 160, y + 71)
     }
 
-    ctrl.ctx.drawImage(Settings.scenario === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
+    ctrl.ctx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
     ctrl.ctx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
 
-    ctrl.ctx.drawImage(Settings.scenario === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
+    ctrl.ctx.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
     ctrl.ctx.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
 
-    ctrl.ctx.drawImage(Settings.scenario === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
+    ctrl.ctx.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
     ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
-    ctrl.ctx.fillText('Reload to change scenario', x + 100, y + 160)
+    ctrl.ctx.fillText('Reload to change region', x + 100, y + 160)
 
 
     ctrl.ctx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
