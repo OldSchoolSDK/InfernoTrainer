@@ -98,7 +98,7 @@ export class Meleer extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.region.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.game.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
   movementStep () {
@@ -112,21 +112,21 @@ export class Meleer extends Mob {
   }
 
   dig () {
-    if (!Pathing.collidesWithAnyEntities(this.region, this.region.player.location.x - 3, this.region.player.location.y + 3, this.size)) {
-      this.location.x = this.region.player.location.x - this.size + 1
-      this.location.y = this.region.player.location.y + this.size - 1
-    } else if (!Pathing.collidesWithAnyEntities(this.region, this.region.player.location.x, this.region.player.location.y, this.size)) {
-      this.location.x = this.region.player.location.x
-      this.location.y = this.region.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(this.region, this.region.player.location.x - 3, this.region.player.location.y, this.size)) {
-      this.location.x = this.region.player.location.x - this.size + 1
-      this.location.y = this.region.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(this.region, this.region.player.location.x, this.region.player.location.y + 3, this.size)) {
-      this.location.x = this.region.player.location.x
-      this.location.y = this.region.player.location.y + this.size - 1
+    if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x - 3, this.game.player.location.y + 3, this.size)) {
+      this.location.x = this.game.player.location.x - this.size + 1
+      this.location.y = this.game.player.location.y + this.size - 1
+    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x, this.game.player.location.y, this.size)) {
+      this.location.x = this.game.player.location.x
+      this.location.y = this.game.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x - 3, this.game.player.location.y, this.size)) {
+      this.location.x = this.game.player.location.x - this.size + 1
+      this.location.y = this.game.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x, this.game.player.location.y + 3, this.size)) {
+      this.location.x = this.game.player.location.x
+      this.location.y = this.game.player.location.y + this.size - 1
     } else {
-      this.location.x = this.region.player.location.x - 1
-      this.location.y = this.region.player.location.y + 1
+      this.location.x = this.game.player.location.x - 1
+      this.location.y = this.game.player.location.y + 1
     }
     this.perceivedLocation = this.location
   }

@@ -14,7 +14,7 @@ import { PrayerControls } from './ControlPanels/PrayerControls'
 import { QuestsControls } from './ControlPanels/QuestsControls'
 import { SettingsControls } from './ControlPanels/SettingsControls'
 import { StatsControls } from './ControlPanels/StatsControls'
-import { Region } from './Region'
+import { Game } from './Game'
 import { Settings } from './Settings'
 
 interface TabPosition{
@@ -33,7 +33,7 @@ export class ControlPanelController {
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  region?: Region;
+  game?: Game;
   controls: BaseControls[];
   selectedControl: BaseControls;
   
@@ -45,7 +45,7 @@ export class ControlPanelController {
     this.canvas.width = 33 * 7
     this.canvas.height = 36 * 2 + 275
 
-    this.region = null
+    this.game = null
 
     this.canvas.addEventListener('mousedown', this.controlPanelClick.bind(this))
 
@@ -80,8 +80,8 @@ export class ControlPanelController {
     })
   }
 
-  setRegion (region: Region) {
-    this.region = region
+  setGame (game: Game) {
+    this.game = game
   }
 
   tabPosition (i: number, compact: boolean): TabPosition {
@@ -125,18 +125,18 @@ export class ControlPanelController {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
         const relativeY = y - panelY
-        this.selectedControl.clickedPanel(this.region, relativeX, relativeY)
+        this.selectedControl.clickedPanel(this.game, relativeX, relativeY)
       }
     }
   }
 
-  draw (region: Region) {
+  draw (game: Game) {
     this.ctx.fillStyle = '#000'
 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(region, this, this.canvas.width - 204, 0)
+      this.selectedControl.draw(game, this, this.canvas.width - 204, 0)
     }
 
     let selectedPosition: TabPosition = null

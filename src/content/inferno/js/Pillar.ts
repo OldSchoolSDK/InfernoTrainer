@@ -5,7 +5,7 @@ import { Entity } from '../../../sdk/Entity'
 
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
-import { Region } from '../../../sdk/Region'
+import { Game } from '../../../sdk/Game'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/Weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
@@ -18,8 +18,8 @@ export class Pillar extends Entity {
   currentStats: UnitStats;
   bonuses: UnitBonuses;
 
-  constructor (region: Region, point: Location) {
-    super(region, point)
+  constructor (game: Game, point: Location) {
+    super(game, point)
 
     this.missedHitsplatImage = new Image()
     this.missedHitsplatImage.src = MissSplat
@@ -91,37 +91,37 @@ export class Pillar extends Entity {
   }
 
   draw () {
-    this.region.ctx.fillStyle = '#000073'
+    this.game.ctx.fillStyle = '#000073'
 
-    this.region.ctx.fillRect(
+    this.game.ctx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     )
 
-    this.region.ctx.save()
+    this.game.ctx.save()
 
-    this.region.ctx.translate(
+    this.game.ctx.translate(
       (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
       ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2)
     )
 
     if (Settings.rotated === 'south') {
-      this.region.ctx.rotate(Math.PI)
+      this.game.ctx.rotate(Math.PI)
     }
 
-    this.region.ctx.fillStyle = 'red'
-    this.region.ctx.fillRect(
+    this.game.ctx.fillStyle = 'red'
+    this.game.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.region.ctx.fillStyle = 'green'
+    this.game.ctx.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.region.ctx.fillRect(
+    this.game.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -154,24 +154,24 @@ export class Pillar extends Entity {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.region.ctx.drawImage(
+      this.game.ctx.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.region.ctx.fillStyle = '#FFFFFF'
-      this.region.ctx.font = '16px Stats_11'
-      this.region.ctx.textAlign = 'center'
-      this.region.ctx.fillText(
+      this.game.ctx.fillStyle = '#FFFFFF'
+      this.game.ctx.font = '16px Stats_11'
+      this.game.ctx.textAlign = 'center'
+      this.game.ctx.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.region.ctx.textAlign = 'left'
+      this.game.ctx.textAlign = 'left'
     })
-    this.region.ctx.restore()
+    this.game.ctx.restore()
   }
 
   get size() {
@@ -187,11 +187,11 @@ export class Pillar extends Entity {
     this.incomingProjectiles.push(projectile)
   }
 
-  static addPillarsToRegion (region: Region) {
+  static addPillarsToGame (game: Game) {
     [
       { x: 0, y: 9 },
       { x: 17, y: 7 },
       { x: 10, y: 23 }
-    ].forEach((position) => region.addEntity(new Pillar(region, position)))
+    ].forEach((position) => game.addEntity(new Pillar(game, position)))
   }
 }

@@ -25,7 +25,7 @@ import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
 
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../Utils/BrowserUtils'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
 
 export class SettingsControls extends BaseControls {
@@ -146,7 +146,7 @@ export class SettingsControls extends BaseControls {
     return BrowserUtils.getQueryVar('settings_key') || '5'
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
     if (x > 20 && x < 56 && y > 20 && y < 56) {
       Settings.playsAudio = !Settings.playsAudio
     } else if (x > 90 && x < 105 && y > 20 && y < 36) {
@@ -183,8 +183,8 @@ export class SettingsControls extends BaseControls {
     Settings.persistToStorage()
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(region, ctrl, x, y)
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(game, ctrl, x, y)
 
     ctrl.ctx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)
 

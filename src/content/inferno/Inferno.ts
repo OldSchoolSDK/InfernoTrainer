@@ -14,7 +14,7 @@ import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Scenario } from '../../sdk/Scenario'
-import { Region } from '../../sdk/Region'
+import { Game } from '../../sdk/Game'
 import { Settings } from '../../sdk/Settings'
 
 export class Inferno extends Scenario {
@@ -43,19 +43,19 @@ export class Inferno extends Scenario {
     }
   }
   
-  initialize (region: Region) {
+  initialize (game: Game) {
     this.initializeMap();
 
     // Add pillars
-    Pillar.addPillarsToRegion(region)
+    Pillar.addPillarsToGame(game)
     const wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
 
     // Add player
     const player = new Player(
-      region,
+      game,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
       { weapon: new TwistedBow() })
-    region.setPlayer(player)
+    game.setPlayer(player)
 
     // Add mobs
 
@@ -64,21 +64,21 @@ export class Inferno extends Scenario {
     const melee = BrowserUtils.getQueryVar('melee')
     const ranger = BrowserUtils.getQueryVar('ranger')
     const mager = BrowserUtils.getQueryVar('mager')
-    const randomPillar = shuffle(region.entities)[0]
+    const randomPillar = shuffle(game.entities)[0]
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
     if (bat || blob || melee || ranger || mager) {
       // Backwards compatibility layer for runelite plugin
-      region.wave = 'imported';
+      game.wave = 'imported';
 
-      (JSON.parse(mager) || []).forEach((spawn: number[]) => region.addMob(new Mager(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(ranger) || []).forEach((spawn: number[]) => region.addMob(new Ranger(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(melee) || []).forEach((spawn: number[]) => region.addMob(new Meleer(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(blob) || []).forEach((spawn: number[]) => region.addMob(new Blob(region, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(bat) || []).forEach((spawn: number[]) => region.addMob(new Bat(region, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+      (JSON.parse(mager) || []).forEach((spawn: number[]) => game.addMob(new Mager(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(ranger) || []).forEach((spawn: number[]) => game.addMob(new Ranger(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(melee) || []).forEach((spawn: number[]) => game.addMob(new Meleer(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(blob) || []).forEach((spawn: number[]) => game.addMob(new Blob(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(bat) || []).forEach((spawn: number[]) => game.addMob(new Bat(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
-      Waves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region))
+      Waves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
 
       replayLink.href = `/${window.location.search}`
 
@@ -86,8 +86,8 @@ export class Inferno extends Scenario {
       // Native approach
       const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : Waves.getRandomSpawns()
 
-      Waves.spawn(region, randomPillar, spawns, wave).forEach(region.addMob.bind(region))
-      region.wave = String(wave)
+      Waves.spawn(game, randomPillar, spawns, wave).forEach(game.addMob.bind(game))
+      game.wave = String(wave)
 
       const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
       replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
@@ -101,7 +101,7 @@ export class Inferno extends Scenario {
     })
   }
 
-  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+  drawGameBackground(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(this.gridCanvas, 0, 0);
   }
 }

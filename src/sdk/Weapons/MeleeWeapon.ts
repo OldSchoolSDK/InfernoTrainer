@@ -4,12 +4,12 @@ import { Weapon, AttackBonuses } from './Weapon'
 import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
-import { Region } from '../Region'
+import { Game } from '../Game'
 
 export class MeleeWeapon extends Weapon {
   damage: number;
   
-  attack (region: Region, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     bonuses.attackStyle = bonuses.attackStyle || 'slash'

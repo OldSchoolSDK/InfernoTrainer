@@ -7,7 +7,7 @@ import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
-import { Region } from './Region'
+import { Game } from './Game'
 import { Location } from './GameObject'
 
 export enum AttackIndicators {
@@ -79,8 +79,8 @@ export class Mob extends Unit {
     }
   }
 
-  constructor (region: Region, location: Location, options: UnitOptions) {
-    super(region, location, options)
+  constructor (game: Game, location: Location, options: UnitOptions) {
+    super(game, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
       this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => {
@@ -132,9 +132,9 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      const both = Pathing.canTileBePathedTo(this.region, dx, dy, this.size, this.consumesSpace as Mob)
-      const xSpace = Pathing.canTileBePathedTo(this.region, dx, this.location.y, this.size, this.consumesSpace as Mob)
-      const ySpace = Pathing.canTileBePathedTo(this.region, this.location.x, dy, this.size, this.consumesSpace as Mob)
+      const both = Pathing.canTileBePathedTo(this.game, dx, dy, this.size, this.consumesSpace as Mob)
+      const xSpace = Pathing.canTileBePathedTo(this.game, dx, this.location.y, this.size, this.consumesSpace as Mob)
+      const ySpace = Pathing.canTileBePathedTo(this.game, this.location.x, dy, this.size, this.consumesSpace as Mob)
       const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace)
       if (both && cornerFilter) {
         this.location.x = dx
@@ -154,7 +154,7 @@ export class Mob extends Unit {
     return ''
   }
 
-  attackStep (region: Region) {
+  attackStep (game: Game) {
     if (this.currentAnimationTickLength > 0) {
       if (--this.currentAnimationTickLength === 0) {
         this.currentAnimation = null
@@ -209,7 +209,7 @@ export class Mob extends Unit {
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.region, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(this.game, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
     if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
@@ -229,7 +229,7 @@ export class Mob extends Unit {
   playAttackSound () {
     if (Settings.playsAudio) {
       const sound = new Audio(this.sound)
-      sound.volume = 1 / Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y)
+      sound.volume = 1 / Pathing.dist(this.location.x, this.location.y, this.game.player.location.x, this.game.player.location.y)
       sound.play()
     }
   }
@@ -251,41 +251,41 @@ export class Mob extends Unit {
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.displayName, fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
-          this.region.redClick()
-          this.region.playerAttackClick(this)
+          this.game.redClick()
+          this.game.playerAttackClick(this)
         }
       }
     ]
   }
 
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
+    LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.region.ctx.save()
-    this.region.ctx.translate(
+    this.game.ctx.save()
+    this.game.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (this.dying > -1) {
-      this.region.ctx.fillStyle = '#964B00'
+      this.game.ctx.fillStyle = '#964B00'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.region.ctx.fillStyle = '#00FF00'
+      this.game.ctx.fillStyle = '#00FF00'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.region.ctx.fillStyle = '#FF0000'
+      this.game.ctx.fillStyle = '#FF0000'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.region.ctx.fillStyle = '#FFFF00'
+      this.game.ctx.fillStyle = '#FFFF00'
     } else if (this.hasLOS) {
-      this.region.ctx.fillStyle = '#FF7300'
+      this.game.ctx.fillStyle = '#FF7300'
     } else {
-      this.region.ctx.fillStyle = '#FFFFFF22'
+      this.game.ctx.fillStyle = '#FFFFFF22'
     }
 
     // Draw mob
-    this.region.ctx.fillRect(
+    this.game.ctx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -304,28 +304,28 @@ export class Mob extends Unit {
     //   }
     // }
 
-    this.region.ctx.restore()
+    this.game.ctx.restore()
 
-    this.region.ctx.save()
+    this.game.ctx.save()
 
-    this.region.ctx.translate(
+    this.game.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
     if (Settings.rotated === 'south') {
-      this.region.ctx.rotate(Math.PI)
+      this.game.ctx.rotate(Math.PI)
     }
     if (Settings.rotated === 'south') {
-      this.region.ctx.scale(-1, 1)
+      this.game.ctx.scale(-1, 1)
     }
 
-    this.region.ctx.save()
+    this.game.ctx.save()
     if (this.shouldShowAttackAnimation()) {
       this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
-      this.region.ctx.drawImage(
+      this.game.ctx.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -335,17 +335,17 @@ export class Mob extends Unit {
 
     }
 
-    this.region.ctx.restore()
+    this.game.ctx.restore()
 
     if (Settings.rotated === 'south') {
-      this.region.ctx.scale(-1, 1)
+      this.game.ctx.scale(-1, 1)
     }
 
     
-    if (LineOfSight.hasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, this.region.player.attackRange)) {
-      this.region.ctx.strokeStyle = '#00FF0073'
-      this.region.ctx.lineWidth = 1
-      this.region.ctx.strokeRect(
+    if (LineOfSight.hasLineOfSightOfMob(this.game, this.aggro.location.x, this.aggro.location.y, this, this.game.player.attackRange)) {
+      this.game.ctx.strokeStyle = '#00FF0073'
+      this.game.ctx.lineWidth = 1
+      this.game.ctx.strokeRect(
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
         this.size * Settings.tileSize,
@@ -359,7 +359,7 @@ export class Mob extends Unit {
 
     this.drawOverheadPrayers()
 
-    this.region.ctx.restore()
+    this.game.ctx.restore()
     this.drawIncomingProjectiles(tickPercent)
 
   }

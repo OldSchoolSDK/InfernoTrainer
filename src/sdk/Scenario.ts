@@ -1,7 +1,7 @@
 'use strict'
 
 import { Item } from "./Item"
-import { Region } from "./Region"
+import { Game } from "./Game"
 
 // Base class for any trainer scenario.
 export class Scenario{
@@ -22,10 +22,10 @@ export class Scenario{
   }
 
   // Spawn entities, NPCs, player and initialize any extra UI controls.
-  initialize (region: Region) {
+  initialize (game: Game) {
   }
 
-  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+  drawGameBackground(ctx: CanvasRenderingContext2D) {
 
   }
 }

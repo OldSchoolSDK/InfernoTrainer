@@ -5,7 +5,7 @@ import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
 import { Verzik } from "./js/mobs/Verzik";
 import { Scenario } from "../../sdk/Scenario";
 import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
-import { Region } from '../../sdk/Region';
+import { Game } from '../../sdk/Game';
 import { Item } from '../../sdk/Item';
 import { Settings } from '../../sdk/Settings';
 
@@ -35,20 +35,20 @@ export class VerzikP3 extends Scenario {
     }
   }
 
-  initialize(region: Region) {
+  initialize(game: Game) {
     this.initializeMap()
     // Add player
     const player = new Player(
-      region,
+      game,
       { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
       { weapon: new ScytheOfVitur() });
-    region.setPlayer(player);
+    game.setPlayer(player);
 
     // Add mobs
-    region.addMob(new Verzik(region, {x: 16, y: 16}, { aggro: player}));
+    game.addMob(new Verzik(game, {x: 16, y: 16}, { aggro: player}));
   }
   
-  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+  drawGameBackground(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(this.gridCanvas, 0, 0);
   }
 }

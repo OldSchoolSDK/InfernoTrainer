@@ -17,14 +17,14 @@ import BatSound from "../../assets/sounds/bat.ogg";
 import { AoeRangedWeapon } from "../../../../sdk/Weapons/AoeRangedWeapon";
 import { Location } from "../../../../sdk/GameObject";
 import { Unit, UnitOptions } from "../../../../sdk/Unit";
-import { Region } from "../../../../sdk/Region";
+import { Game } from "../../../../sdk/Game";
 
 export class Verzik extends Mob{
 
   wasPlayerInMeleeRange: boolean = false;
 
-  constructor(region: Region, location: Location, options: UnitOptions) {
-    super(region, location, options);
+  constructor(game: Game, location: Location, options: UnitOptions) {
+    super(game, location, options);
 
   }
 
@@ -144,6 +144,6 @@ export class Verzik extends Mob{
   }
   
   attackAnimation(tickPercent: number){
-    this.region.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.game.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 }

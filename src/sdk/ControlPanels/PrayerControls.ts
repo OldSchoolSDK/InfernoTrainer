@@ -28,7 +28,7 @@ import { Chivalry } from '../Prayers/Chivalry'
 import { Piety } from '../Prayers/Piety'
 import { Settings } from '../Settings'
 import { BasePrayer } from '../Prayers/BasePrayer'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
 import { Retribution } from '../Prayers/Retribution'
 import { Redemption } from '../Prayers/Redemption'
@@ -87,7 +87,7 @@ export class PrayerControls extends BaseControls {
     return PrayerControls.prayers.filter((prayer) => prayer.isActive);
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 
@@ -106,8 +106,8 @@ export class PrayerControls extends BaseControls {
     }
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(region, ctrl, x, y)
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(game, ctrl, x, y)
 
     PrayerControls.prayers.forEach((prayer, index) => {
       if (prayer.isActive) {

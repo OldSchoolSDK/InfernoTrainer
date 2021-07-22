@@ -109,13 +109,13 @@ export class Ranger extends Mob {
     if (Settings.playsAudio) {
       setTimeout(() => {
         const sound = new Audio(this.sound)
-        sound.volume = 1 / Math.min(3, Pathing.dist(this.location.x, this.location.y, this.region.player.location.x, this.region.player.location.y) / 5)
+        sound.volume = 1 / Math.min(3, Pathing.dist(this.location.x, this.location.y, this.game.player.location.x, this.game.player.location.y) / 5)
         sound.play()
       }, 1.75 * Settings.tickMs)
     }
   }
 
   attackAnimation (tickPercent: number) {
-    this.region.ctx.rotate(Math.sin(-tickPercent * Math.PI))
+    this.game.ctx.rotate(Math.sin(-tickPercent * Math.PI))
   }
 }

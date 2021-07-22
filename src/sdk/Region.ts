@@ -12,7 +12,7 @@ import { Entity } from './Entity'
 import { Mob } from './Mob'
 import { Scenario } from './Scenario'
 
-export class Region {
+export class Game {
   scenario: Scenario;
   wave: string;
   mobs: Mob[] = [];
@@ -144,7 +144,7 @@ export class Region {
     this.player.attackStep(this)
 
 
-    // Safely remove the mobs from the region. If we do it while iterating we can cause ticks to be stole'd
+    // Safely remove the mobs from the game. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
     const deadEntities = this.entities.filter((mob) => mob.dying === 0)
     deadMobs.forEach((mob) => this.removeMob(mob))
@@ -203,7 +203,7 @@ export class Region {
       this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
 
-    this.scenario.drawRegionBackground(this.ctx)
+    this.scenario.drawGameBackground(this.ctx)
     
 
     this.drawGame(tickPercent)

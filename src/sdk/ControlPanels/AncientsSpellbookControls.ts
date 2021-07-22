@@ -4,7 +4,7 @@ import AncientsPanel from '../../assets/images/panels/ancients.png'
 import { BaseControls } from './BaseControls'
 import { BarrageMagicWeapon } from '../Weapons/BarrageMagicWeapon'
 import { Settings } from '../Settings'
-import { Region } from '../Region'
+import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
 
 export class AncientsSpellbookControls extends BaseControls {
@@ -21,18 +21,18 @@ export class AncientsSpellbookControls extends BaseControls {
     return Settings.spellbook_key
   }
 
-  clickedPanel (region: Region, x: number, y: number) {
+  clickedPanel (game: Game, x: number, y: number) {
     if (x >= 21 && x <= 42) {
       if (y >= 229 && y <= 249) {
-        region.player.manualSpellCastSelection = new BarrageMagicWeapon()
+        game.player.manualSpellCastSelection = new BarrageMagicWeapon()
       }
     }
   }
 
-  draw (region: Region, ctrl: ControlPanelController, x: number, y: number) {
+  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
     ctrl.ctx.drawImage(this.panelImage, x, y)
 
-    if (region.player.manualSpellCastSelection) {
+    if (game.player.manualSpellCastSelection) {
       ctrl.ctx.fillStyle = '#D1BB7773'
       ctrl.ctx.fillRect(47, 225, 21, 21)
     }

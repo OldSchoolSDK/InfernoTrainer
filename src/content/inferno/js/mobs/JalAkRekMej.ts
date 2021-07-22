@@ -90,6 +90,6 @@ export class JalAkRekMej extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.region.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.game.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 }

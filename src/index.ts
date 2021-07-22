@@ -2,7 +2,7 @@
 
 import { Inferno } from './content/inferno/Inferno'
 import { VerzikP3 } from './content/verzik/VerzikP3'
-import { Region } from './sdk/Region'
+import { Game } from './sdk/Game'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
@@ -22,8 +22,8 @@ switch (selectedScenarioName) {
     selectedScenario = new Inferno()
 }
 
-// Create region
-const region = new Region(
+// Create game
+const game = new Game(
   'map',
   selectedScenario
   )
@@ -31,17 +31,17 @@ const region = new Region(
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedScenario.getInventory()
 
-region.setControlPanel(controlPanel)
-controlPanel.setRegion(region)
+game.setControlPanel(controlPanel)
+controlPanel.setGame(game)
 
-selectedScenario.initialize(region)
+selectedScenario.initialize(game)
 
 // Start the engine
-region.startTicking()
+game.startTicking()
 
 const timer = setInterval(() => {
-  region.heldDown-- // Release hold down clamps
-  if (region.heldDown <= 0) {
+  game.heldDown-- // Release hold down clamps
+  if (game.heldDown <= 0) {
     clearInterval(timer)
   }
 }, 600)

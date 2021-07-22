@@ -108,7 +108,7 @@ export class Blob extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.region.ctx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    this.game.ctx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {
@@ -139,7 +139,7 @@ export class Blob extends Mob {
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = find(this.region.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
+      const overhead = find(this.game.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       
@@ -155,14 +155,14 @@ export class Blob extends Mob {
     }
   }
 
-  removedFromRegion () {
-    const xil = new JalAkRekXil(this.region, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro })
-    this.region.addMob(xil)
+  removedFromGame () {
+    const xil = new JalAkRekXil(this.game, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro })
+    this.game.addMob(xil)
 
-    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro })
-    this.region.addMob(ket)
+    const ket = new JalAkRekKet(this.game, this.location, { aggro: this.aggro })
+    this.game.addMob(ket)
 
-    const mej = new JalAkRekMej(this.region, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro })
-    this.region.addMob(mej)
+    const mej = new JalAkRekMej(this.game, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro })
+    this.game.addMob(mej)
   }
 }
