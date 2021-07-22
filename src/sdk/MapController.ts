@@ -1,7 +1,19 @@
 import MapBoarder from '../assets/images/interface/map_border.png'
 import MapNumberOrb from '../assets/images/interface/map_num_orb.png'
-import MapBoarderMask from '../assets/images/interface/map_border_mask.png'
+import MapBorderMask from '../assets/images/interface/map_border_mask.png'
 import CompassIcon from '../assets/images/interface/compass.png'
+import MapHitpointOrb from '../assets/images/interface/map_hitpoint_orb.png'
+import MapPrayerOrb from '../assets/images/interface/map_prayer_orb.png'
+import MapRunOrb from '../assets/images/interface/map_run_orb.png'
+import MapNoSpecOrb from '../assets/images/interface/map_no_spec_orb.png'
+import MapSpecOrb from '../assets/images/interface/map_spec_orb.png'
+
+
+import MapHitpointIcon from '../assets/images/interface/map_hitpoint_icon.png'
+import MapPrayerIcon from '../assets/images/interface/map_prayer_icon.png'
+import MapWalkIcon from '../assets/images/interface/map_walk_icon.png'
+import MapRunIcon from '../assets/images/interface/map_run_icon.png'
+import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { Game } from './Game';
 
@@ -15,15 +27,86 @@ export class MapController {
   mapAlphaImage: HTMLImageElement;
   compassImage: OffscreenCanvas;
   mapNumberOrb: HTMLImageElement;
+  mapHitpointOrb: HTMLImageElement;
+  mapPrayerOrb: HTMLImageElement;
+  mapRunOrb: HTMLImageElement;
+  mapNoSpecOrb: HTMLImageElement;
+  mapSpecOrb: HTMLImageElement;
+  mapHitpointIcon: HTMLImageElement;
+  mapPrayerIcon: HTMLImageElement;
+  mapWalkIcon: HTMLImageElement;
+  mapRunIcon: HTMLImageElement;
+  mapSpecIcon: HTMLImageElement;
 
   mapCanvas: OffscreenCanvas;
+
+  mapHitpointOrbMasked: OffscreenCanvas;
+  mapPrayerOrbMasked: OffscreenCanvas;
+  mapRunOrbMasked: OffscreenCanvas;
+  mapSpecOrbMasked: OffscreenCanvas;
 
   constructor(){
 
     this.canvas.width = 210
-    this.canvas.height = 175
+    this.canvas.height = 180
 
     this.ctx = this.canvas.getContext('2d')
+
+    this.loadImages();
+    
+    setInterval(() => {
+      this.updateOrbsMask();
+    }, 1000);
+  }
+
+  updateOrbsMask() {
+
+    const hitpointPercentage = Math.random();
+
+    this.mapHitpointOrbMasked = new OffscreenCanvas(this.mapHitpointOrb.width, this.mapHitpointOrb.height);
+    let ctx = this.mapHitpointOrbMasked.getContext('2d')
+    ctx.fillStyle="white";
+    ctx.drawImage(this.mapHitpointOrb, 0, 0)
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillRect(0,this.mapHitpointOrb.height * (1 - hitpointPercentage), this.mapHitpointOrb.width, this.mapHitpointOrb.height * hitpointPercentage)
+    ctx.globalCompositeOperation = 'source-over'
+
+
+
+    const prayerPercentage = Math.random();
+    this.mapPrayerOrbMasked = new OffscreenCanvas(this.mapPrayerOrb.width, this.mapPrayerOrb.height);
+    ctx = this.mapPrayerOrbMasked.getContext('2d')
+    ctx.fillStyle="white";
+    ctx.drawImage(this.mapPrayerOrb, 0, 0)
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillRect(0,this.mapPrayerOrb.height * (1 - prayerPercentage), this.mapPrayerOrb.width, this.mapPrayerOrb.height * prayerPercentage)
+    ctx.globalCompositeOperation = 'source-over'
+
+    const runPercentage = Math.random();
+    this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
+    ctx = this.mapRunOrbMasked.getContext('2d')
+    ctx.fillStyle="white";
+    ctx.drawImage(this.mapRunOrb, 0, 0)
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillRect(0,this.mapRunOrb.height * (1 - runPercentage), this.mapRunOrb.width, this.mapRunOrb.height * runPercentage)
+    ctx.globalCompositeOperation = 'source-over'
+
+
+    const specPercentage = Math.random();
+    this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
+    ctx = this.mapSpecOrbMasked.getContext('2d')
+    ctx.fillStyle="white";
+    ctx.drawImage(this.mapSpecOrb, 0, 0)
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillRect(0,this.mapSpecOrb.height * (1 - specPercentage), this.mapRunOrb.width, this.mapRunOrb.height * specPercentage)
+    ctx.globalCompositeOperation = 'source-over'
+
+
+
+
+  }
+
+  loadImages() {
 
     const outlineImage = new Image();
     outlineImage.src = MapBoarder;
@@ -31,18 +114,74 @@ export class MapController {
       this.outlineImage = outlineImage;
     };
 
+    const mapNoSpecOrb = new Image();
+    mapNoSpecOrb.src = MapNoSpecOrb;
+    mapNoSpecOrb.onload = () => {
+      this.mapNoSpecOrb = mapNoSpecOrb;
+    };
+    const mapSpecOrb = new Image();
+    mapSpecOrb.src = MapSpecOrb;
+    mapSpecOrb.onload = () => {
+      this.mapSpecOrb = mapSpecOrb;
+    };
+
+
     const mapNumberOrb = new Image();
     mapNumberOrb.src = MapNumberOrb;
     mapNumberOrb.onload = () => {
       this.mapNumberOrb = mapNumberOrb;
     };
 
+    const mapHitpointOrb = new Image();
+    mapHitpointOrb.src = MapHitpointOrb;
+    mapHitpointOrb.onload = () => {
+      this.mapHitpointOrb = mapHitpointOrb;
+    };
+
     const mapAlphaImage = new Image();
-    mapAlphaImage.src = MapBoarderMask;
+    mapAlphaImage.src = MapBorderMask;
     mapAlphaImage.onload = () => {
       this.mapAlphaImage = mapAlphaImage;
     };
 
+    const mapPrayerOrb = new Image();
+    mapPrayerOrb.src = MapPrayerOrb;
+    mapPrayerOrb.onload = () => {
+      this.mapPrayerOrb = mapPrayerOrb;
+    };
+    const mapRunOrb = new Image();
+    mapRunOrb.src = MapRunOrb;
+    mapRunOrb.onload = () => {
+      this.mapRunOrb = mapRunOrb;
+    };
+
+    const mapHitpointIcon = new Image();
+    mapHitpointIcon.src = MapHitpointIcon;
+    mapHitpointIcon.onload = () => {
+      this.mapHitpointIcon = mapHitpointIcon;
+    };
+
+    const mapRunIcon = new Image();
+    mapRunIcon.src = MapRunIcon;
+    mapRunIcon.onload = () => {
+      this.mapRunIcon = mapRunIcon;
+    };
+    const mapSpecIcon = new Image();
+    mapSpecIcon.src = MapSpecIcon;
+    mapSpecIcon.onload = () => {
+      this.mapSpecIcon = mapSpecIcon;
+    };
+  
+    const mapPrayerIcon = new Image();
+    mapPrayerIcon.src = MapPrayerIcon;
+    mapPrayerIcon.onload = () => {
+      this.mapPrayerIcon = mapPrayerIcon;
+    };
+    const mapWalkIcon = new Image();
+    mapWalkIcon.src = MapWalkIcon;
+    mapWalkIcon.onload = () => {
+      this.mapWalkIcon = mapWalkIcon;
+    };
 
     const compassImage = new Image()
     compassImage.src = CompassIcon
@@ -75,7 +214,6 @@ export class MapController {
 
     }
 
-
   }
 
   setGame(game: Game) {
@@ -87,26 +225,17 @@ export class MapController {
     if (!this.mapCanvas && this.game && this.game.region.mapImage) {
       this.mapCanvas = new OffscreenCanvas(152, 152);
       const mapContext = this.mapCanvas.getContext('2d')
-
-
       mapContext.fillStyle="white";
       mapContext.fillRect(0,0, 152, 152)
-
-      // only draw image where mask is
       mapContext.globalCompositeOperation = 'destination-out'
-
-
-      // draw our circle mask
       mapContext.drawImage(this.mapAlphaImage, 0, 0)
-      // restore to default composite operation (is draw over current image)
       mapContext.globalCompositeOperation = 'source-over'
-
-
     }
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.mapCanvas){
-      this.ctx.drawImage(this.mapCanvas, 51, 7);
+      this.ctx.drawImage(this.mapCanvas, 52, 8);
     }
 
 
@@ -153,6 +282,38 @@ export class MapController {
       this.ctx.fillStyle = '#00FF00'
       this.ctx.fillText( '99', 46, 165 )
 
+    }
+
+    if (this.mapHitpointOrbMasked) {
+      this.ctx.drawImage(this.mapHitpointOrbMasked, 27, 51)
+    }
+    if (this.mapHitpointIcon) {
+      this.ctx.drawImage(this.mapHitpointIcon, 27, 51)
+    }
+
+    if (this.mapPrayerOrbMasked) {
+      this.ctx.drawImage(this.mapPrayerOrbMasked, 27, 85)
+    }
+
+    if (this.mapPrayerIcon) {
+      this.ctx.drawImage(this.mapPrayerIcon, 27, 85)
+    }
+
+    if (this.mapRunOrbMasked) {
+      this.ctx.drawImage(this.mapRunOrbMasked, 37, 118)
+    }
+    if (this.mapRunIcon) {
+      this.ctx.drawImage(this.mapRunIcon, 37, 118)
+    }
+
+    // if (this.mapNoSpecOrb) {
+    //   this.ctx.drawImage(this.mapNoSpecOrb, 59, 144)
+    // }
+    if (this.mapSpecOrbMasked) {
+      this.ctx.drawImage(this.mapSpecOrbMasked, 59, 144)
+    }
+    if (this.mapSpecIcon) {
+      this.ctx.drawImage(this.mapSpecIcon, 57, 142, 30, 30)
     }
 
   }
