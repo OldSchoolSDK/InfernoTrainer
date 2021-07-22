@@ -3,13 +3,13 @@
 import { Player } from '../../sdk/Player';
 import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
 import { Verzik } from "./js/mobs/Verzik";
-import { Scenario } from "../../sdk/Scenario";
+import { Region } from "../../sdk/Region";
 import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
 import { Game } from '../../sdk/Game';
 import { Item } from '../../sdk/Item';
 import { Settings } from '../../sdk/Settings';
 
-export class VerzikP3 extends Scenario {
+export class VerzikP3 extends Region {
   gridCanvas: OffscreenCanvas;
 
   getName() {

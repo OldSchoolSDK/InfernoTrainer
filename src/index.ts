@@ -6,11 +6,11 @@ import { Game } from './sdk/Game'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
-import { Scenario } from './sdk/Scenario'
+import { Region } from './sdk/Region'
 
 Settings.readFromStorage()
 const selectedScenarioName = Settings.scenario
-let selectedScenario: Scenario;
+let selectedScenario: Region;
 
 console.log('selected scenario is ' + selectedScenarioName)
 switch (selectedScenarioName) {

@@ -13,11 +13,11 @@ import { Bat } from './js/mobs/Bat'
 import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
-import { Scenario } from '../../sdk/Scenario'
+import { Region } from '../../sdk/Region'
 import { Game } from '../../sdk/Game'
 import { Settings } from '../../sdk/Settings'
 
-export class Inferno extends Scenario {
+export class Inferno extends Region {
   gridCanvas: OffscreenCanvas;
 
   getName () {
