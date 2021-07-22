@@ -18,20 +18,18 @@ export class MeleeWeapon extends Weapon {
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1
     bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0
 
-    let damage = this._rollAttack(from, to, bonuses)
+    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
 
     if (this.isBlockable(from, to, bonuses)) {
-      damage = 0
+      this.damage = 0
     }
-
-    this.damage = Math.floor(Math.min(damage, to.currentStats.hitpoint))
     
-    if (from.type === UnitTypes.PLAYER && damage > 0) {
-      from.grantXp(new XpDrop('hitpoint', damage * 1.33));
-      from.grantXp(new XpDrop('attack', damage * 4));
+    if (from.type === UnitTypes.PLAYER && this.damage > 0) {
+      from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
+      from.grantXp(new XpDrop('attack', this.damage * 4));
     }
 
-    to.addProjectile(new Projectile(this, damage, from, to, bonuses.attackStyle))
+    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle))
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
