@@ -16,9 +16,10 @@ import { Blowpipe } from '../weapons/Blowpipe'
 import { Region } from '../../sdk/Region'
 import { Game } from '../../sdk/Game'
 import { Settings } from '../../sdk/Settings'
+import InfernoMapImage from './assets/images/map.png'
 
 export class Inferno extends Region {
-  gridCanvas: OffscreenCanvas;
+  _mapImage: HTMLImageElement;
 
   getName () {
     return 'Inferno'
@@ -28,19 +29,31 @@ export class Inferno extends Region {
     return [new Blowpipe()]
   }
 
-  initializeMap() {
-    this.gridCanvas = new OffscreenCanvas(this.width * Settings.tileSize, this.height * Settings.tileSize)
-    const gridContext = this.gridCanvas.getContext('2d')
-    gridContext.fillRect(0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
-    for (let i = 0; i < this.width * this.height; i++) {
-      gridContext.fillStyle = (i % 2) ? '#100' : '#210'
-      gridContext.fillRect(
-        i % this.width * Settings.tileSize,
-        Math.floor(i / this.width) * Settings.tileSize,
-        Settings.tileSize,
-        Settings.tileSize
-      )
+
+  mapImage (): string {
+    return InfernoMapImage
+  }
+
+
+  initializeMap() { 
+    const image = new Image();
+    image.src = this.mapImage();
+    image.onload = () => {
+      this._mapImage = image;
     }
+
+    // this.gridCanvas = new OffscreenCanvas(this.width * Settings.tileSize, this.height * Settings.tileSize)
+    // const gridContext = this.gridCanvas.getContext('2d')
+    // gridContext.fillRect(0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+    // for (let i = 0; i < this.width * this.height; i++) {
+    //   gridContext.fillStyle = (i % 2) ? '#100' : '#210'
+    //   gridContext.fillRect(
+    //     i % this.width * Settings.tileSize,
+    //     Math.floor(i / this.width) * Settings.tileSize,
+    //     Settings.tileSize,
+    //     Settings.tileSize
+    //   )
+    // }
   }
   
   initialize (game: Game) {
@@ -101,7 +114,20 @@ export class Inferno extends Region {
     })
   }
 
-  drawGameBackground(ctx: CanvasRenderingContext2D) {
-    ctx.drawImage(this.gridCanvas, 0, 0);
+  drawGameBackground(ctx: any) {
+    // ctx.drawImage(this.gridCanvas, 0, 0);
+    if (this._mapImage){
+
+      ctx.webkitImageSmoothingEnabled = false;
+      ctx.mozImageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
+
+      ctx.drawImage(this._mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+
+      ctx.webkitImageSmoothingEnabled = true;
+      ctx.mozImageSmoothingEnabled = true;
+      ctx.imageSmoothingEnabled = true;
+
+    }
   }
 }

@@ -21,6 +21,10 @@ export class Region{
     return []
   }
 
+  mapImage (): string {
+    return ''
+  }
+
   // Spawn entities, NPCs, player and initialize any extra UI controls.
   initialize (game: Game) {
   }
