@@ -23,7 +23,10 @@ switch (selectedScenarioName) {
 }
 
 // Create region
-const region = new Region('map', selectedScenario.getRegionWidth(), selectedScenario.getRegionHeight())
+const region = new Region(
+  'map',
+  selectedScenario
+  )
 
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedScenario.getInventory()

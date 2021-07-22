@@ -15,8 +15,11 @@ import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Scenario } from '../../sdk/Scenario'
 import { Region } from '../../sdk/Region'
+import { Settings } from '../../sdk/Settings'
 
 export class Inferno extends Scenario {
+  gridCanvas: OffscreenCanvas;
+
   getName () {
     return 'Inferno'
   }
@@ -24,8 +27,25 @@ export class Inferno extends Scenario {
   getInventory () {
     return [new Blowpipe()]
   }
+
+  initializeMap() {
+    this.gridCanvas = new OffscreenCanvas(this.width * Settings.tileSize, this.height * Settings.tileSize)
+    const gridContext = this.gridCanvas.getContext('2d')
+    gridContext.fillRect(0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+    for (let i = 0; i < this.width * this.height; i++) {
+      gridContext.fillStyle = (i % 2) ? '#100' : '#210'
+      gridContext.fillRect(
+        i % this.width * Settings.tileSize,
+        Math.floor(i / this.width) * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
+    }
+  }
   
   initialize (region: Region) {
+    this.initializeMap();
+
     // Add pillars
     Pillar.addPillarsToRegion(region)
     const wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
@@ -79,5 +99,9 @@ export class Inferno extends Scenario {
     document.getElementById('playWaveNum').addEventListener('click', () => {
       window.location.href = `/?wave=${waveInput.value || wave}`
     })
+  }
+
+  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+    ctx.drawImage(this.gridCanvas, 0, 0);
   }
 }

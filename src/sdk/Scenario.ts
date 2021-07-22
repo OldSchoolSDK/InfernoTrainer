@@ -9,11 +9,11 @@ export class Scenario{
     return 'My Scenario'
   }
 
-  getRegionWidth (): number {
+  get width (): number {
     return 29
   }
 
-  getRegionHeight (): number {
+  get height (): number {
     return 30
   }
 
@@ -23,5 +23,9 @@ export class Scenario{
 
   // Spawn entities, NPCs, player and initialize any extra UI controls.
   initialize (region: Region) {
+  }
+
+  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+
   }
 }

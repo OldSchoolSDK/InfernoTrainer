@@ -7,9 +7,11 @@ import { Scenario } from "../../sdk/Scenario";
 import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
 import { Region } from '../../sdk/Region';
 import { Item } from '../../sdk/Item';
+import { Settings } from '../../sdk/Settings';
 
 export class VerzikP3 extends Scenario {
-  
+  gridCanvas: OffscreenCanvas;
+
   getName() {
     return "Verzik Phase 3";
   }
@@ -18,7 +20,23 @@ export class VerzikP3 extends Scenario {
     return [];
   }
 
+  initializeMap() {
+    this.gridCanvas = new OffscreenCanvas(this.width * Settings.tileSize, this.height * Settings.tileSize)
+    const gridContext = this.gridCanvas.getContext('2d')
+    gridContext.fillRect(0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+    for (let i = 0; i < this.width * this.height; i++) {
+      gridContext.fillStyle = (i % 2) ? '#100' : '#210'
+      gridContext.fillRect(
+        i % this.width * Settings.tileSize,
+        Math.floor(i / this.width) * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
+    }
+  }
+
   initialize(region: Region) {
+    this.initializeMap()
     // Add player
     const player = new Player(
       region,
@@ -28,5 +46,9 @@ export class VerzikP3 extends Scenario {
 
     // Add mobs
     region.addMob(new Verzik(region, {x: 16, y: 16}, { aggro: player}));
+  }
+  
+  drawRegionBackground(ctx: CanvasRenderingContext2D) {
+    ctx.drawImage(this.gridCanvas, 0, 0);
   }
 }
