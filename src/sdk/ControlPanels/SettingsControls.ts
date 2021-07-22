@@ -113,8 +113,7 @@ export class SettingsControls extends BaseControls {
     })
 
 
-    this.compassImage.addEventListener('load', () => {
-      console.log('load', this)
+    this.compassImage.onload = () => {
       this.compassCanvas = new OffscreenCanvas(51, 51)
 
       const context = this.compassCanvas.getContext('2d')
@@ -139,7 +138,7 @@ export class SettingsControls extends BaseControls {
 
       // restore to default composite operation (is draw over current image)
       context.globalCompositeOperation = 'source-over'
-    })
+    }
   }
 
   get keyBinding () {

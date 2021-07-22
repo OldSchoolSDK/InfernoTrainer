@@ -11,6 +11,7 @@ import { Player } from './Player'
 import { Entity } from './Entity'
 import { Mob } from './Mob'
 import { Region } from './Region'
+import { MapController } from './MapController'
 
 export class Game {
   region: Region;
@@ -20,6 +21,7 @@ export class Game {
   frameCounter: number = 0
   heldDown: number = 6
   controlPanel?: ControlPanelController;
+  mapController?: MapController;
   player?: Player;
   entities: Entity[] = [];
   width: number;
@@ -209,6 +211,7 @@ export class Game {
     this.drawGame(tickPercent)
 
     XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, tickPercent);
+    MapController.controller.draw(tickPercent);
 
     this.ctx.restore()
     this.ctx.save()
@@ -239,6 +242,10 @@ export class Game {
 
   setControlPanel (controlPanel: ControlPanelController) {
     this.controlPanel = controlPanel
+  }
+
+  setMapController( mapController: MapController) {
+    this.mapController = mapController;
   }
 
   addEntity (entity: Entity) {

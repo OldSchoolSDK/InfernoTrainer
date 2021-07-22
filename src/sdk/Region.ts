@@ -5,6 +5,8 @@ import { Game } from "./Game"
 
 // Base class for any trainer region.
 export class Region{
+  mapImage: HTMLImageElement;
+
   getName (): string {
     return 'My Region'
   }
@@ -21,7 +23,7 @@ export class Region{
     return []
   }
 
-  mapImage (): string {
+  mapImagePath (): string {
     return ''
   }
 

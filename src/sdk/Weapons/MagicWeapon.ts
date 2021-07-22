@@ -32,7 +32,7 @@ export class MagicWeapon extends Weapon {
 
 
   get image(): string { 
-    return MagerWeaponImage;
+    return null;
   }
 
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {

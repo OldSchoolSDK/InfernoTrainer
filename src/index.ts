@@ -7,6 +7,7 @@ import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
 import { Region } from './sdk/Region'
+import { MapController } from './sdk/MapController'
 
 Settings.readFromStorage()
 const selectedRegionName = Settings.region
@@ -23,14 +24,15 @@ switch (selectedRegionName) {
 }
 
 // Create game
-const game = new Game(
-  'map',
-  selectedRegion
-  )
+const game = new Game('game', selectedRegion);
+
 
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
+MapController.controller.setGame(game);
+
+game.setMapController(MapController.controller)
 game.setControlPanel(controlPanel)
 controlPanel.setGame(game)
 
