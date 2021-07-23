@@ -228,9 +228,15 @@ export class Game {
     this.ctx.fillText(`Wave: ${this.wave}`, 0, 112)
 
     if (this.heldDown) {
-      this.ctx.fillStyle = '#FFFFFF'
       this.ctx.font = '72px OSRS'
       this.ctx.textAlign = 'center'
+      this.ctx.fillStyle = '#000'
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 - 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 + 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 48)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 52)
+
+      this.ctx.fillStyle = '#FFFFFF'
       this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50)
       this.ctx.textAlign = 'left'
     }
