@@ -11,23 +11,35 @@ import { BasePrayer } from './Prayers/BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
 import { Mob } from './Mob'
+import { ImageLoader } from './Utils/ImageLoader'
+import { MapController } from './MapController'
+
+export interface PlayerStats extends UnitStats { 
+  prayer: number;
+  run: number;
+  specialAttack: number;
+}
 
 export class Player extends Unit {
   weapon?: Weapon;
   manualSpellCastSelection: Weapon;
   destinationLocation?: Location;
 
-  stats: UnitStats;
-  currentStats: UnitStats;
+  stats: PlayerStats;
+  currentStats: PlayerStats;
   bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
+  running: boolean = true;
 
   constructor (game: Game, location: Location, options: UnitOptions) {
     super(game, location, options)
     this.destinationLocation = location
     this.weapon = options.weapon
     this.clearXpDrops();
+
+    ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
+
   }
 
   setStats () {
@@ -38,7 +50,10 @@ export class Player extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99
+      hitpoint: 99,
+      prayer: 99,
+      run: 100,
+      specialAttack: 100
     }
 
     // with boosts
@@ -48,7 +63,10 @@ export class Player extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99
+      hitpoint: 99,
+      prayer: 99,
+      run: 100,
+      specialAttack: 100
     }
 
     this.bonuses = {
@@ -77,6 +95,8 @@ export class Player extends Unit {
         slayer: 0
       }
     }
+
+
   }
 
   get type () {
@@ -252,7 +272,7 @@ export class Player extends Unit {
     this.perceivedLocation = this.location
     // Actually move the player forward by run speed.
     if (this.destinationLocation) {
-      this.location = Pathing.path(this.game, this.location, this.destinationLocation, 2, this.aggro)
+      this.location = Pathing.path(this.game, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
     }
   }
 
@@ -289,6 +309,10 @@ export class Player extends Unit {
     this.attackIfPossible()
 
     this.sendXpToController();
+
+    if (this.game.mapController){
+      this.game.mapController.updateOrbsMask(this.currentStats, this.stats);
+    }
   }
 
   attackIfPossible () {

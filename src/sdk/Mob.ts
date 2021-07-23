@@ -9,6 +9,7 @@ import { Weapon } from './Weapons/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
 import { Game } from './Game'
 import { Location } from './GameObject'
+import { ImageLoader } from './Utils/ImageLoader'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -83,11 +84,7 @@ export class Mob extends Unit {
     super(game, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => {
-        const img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
-        img.src = image
-        return img
-      })
+      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
     }
   }
 
@@ -271,15 +268,15 @@ export class Mob extends Unit {
     )
 
     if (this.dying > -1) {
-      this.game.ctx.fillStyle = '#964B00'
+      this.game.ctx.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.game.ctx.fillStyle = '#00FF00'
+      this.game.ctx.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.game.ctx.fillStyle = '#FF0000'
+      this.game.ctx.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.game.ctx.fillStyle = '#FFFF00'
+      this.game.ctx.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.game.ctx.fillStyle = '#FF7300'
+      this.game.ctx.fillStyle = '#FF730073'
     } else {
       this.game.ctx.fillStyle = '#FFFFFF22'
     }

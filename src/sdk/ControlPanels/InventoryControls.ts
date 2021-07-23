@@ -49,6 +49,7 @@ export class InventoryControls extends BaseControls {
         game.player.weapon = clickedItem
         game.player.aggro = null
         game.player.bonuses = clickedItem.bonuses // temp code
+        game.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }

@@ -1,5 +1,6 @@
 import { ControlPanelController } from "../ControlPanelController";
 import { Game } from "../Game";
+import { ImageLoader } from "../Utils/ImageLoader";
 
 export class BaseControls {
   panelImage: HTMLImageElement;
@@ -7,17 +8,9 @@ export class BaseControls {
   selected: boolean;
 
   constructor () {
-    const panelImage = new Image(204, 275)
-    panelImage.src = this.panelImageReference
-    panelImage.onload = () => {
-      this.panelImage = panelImage;
-    }
-
-    const tabImage = new Image(33, 36)
-    tabImage.src = this.tabImageReference
-    tabImage.onload = () => {
-      this.tabImage = tabImage;
-    }
+    
+    this.panelImage = ImageLoader.createImage(this.panelImageReference)
+    this.tabImage = ImageLoader.createImage(this.tabImageReference)
 
     this.selected = false
   }

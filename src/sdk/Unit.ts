@@ -11,6 +11,7 @@ import { XpDrop } from './XpDrop'
 import { Weapon } from './Weapons/Weapon'
 import { GameObject, Location } from './GameObject'
 import { Pathing } from './Pathing'
+import { ImageLoader } from './Utils/ImageLoader'
 
 export enum UnitTypes {
   MOB = 0,
@@ -33,7 +34,7 @@ export interface UnitStats {
   defence: number;
   range: number;
   magic: number;
-  hitpoint: number
+  hitpoint: number;
 }
 
 export interface UnitBonuses {
@@ -62,7 +63,6 @@ export interface UnitTargetBonuses {
   undead: number;
   slayer: number;
 }
-
 
 export class Unit extends GameObject {
 
@@ -104,17 +104,11 @@ export class Unit extends GameObject {
     this.dying = -1
     this.incomingProjectiles = []
 
-    this.missedHitsplatImage = new Image()
-    this.missedHitsplatImage.src = MissSplat
-    this.damageHitsplatImage = new Image()
-    this.damageHitsplatImage.src = DamageSplat
+    this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
+    this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
 
 
-    const unitImage = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
-    unitImage.src = this.image
-    unitImage.onload = () => {
-      this.unitImage = unitImage;
-    }
+    this.unitImage = ImageLoader.createImage(this.image)
 
     this.currentAnimation = null
     this.currentAnimationTickLength = 0

@@ -11,6 +11,7 @@ import { Player } from './Player'
 import { Entity } from './Entity'
 import { Mob } from './Mob'
 import { Region } from './Region'
+import { MapController } from './MapController'
 
 export class Game {
   region: Region;
@@ -20,6 +21,7 @@ export class Game {
   frameCounter: number = 0
   heldDown: number = 6
   controlPanel?: ControlPanelController;
+  mapController?: MapController;
   player?: Player;
   entities: Entity[] = [];
   width: number;
@@ -209,6 +211,7 @@ export class Game {
     this.drawGame(tickPercent)
 
     XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, tickPercent);
+    MapController.controller.draw(tickPercent);
 
     this.ctx.restore()
     this.ctx.save()
@@ -225,9 +228,15 @@ export class Game {
     this.ctx.fillText(`Wave: ${this.wave}`, 0, 112)
 
     if (this.heldDown) {
-      this.ctx.fillStyle = '#FFFFFF'
       this.ctx.font = '72px OSRS'
       this.ctx.textAlign = 'center'
+      this.ctx.fillStyle = '#000'
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 - 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 + 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 48)
+      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 52)
+
+      this.ctx.fillStyle = '#FFFFFF'
       this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50)
       this.ctx.textAlign = 'left'
     }
@@ -239,6 +248,10 @@ export class Game {
 
   setControlPanel (controlPanel: ControlPanelController) {
     this.controlPanel = controlPanel
+  }
+
+  setMapController( mapController: MapController) {
+    this.mapController = mapController;
   }
 
   addEntity (entity: Entity) {

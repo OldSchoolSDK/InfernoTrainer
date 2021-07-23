@@ -6,14 +6,14 @@ import UsedSpotBackground from '../../assets/images/interface/equipment_spot_use
 import { Settings } from '../Settings'
 import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
+import { ImageLoader } from '../Utils/ImageLoader'
 
 export class EquipmentControls extends BaseControls {
   usedSpotBackground: HTMLImageElement;
 
   constructor () {
     super()
-    this.usedSpotBackground = new Image()
-    this.usedSpotBackground.src = UsedSpotBackground
+    this.usedSpotBackground = ImageLoader.createImage(UsedSpotBackground)
   }
 
   get panelImageReference () {

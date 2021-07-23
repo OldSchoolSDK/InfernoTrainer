@@ -8,6 +8,7 @@ export class Settings {
   static inputDelay: number;
   static rotated: string;
   static region: string;
+  static displayXpDrops: boolean
 
   static inventory_key: string;
   static spellbook_key: string;
@@ -23,6 +24,7 @@ export class Settings {
     window.localStorage.setItem('inputDelay', String(Settings.inputDelay))
     window.localStorage.setItem('rotated', Settings.rotated)
     window.localStorage.setItem('region', Settings.region)
+    window.localStorage.setItem('displayXpDrops', String(Settings.displayXpDrops))
 
     window.localStorage.setItem('inventory_key', Settings.inventory_key)
     window.localStorage.setItem('spellbook_key', Settings.spellbook_key)
@@ -38,6 +40,7 @@ export class Settings {
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
     Settings.rotated = window.localStorage.getItem('rotated') || 'south'
     Settings.region = window.localStorage.getItem('region') || 'inferno'
+    Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true
 
     Settings.inventory_key = window.localStorage.getItem('inventory_key') || '4'
     Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || '2'

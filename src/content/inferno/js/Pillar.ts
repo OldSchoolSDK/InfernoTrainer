@@ -9,6 +9,7 @@ import { Game } from '../../../sdk/Game'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/Weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
+import { ImageLoader } from '../../../sdk/Utils/ImageLoader'
 
 export class Pillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -21,10 +22,8 @@ export class Pillar extends Entity {
   constructor (game: Game, point: Location) {
     super(game, point)
 
-    this.missedHitsplatImage = new Image()
-    this.missedHitsplatImage.src = MissSplat
-    this.damageHitsplatImage = new Image()
-    this.damageHitsplatImage.src = DamageSplat
+    this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
+    this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
 
     // non boosted numbers
     this.stats = {

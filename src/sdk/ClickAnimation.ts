@@ -9,6 +9,7 @@ import RedX3 from '../assets/images/interface/red_x_3.png'
 import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
 import { Game } from './Game'
+import { ImageLoader } from './Utils/ImageLoader'
 
 interface ClickAnimationFrames {
   red: HTMLImageElement[];
@@ -33,25 +34,20 @@ export class ClickAnimation {
   }
 
   static frames: ClickAnimationFrames;
-  static createImage (url: string) {
-    const image = new Image()
-    image.src = url
-    return image
-  }
 
   static setFrames () {
     ClickAnimation.frames = {
       red: [
-        ClickAnimation.createImage(RedX1),
-        ClickAnimation.createImage(RedX2),
-        ClickAnimation.createImage(RedX3),
-        ClickAnimation.createImage(RedX4)
+        ImageLoader.createImage(RedX1),
+        ImageLoader.createImage(RedX2),
+        ImageLoader.createImage(RedX3),
+        ImageLoader.createImage(RedX4)
       ],
       yellow: [
-        ClickAnimation.createImage(YellowX1),
-        ClickAnimation.createImage(YellowX2),
-        ClickAnimation.createImage(YellowX3),
-        ClickAnimation.createImage(YellowX4)
+        ImageLoader.createImage(YellowX1),
+        ImageLoader.createImage(YellowX2),
+        ImageLoader.createImage(YellowX3),
+        ImageLoader.createImage(YellowX4)
       ]
     }
   }

@@ -30,7 +30,7 @@ export class RangedWeapon extends Weapon {
   }
 
   get image(): string { 
-    return RangerWeaponImage;
+    return null;
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {

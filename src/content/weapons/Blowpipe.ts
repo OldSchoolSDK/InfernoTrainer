@@ -34,6 +34,11 @@ export class Blowpipe extends RangedWeapon {
       }
     };
   }
+
+  hasSpecialAttack(): boolean {
+    return true;
+  }
+
   get attackRange () {
     return 5
   }

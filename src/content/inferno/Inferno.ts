@@ -17,9 +17,9 @@ import { Region } from '../../sdk/Region'
 import { Game } from '../../sdk/Game'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
+import { ImageLoader } from '../../sdk/Utils/ImageLoader'
 
 export class Inferno extends Region {
-  _mapImage: HTMLImageElement;
 
   getName () {
     return 'Inferno'
@@ -30,17 +30,13 @@ export class Inferno extends Region {
   }
 
 
-  mapImage (): string {
+  mapImagePath (): string {
     return InfernoMapImage
   }
 
 
-  initializeMap() { 
-    const image = new Image();
-    image.src = this.mapImage();
-    image.onload = () => {
-      this._mapImage = image;
-    }
+  initializeMap() {
+    this.mapImage = ImageLoader.createImage(this.mapImagePath())
   }
   
   initialize (game: Game) {
@@ -103,13 +99,13 @@ export class Inferno extends Region {
 
   drawGameBackground(ctx: any) {
     // ctx.drawImage(this.gridCanvas, 0, 0);
-    if (this._mapImage){
+    if (this.mapImage){
 
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
       ctx.imageSmoothingEnabled = false;
 
-      ctx.drawImage(this._mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+      ctx.drawImage(this.mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
 
       ctx.webkitImageSmoothingEnabled = true;
       ctx.mozImageSmoothingEnabled = true;
