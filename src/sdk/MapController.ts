@@ -16,9 +16,13 @@ import MapRunIcon from '../assets/images/interface/map_run_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { Game } from './Game';
+import { UnitStats } from './Unit'
+import ColorScale from 'color-scales'
 
 export class MapController {
   static controller = new MapController();
+
+  colorScale: ColorScale = new ColorScale(0, 1, [ '#FF0000', '#FF7300', '#00FF00'], 1);
 
   game: Game;
   canvas = document.getElementById('map') as HTMLCanvasElement;
@@ -45,6 +49,9 @@ export class MapController {
   mapRunOrbMasked: OffscreenCanvas;
   mapSpecOrbMasked: OffscreenCanvas;
 
+  currentStats: UnitStats;
+  stats: UnitStats;
+
   constructor(){
 
     this.canvas.width = 210
@@ -54,14 +61,14 @@ export class MapController {
 
     this.loadImages();
     
-    setInterval(() => {
-      this.updateOrbsMask();
-    }, 1000);
   }
 
-  updateOrbsMask() {
+  updateOrbsMask(currentStats: UnitStats, stats: UnitStats) {
 
-    const hitpointPercentage = Math.random();
+    this.currentStats = currentStats;
+    this.stats = stats;
+
+    const hitpointPercentage = currentStats.hitpoint / stats.hitpoint;
 
     this.mapHitpointOrbMasked = new OffscreenCanvas(this.mapHitpointOrb.width, this.mapHitpointOrb.height);
     let ctx = this.mapHitpointOrbMasked.getContext('2d')
@@ -73,7 +80,7 @@ export class MapController {
 
 
 
-    const prayerPercentage = Math.random();
+    const prayerPercentage = currentStats.prayer / stats.prayer;
     this.mapPrayerOrbMasked = new OffscreenCanvas(this.mapPrayerOrb.width, this.mapPrayerOrb.height);
     ctx = this.mapPrayerOrbMasked.getContext('2d')
     ctx.fillStyle="white";
@@ -82,7 +89,7 @@ export class MapController {
     ctx.fillRect(0,this.mapPrayerOrb.height * (1 - prayerPercentage), this.mapPrayerOrb.width, this.mapPrayerOrb.height * prayerPercentage)
     ctx.globalCompositeOperation = 'source-over'
 
-    const runPercentage = Math.random();
+    const runPercentage = currentStats.run / 100;
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext('2d')
     ctx.fillStyle="white";
@@ -92,7 +99,7 @@ export class MapController {
     ctx.globalCompositeOperation = 'source-over'
 
 
-    const specPercentage = Math.random();
+    const specPercentage = currentStats.specialAttack / 100;
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
@@ -220,7 +227,6 @@ export class MapController {
     this.game = game;
   }
 
-
   draw(tickPercent: number){
     if (!this.mapCanvas && this.game && this.game.region.mapImage) {
       this.mapCanvas = new OffscreenCanvas(152, 152);
@@ -256,31 +262,31 @@ export class MapController {
       this.ctx.textAlign = 'center'
 
       // hitpoints
-      this.ctx.fillStyle = 'black'
-      this.ctx.fillText( '99', 15, 74 )
-      this.ctx.fillStyle = '#00FF00'
-      this.ctx.fillText( '99', 14, 73 )
+      if (this.currentStats) {
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillText( String(this.currentStats.hitpoint), 15, 74 )
+        this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.hitpoint / this.stats.hitpoint).toHexString()
+        this.ctx.fillText( String(this.currentStats.hitpoint), 14, 73 )  
+        // prayer
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillText( String(this.currentStats.prayer), 15, 108 )
+        this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.prayer / this.stats.prayer).toHexString()
+        this.ctx.fillText( String(this.currentStats.prayer), 14, 107 )
 
 
-      // prayer
-      this.ctx.fillStyle = 'black'
-      this.ctx.fillText( '99', 15, 108 )
-      this.ctx.fillStyle = '#00FF00'
-      this.ctx.fillText( '99', 14, 107 )
+        // run
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillText( String(this.currentStats.run), 25, 140 )
+        this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 100).toHexString()
+        this.ctx.fillText( String(this.currentStats.run), 24, 139 )
 
 
-      // run
-      this.ctx.fillStyle = 'black'
-      this.ctx.fillText( '99', 25, 140 )
-      this.ctx.fillStyle = '#00FF00'
-      this.ctx.fillText( '99', 24, 139 )
-
-
-      // spec
-      this.ctx.fillStyle = 'black'
-      this.ctx.fillText( '99', 47, 166 )
-      this.ctx.fillStyle = '#00FF00'
-      this.ctx.fillText( '99', 46, 165 )
+        // spec
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillText( String(this.currentStats.specialAttack), 47, 166 )
+        this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.specialAttack / 100).toHexString()
+        this.ctx.fillText( String(this.currentStats.specialAttack), 46, 165 )
+      }
 
     }
 

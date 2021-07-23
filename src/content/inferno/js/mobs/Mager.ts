@@ -41,7 +41,10 @@ export class Mager extends Mob {
       defence: 260,
       range: 510,
       magic: 300,
-      hitpoint: 220
+      hitpoint: 220,
+      prayer: 0,
+      run: 0,
+      specialAttack: 0,
     }
 
     // with boosts

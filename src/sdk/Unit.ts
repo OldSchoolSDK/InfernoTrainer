@@ -33,7 +33,10 @@ export interface UnitStats {
   defence: number;
   range: number;
   magic: number;
-  hitpoint: number
+  hitpoint: number;
+  prayer: number;
+  run: number;
+  specialAttack: number;
 }
 
 export interface UnitBonuses {

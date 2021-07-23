@@ -33,7 +33,10 @@ export class Pillar extends Entity {
       defence: 0,
       range: 0,
       magic: 0,
-      hitpoint: 255
+      hitpoint: 255,
+      prayer: 0,
+      run: 0,
+      specialAttack: 0
     }
 
     // with boosts
@@ -43,7 +46,10 @@ export class Pillar extends Entity {
       defence: 0,
       range: 0,
       magic: 0,
-      hitpoint: 255
+      hitpoint: 255,
+      prayer: 0,
+      run: 0,
+      specialAttack: 0
     }
 
     this.bonuses = {

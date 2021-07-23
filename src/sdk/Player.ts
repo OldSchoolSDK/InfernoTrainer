@@ -38,7 +38,10 @@ export class Player extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99
+      hitpoint: 99,
+      prayer: 99,
+      run: 100,
+      specialAttack: 100
     }
 
     // with boosts
@@ -48,7 +51,10 @@ export class Player extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99
+      hitpoint: 99,
+      prayer: 99,
+      run: 100,
+      specialAttack: 100
     }
 
     this.bonuses = {
@@ -77,6 +83,8 @@ export class Player extends Unit {
         slayer: 0
       }
     }
+
+
   }
 
   get type () {
@@ -289,6 +297,10 @@ export class Player extends Unit {
     this.attackIfPossible()
 
     this.sendXpToController();
+
+    if (this.game.mapController){
+      this.game.mapController.updateOrbsMask(this.currentStats, this.stats);
+    }
   }
 
   attackIfPossible () {

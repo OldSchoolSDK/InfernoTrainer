@@ -51,7 +51,10 @@ export class Nibbler extends Mob {
       defence: 15,
       range: 1,
       magic: 15,
-      hitpoint: 10
+      hitpoint: 10,
+      prayer: 0,
+      run: 0,
+      specialAttack: 0
     }
 
     // with boosts

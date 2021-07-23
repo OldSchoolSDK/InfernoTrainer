@@ -31,7 +31,10 @@ export class JalAkRekKet extends Mob {
       defence: 95,
       range: 1,
       magic: 1,
-      hitpoint: 15
+      hitpoint: 15,
+      prayer: 0,
+      run: 0,
+      specialAttack: 0
     }
 
     // with boosts
