@@ -43,10 +43,7 @@ export class Ranger extends Mob {
       defence: 60,
       range: 250,
       magic: 90,
-      hitpoint: 125,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 125
     }
 
     // with boosts

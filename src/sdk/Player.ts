@@ -12,13 +12,19 @@ import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
 import { Mob } from './Mob'
 
+export interface PlayerStats extends UnitStats { 
+  prayer: number;
+  run: number;
+  specialAttack: number;
+}
+
 export class Player extends Unit {
   weapon?: Weapon;
   manualSpellCastSelection: Weapon;
   destinationLocation?: Location;
 
-  stats: UnitStats;
-  currentStats: UnitStats;
+  stats: PlayerStats;
+  currentStats: PlayerStats;
   bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;

@@ -18,6 +18,7 @@ import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 import { Game } from './Game';
 import { UnitStats } from './Unit'
 import ColorScale from 'color-scales'
+import { PlayerStats } from './Player'
 
 export class MapController {
   static controller = new MapController();
@@ -49,8 +50,8 @@ export class MapController {
   mapRunOrbMasked: OffscreenCanvas;
   mapSpecOrbMasked: OffscreenCanvas;
 
-  currentStats: UnitStats;
-  stats: UnitStats;
+  currentStats: PlayerStats;
+  stats: PlayerStats;
 
   constructor(){
 
@@ -60,18 +61,36 @@ export class MapController {
     this.ctx = this.canvas.getContext('2d')
 
     this.loadImages();
+
+    this.currentStats = this.stats = {
+      attack: 0,
+      strength: 0,
+      defence: 0,
+      range: 0,
+      magic: 0,
+      hitpoint: 99,
+      prayer: 99,
+      specialAttack: 100,
+      run: 100,
+    }
+
+    this.updateOrbsMask(this.currentStats, this.stats)
     
   }
 
-  updateOrbsMask(currentStats: UnitStats, stats: UnitStats) {
+  updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
 
     this.currentStats = currentStats;
     this.stats = stats;
 
+    if (!this.mapHitpointOrb || !this.mapPrayerOrb || !this.mapRunOrb || !this.mapSpecOrb) {
+      return;
+    }
     const hitpointPercentage = currentStats.hitpoint / stats.hitpoint;
 
     this.mapHitpointOrbMasked = new OffscreenCanvas(this.mapHitpointOrb.width, this.mapHitpointOrb.height);
     let ctx = this.mapHitpointOrbMasked.getContext('2d')
+    
     ctx.fillStyle="white";
     ctx.drawImage(this.mapHitpointOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'

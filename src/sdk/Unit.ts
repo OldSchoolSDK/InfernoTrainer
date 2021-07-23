@@ -34,9 +34,6 @@ export interface UnitStats {
   range: number;
   magic: number;
   hitpoint: number;
-  prayer: number;
-  run: number;
-  specialAttack: number;
 }
 
 export interface UnitBonuses {
@@ -65,7 +62,6 @@ export interface UnitTargetBonuses {
   undead: number;
   slayer: number;
 }
-
 
 export class Unit extends GameObject {
 
@@ -253,6 +249,7 @@ export class Unit extends GameObject {
   dead () {
     this.perceivedLocation = this.location
     this.dying = 3
+    console.log('set dying');
   }
 
   detectDeath () {

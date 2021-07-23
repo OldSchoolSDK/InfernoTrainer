@@ -55,10 +55,7 @@ export class Verzik extends Mob{
       defence: 55,
       range: 120,
       magic: 120,
-      hitpoint: 2000,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 2000
     };
 
     // with boosts

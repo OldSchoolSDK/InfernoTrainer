@@ -50,10 +50,7 @@ export class Blob extends Mob {
       defence: 95,
       range: 160,
       magic: 160,
-      hitpoint: 40,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 40
     }
 
     // with boosts

@@ -41,10 +41,7 @@ export class Mager extends Mob {
       defence: 260,
       range: 510,
       magic: 300,
-      hitpoint: 220,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0,
+      hitpoint: 220
     }
 
     // with boosts
@@ -148,7 +145,7 @@ export class Mager extends Mob {
           this.attack()
         } else {
           // Set to 50% health
-          mobToResurrect.currentStats.hitpoint = mobToResurrect.stats.hitpoint / 2
+          mobToResurrect.currentStats.hitpoint = Math.floor(mobToResurrect.stats.hitpoint / 2)
           mobToResurrect.dying = -1
 
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))

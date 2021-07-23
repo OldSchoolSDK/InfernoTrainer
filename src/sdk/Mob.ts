@@ -42,10 +42,7 @@ export class Mob extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 99
     }
 
     // with boosts
@@ -55,10 +52,7 @@ export class Mob extends Unit {
       defence: 99,
       range: 99,
       magic: 99,
-      hitpoint: 99,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 99
     }
 
     this.bonuses = {

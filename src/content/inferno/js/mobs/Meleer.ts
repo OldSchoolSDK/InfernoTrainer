@@ -22,6 +22,7 @@ export class Meleer extends Mob {
 
   dead () {
     super.dead()
+    console.log('dying');
     MobDeathStore.npcDied(this)
   }
 
@@ -39,10 +40,7 @@ export class Meleer extends Mob {
       defence: 120,
       range: 220,
       magic: 120,
-      hitpoint: 75,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 75
     }
 
     // with boosts

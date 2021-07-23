@@ -38,10 +38,7 @@ export class Bat extends Mob {
       defence: 55,
       range: 120,
       magic: 120,
-      hitpoint: 25,
-      prayer: 0,
-      run: 0,
-      specialAttack: 0
+      hitpoint: 25
     }
 
     // with boosts
