@@ -20,6 +20,7 @@ import { Game } from './Game';
 import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
 import { ImageLoader } from './Utils/ImageLoader'
+import { Settings } from './Settings'
 
 enum MapHover {
   NONE = 0,
@@ -83,6 +84,7 @@ export class MapController {
   cursorMovedTo(event: MouseEvent) {
     const x = event.offsetX;
     const y = event.offsetY;
+    
 
     this.hovering = MapHover.NONE;
     // 4, 88 -> 53, 108
@@ -102,7 +104,15 @@ export class MapController {
     const x = event.offsetX;
     const y = event.offsetY;
 
-    if (x > 4 && x < 48 && y > 53 && y < 76){
+    if (x > 33 && x < 67 && y > 5 && y < 39){
+      
+      if (Settings.rotated === 'south') {
+        Settings.rotated = 'north'
+      } else {
+        Settings.rotated = 'south'
+      }
+      Settings.persistToStorage();
+    }else if (x > 4 && x < 48 && y > 53 && y < 76){
       // this.hovering = MapHover.HITPOINT;
     }else if (x > 4 && x < 48 && y > 90 && y < 108) {
       // this.hovering = MapHover.PRAYER;
@@ -214,7 +224,20 @@ export class MapController {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(this.mapCanvas, 52, 8);
-    this.ctx.drawImage(this.compassImage, 25, -3);
+    // this.ctx.drawImage(this.compassImage, 25, -3);
+
+
+    this.ctx.save()
+    this.ctx.translate(50.5, 23.5)
+    if (Settings.rotated === 'south') {
+      this.ctx.rotate(Math.PI)
+    }
+    this.ctx.translate(-50.5, -23.5)
+    this.ctx.drawImage(this.compassImage, 25, -2)
+    this.ctx.restore()
+
+
+
     this.ctx.drawImage(this.outlineImage, 28, 0);
     this.ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 47);
     this.ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 81);

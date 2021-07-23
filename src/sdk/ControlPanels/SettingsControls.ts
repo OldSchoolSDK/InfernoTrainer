@@ -8,7 +8,6 @@ import MusicOffIcon from '../../assets/images/interface/button_music_off.png'
 
 import ButtonRedUpIcon from '../../assets/images/interface/button_red_up.png'
 import ButtonGreenDownIcon from '../../assets/images/interface/button_green_down.png'
-import CompassIcon from '../../assets/images/interface/compass.png'
 import ButtonActiveIcon from '../../assets/images/interface/button_active.png'
 import ButtonInactiveIcon from '../../assets/images/interface/button_inactive.png'
 
@@ -42,7 +41,6 @@ export class SettingsControls extends BaseControls {
   musicOffImage: HTMLImageElement;
   redUpImage: HTMLImageElement;
   greenDownImage: HTMLImageElement;
-  compassImage: HTMLImageElement;
   activeButtonImage: HTMLImageElement
   inactiveButtonImage: HTMLImageElement;
   infernoImage: HTMLImageElement;
@@ -53,7 +51,6 @@ export class SettingsControls extends BaseControls {
   prayerImage: HTMLImageElement;
   equipmentImage: HTMLImageElement;
   bindingKey?: string;
-  compassCanvas: OffscreenCanvas;
 
   constructor () {
     super()
@@ -61,7 +58,6 @@ export class SettingsControls extends BaseControls {
     this.musicOffImage = ImageLoader.createImage(MusicOffIcon)
     this.redUpImage = ImageLoader.createImage(ButtonRedUpIcon)
     this.greenDownImage = ImageLoader.createImage(ButtonGreenDownIcon)
-    this.compassImage = ImageLoader.createImage(CompassIcon)
     this.activeButtonImage = ImageLoader.createImage(ButtonActiveIcon)
     this.inactiveButtonImage = ImageLoader.createImage(ButtonInactiveIcon)
     this.infernoImage = ImageLoader.createImage(InfernoIcon)
@@ -97,34 +93,6 @@ export class SettingsControls extends BaseControls {
       }
 
     })
-
-
-    this.compassImage.onload = () => {
-      this.compassCanvas = new OffscreenCanvas(51, 51)
-
-      const context = this.compassCanvas.getContext('2d')
-
-      context.drawImage(this.compassImage, 0, 0)
-
-      // only draw image where mask is
-      context.globalCompositeOperation = 'destination-in'
-
-      // draw our circle mask
-      context.fillStyle = '#000'
-      context.beginPath()
-      const size = 38
-      context.arc(
-        (51 - size) * 0.5 + size * 0.5, // x
-        (51 - size) * 0.5 + size * 0.5, // y
-        size * 0.5, // radius
-        0, // start angle
-        2 * Math.PI // end angle
-      )
-      context.fill()
-
-      // restore to default composite operation (is draw over current image)
-      context.globalCompositeOperation = 'source-over'
-    }
   }
 
   get keyBinding () {
@@ -138,12 +106,6 @@ export class SettingsControls extends BaseControls {
       Settings.inputDelay += 20
     } else if (x > 90 && x < 105 && y > 51 && y < 67) {
       Settings.inputDelay -= 20
-    } else if (x > 135 && x < 180 && y > 20 && y < 58) {
-      if (Settings.rotated === 'south') {
-        Settings.rotated = 'north'
-      } else {
-        Settings.rotated = 'south'
-      }
     } else if (x > 20 && x < 60 && y > 100 && y < 140) {
       Settings.region = 'inferno'
     } else if (x > 80 && x < 120 && y > 100 && y < 140) {
@@ -180,18 +142,6 @@ export class SettingsControls extends BaseControls {
     ctrl.ctx.fillText(String(Settings.inputDelay), x + 96, y + 48)
     ctrl.ctx.drawImage(this.greenDownImage, x + 90, y + 51)
     ctrl.ctx.fillText('Lag', x + 97, y + 81)
-
-    if (this.compassImage) {
-      ctrl.ctx.save()
-      ctrl.ctx.translate(x + 160, y + 35)
-      if (Settings.rotated === 'south') {
-        ctrl.ctx.rotate(Math.PI)
-      }
-      ctrl.ctx.translate(-x - 160, y - 35)
-      ctrl.ctx.drawImage(this.compassCanvas, x + 135, y + 10)
-      ctrl.ctx.restore()
-      ctrl.ctx.fillText('Compass', x + 160, y + 71)
-    }
 
     ctrl.ctx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
     ctrl.ctx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
