@@ -149,6 +149,7 @@ export class Mager extends Mob {
           // Set to 50% health
           mobToResurrect.currentStats.hitpoint = Math.floor(mobToResurrect.stats.hitpoint / 2)
           mobToResurrect.dying = -1
+          mobToResurrect.attackCooldownTicks = mobToResurrect.cooldown;
 
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
