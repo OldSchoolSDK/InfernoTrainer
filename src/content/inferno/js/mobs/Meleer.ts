@@ -22,7 +22,6 @@ export class Meleer extends Mob {
 
   dead () {
     super.dead()
-    console.log('dying');
     MobDeathStore.npcDied(this)
   }
 

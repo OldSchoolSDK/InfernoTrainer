@@ -249,7 +249,6 @@ export class Unit extends GameObject {
   dead () {
     this.perceivedLocation = this.location
     this.dying = 3
-    console.log('set dying');
   }
 
   detectDeath () {
