@@ -226,13 +226,26 @@ export class MapController {
   generateMaskedMap() {
     this.mapCanvas = new OffscreenCanvas(152, 152);
     const mapContext = this.mapCanvas.getContext('2d')
+
+
     mapContext.save()
     mapContext.translate(76, 76)
     if (Settings.rotated === 'south') {
       mapContext.rotate(Math.PI)
     }
     mapContext.translate(-76, -76)
+
+    const compatCtx = mapContext as any;
+    compatCtx.webkitImageSmoothingEnabled = false;
+    compatCtx.mozImageSmoothingEnabled = false;
+    compatCtx.imageSmoothingEnabled = false;
+
     mapContext.drawImage(this.game.region.mapImage, 0, 0, 152, 152)
+    compatCtx.webkitImageSmoothingEnabled = true;
+    compatCtx.mozImageSmoothingEnabled = true;
+    compatCtx.imageSmoothingEnabled = true;
+
+
     mapContext.globalCompositeOperation = 'destination-out'
     mapContext.drawImage(this.mapAlphaImage, 0, 0)
     mapContext.globalCompositeOperation = 'source-over'
