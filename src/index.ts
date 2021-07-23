@@ -31,8 +31,6 @@ const game = new Game('game', selectedRegion);
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
-MapController.controller.loadImages();
-
 MapController.controller.setGame(game);
 
 game.setMapController(MapController.controller)

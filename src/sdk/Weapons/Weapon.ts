@@ -37,6 +37,10 @@ export class Weapon extends Item{
     this.inventorySprite = ImageLoader.createImage(this.inventoryImage)
   }
 
+  hasSpecialAttack(): boolean {
+    return false;
+  }
+  
   cast(game: Game, from: Unit, to: GameObject) {
 
   }
