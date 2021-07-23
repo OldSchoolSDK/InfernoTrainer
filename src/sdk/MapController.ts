@@ -75,10 +75,8 @@ export class MapController {
     }
 
 
-    ImageLoader.onLoad(() => {
-      this.updateOrbsMask(this.currentStats, this.stats)      
-    })
-    
+    ImageLoader.onAllImagesLoaded(() => this.updateOrbsMask(this.currentStats, this.stats)  )
+
     this.canvas.addEventListener('mousedown', this.clicked.bind(this))
 
   }

@@ -41,7 +41,7 @@ controlPanel.setGame(game)
 
 selectedRegion.initialize(game)
 
-ImageLoader.onLoad(() => {
+ImageLoader.onAllImagesLoaded(() => {
   // Start the engine
   game.startTicking()
 

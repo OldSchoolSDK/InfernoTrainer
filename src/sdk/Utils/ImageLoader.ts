@@ -19,7 +19,7 @@ export class ImageLoader {
     return img;
   }
 
-  static onLoad(loadFn: () => void) {
+  static onAllImagesLoaded(loadFn: () => void) {
     ImageLoader.onLoadFns.push(loadFn);
   }
   
