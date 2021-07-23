@@ -27,6 +27,7 @@ import { Settings } from '../Settings'
 import { BrowserUtils } from '../Utils/BrowserUtils'
 import { Game } from '../Game'
 import { ControlPanelController } from '../ControlPanelController'
+import { ImageLoader } from '../Utils/ImageLoader'
 
 export class SettingsControls extends BaseControls {
   get panelImageReference () {
@@ -56,35 +57,20 @@ export class SettingsControls extends BaseControls {
 
   constructor () {
     super()
-    this.musicOnImage = new Image()
-    this.musicOnImage.src = MusicOnIcon
-    this.musicOffImage = new Image()
-    this.musicOffImage.src = MusicOffIcon
-    this.redUpImage = new Image()
-    this.redUpImage.src = ButtonRedUpIcon
-    this.greenDownImage = new Image()
-    this.greenDownImage.src = ButtonGreenDownIcon
-    this.compassImage = new Image()
-    this.compassImage.src = CompassIcon
-    this.activeButtonImage = new Image()
-    this.activeButtonImage.src = ButtonActiveIcon
-    this.inactiveButtonImage = new Image()
-    this.inactiveButtonImage.src = ButtonInactiveIcon
-    this.infernoImage = new Image()
-    this.infernoImage.src = InfernoIcon
-    this.verzikImage = new Image()
-    this.verzikImage.src = VerzikIcon
-    this.xarpusImage = new Image()
-    this.xarpusImage.src = XarpusIcon
-    this.inventoryImage = new Image()
-    this.inventoryImage.src = InventoryTab
-    this.spellbookImage = new Image()
-    this.spellbookImage.src = SpellbookTab
-    this.prayerImage = new Image()
-    this.prayerImage.src = PrayerTab
-    this.equipmentImage = new Image()
-    this.equipmentImage.src = EquipmentTab
-
+    this.musicOnImage = ImageLoader.createImage(MusicOnIcon)
+    this.musicOffImage = ImageLoader.createImage(MusicOffIcon)
+    this.redUpImage = ImageLoader.createImage(ButtonRedUpIcon)
+    this.greenDownImage = ImageLoader.createImage(ButtonGreenDownIcon)
+    this.compassImage = ImageLoader.createImage(CompassIcon)
+    this.activeButtonImage = ImageLoader.createImage(ButtonActiveIcon)
+    this.inactiveButtonImage = ImageLoader.createImage(ButtonInactiveIcon)
+    this.infernoImage = ImageLoader.createImage(InfernoIcon)
+    this.verzikImage = ImageLoader.createImage(VerzikIcon)
+    this.xarpusImage = ImageLoader.createImage(XarpusIcon)
+    this.inventoryImage = ImageLoader.createImage(InventoryTab)
+    this.spellbookImage = ImageLoader.createImage(SpellbookTab)
+    this.prayerImage = ImageLoader.createImage(PrayerTab)
+    this.equipmentImage = ImageLoader.createImage(EquipmentTab)
 
     this.bindingKey = null;
 

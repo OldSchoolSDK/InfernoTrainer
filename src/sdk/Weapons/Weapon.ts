@@ -5,6 +5,7 @@ import { Item } from "../Item"
 import { BasePrayer } from "../Prayers/BasePrayer";
 import { Game } from "../Game";
 import { Unit } from "../Unit";
+import { ImageLoader } from "../Utils/ImageLoader";
 
 
 interface EffectivePrayers {
@@ -33,8 +34,7 @@ export class Weapon extends Item{
   constructor () {
     super();
     this.selected = false
-    this.inventorySprite = new Image()
-    this.inventorySprite.src = this.inventoryImage
+    this.inventorySprite = ImageLoader.createImage(this.inventoryImage)
   }
 
   cast(game: Game, from: Unit, to: GameObject) {

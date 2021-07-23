@@ -1,5 +1,7 @@
 'use strict'
 
+import { ImageLoader } from "../Utils/ImageLoader";
+
 export enum PrayerGroups {
   OVERHEADS = 'overheads',
   DEFENCE = 'defence',
@@ -51,8 +53,7 @@ export class BasePrayer {
 
   overheadImage () {
     if (!this.cachedImage && this.overheadImageReference()) {
-      this.cachedImage = new Image(34, 34)
-      this.cachedImage.src = this.overheadImageReference()
+      this.cachedImage = ImageLoader.createImage(this.overheadImageReference())
     }
 
     return this.cachedImage

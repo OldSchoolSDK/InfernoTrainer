@@ -17,6 +17,7 @@ import { Region } from '../../sdk/Region'
 import { Game } from '../../sdk/Game'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
+import { ImageLoader } from '../../sdk/Utils/ImageLoader'
 
 export class Inferno extends Region {
 
@@ -34,12 +35,8 @@ export class Inferno extends Region {
   }
 
 
-  initializeMap() { 
-    const image = new Image();
-    image.src = this.mapImagePath();
-    image.onload = () => {
-      this.mapImage = image;
-    }
+  initializeMap() {
+    this.mapImage = ImageLoader.createImage(this.mapImagePath())
   }
   
   initialize (game: Game) {

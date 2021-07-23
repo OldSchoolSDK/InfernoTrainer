@@ -6,6 +6,7 @@ import MagicXpDropImage from "../assets/images/xpdrops/magic.png";
 import HitpointXpDropImage from "../assets/images/xpdrops/hitpoint.png";
 import { find } from "lodash";
 import { XpDrop } from "./XpDrop";
+import { ImageLoader } from "./Utils/ImageLoader";
 
 interface SkillTypes {
   type: string,
@@ -133,9 +134,5 @@ export class XpDropController {
 
 
 XpDropController.skills.forEach((skill) => {
-  const image = new Image();
-  image.src = skill.imgSrc;
-  image.onload = () => {
-    skill.image = image;
-  }
+  skill.image = ImageLoader.createImage(skill.imgSrc)
 });

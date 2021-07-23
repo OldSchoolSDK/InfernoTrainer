@@ -16,9 +16,9 @@ import MapRunIcon from '../assets/images/interface/map_run_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { Game } from './Game';
-import { UnitStats } from './Unit'
 import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
+import { ImageLoader } from './Utils/ImageLoader'
 
 export class MapController {
   static controller = new MapController();
@@ -28,7 +28,7 @@ export class MapController {
   game: Game;
   canvas = document.getElementById('map') as HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  outlineImage: HTMLImageElement;
+  outlineImage: HTMLImageElement = new Image();
   mapAlphaImage: HTMLImageElement;
   compassImage: OffscreenCanvas;
   mapNumberOrb: HTMLImageElement;
@@ -74,8 +74,17 @@ export class MapController {
       run: 100,
     }
 
-    this.updateOrbsMask(this.currentStats, this.stats)
+
+    ImageLoader.onLoad(() => {
+      this.updateOrbsMask(this.currentStats, this.stats)      
+    })
     
+    this.canvas.addEventListener('mousedown', this.clicked.bind(this))
+
+  }
+
+  clicked(event: MouseEvent) {
+
   }
 
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
@@ -90,7 +99,7 @@ export class MapController {
 
     this.mapHitpointOrbMasked = new OffscreenCanvas(this.mapHitpointOrb.width, this.mapHitpointOrb.height);
     let ctx = this.mapHitpointOrbMasked.getContext('2d')
-    
+
     ctx.fillStyle="white";
     ctx.drawImage(this.mapHitpointOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
@@ -134,85 +143,25 @@ export class MapController {
 
   loadImages() {
 
-    const outlineImage = new Image();
-    outlineImage.src = MapBoarder;
-    outlineImage.onload = () => {
-      this.outlineImage = outlineImage;
-    };
 
-    const mapNoSpecOrb = new Image();
-    mapNoSpecOrb.src = MapNoSpecOrb;
-    mapNoSpecOrb.onload = () => {
-      this.mapNoSpecOrb = mapNoSpecOrb;
-    };
-    const mapSpecOrb = new Image();
-    mapSpecOrb.src = MapSpecOrb;
-    mapSpecOrb.onload = () => {
-      this.mapSpecOrb = mapSpecOrb;
-    };
+    this.outlineImage = ImageLoader.createImage(MapBoarder)
+    this.mapNoSpecOrb = ImageLoader.createImage(MapNoSpecOrb)
+    this.mapSpecOrb = ImageLoader.createImage(MapSpecOrb);
+    this.mapNumberOrb = ImageLoader.createImage(MapNumberOrb);
+    this.mapHitpointOrb = ImageLoader.createImage(MapHitpointOrb);
+    this.mapAlphaImage = ImageLoader.createImage(MapBorderMask);
+    this.mapPrayerOrb = ImageLoader.createImage(MapPrayerOrb);
+    this.mapRunOrb = ImageLoader.createImage(MapRunOrb);
+    this.mapHitpointIcon = ImageLoader.createImage(MapHitpointIcon);
 
 
-    const mapNumberOrb = new Image();
-    mapNumberOrb.src = MapNumberOrb;
-    mapNumberOrb.onload = () => {
-      this.mapNumberOrb = mapNumberOrb;
-    };
+    this.mapRunIcon = ImageLoader.createImage(MapRunIcon);
+    this.mapSpecIcon = ImageLoader.createImage(MapSpecIcon);
+    this.mapPrayerIcon = ImageLoader.createImage(MapPrayerIcon);
+    this.mapWalkIcon = ImageLoader.createImage(MapWalkIcon);
+    const compassImage = ImageLoader.createImage(CompassIcon);
 
-    const mapHitpointOrb = new Image();
-    mapHitpointOrb.src = MapHitpointOrb;
-    mapHitpointOrb.onload = () => {
-      this.mapHitpointOrb = mapHitpointOrb;
-    };
-
-    const mapAlphaImage = new Image();
-    mapAlphaImage.src = MapBorderMask;
-    mapAlphaImage.onload = () => {
-      this.mapAlphaImage = mapAlphaImage;
-    };
-
-    const mapPrayerOrb = new Image();
-    mapPrayerOrb.src = MapPrayerOrb;
-    mapPrayerOrb.onload = () => {
-      this.mapPrayerOrb = mapPrayerOrb;
-    };
-    const mapRunOrb = new Image();
-    mapRunOrb.src = MapRunOrb;
-    mapRunOrb.onload = () => {
-      this.mapRunOrb = mapRunOrb;
-    };
-
-    const mapHitpointIcon = new Image();
-    mapHitpointIcon.src = MapHitpointIcon;
-    mapHitpointIcon.onload = () => {
-      this.mapHitpointIcon = mapHitpointIcon;
-    };
-
-    const mapRunIcon = new Image();
-    mapRunIcon.src = MapRunIcon;
-    mapRunIcon.onload = () => {
-      this.mapRunIcon = mapRunIcon;
-    };
-    const mapSpecIcon = new Image();
-    mapSpecIcon.src = MapSpecIcon;
-    mapSpecIcon.onload = () => {
-      this.mapSpecIcon = mapSpecIcon;
-    };
-  
-    const mapPrayerIcon = new Image();
-    mapPrayerIcon.src = MapPrayerIcon;
-    mapPrayerIcon.onload = () => {
-      this.mapPrayerIcon = mapPrayerIcon;
-    };
-    const mapWalkIcon = new Image();
-    mapWalkIcon.src = MapWalkIcon;
-    mapWalkIcon.onload = () => {
-      this.mapWalkIcon = mapWalkIcon;
-    };
-
-    const compassImage = new Image()
-    compassImage.src = CompassIcon
-
-    compassImage.onload = () => {
+    compassImage.addEventListener('load', () => {
       this.compassImage = new OffscreenCanvas(51, 51)
 
       const context = this.compassImage.getContext('2d')
@@ -238,7 +187,7 @@ export class MapController {
       // restore to default composite operation (is draw over current image)
       context.globalCompositeOperation = 'source-over'
 
-    }
+    })
 
   }
 

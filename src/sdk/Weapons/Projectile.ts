@@ -4,6 +4,7 @@
 import chebyshev from 'chebyshev'
 import { GameObject, Location } from '../GameObject'
 import { Unit } from '../Unit'
+import { ImageLoader } from '../Utils/ImageLoader'
 import { Weapon } from './Weapon'
 
 export interface ProjectileOptions {
@@ -50,11 +51,7 @@ export class Projectile {
     }
 
     if (weapon.image){
-      const image = new Image();
-      image.src = weapon.image;
-      image.onload = () => {
-        this.image = image;
-      }
+      this.image = ImageLoader.createImage(weapon.image);
     }
 
     if (options.forceSWTile) {

@@ -8,6 +8,7 @@ import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
 import { Region } from './sdk/Region'
 import { MapController } from './sdk/MapController'
+import { ImageLoader } from './sdk/Utils/ImageLoader'
 
 Settings.readFromStorage()
 const selectedRegionName = Settings.region
@@ -30,6 +31,8 @@ const game = new Game('game', selectedRegion);
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
+MapController.controller.loadImages();
+
 MapController.controller.setGame(game);
 
 game.setMapController(MapController.controller)
@@ -38,15 +41,22 @@ controlPanel.setGame(game)
 
 selectedRegion.initialize(game)
 
-// Start the engine
-game.startTicking()
+ImageLoader.onLoad(() => {
+  // Start the engine
+  game.startTicking()
 
-const timer = setInterval(() => {
-  game.heldDown-- // Release hold down clamps
-  if (game.heldDown <= 0) {
-    clearInterval(timer)
-  }
-}, 600)
+  const timer = setInterval(() => {
+    game.heldDown-- // Release hold down clamps
+    if (game.heldDown <= 0) {
+      clearInterval(timer)
+    }
+  }, 600)
+})
+
+const interval = setInterval(() => { 
+  ImageLoader.checkImagesLoaded(interval);
+}, 50);
+
 
 /// /////////////////////////////////////////////////////////
 

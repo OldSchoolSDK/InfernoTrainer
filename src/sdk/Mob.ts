@@ -9,6 +9,7 @@ import { Weapon } from './Weapons/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
 import { Game } from './Game'
 import { Location } from './GameObject'
+import { ImageLoader } from './Utils/ImageLoader'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -83,11 +84,7 @@ export class Mob extends Unit {
     super(game, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => {
-        const img = new Image(Settings.tileSize * this.size, Settings.tileSize * this.size)
-        img.src = image
-        return img
-      })
+      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
     }
   }
 
