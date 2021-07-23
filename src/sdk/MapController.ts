@@ -31,6 +31,7 @@ enum MapHover {
   PRAYER = 2,
   RUN = 3,
   SPEC = 4,
+  XP = 5,
 }
 
 export class MapController {
@@ -89,11 +90,11 @@ export class MapController {
   cursorMovedTo(event: MouseEvent) {
     const x = event.offsetX;
     const y = event.offsetY;
-    
 
     this.hovering = MapHover.NONE;
-    // 4, 88 -> 53, 108
-    if (x > 4 && x < 48 && y > 53 && y < 76){
+    if (x > 4 && x < 23 && y > 31 && y < 51) {
+      this.hovering = MapHover.XP;
+    }else if (x > 4 && x < 48 && y > 53 && y < 76){
       this.hovering = MapHover.HITPOINT;
     }else if (x > 4 && x < 48 && y > 90 && y < 108) {
       this.hovering = MapHover.PRAYER;
@@ -109,7 +110,9 @@ export class MapController {
     const x = event.offsetX;
     const y = event.offsetY;
 
-    if (x > 33 && x < 67 && y > 5 && y < 39){
+    if (x > 4 && x < 23 && y > 31 && y < 51) {
+      Settings.displayXpDrops = !Settings.displayXpDrops;
+    }else if (x > 33 && x < 67 && y > 5 && y < 39){
       
       if (Settings.rotated === 'south') {
         Settings.rotated = 'north'
@@ -260,12 +263,13 @@ export class MapController {
 
 
     this.ctx.drawImage(this.outlineImage, 28, 0);
+    this.ctx.drawImage(this.hovering == MapHover.XP ? this.mapXpHoverButton : this.mapXpButton, 0, 26)
+
     this.ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 47);
     this.ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 81);
     this.ctx.drawImage(this.hovering == MapHover.RUN ? this.mapSelectedNumberOrb : this.mapNumberOrb, 10, 114);
     this.ctx.drawImage(this.hovering == MapHover.SPEC ? this.mapSelectedNumberOrb : this.mapNumberOrb, 32, 140);
 
-    this.ctx.drawImage(this.mapHitpointOrbMasked, 27, 51)
     this.ctx.drawImage(this.mapHitpointOrbMasked, 27, 51)
     this.ctx.drawImage(this.mapHitpointIcon, 27, 51)
     this.ctx.drawImage(this.mapPrayerOrbMasked, 27, 85)
@@ -274,7 +278,6 @@ export class MapController {
     this.ctx.drawImage(this.game.player.running ? this.mapRunIcon: this.mapWalkIcon, 37, 118)
     this.ctx.drawImage(this.mapSpecOrbMasked, 59, 144)
     this.ctx.drawImage(this.mapSpecIcon, 57, 142, 30, 30)
-    this.ctx.drawImage(this.mapXpButton, 0, 26)
 
 
 

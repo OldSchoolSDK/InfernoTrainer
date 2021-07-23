@@ -7,6 +7,7 @@ import HitpointXpDropImage from "../assets/images/xpdrops/hitpoint.png";
 import { find } from "lodash";
 import { XpDrop } from "./XpDrop";
 import { ImageLoader } from "./Utils/ImageLoader";
+import { Settings } from "./Settings";
 
 interface SkillTypes {
   type: string,
@@ -72,6 +73,10 @@ export class XpDropController {
 
   draw(destinationCanvas: CanvasRenderingContext2D, x: number, y: number, tickPercent: number){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (!Settings.displayXpDrops) {
+      return;
+    }
+
     const skillInfo = find(XpDropController.skills, {type: this.lastDropSkill});
 
     if (skillInfo && skillInfo.type){
