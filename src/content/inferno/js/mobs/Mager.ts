@@ -119,7 +119,9 @@ export class Mager extends Mob {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
         if (!Pathing.collidesWithAnyMobs(this.game, x, y, mobToResurrect.size)) {
-          return { x, y }
+          if (!Pathing.collidesWithAnyEntities(this.game, x, y, mobToResurrect.size)) {
+            return { x, y }
+          }
         }
       }
     }
