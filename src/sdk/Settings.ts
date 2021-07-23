@@ -24,7 +24,7 @@ export class Settings {
     window.localStorage.setItem('inputDelay', String(Settings.inputDelay))
     window.localStorage.setItem('rotated', Settings.rotated)
     window.localStorage.setItem('region', Settings.region)
-    window.localStorage.setItem('displayXpDrops', Settings.displayXpDrops)
+    window.localStorage.setItem('displayXpDrops', String(Settings.displayXpDrops))
 
     window.localStorage.setItem('inventory_key', Settings.inventory_key)
     window.localStorage.setItem('spellbook_key', Settings.spellbook_key)

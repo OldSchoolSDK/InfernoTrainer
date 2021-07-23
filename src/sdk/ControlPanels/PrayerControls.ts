@@ -39,6 +39,9 @@ import { RapidHeal } from '../Prayers/RapidHeal'
 import { ProtectItem } from '../Prayers/ProtectItem'
 
 export class PrayerControls extends BaseControls {
+
+  hasQuickPrayersActivated: boolean = false;
+
   get panelImageReference () {
     return PrayerPanel
   }
@@ -87,12 +90,33 @@ export class PrayerControls extends BaseControls {
     return PrayerControls.prayers.filter((prayer) => prayer.isActive);
   }
 
+  deactivateAllPrayers() {
+
+    this.hasQuickPrayersActivated = false;
+    PrayerControls.prayers.forEach((prayer) => prayer.deactivate());
+  }
+
+  activateQuickPrayers(){
+    this.hasQuickPrayersActivated = true;
+    
+    PrayerControls.prayers.forEach((prayer) => {
+      prayer.deactivate();
+      if (prayer.name === 'Protect from Magic'){
+        prayer.activate();
+      }
+      if (prayer.name === 'Rigour'){
+        prayer.activate();
+      }
+    });
+
+  }
+
   clickedPanel (game: Game, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 
     const clickedPrayer = PrayerControls.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
-    if (clickedPrayer && typeof clickedPrayer !== 'string') {
+    if (clickedPrayer) {
       this.getCurrentActivePrayers().forEach((prayer) => {
         if (!prayer || !prayer.groups) {
           return
@@ -101,8 +125,12 @@ export class PrayerControls extends BaseControls {
           prayer.deactivate()
         }
       })
+      clickedPrayer.toggle()
 
-      clickedPrayer.activate()
+      if (this.hasQuickPrayersActivated && this.getCurrentActivePrayers().length === 0) {
+        ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
+      }
+      
     }
   }
 

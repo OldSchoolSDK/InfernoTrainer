@@ -268,15 +268,15 @@ export class Mob extends Unit {
     )
 
     if (this.dying > -1) {
-      this.game.ctx.fillStyle = '#964B00'
+      this.game.ctx.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.game.ctx.fillStyle = '#00FF00'
+      this.game.ctx.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.game.ctx.fillStyle = '#FF0000'
+      this.game.ctx.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.game.ctx.fillStyle = '#FFFF00'
+      this.game.ctx.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.game.ctx.fillStyle = '#FF7300'
+      this.game.ctx.fillStyle = '#FF730073'
     } else {
       this.game.ctx.fillStyle = '#FFFFFF22'
     }

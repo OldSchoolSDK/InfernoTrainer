@@ -36,7 +36,11 @@ export class BasePrayer {
   }
 
   activate () {
-    this.isActive = !this.isActive
+    this.isActive = true;
+  }
+
+  toggle() {
+    this.isActive = !this.isActive;
   }
 
   deactivate () {

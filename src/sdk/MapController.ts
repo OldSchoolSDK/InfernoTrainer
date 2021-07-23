@@ -5,6 +5,8 @@ import MapBorderMask from '../assets/images/interface/map_border_mask.png'
 import CompassIcon from '../assets/images/interface/compass.png'
 import MapHitpointOrb from '../assets/images/interface/map_hitpoint_orb.png'
 import MapPrayerOrb from '../assets/images/interface/map_prayer_orb.png'
+import MapPrayerSelectedOrb from '../assets/images/interface/map_prayer_on_orb.png'
+
 import MapRunOrb from '../assets/images/interface/map_run_orb.png'
 import MapNoSpecOrb from '../assets/images/interface/map_no_spec_orb.png'
 import MapSpecOrb from '../assets/images/interface/map_spec_orb.png'
@@ -24,6 +26,8 @@ import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
 import { ImageLoader } from './Utils/ImageLoader'
 import { Settings } from './Settings'
+import { PrayerControls } from './ControlPanels/PrayerControls'
+import { ControlPanelController } from './ControlPanelController'
 
 enum MapHover {
   NONE = 0,
@@ -49,6 +53,7 @@ export class MapController {
   mapSelectedNumberOrb = ImageLoader.createImage(MapSelectedNumberOrb);
   mapHitpointOrb = ImageLoader.createImage(MapHitpointOrb);
   mapPrayerOrb = ImageLoader.createImage(MapPrayerOrb);
+  mapPrayerSelectedOrb = ImageLoader.createImage(MapPrayerSelectedOrb);
   mapRunOrb = ImageLoader.createImage(MapRunOrb);
   mapNoSpecOrb = ImageLoader.createImage(MapNoSpecOrb)
   mapSpecOrb = ImageLoader.createImage(MapSpecOrb);
@@ -123,7 +128,12 @@ export class MapController {
     }else if (x > 4 && x < 48 && y > 53 && y < 76){
       // this.hovering = MapHover.HITPOINT;
     }else if (x > 4 && x < 48 && y > 90 && y < 108) {
-      // this.hovering = MapHover.PRAYER;
+      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+      }else {
+        ControlPanelController.controls.PRAYER.activateQuickPrayers();
+      }
     }else if (x > 15 && x < 62 && y > 122 && y < 144) {
       this.game.player.running = !this.game.player.running;
     }else if (x > 38 && x < 74 && y > 148 && y < 170) {
@@ -159,7 +169,7 @@ export class MapController {
     this.mapPrayerOrbMasked = new OffscreenCanvas(this.mapPrayerOrb.width, this.mapPrayerOrb.height);
     ctx = this.mapPrayerOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.mapPrayerOrb, 0, 0)
+    ctx.drawImage(ControlPanelController.controls.PRAYER.hasQuickPrayersActivated ? this.mapPrayerSelectedOrb : this.mapPrayerOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapPrayerOrb.height * (1 - prayerPercentage), this.mapPrayerOrb.width, this.mapPrayerOrb.height * prayerPercentage)
     ctx.globalCompositeOperation = 'source-over'
