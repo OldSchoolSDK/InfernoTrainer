@@ -26,7 +26,6 @@ import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
 import { ImageLoader } from './Utils/ImageLoader'
 import { Settings } from './Settings'
-import { PrayerControls } from './ControlPanels/PrayerControls'
 import { ControlPanelController } from './ControlPanelController'
 
 enum MapHover {

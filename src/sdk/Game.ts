@@ -58,6 +58,7 @@ export class Game {
     this.offPerformanceCount = 0
 
     this.canvas.addEventListener('click', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.canvas.addEventListener('contextmenu', (e: MouseEvent) => {
       let x = e.offsetX
       let y = e.offsetY
@@ -77,8 +78,6 @@ export class Game {
       this.contextMenu.setMenuOptions(menuOptions)
       this.contextMenu.setActive()
     })
-
-    this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
   }
 
   mapClick (e: MouseEvent) {

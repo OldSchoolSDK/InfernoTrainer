@@ -125,11 +125,7 @@ export class PrayerControls extends BaseControls {
       })
       clickedPrayer.toggle()
 
-      if (this.getCurrentActivePrayers().length === 0) {
-        // To support prayer flicking
-        game.player.prayerDrainCounter = 0;
-      }
-      if (this.hasQuickPrayersActivated) {
+      if (this.hasQuickPrayersActivated && this.getCurrentActivePrayers().length === 0) {
         ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
       }
       
