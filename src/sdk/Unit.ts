@@ -67,19 +67,20 @@ export interface UnitTargetBonuses {
 export class Unit extends GameObject {
 
   game: Game;
-  prayers: BasePrayer[];
-  lastOverhead?: BasePrayer;
+  prayers: BasePrayer[] = [];
+  lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
   perceivedLocation: Location;
-  attackCooldownTicks: number;
-  hasLOS: boolean;
-  frozen: number;
+  attackCooldownTicks: number = 0;
+  hasLOS: boolean = false;
+  frozen: number = 0;
+  stunned: number = 0;
   incomingProjectiles: Projectile[];
   missedHitsplatImage: HTMLImageElement;
   damageHitsplatImage: HTMLImageElement;
   unitImage: HTMLImageElement;
-  currentAnimation?: any;
-  currentAnimationTickLength: number;
+  currentAnimation?: any = null;
+  currentAnimationTickLength: number = 0;
   currentStats: UnitStats;
   stats: UnitStats;
   bonuses: UnitBonuses;
@@ -92,16 +93,11 @@ export class Unit extends GameObject {
     super()
 
     this.game = game
-    this.prayers = []
-    this.lastOverhead = null
     this.aggro = options.aggro || null
     this.perceivedLocation = location
     this.location = location
-    this.attackCooldownTicks = 0
-    this.hasLOS = false
-    this.frozen = 0
+
     // Number of ticks until NPC dies. If -1, the NPC is not dying.
-    this.dying = -1
     this.incomingProjectiles = []
 
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
@@ -110,8 +106,6 @@ export class Unit extends GameObject {
 
     this.unitImage = ImageLoader.createImage(this.image)
 
-    this.currentAnimation = null
-    this.currentAnimationTickLength = 0
     this.setStats()
     this.currentStats.hitpoint = this.stats.hitpoint
 
@@ -119,7 +113,7 @@ export class Unit extends GameObject {
       this.bonuses = options.weapon.bonuses // temp code
     }
   }
-
+  
   grantXp(xpDrop: XpDrop) {
     
   }
@@ -164,7 +158,19 @@ export class Unit extends GameObject {
 
   // Returns true if the NPC can move towards the unit it is aggro'd against.
   canMove () {
-    return (!this.hasLOS && this.frozen <= 0 && !this.isDying())
+    return (!this.hasLOS && !this.isFrozen() && !this.isStunned() && !this.isDying())
+  }
+
+  canAttack () {
+    return !this.isDying() && !this.isStunned();
+  }
+
+  isFrozen() {
+    return (this.frozen > 0)
+  }
+
+  isStunned () {
+    return (this.stunned > 0)
   }
 
   // TODO more modular

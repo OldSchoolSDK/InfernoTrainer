@@ -326,6 +326,7 @@ export class Player extends Unit {
 
   attackStep () {
     
+    
     this.drainPrayer();
 
 
@@ -342,6 +343,11 @@ export class Player extends Unit {
 
   attackIfPossible () {
     this.attackCooldownTicks--
+
+    if (this.canAttack() === false) {
+      return;
+    }
+    
     if (this.aggro) {
       this.setHasLOS()
       if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {

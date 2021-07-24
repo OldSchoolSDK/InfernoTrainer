@@ -35,7 +35,7 @@ export class Blob extends Mob {
   }
 
   setStats () {
-    this.frozen = 1
+    this.stunned = 1
 
     this.weapons = {
       crush: new MeleeWeapon(),
@@ -136,6 +136,11 @@ export class Blob extends Mob {
 
     this.hadLOS = this.hasLOS
     this.setHasLOS()
+
+    if (this.canAttack() === false) {
+      return;
+    }
+    
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan

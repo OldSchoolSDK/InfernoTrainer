@@ -27,7 +27,7 @@ export class Mager extends Mob {
   }
 
   setStats () {
-    this.frozen = 1
+    this.stunned = 1
 
     this.weapons = {
       stab: new MeleeWeapon(),
@@ -138,6 +138,11 @@ export class Mager extends Mob {
     this.hadLOS = this.hasLOS
     this.setHasLOS()
 
+
+    if (this.canAttack() === false) {
+      return;
+    }
+    
     const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {

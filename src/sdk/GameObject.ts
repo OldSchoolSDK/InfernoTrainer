@@ -12,7 +12,7 @@ export enum CollisionType {
 
 export class GameObject {
   location: Location;
-  dying: number;
+  dying: number = -1;
 
   get size () {
     return 1;

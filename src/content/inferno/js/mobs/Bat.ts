@@ -25,7 +25,7 @@ export class Bat extends Mob {
   }
 
   setStats () {
-    this.frozen = 1
+    this.stunned = 1
 
     this.weapons = {
       range: new RangedWeapon()
