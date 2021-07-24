@@ -11,7 +11,10 @@ export class MysticWill extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
   }
-
+  drainRate(): number {
+    return 3;
+  }
+  
   isOverhead () {
     return false
   }

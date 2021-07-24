@@ -12,6 +12,10 @@ export class UltimateStrength extends BasePrayer {
     return [PrayerGroups.STRENGTH]
   }
 
+  drainRate(): number {
+    return 12;
+  }
+
   isOverhead () {
     return false
   }

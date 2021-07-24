@@ -133,7 +133,7 @@ export class ControlPanelController {
   draw (game: Game) {
     this.ctx.fillStyle = '#000'
 
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     if (this.selectedControl && this.selectedControl.draw) {
       this.selectedControl.draw(game, this, this.canvas.width - 204, 0)

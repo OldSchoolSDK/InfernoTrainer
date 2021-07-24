@@ -12,6 +12,10 @@ export class ClarityOfThought extends BasePrayer {
     return [PrayerGroups.ATTACK]
   }
 
+  drainRate(): number {
+    return 3;
+  }
+  
   isOverhead () {
     return false
   }

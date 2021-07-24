@@ -12,6 +12,10 @@ export class Rigour extends BasePrayer {
     return [PrayerGroups.RANGE, PrayerGroups.DEFENCE]
   }
 
+  drainRate(): number {
+    return 24;
+  }
+  
   isOverhead () {
     return false
   }

@@ -12,6 +12,10 @@ export class MysticLore extends BasePrayer {
     return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
   }
 
+  drainRate(): number {
+    return 6;
+  }
+
   isOverhead () {
     return false
   }

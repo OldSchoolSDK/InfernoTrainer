@@ -12,6 +12,11 @@ export class ProtectItem extends BasePrayer {
     return [PrayerGroups.PROTECTITEM] // TODO: Incorrect
   }
 
+  
+  drainRate(): number {
+    return 2;
+  }
+  
   isOverhead () {
     return false
   }

@@ -12,6 +12,10 @@ export class HawkEye extends BasePrayer {
     return [PrayerGroups.RANGE]
   }
 
+  drainRate(): number {
+    return 6;
+  }
+
   isOverhead () {
     return false
   }

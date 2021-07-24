@@ -27,6 +27,11 @@ export class BasePrayer {
     return ''
   }
 
+  drainRate(): number {
+    throw new Error('prayer does not have proper drain rate');
+    
+  }
+
   get name () {
     return 'Protect from Magic'
   }

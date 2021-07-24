@@ -11,6 +11,10 @@ export class SteelSkin extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.DEFENCE]
   }
+  
+  drainRate(): number {
+    return 12;
+  }
 
   isOverhead () {
     return false

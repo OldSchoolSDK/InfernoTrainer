@@ -11,7 +11,11 @@ export class Preserve extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.PRESERVE] // TODO: Incorrect
   }
-
+  
+  drainRate(): number {
+    return 2;
+  }
+  
   isOverhead () {
     return false
   }

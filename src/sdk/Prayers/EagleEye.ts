@@ -12,6 +12,10 @@ export class EagleEye extends BasePrayer {
     return [PrayerGroups.RANGE]
   }
 
+  drainRate(): number {
+    return 12;
+  }
+
   isOverhead () {
     return false
   }

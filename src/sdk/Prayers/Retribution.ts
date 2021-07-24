@@ -11,7 +11,11 @@ export class Retribution extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.OVERHEADS] // TODO: Incorrect
   }
-
+  
+  drainRate(): number {
+    return 3;
+  }
+  
   isOverhead () {
     return false
   }
