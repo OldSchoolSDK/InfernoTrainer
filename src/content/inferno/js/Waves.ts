@@ -20,6 +20,14 @@ export class Waves {
   }
 
   static spawn (game: Game, randomPillar: Entity, spawns: Location[], wave: number) {
+
+    if (wave < 1) {
+      wave = 1;
+    }
+    if (wave > Waves.waves.length) {
+      wave = Waves.waves.length;
+    }
+
     const mobCounts = Waves.waves[wave - 1]
     let mobs: Mob[] = []
     let i = 0

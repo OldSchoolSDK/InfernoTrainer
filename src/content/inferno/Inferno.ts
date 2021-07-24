@@ -44,7 +44,10 @@ export class Inferno extends Region {
 
     // Add pillars
     Pillar.addPillarsToGame(game)
-    const wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+    if (isNaN(wave)){
+      wave = 1;
+    }
 
     // Add player
     const player = new Player(
