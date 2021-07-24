@@ -36,7 +36,7 @@ export class Nibbler extends Mob {
   }
 
   setStats () {
-    this.frozen = 1
+    this.stunned = 1
     this.weapon = {
       attackRange: 1
     }
@@ -122,6 +122,9 @@ export class Nibbler extends Mob {
 
     if (this.aggro.dying === 0) {
       this.dead() // cheat way for now. pillar should AOE
+    }
+    if (this.canAttack() === false) {
+      return;
     }
     const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     this.attackFeedback = AttackIndicators.NONE

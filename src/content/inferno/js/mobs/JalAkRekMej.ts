@@ -18,7 +18,6 @@ export class JalAkRekMej extends Mob {
   }
 
   setStats () {
-    this.frozen = 0
 
     this.weapons = {
       magic: new MagicWeapon()

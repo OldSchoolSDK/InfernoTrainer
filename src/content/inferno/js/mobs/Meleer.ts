@@ -26,7 +26,7 @@ export class Meleer extends Mob {
   }
 
   setStats () {
-    this.frozen = 1
+    this.stunned = 1
 
     this.weapons = {
       slash: new MeleeWeapon()

@@ -142,8 +142,6 @@ export class Mob extends Unit {
         this.location.y = dy
       }
     }
-
-    this.frozen--
   }
 
   // todo: Rename this possibly? it returns the attack style if it's possible
@@ -164,6 +162,10 @@ export class Mob extends Unit {
 
     this.attackIfPossible()
     this.detectDeath()
+
+    this.frozen--;
+    this.stunned--;
+
   }
 
   get attackStyle () {

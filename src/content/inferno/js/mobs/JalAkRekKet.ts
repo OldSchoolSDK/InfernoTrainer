@@ -18,7 +18,6 @@ export class JalAkRekKet extends Mob {
   }
 
   setStats () {
-    this.frozen = 0
 
     this.weapons = {
       crush: new MeleeWeapon()

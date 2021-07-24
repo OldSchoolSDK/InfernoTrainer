@@ -41,7 +41,7 @@ export class Verzik extends Mob{
   }
 
   setStats () {
-    this.frozen = 1;
+    this.stunned = 1;
 
     this.weapons = {
       melee: new MeleeWeapon(),
