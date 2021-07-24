@@ -166,11 +166,11 @@ export class Unit extends GameObject {
   }
 
   isFrozen() {
-    return (this.frozen > -1)
+    return (this.frozen > 0)
   }
 
   isStunned () {
-    return (this.stunned > -1)
+    return (this.stunned > 0)
   }
 
   // TODO more modular
