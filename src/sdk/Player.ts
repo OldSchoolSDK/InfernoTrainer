@@ -318,10 +318,6 @@ export class Player extends Unit {
       this.currentStats.prayer--;
       this.prayerDrainCounter -= this.prayerDrainResistance;
     }
-    if (prayerDrainThisTick === 0) {
-      this.prayerDrainCounter = 0;
-    }
-
     if (this.currentStats.prayer <= 0){
       ControlPanelController.controls.PRAYER.getCurrentActivePrayers().forEach((prayer) => prayer.deactivate())
       this.currentStats.prayer = 0;
