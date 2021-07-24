@@ -151,7 +151,7 @@ export class Mob extends Unit {
     return ''
   }
 
-  attackStep (game: Game) {
+  attackStep () {
     if (this.currentAnimationTickLength > 0) {
       if (--this.currentAnimationTickLength === 0) {
         this.currentAnimation = null

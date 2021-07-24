@@ -12,6 +12,11 @@ export class RapidRestore extends BasePrayer {
     return [PrayerGroups.HEARTS]
   }
 
+  
+  drainRate(): number {
+    return 1;
+  }
+  
   isOverhead () {
     return false
   }

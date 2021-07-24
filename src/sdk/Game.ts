@@ -141,9 +141,9 @@ export class Game {
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
     this.mobs.forEach((mob) => mob.movementStep())
-    this.mobs.forEach((mob) => mob.attackStep(this))
+    this.mobs.forEach((mob) => mob.attackStep())
     this.player.movementStep()
-    this.player.attackStep(this)
+    this.player.attackStep()
 
 
     // Safely remove the mobs from the game. If we do it while iterating we can cause ticks to be stole'd

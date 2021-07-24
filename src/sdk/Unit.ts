@@ -131,7 +131,7 @@ export class Unit extends GameObject {
   movementStep () {
   }
 
-  attackStep (game: Game) {
+  attackStep () {
   }
 
   draw(tickPercent: number) {
@@ -344,6 +344,7 @@ export class Unit extends GameObject {
   }
 
   drawOverheadPrayers () {
+
     const overheads = this.prayers.filter(prayer => prayer.isOverhead())
     if (overheads.length) {
       this.game.ctx.drawImage(

@@ -12,6 +12,11 @@ export class ThickSkin extends BasePrayer {
     return [PrayerGroups.DEFENCE]
   }
 
+
+  drainRate(): number {
+    return 3;
+  }
+  
   isOverhead () {
     return false
   }

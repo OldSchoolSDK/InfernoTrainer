@@ -11,7 +11,11 @@ export class BurstOfStrength extends BasePrayer {
   get groups () {
     return [PrayerGroups.STRENGTH]
   }
-
+  
+  drainRate(): number {
+    return 3;
+  }
+  
   isOverhead () {
     return false
   }

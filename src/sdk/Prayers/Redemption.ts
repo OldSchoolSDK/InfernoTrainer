@@ -12,6 +12,10 @@ export class Redemption extends BasePrayer {
     return [PrayerGroups.OVERHEADS]
   }
 
+  drainRate(): number {
+    return 6;
+  }
+
   isOverhead () {
     return false
   }

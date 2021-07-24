@@ -12,6 +12,10 @@ export class Chivalry extends BasePrayer {
     
     return [PrayerGroups.ATTACK, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
+  
+  drainRate(): number {
+    return 24;
+  }
 
   isOverhead () {
     return false

@@ -12,6 +12,10 @@ export class ImprovedReflexes extends BasePrayer {
     return [PrayerGroups.ATTACK]
   }
 
+  drainRate(): number {
+    return 6;
+  }
+
   isOverhead () {
     return false
   }

@@ -16,6 +16,10 @@ export class ProtectRange extends BasePrayer {
     return [PrayerGroups.OVERHEADS]
   }
 
+  drainRate(): number {
+    return 12;
+  }
+
   isOverhead () {
     return true
   }

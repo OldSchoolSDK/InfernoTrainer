@@ -20,6 +20,10 @@ export class Augury extends BasePrayer {
     return 'offensiveMagic'
   }
 
+  drainRate(): number {
+    return 24;
+  }
+
   playOnSound () {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();

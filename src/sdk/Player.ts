@@ -13,9 +13,10 @@ import { Location } from './GameObject'
 import { Mob } from './Mob'
 import { ImageLoader } from './Utils/ImageLoader'
 import { MapController } from './MapController'
+import { ControlPanelController } from './ControlPanelController'
 
 export interface PlayerStats extends UnitStats { 
-  prayer: number;
+  prayer: number
   run: number;
   specialAttack: number;
 }
@@ -30,7 +31,8 @@ export class Player extends Unit {
   bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
-  running: boolean = true;
+  running = true;
+  prayerDrainCounter: number = 0;
 
   constructor (game: Game, location: Location, options: UnitOptions) {
     super(game, location, options)
@@ -99,6 +101,12 @@ export class Player extends Unit {
 
   }
 
+
+  get prayerDrainResistance(): number {
+    // https://oldschool.runescape.wiki/w/Prayer#Prayer_drain_mechanics
+    return 2 * this.bonuses.other.prayer + 60;
+  }
+  
   get type () {
     return UnitTypes.PLAYER
   }
@@ -303,7 +311,28 @@ export class Player extends Unit {
     return this.weapon.attackSpeed
   }
 
-  attackStep (game: Game) {
+  drainPrayer() {
+    const prayerDrainThisTick = ControlPanelController.controls.PRAYER.getCurrentActivePrayers().reduce((a, b) => a + b.drainRate(), 0)
+    this.prayerDrainCounter += prayerDrainThisTick;
+    while (this.prayerDrainCounter > this.prayerDrainResistance) {
+      this.currentStats.prayer--;
+      this.prayerDrainCounter -= this.prayerDrainResistance;
+    }
+    if (prayerDrainThisTick === 0) {
+      this.prayerDrainCounter = 0;
+    }
+
+    if (this.currentStats.prayer <= 0){
+      ControlPanelController.controls.PRAYER.getCurrentActivePrayers().forEach((prayer) => prayer.deactivate())
+      this.currentStats.prayer = 0;
+    }
+  }
+
+  attackStep () {
+    
+    this.drainPrayer();
+
+
     this.clearXpDrops();
 
     this.attackIfPossible()

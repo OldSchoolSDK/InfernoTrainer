@@ -116,11 +116,9 @@ export class PrayerControls extends BaseControls {
     const gridY = y - 22
 
     const clickedPrayer = PrayerControls.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
-    if (clickedPrayer) {
+    if (clickedPrayer && game.player.currentStats.prayer > 0) {
+
       this.getCurrentActivePrayers().forEach((prayer) => {
-        if (!prayer || !prayer.groups) {
-          return
-        }
         if (intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
           prayer.deactivate()
         }

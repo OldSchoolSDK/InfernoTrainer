@@ -12,6 +12,10 @@ export class SharpEye extends BasePrayer {
     return [PrayerGroups.RANGE]
   }
 
+  drainRate(): number {
+    return 3;
+  }
+
   isOverhead () {
     return false
   }
