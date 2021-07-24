@@ -148,9 +148,6 @@ export class Unit extends GameObject {
     return null
   }
 
-  isDying () {
-    return (this.dying > 0)
-  }
 
   removedFromGame () {
 
@@ -165,6 +162,10 @@ export class Unit extends GameObject {
     return !this.isDying() && !this.isStunned();
   }
 
+  isDying () {
+    return (this.dying > 0)
+  }
+  
   isFrozen() {
     return (this.frozen > 0)
   }
