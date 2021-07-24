@@ -131,6 +131,7 @@ export class MapController {
       const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
       if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
         ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+        this.game.player.prayerDrainCounter = 0;
       }else {
         ControlPanelController.controls.PRAYER.activateQuickPrayers();
       }
