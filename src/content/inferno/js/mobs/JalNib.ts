@@ -20,7 +20,7 @@ class NibblerWeapon extends MeleeWeapon {
   }
 }
 
-export class Nibbler extends Mob {
+export class JalNib extends Mob {
   weapon: any;
 
   get displayName () {

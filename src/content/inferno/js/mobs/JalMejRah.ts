@@ -6,7 +6,7 @@ import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
 import { MobDeathStore } from '../MobDeathStore'
 
-export class Bat extends Mob {
+export class JalMejRah extends Mob {
   get displayName () {
     return 'Jal-MejRah'
   }

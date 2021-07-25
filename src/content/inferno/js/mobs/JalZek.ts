@@ -8,7 +8,7 @@ import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { MobDeathStore } from '../MobDeathStore'
 
-export class Mager extends Mob {
+export class JalZek extends Mob {
   get displayName () {
     return 'Jal-Zek'
   }
