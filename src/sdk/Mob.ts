@@ -257,17 +257,7 @@ export class Mob extends Unit {
     ]
   }
 
-  draw (tickPercent: number) {
-    // LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
-
-    
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.game.ctx.save()
-    this.game.ctx.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
-    )
+  drawOnTile(tickPercent: number) {
 
     if (this.dying > -1) {
       this.game.ctx.fillStyle = '#964B0073'
@@ -290,7 +280,21 @@ export class Mob extends Unit {
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     )
+  }
 
+  draw (tickPercent: number) {
+    // LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
+
+    
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    this.game.ctx.save()
+    this.game.ctx.translate(
+      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
+      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
+    )
+
+    this.drawOnTile(tickPercent)
     let currentImage = this.unitImage
     // if (this.currentAnimation !== null) {
     //   const animationLength = this.currentAnimation.length
