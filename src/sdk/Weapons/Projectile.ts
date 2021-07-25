@@ -48,7 +48,7 @@ export class Projectile {
 
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0
-      this.remainingDelay = 0
+      this.remainingDelay = 1
       return
     }
 
@@ -64,7 +64,7 @@ export class Projectile {
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
     }
     
-    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6);
+    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6) + 1;
     if (this.options.reduceDelay) { 
       this.remainingDelay -= this.options.reduceDelay;
     }

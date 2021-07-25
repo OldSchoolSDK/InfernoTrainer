@@ -250,11 +250,10 @@ export class Unit extends GameObject {
       projectile.currentLocation = {
         x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
         y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
-      }  
-      
+      }        
       projectile.remainingDelay--
 
-      if (projectile.remainingDelay <= 0) {
+      if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
       }
     })
