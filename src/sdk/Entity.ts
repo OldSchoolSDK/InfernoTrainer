@@ -24,6 +24,10 @@ export class Entity extends GameObject{
 
   }
 
+  drawUILayer(tickPercent: number){
+
+  }
+
   draw (tickPercent: number) {
     this.game.ctx.fillStyle = '#000073'
 
