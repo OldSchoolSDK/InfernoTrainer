@@ -164,6 +164,11 @@ export class Game {
       this.mobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
+    if (this.heldDown <= 0) {
+      this.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
+    }
+    this.player.drawUILayer(tickPercent)
+
 
     this.ctx.restore()
 
