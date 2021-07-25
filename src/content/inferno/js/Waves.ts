@@ -9,7 +9,7 @@ import { Blob } from './mobs/Blob'
 import { Mager } from './mobs/Mager'
 import { Meleer } from './mobs/Meleer'
 import { Nibbler } from './mobs/Nibbler'
-import { Ranger } from './mobs/Ranger'
+import { JalXil } from './mobs/Ranger'
 import { Location } from '../../../sdk/GameObject'
 
 
@@ -32,7 +32,7 @@ export class Waves {
     let mobs: Mob[] = []
     let i = 0
     Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(game, spawns[i++], { aggro: game.player })))
-    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new Ranger(game, spawns[i++], { aggro: game.player })))
+    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new JalXil(game, spawns[i++], { aggro: game.player })))
     Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(game, spawns[i++], { aggro: game.player })))
     Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(game, spawns[i++], { aggro: game.player })))
     Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(game, spawns[i++], { aggro: game.player })))
