@@ -3,6 +3,7 @@
 import { Mob } from '../../../../sdk/Mob'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
+import { Settings } from '../../../../sdk/Settings'
 
 export class JalAkRekMej extends Mob {
   get displayName () {
@@ -16,6 +17,24 @@ export class JalAkRekMej extends Mob {
   get combatLevelColor () {
     return 'lime'
   }
+
+  drawOnTile(tickPercent: number) {
+
+    if (this.dying > -1) {
+      this.game.ctx.fillStyle = '#964B0073'
+    }{
+      this.game.ctx.fillStyle = '#0000FF'
+    }
+
+    // Draw mob
+    this.game.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
+    )
+  }
+
 
   setStats () {
 

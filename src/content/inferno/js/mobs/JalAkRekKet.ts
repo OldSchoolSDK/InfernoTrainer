@@ -3,6 +3,7 @@
 import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
+import { Settings } from '../../../../sdk/Settings'
 
 export class JalAkRekKet extends Mob {
   get displayName () {
@@ -15,6 +16,24 @@ export class JalAkRekKet extends Mob {
 
   get combatLevelColor () {
     return 'lime'
+  }
+
+
+  drawOnTile(tickPercent: number) {
+
+    if (this.dying > -1) {
+      this.game.ctx.fillStyle = '#964B0073'
+    }{
+      this.game.ctx.fillStyle = '#FF0000'
+    }
+
+    // Draw mob
+    this.game.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
+    )
   }
 
   setStats () {

@@ -1,6 +1,7 @@
 'use strict'
 
 import { Mob } from '../../../../sdk/Mob'
+import { Settings } from '../../../../sdk/Settings'
 import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
@@ -17,6 +18,22 @@ export class JalAkRekXil extends Mob {
     return 'lime'
   }
 
+  drawOnTile(tickPercent: number) {
+
+    if (this.dying > -1) {
+      this.game.ctx.fillStyle = '#964B0073'
+    }{
+      this.game.ctx.fillStyle = '#00FF00'
+    }
+
+    // Draw mob
+    this.game.ctx.fillRect(
+      -(this.size * Settings.tileSize) / 2,
+      -(this.size * Settings.tileSize) / 2,
+      this.size * Settings.tileSize,
+      this.size * Settings.tileSize
+    )
+  }
   setStats () {
 
     this.weapons = {
