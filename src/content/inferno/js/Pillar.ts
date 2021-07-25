@@ -98,6 +98,12 @@ export class Pillar extends Entity {
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     )
+  }
+
+
+
+  drawUILayer(tickPercent: number){
+
 
     this.game.ctx.save()
 
