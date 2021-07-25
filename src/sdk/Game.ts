@@ -164,6 +164,9 @@ export class Game {
       this.mobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
+
+    this.entities.forEach((entity) => entity.drawUILayer(tickPercent))
+
     if (this.getReadyTimer <= 0) {
       this.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
     }
@@ -185,7 +188,7 @@ export class Game {
     if (this.frameCounter === 0 && this.getReadyTimer) {
       this.getReadyTimer--;
     }
-    
+
     if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
       this.timeBetweenTicks = t - this.lastT
       this.lastT = t
