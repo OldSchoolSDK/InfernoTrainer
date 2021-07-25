@@ -11,10 +11,9 @@ if (!process.env.BUILD_DATE) {
   isDevBuild = true;
   process.env.BUILD_DATE = "n/a";
 }
-module.exports = {
+const config = {
   mode: isDevBuild ? 'development' : 'production',
   entry: './src/index.ts',
-  devtool: isDevBuild ? 'eval' : null,
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -51,3 +50,8 @@ module.exports = {
     ]
   }
 };
+
+if (isDevBuild) {
+  config.devtool = 'eval';
+}
+module.exports = config;
