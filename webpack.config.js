@@ -14,7 +14,7 @@ if (!process.env.BUILD_DATE) {
 module.exports = {
   mode: isDevBuild ? 'development' : 'production',
   entry: './src/index.ts',
-  devtool: isDevBuild ? 'eval' : 'none',
+  devtool: isDevBuild ? 'eval' : null,
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
