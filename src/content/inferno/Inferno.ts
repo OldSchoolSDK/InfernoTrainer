@@ -57,7 +57,7 @@ export class Inferno extends Region {
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
-    if (bat || blob || melee || ranger || mager) {
+    if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
       // Backwards compatibility layer for runelite plugin
       game.wave = 'imported';
       try {
