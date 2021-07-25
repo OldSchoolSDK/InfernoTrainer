@@ -14,8 +14,6 @@ export interface ProjectileOptions {
 }
 
 export class Projectile {
-
-  debug: boolean = false;
   weapon: Weapon;
   damage: number;
   from: Unit;
