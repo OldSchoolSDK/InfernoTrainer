@@ -14,7 +14,7 @@ import { JalAkRekXil } from './JalAkRekXil'
 import { MobDeathStore } from '../MobDeathStore'
 import { BasePrayer } from '../../../../sdk/Prayers/BasePrayer'
 
-export class Blob extends Mob {
+export class JalAk extends Mob {
   playerPrayerScan?: string = null;
 
   get displayName () {

@@ -4,12 +4,12 @@ import { Entity } from '../../../sdk/Entity'
 import { Mob } from '../../../sdk/Mob'
 import { Game } from '../../../sdk/Game'
 import { UnitOptions } from '../../../sdk/Unit'
-import { Bat } from './mobs/Bat'
-import { Blob } from './mobs/Blob'
-import { Mager } from './mobs/Mager'
-import { Meleer } from './mobs/Meleer'
-import { Nibbler } from './mobs/Nibbler'
-import { JalXil } from './mobs/Ranger'
+import { JalMejRah } from './mobs/JalMejRah'
+import { JalAk } from './mobs/JalAk'
+import { JalZek } from './mobs/JalZek'
+import { JalImKot } from './mobs/JalImKot'
+import { JalNib } from './mobs/JalNib'
+import { JalXil } from './mobs/JalXil'
 import { Location } from '../../../sdk/GameObject'
 
 
@@ -31,11 +31,11 @@ export class Waves {
     const mobCounts = Waves.waves[wave - 1]
     let mobs: Mob[] = []
     let i = 0
-    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new Mager(game, spawns[i++], { aggro: game.player })))
+    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new JalZek(game, spawns[i++], { aggro: game.player })))
     Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new JalXil(game, spawns[i++], { aggro: game.player })))
-    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new Meleer(game, spawns[i++], { aggro: game.player })))
-    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new Blob(game, spawns[i++], { aggro: game.player })))
-    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new Bat(game, spawns[i++], { aggro: game.player })))
+    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new JalImKot(game, spawns[i++], { aggro: game.player })))
+    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new JalAk(game, spawns[i++], { aggro: game.player })))
+    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(game, spawns[i++], { aggro: game.player })))
 
     mobs = mobs.concat(Waves.spawnNibblers(mobCounts[0], game, randomPillar))
     return mobs
@@ -57,7 +57,7 @@ export class Waves {
 
     const options: UnitOptions = { aggro: pillar || game.player };
 
-    Array(n).fill(0).forEach(() => mobs.push(new Nibbler(game, nibblerSpawns.shift(), options)))
+    Array(n).fill(0).forEach(() => mobs.push(new JalNib(game, nibblerSpawns.shift(), options)))
     return mobs
   }
 

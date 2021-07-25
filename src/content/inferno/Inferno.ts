@@ -5,11 +5,11 @@ import { shuffle } from 'lodash'
 import { Pillar } from './js/Pillar'
 import { Player } from '../../sdk/Player'
 import { Waves } from './js/Waves'
-import { Mager } from './js/mobs/Mager'
-import { JalXil } from './js/mobs/Ranger'
-import { Meleer } from './js/mobs/Meleer'
-import { Blob } from './js/mobs/Blob'
-import { Bat } from './js/mobs/Bat'
+import { JalZek } from './js/mobs/JalZek'
+import { JalXil } from './js/mobs/JalXil'
+import { JalImKot } from './js/mobs/JalImKot'
+import { JalAk } from './js/mobs/JalAk'
+import { JalMejRah } from './js/mobs/JalMejRah'
 import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
@@ -61,11 +61,11 @@ export class Inferno extends Region {
       // Backwards compatibility layer for runelite plugin
       game.wave = 'imported';
 
-      (JSON.parse(mager) || []).forEach((spawn: number[]) => game.addMob(new Mager(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(mager) || []).forEach((spawn: number[]) => game.addMob(new JalZek(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
       (JSON.parse(ranger) || []).forEach((spawn: number[]) => game.addMob(new JalXil(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(melee) || []).forEach((spawn: number[]) => game.addMob(new Meleer(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(blob) || []).forEach((spawn: number[]) => game.addMob(new Blob(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(bat) || []).forEach((spawn: number[]) => game.addMob(new Bat(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+      (JSON.parse(melee) || []).forEach((spawn: number[]) => game.addMob(new JalImKot(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(blob) || []).forEach((spawn: number[]) => game.addMob(new JalAk(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(bat) || []).forEach((spawn: number[]) => game.addMob(new JalMejRah(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
       Waves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
 

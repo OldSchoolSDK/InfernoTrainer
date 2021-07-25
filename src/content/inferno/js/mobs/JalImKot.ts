@@ -7,7 +7,7 @@ import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { MobDeathStore } from '../MobDeathStore'
 
-export class Meleer extends Mob {
+export class JalImKot extends Mob {
   get displayName () {
     return 'Jal-ImKot'
   }
