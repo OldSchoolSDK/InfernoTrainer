@@ -20,7 +20,7 @@ export class Game {
   mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
   frameCounter: number = 0
-  heldDown: number = 6
+  getReadyTimer: number = 6
   controlPanel?: ControlPanelController;
   mapController?: MapController;
   player?: Player;
@@ -29,10 +29,8 @@ export class Game {
   height: number;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  contextMenu: ContextMenu;
-  offPerformanceDelta: number;
-  offPerformanceCount: number;
-  clickAnimation?: ClickAnimation;
+  contextMenu: ContextMenu = new ContextMenu();
+  clickAnimation?: ClickAnimation = null;
 
   drawTime: number;
   frameTime: number;
@@ -40,10 +38,11 @@ export class Game {
   timeBetweenTicks: number;
   fps: number;
   lastT: number;
+  ticker: NodeJS.Timeout;
+  tickPercent: number;
+  isPaused: boolean = true;
 
   constructor (selector: string, region: Region) {
-    this.clickAnimation = null
-    this.contextMenu = new ContextMenu()
 
     this.region = region;
 
@@ -54,10 +53,11 @@ export class Game {
     this.width = region.width
     this.height = region.height
 
+    this.registerClickActions();
 
-    this.offPerformanceDelta = 0
-    this.offPerformanceCount = 0
+  }
 
+  registerClickActions() {
     this.canvas.addEventListener('click', this.mapClick.bind(this))
     this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.canvas.addEventListener('contextmenu', (e: MouseEvent) => {
@@ -160,11 +160,11 @@ export class Game {
     // Draw all things on the map
     this.entities.forEach((entity) => entity.draw(tickPercent))
 
-    if (this.heldDown <= 0) {
+    if (this.getReadyTimer <= 0) {
       this.mobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
-    if (this.heldDown <= 0) {
+    if (this.getReadyTimer <= 0) {
       this.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
     }
     this.player.drawUILayer(tickPercent)
@@ -182,14 +182,21 @@ export class Game {
     // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
     // Everything else is just measuring performance
     const t = performance.now()
-    if (this.frameCounter === 0 && this.heldDown <= 0) {
+    if (this.frameCounter === 0 && this.getReadyTimer) {
+      this.getReadyTimer--;
+    }
+    
+    if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
       this.timeBetweenTicks = t - this.lastT
       this.lastT = t
-      this.gameTick()
+      if (this.isPaused === false) {
+        this.gameTick()
+      }
       this.tickTime = performance.now() - t
     }
     const t2 = performance.now()
-    this.draw(this.frameCounter / Settings.framesPerTick)
+    this.tickPercent = this.frameCounter / Settings.framesPerTick;
+    this.draw()
     this.drawTime = performance.now() - t2
     this.frameCounter++
     if (this.frameCounter >= Settings.framesPerTick) {
@@ -199,7 +206,7 @@ export class Game {
     this.frameTime = performance.now() - t
   }
 
-  draw (tickPercent: number) {
+  draw () {
     this.ctx.globalAlpha = 1
     this.ctx.fillStyle = 'black'
 
@@ -213,10 +220,10 @@ export class Game {
     this.region.drawGameBackground(this.ctx)
     
 
-    this.drawGame(tickPercent)
+    this.drawGame(this.tickPercent)
 
-    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, tickPercent);
-    MapController.controller.draw(tickPercent);
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, this.tickPercent);
+    MapController.controller.draw(this.tickPercent);
 
     this.ctx.restore()
     this.ctx.save()
@@ -232,17 +239,17 @@ export class Game {
     this.ctx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
     this.ctx.fillText(`Wave: ${this.wave}`, 0, 112)
 
-    if (this.heldDown) {
+    if (this.getReadyTimer) {
       this.ctx.font = '72px OSRS'
       this.ctx.textAlign = 'center'
       this.ctx.fillStyle = '#000'
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 - 2, this.canvas.height / 2 - 50)
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2 + 2, this.canvas.height / 2 - 50)
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 48)
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 52)
+      this.ctx.fillText(`GET READY...${this.getReadyTimer}`, this.canvas.width / 2 - 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.getReadyTimer}`, this.canvas.width / 2 + 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.getReadyTimer}`, this.canvas.width / 2, this.canvas.height / 2 - 48)
+      this.ctx.fillText(`GET READY...${this.getReadyTimer}`, this.canvas.width / 2, this.canvas.height / 2 - 52)
 
       this.ctx.fillStyle = '#FFFFFF'
-      this.ctx.fillText(`GET READY...${this.heldDown}`, this.canvas.width / 2, this.canvas.height / 2 - 50)
+      this.ctx.fillText(`GET READY...${this.getReadyTimer}`, this.canvas.width / 2, this.canvas.height / 2 - 50)
       this.ctx.textAlign = 'left'
     }
   }
@@ -276,6 +283,13 @@ export class Game {
   }
 
   startTicking () {
-    setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
+    this.isPaused = false;
+    this.ticker = setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
+  }
+
+  stopTicking() {
+    this.isPaused = true;
+    clearInterval(this.ticker);
+
   }
 }

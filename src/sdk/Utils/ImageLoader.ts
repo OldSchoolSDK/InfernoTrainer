@@ -7,6 +7,10 @@ export class ImageLoader {
   static hasLoaded: boolean = false;
   
   static createImage (src: string): HTMLImageElement {
+    if (!src) {
+      return null;
+    }
+    
     ImageLoader.pendingImages++;
     const img = new Image();
     img.src = src;

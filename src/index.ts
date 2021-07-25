@@ -42,13 +42,6 @@ selectedRegion.initialize(game)
 ImageLoader.onAllImagesLoaded(() => {
   // Start the engine
   game.startTicking()
-
-  const timer = setInterval(() => {
-    game.heldDown-- // Release hold down clamps
-    if (game.heldDown <= 0) {
-      clearInterval(timer)
-    }
-  }, 600)
 })
 
 const interval = setInterval(() => { 

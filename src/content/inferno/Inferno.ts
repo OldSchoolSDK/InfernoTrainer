@@ -88,6 +88,9 @@ export class Inferno extends Region {
     document.getElementById('playWaveNum').addEventListener('click', () => {
       window.location.href = `/?wave=${waveInput.value || wave}`
     })
+
+
+    document.getElementById('pauseResumeLink').addEventListener('click', () => game.isPaused ? game.startTicking() : game.stopTicking())
   }
 
   drawGameBackground(ctx: any) {
