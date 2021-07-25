@@ -10,10 +10,12 @@ import { Weapon } from './Weapon'
 export interface ProjectileOptions {
   forceSWTile?: boolean;
   hidden?: boolean;
+  reduceDelay?: number;
 }
 
 export class Projectile {
 
+  debug: boolean = false;
   weapon: Weapon;
   damage: number;
   from: Unit;
@@ -31,11 +33,13 @@ export class Projectile {
     This should take the player and mob object, and do chebyshev on the size of them
   */
   constructor (weapon: Weapon, damage: number, from: Unit, to: Unit, attackStyle: string, options: ProjectileOptions = {}) {
+
     this.damage = Math.floor(damage)
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint
     }
     this.options = options;
+
     this.currentLocation = {
       x: from.location.x + from.size / 2,
       y: from.location.y - from.size / 2 + 1
@@ -62,7 +66,10 @@ export class Projectile {
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
     }
     
-    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6)
+    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6);
+    if (this.options.reduceDelay) { 
+      this.remainingDelay -= this.options.reduceDelay;
+    }
 
   }
 }
