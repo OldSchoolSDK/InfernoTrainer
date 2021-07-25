@@ -9,12 +9,7 @@ import { ControlPanelController } from '../ControlPanelController'
 import { ImageLoader } from '../Utils/ImageLoader'
 
 export class EquipmentControls extends BaseControls {
-  usedSpotBackground: HTMLImageElement;
-
-  constructor () {
-    super()
-    this.usedSpotBackground = ImageLoader.createImage(UsedSpotBackground)
-  }
+  usedSpotBackground: HTMLImageElement = ImageLoader.createImage(UsedSpotBackground)
 
   get panelImageReference () {
     return EquipmentPanel

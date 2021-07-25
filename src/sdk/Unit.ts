@@ -75,10 +75,10 @@ export class Unit extends GameObject {
   hasLOS: boolean = false;
   frozen: number = 0;
   stunned: number = 0;
-  incomingProjectiles: Projectile[];
-  missedHitsplatImage: HTMLImageElement;
-  damageHitsplatImage: HTMLImageElement;
-  unitImage: HTMLImageElement;
+  incomingProjectiles: Projectile[] = [];
+  missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
+  damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
+  unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
   currentAnimation?: any = null;
   currentAnimationTickLength: number = 0;
   currentStats: UnitStats;
@@ -96,17 +96,8 @@ export class Unit extends GameObject {
     this.aggro = options.aggro || null
     this.perceivedLocation = location
     this.location = location
-
-    // Number of ticks until NPC dies. If -1, the NPC is not dying.
-    this.incomingProjectiles = []
-
-    this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
-    this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
-
-
-    this.unitImage = ImageLoader.createImage(this.image)
-
     this.setStats()
+
     this.currentStats.hitpoint = this.stats.hitpoint
 
     if (options.weapon) {
@@ -114,24 +105,14 @@ export class Unit extends GameObject {
     }
   }
   
-  grantXp(xpDrop: XpDrop) {
-    
-  }
+  grantXp(xpDrop: XpDrop) { }
+  setStats(){ }
+  movementStep () { }
+  attackStep () { }
+  draw(tickPercent: number) { }
+  drawUILayer(tickPercent: number) { }
+  removedFromGame () { }
 
-  setStats(){
-    
-  }
-
-  movementStep () {
-  }
-
-  attackStep () {
-  }
-
-  draw(tickPercent: number) {
-    
-    
-  }
   get cooldown () {
     return 0
   }
@@ -146,11 +127,6 @@ export class Unit extends GameObject {
 
   get image (): string {
     return null
-  }
-
-
-  removedFromGame () {
-
   }
 
   // Returns true if the NPC can move towards the unit it is aggro'd against.
@@ -274,8 +250,7 @@ export class Unit extends GameObject {
       projectile.currentLocation = {
         x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
         y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
-      }  
-      
+      }        
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {

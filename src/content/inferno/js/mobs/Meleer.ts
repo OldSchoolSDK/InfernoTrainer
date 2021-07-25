@@ -106,12 +106,12 @@ export class Meleer extends Mob {
     if (!this.hasLOS) {
       if (((this.attackCooldownTicks <= -38) && (Math.random() < 0.1)) || (this.attackCooldownTicks <= -50)) {
         this.dig()
-        this.attackCooldownTicks = 8
       }
     }
   }
 
   dig () {
+    this.attackCooldownTicks = 8
     if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x - 3, this.game.player.location.y + 3, this.size)) {
       this.location.x = this.game.player.location.x - this.size + 1
       this.location.y = this.game.player.location.y + this.size - 1

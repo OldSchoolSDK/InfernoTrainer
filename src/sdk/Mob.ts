@@ -303,14 +303,6 @@ export class Mob extends Unit {
     //   }
     // }
 
-    this.game.ctx.restore()
-
-    this.game.ctx.save()
-
-    this.game.ctx.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
-    )
     if (Settings.rotated === 'south') {
       this.game.ctx.rotate(Math.PI)
     }
@@ -351,7 +343,23 @@ export class Mob extends Unit {
         this.size * Settings.tileSize
       )
     }
+    this.game.ctx.restore()
 
+  }
+  drawUILayer(tickPercent: number) {
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    this.game.ctx.save()
+    this.game.ctx.translate(
+      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
+      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
+    )
+
+
+    if (Settings.rotated === 'south') {
+      this.game.ctx.rotate(Math.PI)
+    }
+    
     this.drawHPBar()
 
     this.drawHitsplats()
@@ -359,7 +367,9 @@ export class Mob extends Unit {
     this.drawOverheadPrayers()
 
     this.game.ctx.restore()
+
     this.drawIncomingProjectiles(tickPercent)
+
 
   }
 }

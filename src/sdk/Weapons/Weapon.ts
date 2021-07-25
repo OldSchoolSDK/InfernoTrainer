@@ -29,14 +29,9 @@ export interface AttackBonuses {
 }
 
 export class Weapon extends Item{
-  selected: boolean;
+  selected: boolean = false;
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
   
-  constructor () {
-    super();
-    this.selected = false
-    this.inventorySprite = ImageLoader.createImage(this.inventoryImage)
-  }
-
   hasSpecialAttack(): boolean {
     return false;
   }

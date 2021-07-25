@@ -6,7 +6,7 @@ import { Pillar } from './js/Pillar'
 import { Player } from '../../sdk/Player'
 import { Waves } from './js/Waves'
 import { Mager } from './js/mobs/Mager'
-import { Ranger } from './js/mobs/Ranger'
+import { JalXil } from './js/mobs/Ranger'
 import { Meleer } from './js/mobs/Meleer'
 import { Blob } from './js/mobs/Blob'
 import { Bat } from './js/mobs/Bat'
@@ -21,6 +21,7 @@ import { ImageLoader } from '../../sdk/Utils/ImageLoader'
 
 export class Inferno extends Region {
 
+  mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
     return 'Inferno'
   }
@@ -29,18 +30,7 @@ export class Inferno extends Region {
     return [new Blowpipe()]
   }
 
-
-  mapImagePath (): string {
-    return InfernoMapImage
-  }
-
-
-  initializeMap() {
-    this.mapImage = ImageLoader.createImage(this.mapImagePath())
-  }
-  
   initialize (game: Game) {
-    this.initializeMap();
 
     // Add pillars
     Pillar.addPillarsToGame(game)
@@ -72,7 +62,7 @@ export class Inferno extends Region {
       game.wave = 'imported';
 
       (JSON.parse(mager) || []).forEach((spawn: number[]) => game.addMob(new Mager(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(ranger) || []).forEach((spawn: number[]) => game.addMob(new Ranger(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+      (JSON.parse(ranger) || []).forEach((spawn: number[]) => game.addMob(new JalXil(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
       (JSON.parse(melee) || []).forEach((spawn: number[]) => game.addMob(new Meleer(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
       (JSON.parse(blob) || []).forEach((spawn: number[]) => game.addMob(new Blob(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
       (JSON.parse(bat) || []).forEach((spawn: number[]) => game.addMob(new Bat(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))

@@ -21,12 +21,19 @@ export class RangedWeapon extends Weapon {
       this.damage = 0
     }
 
+    this.grantXp(from);
+    this.registerProjectile(from, to)
+  }
+  
+  registerProjectile(from: Unit, to: Unit) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'range'))
+  }
+
+  grantXp(from: Unit) {
     if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('range', this.damage * 4));
     }
-
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'range'))
   }
 
   get image(): string { 

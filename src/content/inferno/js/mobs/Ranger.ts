@@ -8,9 +8,20 @@ import RangeImage from '../../assets/images/ranger.png'
 import RangerSound from '../../assets/sounds/ranger.ogg'
 import { MobDeathStore } from '../MobDeathStore'
 import { Pathing } from '../../../../sdk/Pathing'
+import { Unit } from '../../../../sdk/Unit'
+import { Projectile } from '../../../../sdk/Weapons/Projectile'
+import { DelayedAction } from '../../../../sdk/DelayedAction'
 
 
-export class Ranger extends Mob {
+class JalXilWeapon extends RangedWeapon { 
+  registerProjectile(from: Unit, to: Unit) {
+    DelayedAction.registerDelayedAction(new DelayedAction(() => {
+      to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
+    }, 2));
+  }
+}
+
+export class JalXil extends Mob {
   get displayName () {
     return 'Jal-Xil'
   }
@@ -33,7 +44,7 @@ export class Ranger extends Mob {
 
     this.weapons = {
       crush: new MeleeWeapon(),
-      range: new RangedWeapon()
+      range: new JalXilWeapon()
     }
 
     // non boosted numbers

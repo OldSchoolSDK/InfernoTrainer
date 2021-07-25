@@ -12,6 +12,7 @@ import { Entity } from './Entity'
 import { Mob } from './Mob'
 import { Region } from './Region'
 import { MapController } from './MapController'
+import { DelayedAction } from './DelayedAction'
 
 export class Game {
   region: Region;
@@ -135,7 +136,6 @@ export class Game {
 
   gameTick () {
     XpDropController.controller.tick();
-
     
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
@@ -143,6 +143,7 @@ export class Game {
     this.mobs.forEach((mob) => mob.attackStep())
     this.player.movementStep()
     this.player.attackStep()
+    DelayedAction.tick();
 
 
     // Safely remove the mobs from the game. If we do it while iterating we can cause ticks to be stole'd
@@ -163,6 +164,11 @@ export class Game {
       this.mobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
+    if (this.heldDown <= 0) {
+      this.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
+    }
+    this.player.drawUILayer(tickPercent)
+
 
     this.ctx.restore()
 
