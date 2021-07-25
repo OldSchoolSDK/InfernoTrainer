@@ -27,30 +27,23 @@ export class ClickAnimation {
     this.x = x
     this.y = y
     this.ttl = 1
-
-    if (!ClickAnimation.frames) {
-      ClickAnimation.setFrames()
-    }
   }
 
-  static frames: ClickAnimationFrames;
+  static frames: ClickAnimationFrames = {
+    red: [
+      ImageLoader.createImage(RedX1),
+      ImageLoader.createImage(RedX2),
+      ImageLoader.createImage(RedX3),
+      ImageLoader.createImage(RedX4)
+    ],
+    yellow: [
+      ImageLoader.createImage(YellowX1),
+      ImageLoader.createImage(YellowX2),
+      ImageLoader.createImage(YellowX3),
+      ImageLoader.createImage(YellowX4)
+    ]
+  };
 
-  static setFrames () {
-    ClickAnimation.frames = {
-      red: [
-        ImageLoader.createImage(RedX1),
-        ImageLoader.createImage(RedX2),
-        ImageLoader.createImage(RedX3),
-        ImageLoader.createImage(RedX4)
-      ],
-      yellow: [
-        ImageLoader.createImage(YellowX1),
-        ImageLoader.createImage(YellowX2),
-        ImageLoader.createImage(YellowX3),
-        ImageLoader.createImage(YellowX4)
-      ]
-    }
-  }
 
   draw (game: Game, tickPercent: number) {
     if (this.ttl <= 0) {

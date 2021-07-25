@@ -37,39 +37,25 @@ export class SettingsControls extends BaseControls {
     return SettingsTab
   }
 
-  musicOnImage: HTMLImageElement;
-  musicOffImage: HTMLImageElement;
-  redUpImage: HTMLImageElement;
-  greenDownImage: HTMLImageElement;
-  activeButtonImage: HTMLImageElement
-  inactiveButtonImage: HTMLImageElement;
-  infernoImage: HTMLImageElement;
-  verzikImage: HTMLImageElement;
-  xarpusImage: HTMLImageElement;
-  inventoryImage: HTMLImageElement;
-  spellbookImage: HTMLImageElement;
-  prayerImage: HTMLImageElement;
-  equipmentImage: HTMLImageElement;
+  musicOnImage: HTMLImageElement = ImageLoader.createImage(MusicOnIcon)
+  musicOffImage: HTMLImageElement = ImageLoader.createImage(MusicOffIcon)
+  redUpImage: HTMLImageElement = ImageLoader.createImage(ButtonRedUpIcon)
+  greenDownImage: HTMLImageElement = ImageLoader.createImage(ButtonGreenDownIcon)
+  activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon)
+  inactiveButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonInactiveIcon)
+  infernoImage: HTMLImageElement = ImageLoader.createImage(InfernoIcon)
+  verzikImage: HTMLImageElement = ImageLoader.createImage(VerzikIcon)
+  xarpusImage: HTMLImageElement = ImageLoader.createImage(XarpusIcon)
+  inventoryImage: HTMLImageElement = ImageLoader.createImage(InventoryTab)
+  spellbookImage: HTMLImageElement = ImageLoader.createImage(SpellbookTab)
+  prayerImage: HTMLImageElement = ImageLoader.createImage(PrayerTab)
+  equipmentImage: HTMLImageElement = ImageLoader.createImage(EquipmentTab)
   bindingKey?: string;
 
   constructor () {
     super()
-    this.musicOnImage = ImageLoader.createImage(MusicOnIcon)
-    this.musicOffImage = ImageLoader.createImage(MusicOffIcon)
-    this.redUpImage = ImageLoader.createImage(ButtonRedUpIcon)
-    this.greenDownImage = ImageLoader.createImage(ButtonGreenDownIcon)
-    this.activeButtonImage = ImageLoader.createImage(ButtonActiveIcon)
-    this.inactiveButtonImage = ImageLoader.createImage(ButtonInactiveIcon)
-    this.infernoImage = ImageLoader.createImage(InfernoIcon)
-    this.verzikImage = ImageLoader.createImage(VerzikIcon)
-    this.xarpusImage = ImageLoader.createImage(XarpusIcon)
-    this.inventoryImage = ImageLoader.createImage(InventoryTab)
-    this.spellbookImage = ImageLoader.createImage(SpellbookTab)
-    this.prayerImage = ImageLoader.createImage(PrayerTab)
-    this.equipmentImage = ImageLoader.createImage(EquipmentTab)
 
     this.bindingKey = null;
-
 
     document.addEventListener('keypress', (event) => {
       const key = event.key;
