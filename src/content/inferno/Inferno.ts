@@ -48,11 +48,11 @@ export class Inferno extends Region {
 
     // Add mobs
 
-    const bat = BrowserUtils.getQueryVar('bat')
-    const blob = BrowserUtils.getQueryVar('blob')
-    const melee = BrowserUtils.getQueryVar('melee')
-    const ranger = BrowserUtils.getQueryVar('ranger')
-    const mager = BrowserUtils.getQueryVar('mager')
+    const bat = BrowserUtils.getQueryVar('bat') || '[]'
+    const blob = BrowserUtils.getQueryVar('blob') || '[]'
+    const melee = BrowserUtils.getQueryVar('melee') || '[]'
+    const ranger = BrowserUtils.getQueryVar('ranger') || '[]'
+    const mager = BrowserUtils.getQueryVar('mager') || '[]'
     const randomPillar = shuffle(game.entities)[0]
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
@@ -60,16 +60,20 @@ export class Inferno extends Region {
     if (bat || blob || melee || ranger || mager) {
       // Backwards compatibility layer for runelite plugin
       game.wave = 'imported';
+      try {
+        JSON.parse(mager).forEach((spawn: number[]) => game.addMob(new JalZek(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(ranger).forEach((spawn: number[]) => game.addMob(new JalXil(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(melee).forEach((spawn: number[]) => game.addMob(new JalImKot(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(blob).forEach((spawn: number[]) => game.addMob(new JalAk(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(bat).forEach((spawn: number[]) => game.addMob(new JalMejRah(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
-      (JSON.parse(mager) || []).forEach((spawn: number[]) => game.addMob(new JalZek(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(ranger) || []).forEach((spawn: number[]) => game.addMob(new JalXil(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(melee) || []).forEach((spawn: number[]) => game.addMob(new JalImKot(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(blob) || []).forEach((spawn: number[]) => game.addMob(new JalAk(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-      (JSON.parse(bat) || []).forEach((spawn: number[]) => game.addMob(new JalMejRah(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+        Waves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
 
-      Waves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
-
-      replayLink.href = `/${window.location.search}`
+        replayLink.href = `/${window.location.search}`
+      } catch(ex){
+        console.log('failed to import wave from inferno stats');
+         
+      }
 
     } else {
       // Native approach
