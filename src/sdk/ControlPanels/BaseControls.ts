@@ -3,17 +3,9 @@ import { Game } from "../Game";
 import { ImageLoader } from "../Utils/ImageLoader";
 
 export class BaseControls {
-  panelImage: HTMLImageElement;
-  tabImage: HTMLImageElement;
-  selected: boolean;
-
-  constructor () {
-    
-    this.panelImage = ImageLoader.createImage(this.panelImageReference)
-    this.tabImage = ImageLoader.createImage(this.tabImageReference)
-
-    this.selected = false
-  }
+  panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
+  tabImage: HTMLImageElement = ImageLoader.createImage(this.tabImageReference)
+  selected: boolean = false;
 
   get keyBinding (): string {
     return '';

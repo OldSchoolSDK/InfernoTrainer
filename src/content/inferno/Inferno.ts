@@ -21,6 +21,7 @@ import { ImageLoader } from '../../sdk/Utils/ImageLoader'
 
 export class Inferno extends Region {
 
+  mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
     return 'Inferno'
   }
@@ -29,18 +30,7 @@ export class Inferno extends Region {
     return [new Blowpipe()]
   }
 
-
-  mapImagePath (): string {
-    return InfernoMapImage
-  }
-
-
-  initializeMap() {
-    this.mapImage = ImageLoader.createImage(this.mapImagePath())
-  }
-  
   initialize (game: Game) {
-    this.initializeMap();
 
     // Add pillars
     Pillar.addPillarsToGame(game)
