@@ -399,10 +399,14 @@ export class Player extends Unit {
       Settings.tileSize,
       Settings.tileSize
     )
+  }
 
-    this.game.ctx.save()
+  drawUILayer(tickPercent: number) {
 
-    this.drawIncomingProjectiles(tickPercent);
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    this.game.ctx.save();
+
 
     this.game.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
@@ -412,13 +416,11 @@ export class Player extends Unit {
     if (Settings.rotated === 'south') {
       this.game.ctx.rotate(Math.PI)
     }
-
-
-
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
+    this.game.ctx.restore();
+    this.drawIncomingProjectiles(tickPercent);
 
-    this.game.ctx.restore()
   }
 }
