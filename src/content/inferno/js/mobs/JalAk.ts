@@ -11,8 +11,8 @@ import BlobSound from '../../assets/sounds/blob.ogg'
 import { JalAkRekKet } from './JalAkRekKet'
 import { JalAkRekMej } from './JalAkRekMej'
 import { JalAkRekXil } from './JalAkRekXil'
-import { MobDeathStore } from '../MobDeathStore'
-import { BasePrayer } from '../../../../sdk/Prayers/BasePrayer'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
+import { BasePrayer } from '../../../../sdk/BasePrayer'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -31,7 +31,7 @@ export class JalAk extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {

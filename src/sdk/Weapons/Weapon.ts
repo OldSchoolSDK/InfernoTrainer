@@ -2,7 +2,7 @@
 
 import { GameObject } from "../GameObject";
 import { Item } from "../Item"
-import { BasePrayer } from "../Prayers/BasePrayer";
+import { BasePrayer } from "../BasePrayer";
 import { Game } from "../Game";
 import { Unit } from "../Unit";
 import { ImageLoader } from "../Utils/ImageLoader";

@@ -1,7 +1,7 @@
 import { find, intersection } from 'lodash'
 import { Projectile } from './Projectile'
 import { Weapon, AttackBonuses } from './Weapon'
-import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
+import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Game } from '../Game'

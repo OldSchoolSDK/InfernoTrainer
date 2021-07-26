@@ -6,7 +6,7 @@ import { Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import RangeImage from '../../assets/images/ranger.png'
 import RangerSound from '../../assets/sounds/ranger.ogg'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { Pathing } from '../../../../sdk/Pathing'
 import { Unit } from '../../../../sdk/Unit'
 import { Projectile } from '../../../../sdk/Weapons/Projectile'
@@ -36,7 +36,7 @@ export class JalXil extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
