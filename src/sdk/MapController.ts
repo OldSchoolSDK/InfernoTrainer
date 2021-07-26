@@ -77,15 +77,14 @@ export class MapController {
 
   hovering: MapHover = null;
 
+  width: number;
+  height: number;
   constructor(){
 
-    this.canvas.width = 210
-    this.canvas.height = 180
-
-    this.ctx = this.canvas.getContext('2d')
-
-    this.canvas.addEventListener('mousedown', this.clicked.bind(this))
-    this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.cursorMovedTo(e))
+    this.width = 210
+    this.height = 180
+    // this.canvas.addEventListener('mousedown', this.clicked.bind(this))
+    // this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.cursorMovedTo(e))
     this.hovering = MapHover.NONE;
     this.loadImages();
 
@@ -111,7 +110,7 @@ export class MapController {
   }
 
   clicked(event: MouseEvent) {
-    const x = event.offsetX;
+    const x = event.offsetX - this.game.width * Settings.tileSize;
     const y = event.offsetY;
 
     if (x > 4 && x < 23 && y > 31 && y < 51) {
@@ -262,72 +261,76 @@ export class MapController {
     mapContext.restore()
   }
 
-  draw(tickPercent: number){
+  draw(ctx: CanvasRenderingContext2D, tickPercent: number){
+  
+
+    const offset = this.game.region.width * Settings.tileSize
     
-    this.ctx.font = '16px Stats_11'
-    this.ctx.textAlign = 'center'
+    ctx.font = '16px Stats_11'
+    ctx.textAlign = 'center'
     
     
     this.generateMaskedMap();
-
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.drawImage(this.mapCanvas, 52, 8);
+    ctx.drawImage(this.mapCanvas, offset + 52, 8);
 
     // draw compass
-    this.ctx.save()
-    this.ctx.translate(50.5, 23.5)
+    ctx.save()
+    ctx.translate(offset + 50.5, 23.5)
     if (Settings.rotated === 'south') {
-      this.ctx.rotate(Math.PI)
+      ctx.rotate(Math.PI)
     }
-    this.ctx.translate(-50.5, -23.5)
-    this.ctx.drawImage(this.compassImage, 25, -2)
-    this.ctx.restore()
+    ctx.translate(-50.5, -23.5)
+    if (this.compassImage) {
+
+      ctx.drawImage(this.compassImage, 25, -2)
+    }
+    ctx.restore()
 
 
 
-    this.ctx.drawImage(this.outlineImage, 28, 0);
-    this.ctx.drawImage(this.hovering == MapHover.XP ? this.mapXpHoverButton : this.mapXpButton, 0, 26)
+    ctx.drawImage(this.outlineImage, offset + 28, 0);
+    ctx.drawImage(this.hovering == MapHover.XP ? this.mapXpHoverButton : this.mapXpButton, offset, 26)
 
-    this.ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 47);
-    this.ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, 0, 81);
-    this.ctx.drawImage(this.hovering == MapHover.RUN ? this.mapSelectedNumberOrb : this.mapNumberOrb, 10, 114);
-    this.ctx.drawImage(this.hovering == MapHover.SPEC ? this.mapSelectedNumberOrb : this.mapNumberOrb, 32, 140);
+    ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 47);
+    ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 81);
+    ctx.drawImage(this.hovering == MapHover.RUN ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 10, 114);
+    ctx.drawImage(this.hovering == MapHover.SPEC ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 32, 140);
 
-    this.ctx.drawImage(this.mapHitpointOrbMasked, 27, 51)
-    this.ctx.drawImage(this.mapHitpointIcon, 27, 51)
-    this.ctx.drawImage(this.mapPrayerOrbMasked, 27, 85)
-    this.ctx.drawImage(this.mapPrayerIcon, 27, 85)
-    this.ctx.drawImage(this.mapRunOrbMasked, 37, 118)
-    this.ctx.drawImage(this.game.player.running ? this.mapRunIcon: this.mapWalkIcon, 37, 118)
-    this.ctx.drawImage(this.mapSpecOrbMasked, 59, 144)
-    this.ctx.drawImage(this.mapSpecIcon, 57, 142, 30, 30)
+    ctx.drawImage(this.mapHitpointOrbMasked, offset + 27, 51)
+    ctx.drawImage(this.mapHitpointIcon, offset + 27, 51)
+    ctx.drawImage(this.mapPrayerOrbMasked, offset + 27, 85)
+    ctx.drawImage(this.mapPrayerIcon, offset + 27, 85)
+    ctx.drawImage(this.mapRunOrbMasked, offset + 37, 118)
+    ctx.drawImage(this.game.player.running ? this.mapRunIcon: this.mapWalkIcon, offset + 37, 118)
+    ctx.drawImage(this.mapSpecOrbMasked, offset + 59, 144)
+    ctx.drawImage(this.mapSpecIcon, offset + 57, 142, 30, 30)
 
 
 
     // hitpoints
-    this.ctx.fillStyle = 'black'
-    this.ctx.fillText( String(this.currentStats.hitpoint), 15, 74 )
-    this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.hitpoint / this.stats.hitpoint).toHexString()
-    this.ctx.fillText( String(this.currentStats.hitpoint), 14, 73 )  
+    ctx.fillStyle = 'black'
+    ctx.fillText( String(this.currentStats.hitpoint), offset + 15, 74 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.hitpoint / this.stats.hitpoint).toHexString()
+    ctx.fillText( String(this.currentStats.hitpoint), offset + 14, 73 )  
     // prayer
-    this.ctx.fillStyle = 'black'
-    this.ctx.fillText( String(this.currentStats.prayer), 15, 108 )
-    this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.prayer / this.stats.prayer).toHexString()
-    this.ctx.fillText( String(this.currentStats.prayer), 14, 107 )
+    ctx.fillStyle = 'black'
+    ctx.fillText( String(this.currentStats.prayer), offset + 15, 108 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.prayer / this.stats.prayer).toHexString()
+    ctx.fillText( String(this.currentStats.prayer), offset + 14, 107 )
 
 
     // run
-    this.ctx.fillStyle = 'black'
-    this.ctx.fillText( String(this.currentStats.run), 25, 140 )
-    this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 100).toHexString()
-    this.ctx.fillText( String(this.currentStats.run), 24, 139 )
+    ctx.fillStyle = 'black'
+    ctx.fillText( String(this.currentStats.run), offset + 25, 140 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 100).toHexString()
+    ctx.fillText( String(this.currentStats.run), offset + 24, 139 )
 
 
     // spec
-    this.ctx.fillStyle = 'black'
-    this.ctx.fillText( String(this.currentStats.specialAttack), 47, 166 )
-    this.ctx.fillStyle = this.colorScale.getColor(this.currentStats.specialAttack / 100).toHexString()
-    this.ctx.fillText( String(this.currentStats.specialAttack), 46, 165 )
+    ctx.fillStyle = 'black'
+    ctx.fillText( String(this.currentStats.specialAttack), offset + 47, 166 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.specialAttack / 100).toHexString()
+    ctx.fillText( String(this.currentStats.specialAttack), offset + 46, 165 )
 
     
 
