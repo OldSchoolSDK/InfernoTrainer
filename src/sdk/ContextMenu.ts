@@ -44,6 +44,7 @@ export class ContextMenu {
     const cRect = game.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
+    
 
     this.cursorPosition.x = canvasX
     this.cursorPosition.y = canvasY

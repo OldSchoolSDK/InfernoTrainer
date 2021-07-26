@@ -83,15 +83,14 @@ export class MapController {
 
     this.width = 210
     this.height = 180
-    // this.canvas.addEventListener('mousedown', this.clicked.bind(this))
-    // this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.cursorMovedTo(e))
+
     this.hovering = MapHover.NONE;
     this.loadImages();
 
   }
 
   cursorMovedTo(event: MouseEvent) {
-    const x = event.offsetX;
+    const x = event.offsetX - this.game.width * Settings.tileSize;
     const y = event.offsetY;
 
     this.hovering = MapHover.NONE;

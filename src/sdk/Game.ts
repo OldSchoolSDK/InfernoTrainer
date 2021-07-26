@@ -63,7 +63,9 @@ export class Game {
   }
 
   registerClickActions() {
-    this.canvas.addEventListener('click', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousedown', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
+
     this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.canvas.addEventListener('contextmenu', (e: MouseEvent) => {
       let x = e.offsetX
@@ -88,11 +90,9 @@ export class Game {
 
   mapClick (e: MouseEvent) {
 
-    // this.canvas.addEventListener('mousedown', this.clicked.bind(this))
-    // this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.cursorMovedTo(e))
-
     
-
+    this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
+    
     const tickPercent = this.frameCounter / Settings.framesPerTick
 
     let x = e.offsetX
