@@ -1,6 +1,6 @@
 'use strict'
 
-import { Inferno } from './content/inferno/Inferno'
+import { InfernoRegion } from './content/inferno/InfernoRegion'
 import { VerzikP3 } from './content/verzik/VerzikP3'
 import { Game } from './sdk/Game'
 import { ControlPanelController } from './sdk/ControlPanelController'
@@ -21,7 +21,7 @@ switch (selectedRegionName) {
     break
   case 'inferno':
   default:
-    selectedRegion = new Inferno()
+    selectedRegion = new InfernoRegion()
 }
 
 // Create game

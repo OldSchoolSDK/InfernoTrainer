@@ -11,7 +11,7 @@ import { Projectile } from '../../../sdk/Weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
 import { ImageLoader } from '../../../sdk/Utils/ImageLoader'
 
-export class Pillar extends Entity {
+export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
   missedHitsplatImage: HTMLImageElement;
   damageHitsplatImage: HTMLImageElement;
@@ -197,6 +197,6 @@ export class Pillar extends Entity {
       { x: 0, y: 9 },
       { x: 17, y: 7 },
       { x: 10, y: 23 }
-    ].forEach((position) => game.addEntity(new Pillar(game, position)))
+    ].forEach((position) => game.addEntity(new InfernoPillar(game, position)))
   }
 }

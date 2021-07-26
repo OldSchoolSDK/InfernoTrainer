@@ -13,10 +13,10 @@ import { JalXil } from './mobs/JalXil'
 import { Location } from '../../../sdk/GameObject'
 
 
-export class Waves {
+export class InfernoWaves {
 
   static getRandomSpawns () {
-    return shuffle(Waves.spawns)
+    return shuffle(InfernoWaves.spawns)
   }
 
   static spawn (game: Game, randomPillar: Entity, spawns: Location[], wave: number) {
@@ -24,11 +24,11 @@ export class Waves {
     if (wave < 1) {
       wave = 1;
     }
-    if (wave > Waves.waves.length) {
-      wave = Waves.waves.length;
+    if (wave > InfernoWaves.waves.length) {
+      wave = InfernoWaves.waves.length;
     }
 
-    const mobCounts = Waves.waves[wave - 1]
+    const mobCounts = InfernoWaves.waves[wave - 1]
     let mobs: Mob[] = []
     let i = 0
     Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new JalZek(game, spawns[i++], { aggro: game.player })))
@@ -37,7 +37,7 @@ export class Waves {
     Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new JalAk(game, spawns[i++], { aggro: game.player })))
     Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(game, spawns[i++], { aggro: game.player })))
 
-    mobs = mobs.concat(Waves.spawnNibblers(mobCounts[0], game, randomPillar))
+    mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], game, randomPillar))
     return mobs
   }
 

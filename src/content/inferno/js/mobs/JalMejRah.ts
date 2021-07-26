@@ -4,7 +4,7 @@ import { Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalMejRah extends Mob {
   get displayName () {
@@ -21,7 +21,7 @@ export class JalMejRah extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {

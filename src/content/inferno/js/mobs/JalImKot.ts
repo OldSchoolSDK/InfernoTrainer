@@ -5,7 +5,7 @@ import { Mob } from '../../../../sdk/Mob'
 import { Pathing } from '../../../../sdk/Pathing'
 import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalImKot extends Mob {
   get displayName () {
@@ -22,7 +22,7 @@ export class JalImKot extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {

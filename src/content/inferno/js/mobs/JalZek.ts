@@ -6,7 +6,7 @@ import { Mob, AttackIndicators } from '../../../../sdk/Mob'
 import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalZek extends Mob {
   get displayName () {
@@ -23,7 +23,7 @@ export class JalZek extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -147,7 +147,7 @@ export class JalZek extends Mob {
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
       if (Math.random() < 0.1) {
-        const mobToResurrect = MobDeathStore.selectMobToResurect()
+        const mobToResurrect = InfernoMobDeathStore.selectMobToResurect()
         if (!mobToResurrect) {
           this.attack()
         } else {

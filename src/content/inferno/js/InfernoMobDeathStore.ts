@@ -1,20 +1,20 @@
 import { shuffle, remove } from 'lodash'
 import { Mob } from '../../../sdk/Mob';
 
-export class MobDeathStore {
-  static mobDeathStore = new MobDeathStore();
+export class InfernoMobDeathStore {
+  static mobDeathStore = new InfernoMobDeathStore();
   static deadMobs: Mob[] = [];
   static npcDied (mob: Mob) {
     if (!mob.hasResurrected) {
-      MobDeathStore.deadMobs.push(mob)
+      InfernoMobDeathStore.deadMobs.push(mob)
     }
   }
 
   static selectMobToResurect () {
-    if (MobDeathStore.deadMobs.length) {
-      const mobToResurrect = shuffle(MobDeathStore.deadMobs)[0]
+    if (InfernoMobDeathStore.deadMobs.length) {
+      const mobToResurrect = shuffle(InfernoMobDeathStore.deadMobs)[0]
       mobToResurrect.hasResurrected = true
-      remove(MobDeathStore.deadMobs, mobToResurrect)
+      remove(InfernoMobDeathStore.deadMobs, mobToResurrect)
       return mobToResurrect
     }
     return null

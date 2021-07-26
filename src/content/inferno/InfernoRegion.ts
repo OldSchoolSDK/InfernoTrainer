@@ -2,9 +2,9 @@
 
 import { shuffle } from 'lodash'
 
-import { Pillar } from './js/Pillar'
+import { InfernoPillar } from './js/InfernoPillar'
 import { Player } from '../../sdk/Player'
-import { Waves } from './js/Waves'
+import { InfernoWaves } from './js/InfernoWaves'
 import { JalZek } from './js/mobs/JalZek'
 import { JalXil } from './js/mobs/JalXil'
 import { JalImKot } from './js/mobs/JalImKot'
@@ -19,7 +19,7 @@ import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
 import { ImageLoader } from '../../sdk/Utils/ImageLoader'
 
-export class Inferno extends Region {
+export class InfernoRegion extends Region {
 
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
@@ -33,7 +33,7 @@ export class Inferno extends Region {
   initialize (game: Game) {
 
     // Add pillars
-    Pillar.addPillarsToGame(game)
+    InfernoPillar.addPillarsToGame(game)
     let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
     if (isNaN(wave)){
       wave = 1;
@@ -67,7 +67,7 @@ export class Inferno extends Region {
         JSON.parse(blob).forEach((spawn: number[]) => game.addMob(new JalAk(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
         JSON.parse(bat).forEach((spawn: number[]) => game.addMob(new JalMejRah(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
-        Waves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
+        InfernoWaves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
 
         replayLink.href = `/${window.location.search}`
       } catch(ex){
@@ -77,9 +77,9 @@ export class Inferno extends Region {
 
     } else {
       // Native approach
-      const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : Waves.getRandomSpawns()
+      const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
 
-      Waves.spawn(game, randomPillar, spawns, wave).forEach(game.addMob.bind(game))
+      InfernoWaves.spawn(game, randomPillar, spawns, wave).forEach(game.addMob.bind(game))
       game.wave = String(wave)
 
       const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
