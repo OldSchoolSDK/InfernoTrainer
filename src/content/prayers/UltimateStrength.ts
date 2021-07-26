@@ -1,19 +1,19 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class SharpEye extends BasePrayer {
+export class UltimateStrength extends BasePrayer {
   get name () {
-    return 'Sharp Eye'
+    return 'Ultimate Strength'
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.RANGE]
+  get groups () {
+    return [PrayerGroups.STRENGTH]
   }
 
   drainRate(): number {
-    return 3;
+    return 12;
   }
 
   isOverhead () {
@@ -21,7 +21,7 @@ export class SharpEye extends BasePrayer {
   }
 
   feature () {
-    return 'offensiveRange'
+    return 'offensiveStrength'
   }
 
   playOnSound () {

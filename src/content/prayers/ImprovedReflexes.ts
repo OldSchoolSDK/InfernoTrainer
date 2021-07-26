@@ -1,15 +1,15 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class HawkEye extends BasePrayer {
+export class ImprovedReflexes extends BasePrayer {
   get name () {
-    return 'Hawk Eye'
+    return 'Improved Reflexes'
   }
 
   get groups () {
-    return [PrayerGroups.RANGE]
+    return [PrayerGroups.ATTACK]
   }
 
   drainRate(): number {
@@ -21,7 +21,7 @@ export class HawkEye extends BasePrayer {
   }
 
   feature () {
-    return 'offensiveRange'
+    return 'offensiveAttack'
   }
 
   playOnSound () {

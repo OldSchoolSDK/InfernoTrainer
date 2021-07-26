@@ -1,15 +1,15 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class Rigour extends BasePrayer {
+export class Piety extends BasePrayer {
   get name () {
-    return 'Rigour'
+    return 'Piety'
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.RANGE, PrayerGroups.DEFENCE]
+  get groups () {
+    return [PrayerGroups.ATTACK, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
   drainRate(): number {
@@ -21,7 +21,7 @@ export class Rigour extends BasePrayer {
   }
 
   feature () {
-    return 'offensiveRange'
+    return 'offensiveAttack'
   }
 
   playOnSound () {

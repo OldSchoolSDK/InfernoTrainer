@@ -12,7 +12,7 @@ import { JalAkRekKet } from './JalAkRekKet'
 import { JalAkRekMej } from './JalAkRekMej'
 import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { BasePrayer } from '../../../../sdk/Prayers/BasePrayer'
+import { BasePrayer } from '../../../../sdk/BasePrayer'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;

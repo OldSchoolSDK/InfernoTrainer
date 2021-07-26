@@ -1,6 +1,6 @@
 'use strict'
 
-import { ImageLoader } from "../Utils/ImageLoader";
+import { ImageLoader } from "./Utils/ImageLoader";
 
 export enum PrayerGroups {
   OVERHEADS = 'overheads',

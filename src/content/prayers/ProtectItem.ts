@@ -1,19 +1,20 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class ClarityOfThought extends BasePrayer {
+export class ProtectItem extends BasePrayer {
   get name () {
-    return 'Clarity of Thought'
+    return 'Protect Item'
   }
 
-  get groups () {
-    return [PrayerGroups.ATTACK]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.PROTECTITEM] // TODO: Incorrect
   }
 
+  
   drainRate(): number {
-    return 3;
+    return 2;
   }
   
   isOverhead () {
@@ -21,7 +22,7 @@ export class ClarityOfThought extends BasePrayer {
   }
 
   feature () {
-    return 'offensiveAttack'
+    return ''
   }
 
   playOnSound () {

@@ -1,28 +1,27 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class RapidHeal extends BasePrayer {
+export class SteelSkin extends BasePrayer {
   get name () {
-    return 'Rapid Heal'
+    return 'Steel Skin'
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.HEARTS]
+    return [PrayerGroups.DEFENCE]
   }
-
   
   drainRate(): number {
-    return 2;
+    return 12;
   }
-  
+
   isOverhead () {
     return false
   }
 
   feature () {
-    return ''
+    return 'defensive'
   }
 
   playOnSound () {

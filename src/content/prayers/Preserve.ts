@@ -1,27 +1,27 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class Redemption extends BasePrayer {
+export class Preserve extends BasePrayer {
   get name () {
-    return 'Redemption'
+    return 'Preserve'
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS]
+    return [PrayerGroups.PRESERVE] // TODO: Incorrect
   }
-
+  
   drainRate(): number {
-    return 6;
+    return 2;
   }
-
+  
   isOverhead () {
     return false
   }
 
   feature () {
-    return ''
+    return 'preserve'
   }
 
   playOnSound () {

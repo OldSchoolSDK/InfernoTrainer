@@ -1,19 +1,15 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class MysticLore extends BasePrayer {
+export class Augury extends BasePrayer {
   get name () {
-    return 'Mystic Lore'
+    return 'Augury'
   }
 
-  get groups (): PrayerGroups[] {
+  get groups () {
     return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
-  }
-
-  drainRate(): number {
-    return 6;
   }
 
   isOverhead () {
@@ -22,6 +18,10 @@ export class MysticLore extends BasePrayer {
 
   feature () {
     return 'offensiveMagic'
+  }
+
+  drainRate(): number {
+    return 24;
   }
 
   playOnSound () {

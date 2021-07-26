@@ -1,27 +1,28 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class UltimateStrength extends BasePrayer {
+export class RapidRestore extends BasePrayer {
   get name () {
-    return 'Ultimate Strength'
+    return 'Rapid Restore'
   }
 
-  get groups () {
-    return [PrayerGroups.STRENGTH]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.HEARTS]
   }
 
+  
   drainRate(): number {
-    return 12;
+    return 1;
   }
-
+  
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'offensiveStrength'
+    return ''
   }
 
   playOnSound () {

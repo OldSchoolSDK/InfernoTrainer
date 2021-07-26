@@ -1,27 +1,26 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class ImprovedReflexes extends BasePrayer {
+export class MysticWill extends BasePrayer {
   get name () {
-    return 'Improved Reflexes'
+    return 'Mystic Will'
   }
 
-  get groups () {
-    return [PrayerGroups.ATTACK]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
   }
-
   drainRate(): number {
-    return 6;
+    return 3;
   }
-
+  
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'offensiveAttack'
+    return 'offensiveMagic'
   }
 
   playOnSound () {

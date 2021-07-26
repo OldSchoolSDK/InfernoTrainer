@@ -1,27 +1,27 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class BurstOfStrength extends BasePrayer {
+export class HawkEye extends BasePrayer {
   get name () {
-    return 'Burst of Strength'
+    return 'Hawk Eye'
   }
 
   get groups () {
-    return [PrayerGroups.STRENGTH]
+    return [PrayerGroups.RANGE]
   }
-  
+
   drainRate(): number {
-    return 3;
+    return 6;
   }
-  
+
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'offensiveStrength'
+    return 'offensiveRange'
   }
 
   playOnSound () {

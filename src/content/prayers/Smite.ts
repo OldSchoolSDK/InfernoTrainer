@@ -1,27 +1,27 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class SteelSkin extends BasePrayer {
+export class Smite extends BasePrayer {
   get name () {
-    return 'Steel Skin'
+    return 'Smite'
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.DEFENCE]
-  }
-  
-  drainRate(): number {
-    return 12;
+    return [PrayerGroups.OVERHEADS] 
   }
 
+  drainRate(): number {
+    return 18;
+  }
+  
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'defensive'
+    return 'smite'
   }
 
   playOnSound () {

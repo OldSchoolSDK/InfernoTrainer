@@ -1,28 +1,27 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class ThickSkin extends BasePrayer {
+export class EagleEye extends BasePrayer {
   get name () {
-    return 'Thick Skin'
+    return 'Eagle Eye'
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.DEFENCE]
+  get groups () {
+    return [PrayerGroups.RANGE]
   }
-
 
   drainRate(): number {
-    return 3;
+    return 12;
   }
-  
+
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'defensive'
+    return 'offensiveRange'
   }
 
   playOnSound () {

@@ -1,15 +1,14 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import OverheadImg from '../../assets/images/prayers/rangeOver.png'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import OverheadImg from '../../assets/images/prayers/mageOver.png'
+import OnSound from '../../assets/sounds/mageOn.ogg'
+import OffSound from '../../assets/sounds/mageOff.ogg'
+import { Settings } from '../../sdk/Settings'
 
-import OnSound from '../../assets/sounds/rangeOn.ogg'
-import OffSound from '../../assets/sounds/rangeOff.ogg'
-import { Settings } from '../Settings'
-
-export class ProtectRange extends BasePrayer {
+export class ProtectMage extends BasePrayer {
   get name () {
-    return 'Protect from Range'
+    return 'Protect from Magic'
   }
 
   get groups (): PrayerGroups[] {
@@ -29,7 +28,7 @@ export class ProtectRange extends BasePrayer {
   }
 
   feature () {
-    return 'range'
+    return 'magic'
   }
 
   playOnSound () {

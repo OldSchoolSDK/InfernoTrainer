@@ -1,19 +1,19 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class Smite extends BasePrayer {
+export class Rigour extends BasePrayer {
   get name () {
-    return 'Smite'
+    return 'Rigour'
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS] 
+    return [PrayerGroups.RANGE, PrayerGroups.DEFENCE]
   }
 
   drainRate(): number {
-    return 18;
+    return 24;
   }
   
   isOverhead () {
@@ -21,7 +21,7 @@ export class Smite extends BasePrayer {
   }
 
   feature () {
-    return 'smite'
+    return 'offensiveRange'
   }
 
   playOnSound () {

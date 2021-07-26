@@ -1,27 +1,28 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class EagleEye extends BasePrayer {
+export class RapidHeal extends BasePrayer {
   get name () {
-    return 'Eagle Eye'
+    return 'Rapid Heal'
   }
 
-  get groups () {
-    return [PrayerGroups.RANGE]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.HEARTS]
   }
 
+  
   drainRate(): number {
-    return 12;
+    return 2;
   }
-
+  
   isOverhead () {
     return false
   }
 
   feature () {
-    return 'offensiveRange'
+    return ''
   }
 
   playOnSound () {

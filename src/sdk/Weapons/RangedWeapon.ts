@@ -1,5 +1,5 @@
 import { find, intersection } from 'lodash'
-import { BasePrayer, PrayerGroups } from '../Prayers/BasePrayer'
+import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Game } from '../Game'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'

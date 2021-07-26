@@ -1,19 +1,19 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class Piety extends BasePrayer {
+export class Retribution extends BasePrayer {
   get name () {
-    return 'Piety'
+    return 'Retribution'
   }
 
-  get groups () {
-    return [PrayerGroups.ATTACK, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
+  get groups (): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS] // TODO: Incorrect
   }
-
+  
   drainRate(): number {
-    return 24;
+    return 3;
   }
   
   isOverhead () {
@@ -21,7 +21,7 @@ export class Piety extends BasePrayer {
   }
 
   feature () {
-    return 'offensiveAttack'
+    return ''
   }
 
   playOnSound () {

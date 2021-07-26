@@ -1,27 +1,28 @@
 'use strict'
 
-import { BasePrayer, PrayerGroups } from './BasePrayer'
-import { Settings } from '../Settings'
+import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
+import { Settings } from '../../sdk/Settings'
 
-export class Retribution extends BasePrayer {
+export class Chivalry extends BasePrayer {
   get name () {
-    return 'Retribution'
+    return 'Chivalry'
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS] // TODO: Incorrect
+  get groups () {
+    
+    return [PrayerGroups.ATTACK, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
   
   drainRate(): number {
-    return 3;
+    return 24;
   }
-  
+
   isOverhead () {
     return false
   }
 
   feature () {
-    return ''
+    return 'offensiveAttack'
   }
 
   playOnSound () {
