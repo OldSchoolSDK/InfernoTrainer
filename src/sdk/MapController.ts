@@ -108,13 +108,16 @@ export class MapController {
 
   }
 
-  clicked(event: MouseEvent) {
+  clicked(event: MouseEvent): boolean {
+    let intercepted = false;
     const x = event.offsetX - this.game.width * Settings.tileSize;
     const y = event.offsetY;
 
     if (x > 4 && x < 23 && y > 31 && y < 51) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
+      intercepted = true;
     }else if (x > 33 && x < 67 && y > 5 && y < 39){
+      intercepted = true;
       
       if (Settings.rotated === 'south') {
         Settings.rotated = 'north'
@@ -123,8 +126,10 @@ export class MapController {
       }
       Settings.persistToStorage();
     }else if (x > 4 && x < 48 && y > 53 && y < 76){
+      intercepted = true;
       // this.hovering = MapHover.HITPOINT;
     }else if (x > 4 && x < 48 && y > 90 && y < 108) {
+      intercepted = true;
       const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
       if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
         ControlPanelController.controls.PRAYER.deactivateAllPrayers();
@@ -133,11 +138,14 @@ export class MapController {
         ControlPanelController.controls.PRAYER.activateQuickPrayers();
       }
     }else if (x > 15 && x < 62 && y > 122 && y < 144) {
+      intercepted = true;
       this.game.player.running = !this.game.player.running;
     }else if (x > 38 && x < 74 && y > 148 && y < 170) {
+      intercepted = true;
       // this.hovering = MapHover.SPEC;
     }
     this.updateOrbsMask(this.currentStats, this.stats);
+    return intercepted;
   }
 
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {

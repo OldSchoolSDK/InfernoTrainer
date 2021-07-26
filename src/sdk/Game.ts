@@ -92,7 +92,7 @@ export class Game {
 
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
-    
+
     const tickPercent = this.frameCounter / Settings.framesPerTick
 
     let x = e.offsetX
@@ -104,8 +104,10 @@ export class Game {
 
     if (e.offsetX > this.width * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
-        this.mapController.clicked(e);
-        return;
+        const intercepted = this.mapController.clicked(e);
+        if (intercepted) {
+          return;
+        }
       }
     }
 
@@ -193,11 +195,6 @@ export class Game {
 
 
     this.ctx.restore()
-
-    this.contextMenu.draw(this)
-    if (this.clickAnimation) {
-      this.clickAnimation.draw(this, tickPercent)
-    }
   }
 
   gameLoop () {
@@ -247,8 +244,14 @@ export class Game {
 
     this.drawGame(this.tickPercent)
 
-    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, this.tickPercent);
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.ctx, this.tickPercent);
+
+
+    this.contextMenu.draw(this)
+    if (this.clickAnimation) {
+      this.clickAnimation.draw(this, this.tickPercent)
+    }
 
     this.ctx.restore()
     this.ctx.save()
