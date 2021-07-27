@@ -54,8 +54,8 @@ export class World {
   viewportController: Viewport;
 
   _viewport = {
-    width: 22,
-    height: 22
+    width: 29,
+    height: 30
   }
 
   get viewportCtx() {
@@ -105,15 +105,27 @@ export class World {
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
 
-    const tickPercent = this.frameCounter / Settings.framesPerTick
 
 
+    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
 
-    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, tickPercent)
+    let viewportX = perceivedX - this._viewport.width / 2;
+    let viewportY = perceivedY - this._viewport.height / 2;
 
-    const viewportX = perceivedX - this._viewport.width / 2;
-    const viewportY = perceivedY - this._viewport.height / 2;
+
+    if (viewportX < 0) {
+      viewportX = 0
+    }
+    if (viewportY < 0) {
+      viewportY = 0;
+    }
+    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
+      viewportX = this.region.width - this._viewport.width;
+    }
+    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
+      viewportY = this.region.height - this._viewport.height;
+    }
 
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
@@ -150,7 +162,7 @@ export class World {
         clearTimeout(this.inputDelay)
       }
 
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, tickPercent)
+      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
       this.player.aggro = null
       if (mobs.length) {
         this.redClick()
@@ -168,8 +180,21 @@ export class World {
     const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
 
-    const viewportX = perceivedX - this._viewport.width / 2;
-    const viewportY = perceivedY - this._viewport.height / 2;
+    let viewportX = perceivedX - this._viewport.width / 2;
+    let viewportY = perceivedY - this._viewport.height / 2;
+
+    if (viewportX < 0) {
+      viewportX = 0
+    }
+    if (viewportY < 0) {
+      viewportY = 0;
+    }
+    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
+      viewportX = this.region.width - this._viewport.width;
+    }
+    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
+      viewportY = this.region.height - this._viewport.height;
+    }
 
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
@@ -188,7 +213,7 @@ export class World {
     
 
     /* gather options */
-    const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
+    const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
     let menuOptions: MenuOption[] = []
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(x, y))
@@ -309,8 +334,21 @@ export class World {
     const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
 
-    const viewportX = (perceivedX - this._viewport.width / 2) * Settings.tileSize;
-    const viewportY = (perceivedY - this._viewport.height / 2) * Settings.tileSize;
+    let viewportX = (perceivedX - this._viewport.width / 2) * Settings.tileSize;
+    let viewportY = (perceivedY - this._viewport.height / 2) * Settings.tileSize;
+
+    if (viewportX < 0) {
+      viewportX = 0
+    }
+    if (viewportY < 0) {
+      viewportY = 0;
+    }
+    if (viewportX + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
+      viewportX = (this.region.width - this._viewport.width) * Settings.tileSize;
+    }
+    if (viewportY + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
+      viewportY = (this.region.height - this._viewport.height) * Settings.tileSize;
+    }
 
     this.viewportCtx.drawImage(this.worldCanvas, -viewportX, -viewportY);
 
