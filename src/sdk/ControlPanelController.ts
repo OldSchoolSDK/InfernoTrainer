@@ -108,6 +108,7 @@ export class ControlPanelController {
               this.selectedControl = null
               return
             }
+            intercepted = true;
             this.selectedControl = this.controls[index]
           }
         }
@@ -115,7 +116,7 @@ export class ControlPanelController {
     }
 
     if (!this.selectedControl) {
-      return
+      return intercepted;
     }
 
     const panelX = this.width - 204
@@ -126,6 +127,7 @@ export class ControlPanelController {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
         const relativeY = y - panelY
+        intercepted = true;
         this.selectedControl.clickedPanel(this.game, relativeX, relativeY)
       }
     }
