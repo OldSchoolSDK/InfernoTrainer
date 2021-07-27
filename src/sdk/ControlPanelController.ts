@@ -31,8 +31,6 @@ export class ControlPanelController {
     ANCIENTSSPELLBOOK: new AncientsSpellbookControls()
   });
 
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
   world?: World;
   controls: BaseControls[];
   selectedControl: BaseControls;
@@ -96,8 +94,8 @@ export class ControlPanelController {
   controlPanelClick (e: MouseEvent): boolean {
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.canvas.width - this.width);
-    const y = e.offsetY - (this.world.canvas.height - this.height);
+    const x = e.offsetX - (this.world.viewport.width - this.width);
+    const y = e.offsetY - (this.world.viewport.height - this.height);
 
     if (y > 275) {
       this.controls.forEach((control: BaseControls, index: number) => {
@@ -136,7 +134,7 @@ export class ControlPanelController {
   }
 
   draw (world: World) {
-    world.ctx.fillStyle = '#000'
+    world.viewportCtx.fillStyle = '#000'
 
     if (this.selectedControl && this.selectedControl.draw) {
       this.selectedControl.draw(world, this, this.width - 204, 0)
@@ -146,16 +144,16 @@ export class ControlPanelController {
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true)
       if (control.tabImage){
-        world.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+        world.viewportCtx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
       }
       if (control === this.selectedControl) {
         selectedPosition = tabPosition
       }
     })
     if (selectedPosition) {
-      world.ctx.strokeStyle = '#00FF0073'
-      world.ctx.lineWidth = 3
-      world.ctx.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
+      world.viewportCtx.strokeStyle = '#00FF0073'
+      world.viewportCtx.lineWidth = 3
+      world.viewportCtx.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
     }
   }
 }

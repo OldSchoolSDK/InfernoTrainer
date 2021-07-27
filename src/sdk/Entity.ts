@@ -28,10 +28,11 @@ export class Entity extends GameObject{
 
   }
 
+  
   draw (tickPercent: number) {
-    this.world.ctx.fillStyle = '#000073'
+    this.world.worldCtx.fillStyle = '#000073'
 
-    this.world.ctx.fillRect(
+    this.world.worldCtx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

@@ -260,21 +260,21 @@ export class Mob extends Unit {
   drawOnTile(tickPercent: number) {
 
     if (this.dying > -1) {
-      this.world.ctx.fillStyle = '#964B0073'
+      this.world.viewportCtx.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.world.ctx.fillStyle = '#00FF0073'
+      this.world.viewportCtx.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.world.ctx.fillStyle = '#FF000073'
+      this.world.viewportCtx.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.world.ctx.fillStyle = '#FFFF0073'
+      this.world.viewportCtx.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.world.ctx.fillStyle = '#FF730073'
+      this.world.viewportCtx.fillStyle = '#FF730073'
     } else {
-      this.world.ctx.fillStyle = '#FFFFFF22'
+      this.world.viewportCtx.fillStyle = '#FFFFFF22'
     }
 
     // Draw mob
-    this.world.ctx.fillRect(
+    this.world.viewportCtx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -282,14 +282,15 @@ export class Mob extends Unit {
     )
   }
 
+  
   draw (tickPercent: number) {
     // LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.ctx.save()
-    this.world.ctx.translate(
+    this.world.worldCtx.save()
+    this.world.worldCtx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
@@ -308,19 +309,19 @@ export class Mob extends Unit {
     // }
 
     if (Settings.rotated === 'south') {
-      this.world.ctx.rotate(Math.PI)
+      this.world.worldCtx.rotate(Math.PI)
     }
     if (Settings.rotated === 'south') {
-      this.world.ctx.scale(-1, 1)
+      this.world.worldCtx.scale(-1, 1)
     }
 
-    this.world.ctx.save()
+    this.world.worldCtx.save()
     if (this.shouldShowAttackAnimation()) {
       this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
-      this.world.ctx.drawImage(
+      this.world.worldCtx.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -330,38 +331,38 @@ export class Mob extends Unit {
 
     }
 
-    this.world.ctx.restore()
+    this.world.worldCtx.restore()
 
     if (Settings.rotated === 'south') {
-      this.world.ctx.scale(-1, 1)
+      this.world.worldCtx.scale(-1, 1)
     }
 
     
     if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
-      this.world.ctx.strokeStyle = '#00FF0073'
-      this.world.ctx.lineWidth = 1
-      this.world.ctx.strokeRect(
+      this.world.worldCtx.strokeStyle = '#00FF0073'
+      this.world.worldCtx.lineWidth = 1
+      this.world.worldCtx.strokeRect(
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
         this.size * Settings.tileSize,
         this.size * Settings.tileSize
       )
     }
-    this.world.ctx.restore()
+    this.world.worldCtx.restore()
 
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.ctx.save()
-    this.world.ctx.translate(
+    this.world.worldCtx.save()
+    this.world.worldCtx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (Settings.rotated === 'south') {
-      this.world.ctx.rotate(Math.PI)
+      this.world.worldCtx.rotate(Math.PI)
     }
     
     this.drawHPBar()
@@ -370,7 +371,7 @@ export class Mob extends Unit {
 
     this.drawOverheadPrayers()
 
-    this.world.ctx.restore()
+    this.world.worldCtx.restore()
 
     this.drawIncomingProjectiles(tickPercent)
 

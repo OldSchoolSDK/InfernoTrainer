@@ -357,33 +357,35 @@ export class Player extends Unit {
     }
   }
 
+  
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
+    // LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
 
+    this.world.worldCtx.save();
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
     // Perceived location
 
-    this.world.ctx.globalAlpha = 0.7
-    this.world.ctx.fillStyle = '#FFFF00'
-    this.world.ctx.fillRect(
+    this.world.worldCtx.globalAlpha = 0.7
+    this.world.worldCtx.fillStyle = '#FFFF00'
+    this.world.worldCtx.fillRect(
       perceivedX * Settings.tileSize,
       perceivedY * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.ctx.globalAlpha = 1
+    this.world.worldCtx.globalAlpha = 1
 
     // Draw player on true tile
-    this.world.ctx.fillStyle = '#fff'
+    this.world.worldCtx.fillStyle = '#fff'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      this.world.ctx.fillStyle = '#00FFFF'
+      this.world.worldCtx.fillStyle = '#00FFFF'
     }
-    this.world.ctx.strokeStyle = '#FFFFFF73'
-    this.world.ctx.lineWidth = 3
-    this.world.ctx.fillRect(
+    this.world.worldCtx.strokeStyle = '#FFFFFF73'
+    this.world.worldCtx.lineWidth = 3
+    this.world.worldCtx.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -391,35 +393,36 @@ export class Player extends Unit {
     )
 
     // Destination location
-    this.world.ctx.strokeStyle = '#FFFFFF73'
-    this.world.ctx.lineWidth = 3
-    this.world.ctx.strokeRect(
+    this.world.worldCtx.strokeStyle = '#FFFFFF73'
+    this.world.worldCtx.lineWidth = 3
+    this.world.worldCtx.strokeRect(
       this.destinationLocation.x * Settings.tileSize,
       this.destinationLocation.y * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
+    this.world.worldCtx.restore();
   }
 
   drawUILayer(tickPercent: number) {
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.ctx.save();
+    this.world.worldCtx.save();
 
 
-    this.world.ctx.translate(
+    this.world.worldCtx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (Settings.rotated === 'south') {
-      this.world.ctx.rotate(Math.PI)
+      this.world.worldCtx.rotate(Math.PI)
     }
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
-    this.world.ctx.restore();
+    this.world.worldCtx.restore();
     this.drawIncomingProjectiles(tickPercent);
 
   }

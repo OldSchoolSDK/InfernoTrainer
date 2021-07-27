@@ -51,7 +51,7 @@ export class ClickAnimation {
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4)
     const frames = this.color === 'red' ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
-    world.ctx.drawImage(      
+    world.viewportCtx.drawImage(      
       frames[frameNumber],
       this.x - 9,
       this.y - 9

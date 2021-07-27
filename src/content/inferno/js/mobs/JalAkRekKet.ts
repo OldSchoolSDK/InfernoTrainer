@@ -22,13 +22,13 @@ export class JalAkRekKet extends Mob {
   drawOnTile(tickPercent: number) {
 
     if (this.dying > -1) {
-      this.world.ctx.fillStyle = '#964B0073'
+      this.world.viewportCtx.fillStyle = '#964B0073'
     }{
-      this.world.ctx.fillStyle = '#FF0000'
+      this.world.viewportCtx.fillStyle = '#FF0000'
     }
 
     // Draw mob
-    this.world.ctx.fillRect(
+    this.world.viewportCtx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -108,6 +108,6 @@ export class JalAkRekKet extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.worldCtx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 }

@@ -119,47 +119,47 @@ export class SettingsControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    world.ctx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)
+    world.viewportCtx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)
 
-    world.ctx.drawImage(this.redUpImage, x + 90, y + 20)
-    world.ctx.fillStyle = '#FFFF00'
-    world.ctx.font = '16px OSRS'
-    world.ctx.textAlign = 'center'
-    world.ctx.fillText(String(Settings.inputDelay), x + 96, y + 48)
-    world.ctx.drawImage(this.greenDownImage, x + 90, y + 51)
-    world.ctx.fillText('Lag', x + 97, y + 81)
+    world.viewportCtx.drawImage(this.redUpImage, x + 90, y + 20)
+    world.viewportCtx.fillStyle = '#FFFF00'
+    world.viewportCtx.font = '16px OSRS'
+    world.viewportCtx.textAlign = 'center'
+    world.viewportCtx.fillText(String(Settings.inputDelay), x + 96, y + 48)
+    world.viewportCtx.drawImage(this.greenDownImage, x + 90, y + 51)
+    world.viewportCtx.fillText('Lag', x + 97, y + 81)
 
-    world.ctx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
-    world.ctx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
+    world.viewportCtx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
+    world.viewportCtx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
 
-    world.ctx.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
-    world.ctx.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
+    world.viewportCtx.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
+    world.viewportCtx.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
 
-    world.ctx.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
-    world.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
-    world.ctx.fillText('Reload to change region', x + 100, y + 160)
+    world.viewportCtx.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
+    world.viewportCtx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
+    world.viewportCtx.fillText('Reload to change region', x + 100, y + 160)
 
 
-    world.ctx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
-    world.ctx.drawImage(this.inventoryImage, x + 25, y + 172)
-    world.ctx.fillText(Settings.inventory_key, x + 25 + 30, y + 172 + 30)
+    world.viewportCtx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
+    world.viewportCtx.drawImage(this.inventoryImage, x + 25, y + 172)
+    world.viewportCtx.fillText(Settings.inventory_key, x + 25 + 30, y + 172 + 30)
 
-    world.ctx.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 170)
-    world.ctx.drawImage(this.spellbookImage, x + 85, y + 172)
-    world.ctx.fillText(Settings.spellbook_key, x + 85 + 30, y + 172 + 30)
+    world.viewportCtx.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 170)
+    world.viewportCtx.drawImage(this.spellbookImage, x + 85, y + 172)
+    world.viewportCtx.fillText(Settings.spellbook_key, x + 85 + 30, y + 172 + 30)
 
-    world.ctx.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 170)
-    world.ctx.drawImage(this.prayerImage, x + 145, y + 172)
-    world.ctx.fillText(Settings.prayer_key, x + 145 + 30, y + 172 + 30)
+    world.viewportCtx.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 170)
+    world.viewportCtx.drawImage(this.prayerImage, x + 145, y + 172)
+    world.viewportCtx.fillText(Settings.prayer_key, x + 145 + 30, y + 172 + 30)
 
-    world.ctx.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
-    world.ctx.drawImage(this.equipmentImage, x + 25, y + 222)
-    world.ctx.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
+    world.viewportCtx.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
+    world.viewportCtx.drawImage(this.equipmentImage, x + 25, y + 222)
+    world.viewportCtx.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
   
     if (this.bindingKey === null){
-      world.ctx.fillText('Key Bindings', x + 125, y + 212 + 30)
+      world.viewportCtx.fillText('Key Bindings', x + 125, y + 212 + 30)
     }else{
-      world.ctx.fillText('Press Key To Bind', x + 135, y + 212 + 30)
+      world.viewportCtx.fillText('Press Key To Bind', x + 135, y + 212 + 30)
     }
   }
 }

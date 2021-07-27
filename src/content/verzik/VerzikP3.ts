@@ -48,7 +48,7 @@ export class VerzikP3 extends Region {
     world.addMob(new Verzik(world, {x: 16, y: 16}, { aggro: player}));
   }
   
-  drawWorldBackground(ctx: CanvasRenderingContext2D) {
+  drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {
     ctx.drawImage(this.gridCanvas, 0, 0);
   }
 }

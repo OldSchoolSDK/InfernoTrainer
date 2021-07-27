@@ -90,9 +90,9 @@ export class InfernoPillar extends Entity {
   }
 
   draw () {
-    this.world.ctx.fillStyle = '#000073'
+    this.world.worldCtx.fillStyle = '#000073'
 
-    this.world.ctx.fillRect(
+    this.world.worldCtx.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
@@ -105,28 +105,28 @@ export class InfernoPillar extends Entity {
   drawUILayer(tickPercent: number){
 
 
-    this.world.ctx.save()
+    this.world.viewportCtx.save()
 
-    this.world.ctx.translate(
+    this.world.viewportCtx.translate(
       (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
       ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2)
     )
 
     if (Settings.rotated === 'south') {
-      this.world.ctx.rotate(Math.PI)
+      this.world.viewportCtx.rotate(Math.PI)
     }
 
-    this.world.ctx.fillStyle = 'red'
-    this.world.ctx.fillRect(
+    this.world.viewportCtx.fillStyle = 'red'
+    this.world.viewportCtx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.world.ctx.fillStyle = 'green'
+    this.world.viewportCtx.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.world.ctx.fillRect(
+    this.world.viewportCtx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -159,24 +159,24 @@ export class InfernoPillar extends Entity {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.world.ctx.drawImage(
+      this.world.viewportCtx.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.world.ctx.fillStyle = '#FFFFFF'
-      this.world.ctx.font = '16px Stats_11'
-      this.world.ctx.textAlign = 'center'
-      this.world.ctx.fillText(
+      this.world.viewportCtx.fillStyle = '#FFFFFF'
+      this.world.viewportCtx.font = '16px Stats_11'
+      this.world.viewportCtx.textAlign = 'center'
+      this.world.viewportCtx.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.world.ctx.textAlign = 'left'
+      this.world.viewportCtx.textAlign = 'left'
     })
-    this.world.ctx.restore()
+    this.world.viewportCtx.restore()
   }
 
   get size() {

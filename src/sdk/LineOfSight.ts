@@ -13,15 +13,15 @@ import { GameObject, Location } from './GameObject'
 */
 export class LineOfSight {
   static drawLOS (world: World, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
-    world.ctx.globalAlpha = 0.4
+    world.viewportCtx.globalAlpha = 0.4
     for (let i = 0; i < 870; i++) {
-      world.ctx.fillStyle = c
+      world.viewportCtx.fillStyle = c
 
       const x2 = i % 29
       const y2 = Math.floor(i / 29)
 
       if (LineOfSight.hasLineOfSight(world, x, y, x2, y2, s, r, isNPC)) {
-        world.ctx.fillRect(
+        world.viewportCtx.fillRect(
           x2 * Settings.tileSize,
           y2 * Settings.tileSize,
           Settings.tileSize,
@@ -29,7 +29,7 @@ export class LineOfSight {
         )
       }
     }
-    world.ctx.globalAlpha = 1
+    world.viewportCtx.globalAlpha = 1
   }
 
   static hasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {

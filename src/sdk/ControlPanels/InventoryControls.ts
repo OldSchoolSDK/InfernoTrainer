@@ -67,7 +67,7 @@ export class InventoryControls extends BaseControls {
       const itemY = 17 + y + (y2) * 35
 
       if (inventoryItem !== null) {
-        world.ctx.drawImage(
+        world.viewportCtx.drawImage(
           inventoryItem.inventorySprite,
           itemX,
           itemY,
@@ -76,10 +76,10 @@ export class InventoryControls extends BaseControls {
         )
 
         if (inventoryItem.selected) {
-          world.ctx.beginPath()
-          world.ctx.fillStyle = '#D1BB7773'
-          world.ctx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
-          world.ctx.fill()
+          world.viewportCtx.beginPath()
+          world.viewportCtx.fillStyle = '#D1BB7773'
+          world.viewportCtx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
+          world.viewportCtx.fill()
         }
       }
     })
