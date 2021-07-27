@@ -108,7 +108,7 @@ export class JalAk extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.ctx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    this.world.worldCtx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {

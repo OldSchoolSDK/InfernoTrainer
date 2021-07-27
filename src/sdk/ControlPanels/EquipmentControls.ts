@@ -31,8 +31,8 @@ export class EquipmentControls extends BaseControls {
     super.draw(world, ctrl, x, y)
 
     if (world.player.weapon) {
-      world.ctx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      world.ctx.drawImage(world.player.weapon.inventorySprite, x + 32, y + 92)
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 89)
+      world.viewportCtx.drawImage(world.player.weapon.inventorySprite, x + 32, y + 92)
     }
   }
 }

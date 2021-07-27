@@ -261,17 +261,17 @@ export class Unit extends GameObject {
   }
 
   drawHPBar () {
-    this.world.ctx.fillStyle = 'red'
-    this.world.ctx.fillRect(
+    this.world.worldCtx.fillStyle = 'red'
+    this.world.worldCtx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.world.ctx.fillStyle = 'green'
+    this.world.worldCtx.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.world.ctx.fillRect(
+    this.world.worldCtx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -306,22 +306,22 @@ export class Unit extends GameObject {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.world.ctx.drawImage(
+      this.world.worldCtx.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.world.ctx.fillStyle = '#FFFFFF'
-      this.world.ctx.font = '16px Stats_11'
-      this.world.ctx.textAlign = 'center'
-      this.world.ctx.fillText(
+      this.world.worldCtx.fillStyle = '#FFFFFF'
+      this.world.worldCtx.font = '16px Stats_11'
+      this.world.worldCtx.textAlign = 'center'
+      this.world.worldCtx.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.world.ctx.textAlign = 'left'
+      this.world.worldCtx.textAlign = 'left'
     })
   }
 
@@ -331,7 +331,7 @@ export class Unit extends GameObject {
     if (overheads.length) {
       const overheadImg = overheads[0].overheadImage();
       if (overheadImg){
-        this.world.ctx.drawImage(
+        this.world.worldCtx.drawImage(
           overheadImg,
           -Settings.tileSize / 2,
           -Settings.tileSize * 3,
@@ -363,16 +363,16 @@ export class Unit extends GameObject {
       let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
       let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
   
-      this.world.ctx.save();
-      this.world.ctx.translate(
+      this.world.worldCtx.save();
+      this.world.worldCtx.translate(
         perceivedX * Settings.tileSize, 
         (perceivedY) * Settings.tileSize
       )
         
 
       if (projectile.image) {
-        this.world.ctx.rotate(Math.PI)
-        this.world.ctx.drawImage(
+        this.world.worldCtx.rotate(Math.PI)
+        this.world.worldCtx.drawImage(
           projectile.image,
           -Settings.tileSize / 2, 
           -Settings.tileSize / 2,
@@ -380,12 +380,12 @@ export class Unit extends GameObject {
           Settings.tileSize
         );
       }else{
-        this.world.ctx.beginPath()
-        this.world.ctx.fillStyle = '#D1BB7773'
-        this.world.ctx.arc(0, 0, 5, 0, 2 * Math.PI)
-        this.world.ctx.fill()
+        this.world.worldCtx.beginPath()
+        this.world.worldCtx.fillStyle = '#D1BB7773'
+        this.world.worldCtx.arc(0, 0, 5, 0, 2 * Math.PI)
+        this.world.worldCtx.fill()
       }
-      this.world.ctx.restore();
+      this.world.worldCtx.restore();
     });
   }
 

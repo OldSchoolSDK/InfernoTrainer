@@ -31,7 +31,7 @@ export class Region{
   initialize (world: World) {
   }
 
-  drawWorldBackground(ctx: CanvasRenderingContext2D) {
+  drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {
 
   }
 }
