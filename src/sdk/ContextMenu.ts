@@ -1,4 +1,4 @@
-import { Game } from './Game';
+import { World } from './World';
 import { Settings } from './Settings'
 import { Location } from './GameObject';
 
@@ -40,8 +40,8 @@ export class ContextMenu {
     this.menuOptions = menuOptions
   }
 
-  cursorMovedTo (game: Game, x: number, y: number) {
-    const cRect = game.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
+  cursorMovedTo (world: World, x: number, y: number) {
+    const cRect = world.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
     
@@ -58,63 +58,63 @@ export class ContextMenu {
     }
   }
 
-  draw (game: Game) {
+  draw (world: World) {
     if (this.isActive) {
       this.linesOfText = [
         {
           text: [{ text: 'Choose Option', fillStyle: '#5f5445' }],
           action: () => {
-            game.yellowClick()
+            world.yellowClick()
           }
         },
         ...this.menuOptions,
         {
           text: [{ text: 'Walk Here', fillStyle: 'white' }],
           action: () => {
-            game.yellowClick()
+            world.yellowClick()
             let x = this.location.x
             let y = this.location.y
             if (Settings.rotated === 'south') {
-              x = game.width * Settings.tileSize - x
-              y = game.height * Settings.tileSize - y
+              x = world.width * Settings.tileSize - x
+              y = world.height * Settings.tileSize - y
             }
-            game.playerWalkClick(x, y)
+            world.playerWalkClick(x, y)
           }
         },
         {
           text: [{ text: 'Cancel', fillStyle: 'white' }],
           action: () => {
-            game.yellowClick()
+            world.yellowClick()
           }
         }
       ]
-      game.ctx.textAlign = 'left';
+      world.ctx.textAlign = 'left';
 
-      game.ctx.font = '17px OSRS'
+      world.ctx.font = '17px OSRS'
 
       this.width = 0
       this.linesOfText.forEach((line) => {
-        this.width = Math.max(this.width, this.fillMixedTextWidth(game.ctx, line.text) + 10)
+        this.width = Math.max(this.width, this.fillMixedTextWidth(world.ctx, line.text) + 10)
       })
 
       this.height = 22 + (this.linesOfText.length - 1) * 20
 
-      game.ctx.fillStyle = '#5f5445'
-      game.ctx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
+      world.ctx.fillStyle = '#5f5445'
+      world.ctx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
 
-      game.ctx.fillStyle = 'black'
-      game.ctx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
+      world.ctx.fillStyle = 'black'
+      world.ctx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
 
-      game.ctx.lineWidth = 1
-      game.ctx.strokeStyle = 'black'
-      game.ctx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
+      world.ctx.lineWidth = 1
+      world.ctx.strokeStyle = 'black'
+      world.ctx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
 
       for (let i = 0; i < this.linesOfText.length; i++) {
         this.linesOfText[0].text
-        this.drawLineOfText(game.ctx, this.linesOfText[i].text, this.width, i * 20)
+        this.drawLineOfText(world.ctx, this.linesOfText[i].text, this.width, i * 20)
       }
     }
-    game.ctx.restore()
+    world.ctx.restore()
   }
 
   fillMixedText (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], x: number, y: number, inputColor: string) {
@@ -157,7 +157,7 @@ export class ContextMenu {
     this.fillMixedText(ctx, text, this.location.x - width / 2 + 4, this.location.y + 15 + y, isHovered ? 'yellow' : 'white')
   }
 
-  clicked (game: Game, x: number, y: number) {
+  clicked (world: World, x: number, y: number) {
     const index = Math.floor((y - this.location.y) / 20)
     this.linesOfText[index].action()
   }

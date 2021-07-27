@@ -4,7 +4,7 @@ import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { clamp, remove, filter } from 'lodash'
-import { Game } from './Game'
+import { World } from './World'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
@@ -66,7 +66,7 @@ export interface UnitTargetBonuses {
 
 export class Unit extends GameObject {
 
-  game: Game;
+  world: World;
   prayers: BasePrayer[] = [];
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
@@ -89,10 +89,10 @@ export class Unit extends GameObject {
     return UnitTypes.MOB;
   }
 
-  constructor (game: Game, location: Location, options?: UnitOptions) {
+  constructor (world: World, location: Location, options?: UnitOptions) {
     super()
 
-    this.game = game
+    this.world = world
     this.aggro = options.aggro || null
     this.perceivedLocation = location
     this.location = location
@@ -111,7 +111,7 @@ export class Unit extends GameObject {
   attackStep () { }
   draw(tickPercent: number) { }
   drawUILayer(tickPercent: number) { }
-  removedFromGame () { }
+  removedFromWorld () { }
 
   get cooldown () {
     return 0
@@ -168,12 +168,12 @@ export class Unit extends GameObject {
   }
 
   setHasLOS () {
-    if (this.aggro === this.game.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.game, this.location.x, this.location.y, this.size, this.attackRange, true)
+    if (this.aggro === this.world.player) {
+      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.game, this.location.x, this.location.y, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.game, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -239,7 +239,7 @@ export class Unit extends GameObject {
       this.dying--
     }
     if (this.dying === 0) {
-      this.removedFromGame()
+      this.removedFromWorld()
     }
   }
 
@@ -261,17 +261,17 @@ export class Unit extends GameObject {
   }
 
   drawHPBar () {
-    this.game.ctx.fillStyle = 'red'
-    this.game.ctx.fillRect(
+    this.world.ctx.fillStyle = 'red'
+    this.world.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.game.ctx.fillStyle = 'green'
+    this.world.ctx.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.game.ctx.fillRect(
+    this.world.ctx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -306,22 +306,22 @@ export class Unit extends GameObject {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.game.ctx.drawImage(
+      this.world.ctx.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.game.ctx.fillStyle = '#FFFFFF'
-      this.game.ctx.font = '16px Stats_11'
-      this.game.ctx.textAlign = 'center'
-      this.game.ctx.fillText(
+      this.world.ctx.fillStyle = '#FFFFFF'
+      this.world.ctx.font = '16px Stats_11'
+      this.world.ctx.textAlign = 'center'
+      this.world.ctx.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.game.ctx.textAlign = 'left'
+      this.world.ctx.textAlign = 'left'
     })
   }
 
@@ -331,7 +331,7 @@ export class Unit extends GameObject {
     if (overheads.length) {
       const overheadImg = overheads[0].overheadImage();
       if (overheadImg){
-        this.game.ctx.drawImage(
+        this.world.ctx.drawImage(
           overheadImg,
           -Settings.tileSize / 2,
           -Settings.tileSize * 3,
@@ -363,16 +363,16 @@ export class Unit extends GameObject {
       let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
       let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
   
-      this.game.ctx.save();
-      this.game.ctx.translate(
+      this.world.ctx.save();
+      this.world.ctx.translate(
         perceivedX * Settings.tileSize, 
         (perceivedY) * Settings.tileSize
       )
         
 
       if (projectile.image) {
-        this.game.ctx.rotate(Math.PI)
-        this.game.ctx.drawImage(
+        this.world.ctx.rotate(Math.PI)
+        this.world.ctx.drawImage(
           projectile.image,
           -Settings.tileSize / 2, 
           -Settings.tileSize / 2,
@@ -380,12 +380,12 @@ export class Unit extends GameObject {
           Settings.tileSize
         );
       }else{
-        this.game.ctx.beginPath()
-        this.game.ctx.fillStyle = '#D1BB7773'
-        this.game.ctx.arc(0, 0, 5, 0, 2 * Math.PI)
-        this.game.ctx.fill()
+        this.world.ctx.beginPath()
+        this.world.ctx.fillStyle = '#D1BB7773'
+        this.world.ctx.arc(0, 0, 5, 0, 2 * Math.PI)
+        this.world.ctx.fill()
       }
-      this.game.ctx.restore();
+      this.world.ctx.restore();
     });
   }
 

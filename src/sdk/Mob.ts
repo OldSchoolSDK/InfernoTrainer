@@ -7,7 +7,7 @@ import { Pathing } from './Pathing'
 
 import { Weapon } from './Weapons/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
-import { Game } from './Game'
+import { World } from './World'
 import { Location } from './GameObject'
 import { ImageLoader } from './Utils/ImageLoader'
 
@@ -80,8 +80,8 @@ export class Mob extends Unit {
     }
   }
 
-  constructor (game: Game, location: Location, options: UnitOptions) {
-    super(game, location, options)
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
 
     if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
       this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
@@ -129,9 +129,9 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      const both = Pathing.canTileBePathedTo(this.game, dx, dy, this.size, this.consumesSpace as Mob)
-      const xSpace = Pathing.canTileBePathedTo(this.game, dx, this.location.y, this.size, this.consumesSpace as Mob)
-      const ySpace = Pathing.canTileBePathedTo(this.game, this.location.x, dy, this.size, this.consumesSpace as Mob)
+      const both = Pathing.canTileBePathedTo(this.world, dx, dy, this.size, this.consumesSpace as Mob)
+      const xSpace = Pathing.canTileBePathedTo(this.world, dx, this.location.y, this.size, this.consumesSpace as Mob)
+      const ySpace = Pathing.canTileBePathedTo(this.world, this.location.x, dy, this.size, this.consumesSpace as Mob)
       const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace)
       if (both && cornerFilter) {
         this.location.x = dx
@@ -208,7 +208,7 @@ export class Mob extends Unit {
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.game, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(this.world, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
     if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
@@ -228,7 +228,7 @@ export class Mob extends Unit {
   playAttackSound () {
     if (Settings.playsAudio) {
       const sound = new Audio(this.sound)
-      sound.volume = 1 / Pathing.dist(this.location.x, this.location.y, this.game.player.location.x, this.game.player.location.y)
+      sound.volume = 1 / Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y)
       sound.play()
     }
   }
@@ -250,8 +250,8 @@ export class Mob extends Unit {
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.displayName, fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
-          this.game.redClick()
-          this.game.playerAttackClick(this)
+          this.world.redClick()
+          this.world.playerAttackClick(this)
         }
       }
     ]
@@ -260,21 +260,21 @@ export class Mob extends Unit {
   drawOnTile(tickPercent: number) {
 
     if (this.dying > -1) {
-      this.game.ctx.fillStyle = '#964B0073'
+      this.world.ctx.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.game.ctx.fillStyle = '#00FF0073'
+      this.world.ctx.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.game.ctx.fillStyle = '#FF000073'
+      this.world.ctx.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.game.ctx.fillStyle = '#FFFF0073'
+      this.world.ctx.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.game.ctx.fillStyle = '#FF730073'
+      this.world.ctx.fillStyle = '#FF730073'
     } else {
-      this.game.ctx.fillStyle = '#FFFFFF22'
+      this.world.ctx.fillStyle = '#FFFFFF22'
     }
 
     // Draw mob
-    this.game.ctx.fillRect(
+    this.world.ctx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -283,13 +283,13 @@ export class Mob extends Unit {
   }
 
   draw (tickPercent: number) {
-    // LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
+    // LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
 
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.game.ctx.save()
-    this.game.ctx.translate(
+    this.world.ctx.save()
+    this.world.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
@@ -308,19 +308,19 @@ export class Mob extends Unit {
     // }
 
     if (Settings.rotated === 'south') {
-      this.game.ctx.rotate(Math.PI)
+      this.world.ctx.rotate(Math.PI)
     }
     if (Settings.rotated === 'south') {
-      this.game.ctx.scale(-1, 1)
+      this.world.ctx.scale(-1, 1)
     }
 
-    this.game.ctx.save()
+    this.world.ctx.save()
     if (this.shouldShowAttackAnimation()) {
       this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
-      this.game.ctx.drawImage(
+      this.world.ctx.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -330,38 +330,38 @@ export class Mob extends Unit {
 
     }
 
-    this.game.ctx.restore()
+    this.world.ctx.restore()
 
     if (Settings.rotated === 'south') {
-      this.game.ctx.scale(-1, 1)
+      this.world.ctx.scale(-1, 1)
     }
 
     
-    if (LineOfSight.hasLineOfSightOfMob(this.game, this.aggro.location.x, this.aggro.location.y, this, this.game.player.attackRange)) {
-      this.game.ctx.strokeStyle = '#00FF0073'
-      this.game.ctx.lineWidth = 1
-      this.game.ctx.strokeRect(
+    if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
+      this.world.ctx.strokeStyle = '#00FF0073'
+      this.world.ctx.lineWidth = 1
+      this.world.ctx.strokeRect(
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
         this.size * Settings.tileSize,
         this.size * Settings.tileSize
       )
     }
-    this.game.ctx.restore()
+    this.world.ctx.restore()
 
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.game.ctx.save()
-    this.game.ctx.translate(
+    this.world.ctx.save()
+    this.world.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (Settings.rotated === 'south') {
-      this.game.ctx.rotate(Math.PI)
+      this.world.ctx.rotate(Math.PI)
     }
     
     this.drawHPBar()
@@ -370,7 +370,7 @@ export class Mob extends Unit {
 
     this.drawOverheadPrayers()
 
-    this.game.ctx.restore()
+    this.world.ctx.restore()
 
     this.drawIncomingProjectiles(tickPercent)
 

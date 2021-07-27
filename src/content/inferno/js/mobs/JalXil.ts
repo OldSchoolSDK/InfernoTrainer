@@ -120,13 +120,13 @@ export class JalXil extends Mob {
     if (Settings.playsAudio) {
       setTimeout(() => {
         const sound = new Audio(this.sound)
-        sound.volume = 1 / Math.min(3, Pathing.dist(this.location.x, this.location.y, this.game.player.location.x, this.game.player.location.y) / 5)
+        sound.volume = 1 / Math.min(3, Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y) / 5)
         sound.play()
       }, 1.75 * Settings.tickMs)
     }
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.rotate(Math.sin(-tickPercent * Math.PI))
+    this.world.ctx.rotate(Math.sin(-tickPercent * Math.PI))
   }
 }

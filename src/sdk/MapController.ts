@@ -21,7 +21,7 @@ import MapWalkIcon from '../assets/images/interface/map_walk_icon.png'
 import MapRunIcon from '../assets/images/interface/map_run_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
-import { Game } from './Game';
+import { World } from './World';
 import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
 import { ImageLoader } from './Utils/ImageLoader'
@@ -42,7 +42,7 @@ export class MapController {
 
   colorScale: ColorScale = new ColorScale(0, 1, [ '#FF0000', '#FF7300', '#00FF00'], 1);
 
-  game: Game;
+  world: World;
   canvas = document.getElementById('map') as HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
@@ -90,7 +90,7 @@ export class MapController {
   }
 
   cursorMovedTo(event: MouseEvent) {
-    const x = event.offsetX - this.game.width * Settings.tileSize;
+    const x = event.offsetX - this.world.width * Settings.tileSize;
     const y = event.offsetY;
 
     this.hovering = MapHover.NONE;
@@ -110,7 +110,7 @@ export class MapController {
 
   clicked(event: MouseEvent): boolean {
     let intercepted = false;
-    const x = event.offsetX - this.game.width * Settings.tileSize;
+    const x = event.offsetX - this.world.width * Settings.tileSize;
     const y = event.offsetY;
 
     if (x > 4 && x < 23 && y > 31 && y < 51) {
@@ -133,13 +133,13 @@ export class MapController {
       const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
       if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
         ControlPanelController.controls.PRAYER.deactivateAllPrayers();
-        this.game.player.prayerDrainCounter = 0;
+        this.world.player.prayerDrainCounter = 0;
       }else {
         ControlPanelController.controls.PRAYER.activateQuickPrayers();
       }
     }else if (x > 15 && x < 62 && y > 122 && y < 144) {
       intercepted = true;
-      this.game.player.running = !this.game.player.running;
+      this.world.player.running = !this.world.player.running;
     }else if (x > 38 && x < 74 && y > 148 && y < 170) {
       intercepted = true;
       // this.hovering = MapHover.SPEC;
@@ -184,7 +184,7 @@ export class MapController {
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.game.player.running ? this.mapRunOrb: this.mapNoSpecOrb, 0, 0)
+    ctx.drawImage(this.world.player.running ? this.mapRunOrb: this.mapNoSpecOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapRunOrb.height * (1 - runPercentage), this.mapRunOrb.width, this.mapRunOrb.height * runPercentage)
     ctx.globalCompositeOperation = 'source-over'
@@ -194,7 +194,7 @@ export class MapController {
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.game.player.weapon.hasSpecialAttack() ? this.mapSpecOrb : this.mapNoSpecOrb, 0, 0)
+    ctx.drawImage(this.world.player.weapon.hasSpecialAttack() ? this.mapSpecOrb : this.mapNoSpecOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapSpecOrb.height * (1 - specPercentage), this.mapRunOrb.width, this.mapRunOrb.height * specPercentage)
     ctx.globalCompositeOperation = 'source-over'
@@ -235,8 +235,8 @@ export class MapController {
 
   }
 
-  setGame(game: Game) {
-    this.game = game;
+  setWorld(world: World) {
+    this.world = world;
   }
 
   generateMaskedMap() {
@@ -256,7 +256,7 @@ export class MapController {
     compatCtx.mozImageSmoothingEnabled = false;
     compatCtx.imageSmoothingEnabled = false;
 
-    mapContext.drawImage(this.game.region.mapImage, 0, 0, 152, 152)
+    mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
     compatCtx.webkitImageSmoothingEnabled = true;
     compatCtx.mozImageSmoothingEnabled = true;
     compatCtx.imageSmoothingEnabled = true;
@@ -271,7 +271,7 @@ export class MapController {
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
   
 
-    const offset = this.game.region.width * Settings.tileSize
+    const offset = this.world.region.width * Settings.tileSize
     
     ctx.font = '16px Stats_11'
     ctx.textAlign = 'center'
@@ -308,7 +308,7 @@ export class MapController {
     ctx.drawImage(this.mapPrayerOrbMasked, offset + 27, 85)
     ctx.drawImage(this.mapPrayerIcon, offset + 27, 85)
     ctx.drawImage(this.mapRunOrbMasked, offset + 37, 118)
-    ctx.drawImage(this.game.player.running ? this.mapRunIcon: this.mapWalkIcon, offset + 37, 118)
+    ctx.drawImage(this.world.player.running ? this.mapRunIcon: this.mapWalkIcon, offset + 37, 118)
     ctx.drawImage(this.mapSpecOrbMasked, offset + 59, 144)
     ctx.drawImage(this.mapSpecIcon, offset + 57, 142, 30, 30)
 

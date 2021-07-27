@@ -14,7 +14,7 @@ import { PrayerControls } from './ControlPanels/PrayerControls'
 import { QuestsControls } from './ControlPanels/QuestsControls'
 import { SettingsControls } from './ControlPanels/SettingsControls'
 import { StatsControls } from './ControlPanels/StatsControls'
-import { Game } from './Game'
+import { World } from './World'
 import { Settings } from './Settings'
 
 interface TabPosition{
@@ -33,7 +33,7 @@ export class ControlPanelController {
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  game?: Game;
+  world?: World;
   controls: BaseControls[];
   selectedControl: BaseControls;
   
@@ -45,7 +45,7 @@ export class ControlPanelController {
     this.width = 33 * 7
     this.height = 36 * 2 + 275
 
-    this.game = null
+    this.world = null
 
 
     this.controls = [
@@ -79,8 +79,8 @@ export class ControlPanelController {
     })
   }
 
-  setGame (game: Game) {
-    this.game = game
+  setWorld (world: World) {
+    this.world = world
   }
 
   tabPosition (i: number, compact: boolean): TabPosition {
@@ -96,8 +96,8 @@ export class ControlPanelController {
   controlPanelClick (e: MouseEvent): boolean {
     let intercepted = false;
 
-    const x = e.offsetX - (this.game.canvas.width - this.width);
-    const y = e.offsetY - (this.game.canvas.height - this.height);
+    const x = e.offsetX - (this.world.canvas.width - this.width);
+    const y = e.offsetY - (this.world.canvas.height - this.height);
 
     if (y > 275) {
       this.controls.forEach((control: BaseControls, index: number) => {
@@ -128,34 +128,34 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        this.selectedControl.clickedPanel(this.game, relativeX, relativeY)
+        this.selectedControl.clickedPanel(this.world, relativeX, relativeY)
       }
     }
 
     return intercepted;
   }
 
-  draw (game: Game) {
-    game.ctx.fillStyle = '#000'
+  draw (world: World) {
+    world.ctx.fillStyle = '#000'
 
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(game, this, this.width - 204, 0)
+      this.selectedControl.draw(world, this, this.width - 204, 0)
     }
 
     let selectedPosition: TabPosition = null
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true)
       if (control.tabImage){
-        game.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+        world.ctx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
       }
       if (control === this.selectedControl) {
         selectedPosition = tabPosition
       }
     })
     if (selectedPosition) {
-      game.ctx.strokeStyle = '#00FF0073'
-      game.ctx.lineWidth = 3
-      game.ctx.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
+      world.ctx.strokeStyle = '#00FF0073'
+      world.ctx.lineWidth = 3
+      world.ctx.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
     }
   }
 }

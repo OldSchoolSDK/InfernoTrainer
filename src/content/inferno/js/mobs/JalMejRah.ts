@@ -97,6 +97,6 @@ export class JalMejRah extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 }

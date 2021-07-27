@@ -14,7 +14,7 @@ import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
 
-export class Game {
+export class World {
   region: Region;
   wave: string;
   mobs: Mob[] = [];
@@ -46,8 +46,8 @@ export class Game {
 
     this.mapController = mapController;
     this.controlPanel = controlPanel;
-    this.controlPanel.setGame(this);
-    this.mapController.setGame(this)
+    this.controlPanel.setWorld(this);
+    this.mapController.setWorld(this)
 
     this.region = region;
 
@@ -63,34 +63,13 @@ export class Game {
   }
 
   registerClickActions() {
-    this.canvas.addEventListener('mousedown', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousedown', this.leftClick.bind(this))
     this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
-
     this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
-    this.canvas.addEventListener('contextmenu', (e: MouseEvent) => {
-      let x = e.offsetX
-      let y = e.offsetY
-
-      this.contextMenu.setPosition({ x, y })
-      if (Settings.rotated === 'south') {
-        x = this.width * Settings.tileSize - e.offsetX
-        y = this.height * Settings.tileSize - e.offsetY
-      }
-
-      /* gather options */
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
-      let menuOptions: MenuOption[] = []
-      mobs.forEach((mob) => {
-        menuOptions = menuOptions.concat(mob.contextActions(x, y))
-      })
-      this.contextMenu.setMenuOptions(menuOptions)
-      this.contextMenu.setActive()
-    })
+    this.canvas.addEventListener('contextmenu', this.rightClick.bind(this));
   }
 
-  mapClick (e: MouseEvent) {
-
-
+  leftClick (e: MouseEvent) {
     if (e.button !== 0) {
       return;
     }
@@ -124,8 +103,6 @@ export class Game {
   
       }
     }
-
-
     const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
     const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
 
@@ -149,6 +126,27 @@ export class Game {
     this.contextMenu.setInactive()
   }
 
+  rightClick (e: MouseEvent) {
+    let x = e.offsetX
+    let y = e.offsetY
+
+    this.contextMenu.setPosition({ x, y })
+    if (Settings.rotated === 'south') {
+      x = this.width * Settings.tileSize - e.offsetX
+      y = this.height * Settings.tileSize - e.offsetY
+    }
+
+    /* gather options */
+    const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
+    let menuOptions: MenuOption[] = []
+    mobs.forEach((mob) => {
+      menuOptions = menuOptions.concat(mob.contextActions(x, y))
+    })
+    this.contextMenu.setMenuOptions(menuOptions)
+    this.contextMenu.setActive()
+  }
+
+
   playerAttackClick (mob: Unit) {
     this.inputDelay = setTimeout(() => {
       this.player.aggro = mob
@@ -169,7 +167,7 @@ export class Game {
     this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y)
   }
 
-  gameTick () {
+  worldTick () {
     XpDropController.controller.tick();
     
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
@@ -181,14 +179,42 @@ export class Game {
     DelayedAction.tick();
 
 
-    // Safely remove the mobs from the game. If we do it while iterating we can cause ticks to be stole'd
+    // Safely remove the mobs from the world. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
     const deadEntities = this.entities.filter((mob) => mob.dying === 0)
     deadMobs.forEach((mob) => this.removeMob(mob))
     deadEntities.forEach((entity) => this.removeEntity(entity))
   }
 
-  drawGame (tickPercent: number) {
+  worldLoop () {
+    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
+    // Everything else is just measuring performance
+    const t = performance.now()
+    if (this.frameCounter === 0 && this.getReadyTimer) {
+      this.getReadyTimer--;
+    }
+
+    if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
+      this.timeBetweenTicks = t - this.lastT
+      this.lastT = t
+      if (this.isPaused === false) {
+        this.worldTick()
+      }
+      this.tickTime = performance.now() - t
+    }
+    const t2 = performance.now()
+    this.tickPercent = this.frameCounter / Settings.framesPerTick;
+    this.draw()
+    this.drawTime = performance.now() - t2
+    this.frameCounter++
+    if (this.frameCounter >= Settings.framesPerTick) {
+      this.fps = this.frameCounter / this.timeBetweenTicks * 1000
+      this.frameCounter = 0
+    }
+    this.frameTime = performance.now() - t
+  }
+
+  drawWorld (tickPercent: number) {
     
     // Draw all things on the map
     this.entities.forEach((entity) => entity.draw(tickPercent))
@@ -209,34 +235,6 @@ export class Game {
     this.ctx.restore()
   }
 
-  gameLoop () {
-    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
-    // Everything else is just measuring performance
-    const t = performance.now()
-    if (this.frameCounter === 0 && this.getReadyTimer) {
-      this.getReadyTimer--;
-    }
-
-    if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
-      this.timeBetweenTicks = t - this.lastT
-      this.lastT = t
-      if (this.isPaused === false) {
-        this.gameTick()
-      }
-      this.tickTime = performance.now() - t
-    }
-    const t2 = performance.now()
-    this.tickPercent = this.frameCounter / Settings.framesPerTick;
-    this.draw()
-    this.drawTime = performance.now() - t2
-    this.frameCounter++
-    if (this.frameCounter >= Settings.framesPerTick) {
-      this.fps = this.frameCounter / this.timeBetweenTicks * 1000
-      this.frameCounter = 0
-    }
-    this.frameTime = performance.now() - t
-  }
-
   draw () {
     this.ctx.globalAlpha = 1
     this.ctx.fillStyle = '#3B3224'
@@ -253,10 +251,10 @@ export class Game {
       this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
 
-    this.region.drawGameBackground(this.ctx)
+    this.region.drawWorldBackground(this.ctx)
     
 
-    this.drawGame(this.tickPercent)
+    this.drawWorld(this.tickPercent)
 
 
     this.ctx.save();
@@ -325,12 +323,11 @@ export class Game {
 
   startTicking () {
     this.isPaused = false;
-    this.ticker = setInterval(this.gameLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
+    this.ticker = setInterval(this.worldLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
   }
 
   stopTicking() {
     this.isPaused = true;
     clearInterval(this.ticker);
-
   }
 }

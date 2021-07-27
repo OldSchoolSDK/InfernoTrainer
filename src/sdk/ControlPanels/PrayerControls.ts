@@ -28,7 +28,7 @@ import { Chivalry } from '../../content/prayers/Chivalry'
 import { Piety } from '../../content/prayers/Piety'
 import { Settings } from '../Settings'
 import { BasePrayer } from '../BasePrayer'
-import { Game } from '../Game'
+import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
 import { Retribution } from '../../content/prayers/Retribution'
 import { Redemption } from '../../content/prayers/Redemption'
@@ -111,12 +111,12 @@ export class PrayerControls extends BaseControls {
 
   }
 
-  clickedPanel (game: Game, x: number, y: number) {
+  clickedPanel (world: World, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 
     const clickedPrayer = PrayerControls.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
-    if (clickedPrayer && game.player.currentStats.prayer > 0) {
+    if (clickedPrayer && world.player.currentStats.prayer > 0) {
 
       this.getCurrentActivePrayers().forEach((prayer) => {
         if (intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
@@ -132,18 +132,18 @@ export class PrayerControls extends BaseControls {
     }
   }
 
-  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(game, ctrl, x, y)
+  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(world, ctrl, x, y)
 
     PrayerControls.prayers.forEach((prayer, index) => {
       if (prayer.isActive) {
         const x2 = index % 5
         const y2 = Math.floor(index / 5)
 
-        game.ctx.beginPath()
-        game.ctx.fillStyle = '#D1BB7773'
-        game.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
-        game.ctx.fill()
+        world.ctx.beginPath()
+        world.ctx.fillStyle = '#D1BB7773'
+        world.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.ctx.fill()
       }
     })
   }

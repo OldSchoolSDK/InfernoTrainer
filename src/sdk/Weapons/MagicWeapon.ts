@@ -1,6 +1,6 @@
 import { find, intersection } from 'lodash'
 import { BasePrayer, PrayerGroups } from '../BasePrayer'
-import { Game } from '../Game'
+import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile, ProjectileOptions } from './Projectile'
@@ -10,7 +10,7 @@ import MagerWeaponImage from '../../assets/images/prayers/mage.png'
 export class MagicWeapon extends Weapon {
   damage: number;
 
-  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
 
     bonuses.isAccurate = bonuses.isAccurate || false

@@ -3,7 +3,7 @@
 import { GameObject } from "../GameObject";
 import { Item } from "../Item"
 import { BasePrayer } from "../BasePrayer";
-import { Game } from "../Game";
+import { World } from "../World";
 import { Unit } from "../Unit";
 import { ImageLoader } from "../Utils/ImageLoader";
 
@@ -36,11 +36,11 @@ export class Weapon extends Item{
     return false;
   }
   
-  cast(game: Game, from: Unit, to: GameObject) {
+  cast(world: World, from: Unit, to: GameObject) {
 
   }
 
-  attack (stage: Game, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
+  attack (stage: World, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
   }
   
   isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
