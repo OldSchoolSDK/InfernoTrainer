@@ -14,7 +14,7 @@ import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Region } from '../../sdk/Region'
-import { Game } from '../../sdk/Game'
+import { World } from '../../sdk/World'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
 import { ImageLoader } from '../../sdk/Utils/ImageLoader'
@@ -30,10 +30,10 @@ export class InfernoRegion extends Region {
     return [new Blowpipe()]
   }
 
-  initialize (game: Game) {
+  initialize (world: World) {
 
     // Add pillars
-    InfernoPillar.addPillarsToGame(game)
+    InfernoPillar.addPillarsToWorld(world)
     let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
     if (isNaN(wave)){
       wave = 1;
@@ -41,10 +41,10 @@ export class InfernoRegion extends Region {
 
     // Add player
     const player = new Player(
-      game,
+      world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
       { weapon: new TwistedBow() })
-    game.setPlayer(player)
+    world.setPlayer(player)
 
     // Add mobs
 
@@ -53,21 +53,21 @@ export class InfernoRegion extends Region {
     const melee = BrowserUtils.getQueryVar('melee') || '[]'
     const ranger = BrowserUtils.getQueryVar('ranger') || '[]'
     const mager = BrowserUtils.getQueryVar('mager') || '[]'
-    const randomPillar = shuffle(game.entities)[0]
+    const randomPillar = shuffle(world.entities)[0]
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
     if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
       // Backwards compatibility layer for runelite plugin
-      game.wave = 'imported';
+      world.wave = 'imported';
       try {
-        JSON.parse(mager).forEach((spawn: number[]) => game.addMob(new JalZek(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(ranger).forEach((spawn: number[]) => game.addMob(new JalXil(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(melee).forEach((spawn: number[]) => game.addMob(new JalImKot(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(blob).forEach((spawn: number[]) => game.addMob(new JalAk(game, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(bat).forEach((spawn: number[]) => game.addMob(new JalMejRah(game, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+        JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
+        JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0], y: spawn[1] }, { aggro: player })))
 
-        InfernoWaves.spawnNibblers(3, game, randomPillar).forEach(game.addMob.bind(game))
+        InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.addMob.bind(world))
 
         replayLink.href = `/${window.location.search}`
       } catch(ex){
@@ -79,8 +79,8 @@ export class InfernoRegion extends Region {
       // Native approach
       const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
 
-      InfernoWaves.spawn(game, randomPillar, spawns, wave).forEach(game.addMob.bind(game))
-      game.wave = String(wave)
+      InfernoWaves.spawn(world, randomPillar, spawns, wave).forEach(world.addMob.bind(world))
+      world.wave = String(wave)
 
       const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
       replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
@@ -94,10 +94,10 @@ export class InfernoRegion extends Region {
     })
 
 
-    document.getElementById('pauseResumeLink').addEventListener('click', () => game.isPaused ? game.startTicking() : game.stopTicking())
+    document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking() : world.stopTicking())
   }
 
-  drawGameBackground(ctx: any) {
+  drawWorldBackground(ctx: any) {
     // ctx.drawImage(this.gridCanvas, 0, 0);
     if (this.mapImage){
 

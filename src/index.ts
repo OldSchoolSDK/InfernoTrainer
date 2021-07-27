@@ -2,7 +2,7 @@
 
 import { InfernoRegion } from './content/inferno/InfernoRegion'
 import { VerzikP3 } from './content/verzik/VerzikP3'
-import { Game } from './sdk/Game'
+import { World } from './sdk/World'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
@@ -23,20 +23,20 @@ switch (selectedRegionName) {
     selectedRegion = new InfernoRegion()
 }
 
-// Create game
+// Create world
 
 
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
 
-const game = new Game('game', selectedRegion, MapController.controller, controlPanel);
+const world = new World('world', selectedRegion, MapController.controller, controlPanel);
 
-selectedRegion.initialize(game)
+selectedRegion.initialize(world)
 
 ImageLoader.onAllImagesLoaded(() => {
   // Start the engine
-  game.startTicking()
+  world.startTicking()
 })
 
 const interval = setInterval(() => { 

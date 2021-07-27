@@ -2,7 +2,7 @@
 
 
 import chebyshev from 'chebyshev'
-import { GameObject, Location } from '../GameObject'
+import { WorldObject, Location } from '../WorldObject'
 import { Unit } from '../Unit'
 import { ImageLoader } from '../Utils/ImageLoader'
 import { Weapon } from './Weapon'

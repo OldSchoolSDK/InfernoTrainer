@@ -15,16 +15,16 @@ import VerzikRange8 from "../../assets/images/verzik-range0007.png";
 
 import BatSound from "../../assets/sounds/bat.ogg";
 import { AoeRangedWeapon } from "../../../../sdk/Weapons/AoeRangedWeapon";
-import { Location } from "../../../../sdk/GameObject";
+import { Location } from "../../../../sdk/WorldObject";
 import { Unit, UnitOptions } from "../../../../sdk/Unit";
-import { Game } from "../../../../sdk/Game";
+import { World } from "../../../../sdk/World";
 
 export class Verzik extends Mob{
 
   wasPlayerInMeleeRange: boolean = false;
 
-  constructor(game: Game, location: Location, options: UnitOptions) {
-    super(game, location, options);
+  constructor(world: World, location: Location, options: UnitOptions) {
+    super(world, location, options);
 
   }
 
@@ -144,6 +144,6 @@ export class Verzik extends Mob{
   }
   
   attackAnimation(tickPercent: number){
-    this.game.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.world.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 }

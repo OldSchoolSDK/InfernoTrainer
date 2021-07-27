@@ -5,11 +5,11 @@ import { LineOfSight } from './LineOfSight'
 import { minBy, range, filter, find, map, min } from 'lodash'
 import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
-import { Game } from './Game'
+import { World } from './World'
 import { Weapon } from './Weapons/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
-import { Location } from './GameObject'
+import { Location } from './WorldObject'
 import { Mob } from './Mob'
 import { ImageLoader } from './Utils/ImageLoader'
 import { MapController } from './MapController'
@@ -34,8 +34,8 @@ export class Player extends Unit {
   running = true;
   prayerDrainCounter: number = 0;
 
-  constructor (game: Game, location: Location, options: UnitOptions) {
-    super(game, location, options)
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
     this.destinationLocation = location
     this.weapon = options.weapon
     this.clearXpDrops();
@@ -134,7 +134,7 @@ export class Player extends Unit {
     this.aggro = null
     this.manualSpellCastSelection = null
 
-    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.game, x, y, 1)
+    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.world, x, y, 1)
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0]
@@ -145,7 +145,7 @@ export class Player extends Unit {
         for (let xOff = -maxDist; xOff < maxDist; xOff++) {
           const potentialX = x + xOff
           const potentialY = y + yOff
-          const e = Pathing.collideableEntitiesAtPoint(this.game, potentialX, potentialY, 1)
+          const e = Pathing.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y)
             if (distance <= bestDistance) {
@@ -173,11 +173,11 @@ export class Player extends Unit {
 
   attack () {
     if (this.manualSpellCastSelection) {
-      this.manualSpellCastSelection.cast(this.game, this, this.aggro)
+      this.manualSpellCastSelection.cast(this.world, this, this.aggro)
       this.manualSpellCastSelection = null
     } else {
       // use equipped weapon
-      this.weapon.attack(this.game, this, this.aggro)
+      this.weapon.attack(this.world, this, this.aggro)
     }
 
     // this.playAttackSound();
@@ -185,7 +185,7 @@ export class Player extends Unit {
 
   activatePrayers () {
     this.lastOverhead = this.overhead
-    this.overhead = find(this.game.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
+    this.overhead = find(this.world.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
     if (this.lastOverhead && !this.overhead) {
       this.lastOverhead.playOffSound()
     } else if (this.lastOverhead !== this.overhead) {
@@ -211,7 +211,7 @@ export class Player extends Unit {
           for (let xx = -maxDist; xx < maxDist; xx++) {
             const x = this.location.x + xx
             const y = this.location.y + yy
-            if (Pathing.canTileBePathedTo(this.game, x, y, 1, {} as Mob)) {
+            if (Pathing.canTileBePathedTo(this.world, x, y, 1, {} as Mob)) {
               const distance = Pathing.dist(this.location.x, this.location.y, x, y)
               if (distance > 0 && distance < bestDistance) {
                 bestDistance = distance
@@ -239,7 +239,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.game, px, py, 1)) {
+            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -252,7 +252,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.game, px, py, 1)) {
+            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -261,7 +261,7 @@ export class Player extends Unit {
           });
         });
         // Create paths to all npc tiles
-        const potentialPaths = map(seekingTiles, (point) => Pathing.constructPath(this.game, this.location, { x: point.x, y: point.y }));
+        const potentialPaths = map(seekingTiles, (point) => Pathing.constructPath(this.world, this.location, { x: point.x, y: point.y }));
         const potentialPathLengths = map(potentialPaths, (path) => path.length);
         // Figure out what the min distance is
         const shortestPathLength = min(potentialPathLengths);
@@ -280,7 +280,7 @@ export class Player extends Unit {
     this.perceivedLocation = this.location
     // Actually move the player forward by run speed.
     if (this.destinationLocation) {
-      this.location = Pathing.path(this.game, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+      this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
     }
   }
 
@@ -336,8 +336,8 @@ export class Player extends Unit {
 
     this.sendXpToController();
 
-    if (this.game.mapController){
-      this.game.mapController.updateOrbsMask(this.currentStats, this.stats);
+    if (this.world.mapController){
+      this.world.mapController.updateOrbsMask(this.currentStats, this.stats);
     }
   }
 
@@ -358,32 +358,32 @@ export class Player extends Unit {
   }
 
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.game, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
+    LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
     // Perceived location
 
-    this.game.ctx.globalAlpha = 0.7
-    this.game.ctx.fillStyle = '#FFFF00'
-    this.game.ctx.fillRect(
+    this.world.ctx.globalAlpha = 0.7
+    this.world.ctx.fillStyle = '#FFFF00'
+    this.world.ctx.fillRect(
       perceivedX * Settings.tileSize,
       perceivedY * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.game.ctx.globalAlpha = 1
+    this.world.ctx.globalAlpha = 1
 
     // Draw player on true tile
-    this.game.ctx.fillStyle = '#fff'
+    this.world.ctx.fillStyle = '#fff'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      this.game.ctx.fillStyle = '#00FFFF'
+      this.world.ctx.fillStyle = '#00FFFF'
     }
-    this.game.ctx.strokeStyle = '#FFFFFF73'
-    this.game.ctx.lineWidth = 3
-    this.game.ctx.fillRect(
+    this.world.ctx.strokeStyle = '#FFFFFF73'
+    this.world.ctx.lineWidth = 3
+    this.world.ctx.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -391,9 +391,9 @@ export class Player extends Unit {
     )
 
     // Destination location
-    this.game.ctx.strokeStyle = '#FFFFFF73'
-    this.game.ctx.lineWidth = 3
-    this.game.ctx.strokeRect(
+    this.world.ctx.strokeStyle = '#FFFFFF73'
+    this.world.ctx.lineWidth = 3
+    this.world.ctx.strokeRect(
       this.destinationLocation.x * Settings.tileSize,
       this.destinationLocation.y * Settings.tileSize,
       Settings.tileSize,
@@ -405,21 +405,21 @@ export class Player extends Unit {
 
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.game.ctx.save();
+    this.world.ctx.save();
 
 
-    this.game.ctx.translate(
+    this.world.ctx.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (Settings.rotated === 'south') {
-      this.game.ctx.rotate(Math.PI)
+      this.world.ctx.rotate(Math.PI)
     }
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
-    this.game.ctx.restore();
+    this.world.ctx.restore();
     this.drawIncomingProjectiles(tickPercent);
 
   }

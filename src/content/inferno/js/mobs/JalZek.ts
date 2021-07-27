@@ -112,14 +112,14 @@ export class JalZek extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.rotate(tickPercent * Math.PI * 2)
+    this.world.ctx.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
-        if (!Pathing.collidesWithAnyMobs(this.game, x, y, mobToResurrect.size)) {
-          if (!Pathing.collidesWithAnyEntities(this.game, x, y, mobToResurrect.size)) {
+        if (!Pathing.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
+          if (!Pathing.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
             return { x, y }
           }
         }
@@ -159,7 +159,7 @@ export class JalZek extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
-          this.game.addMob(mobToResurrect)
+          this.world.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
           this.attackCooldownTicks = this.cooldown
         }

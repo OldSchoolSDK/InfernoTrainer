@@ -1,6 +1,6 @@
 import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
-import { Game } from '../Game'
+import { World } from '../World'
 import { Unit } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { MagicWeapon } from './MagicWeapon'
@@ -37,13 +37,13 @@ export class BarrageMagicWeapon extends MagicWeapon {
     return 9
   }
 
-  cast (game: Game, from: Unit, to: Unit) {
+  cast (world: World, from: Unit, to: Unit) {
     // calculate AoE magic effects
     if (this.aoe.length) {
       const alreadyCastedOn: Unit[] = [ to ]
-      this.attack(game, from, to, { magicBaseSpellDamage: 30 })
+      this.attack(world, from, to, { magicBaseSpellDamage: 30 })
       this.aoe.forEach((point) => {
-        Pathing.mobsInAreaOfEffectOfMob(game, to, point)
+        Pathing.mobsInAreaOfEffectOfMob(world, to, point)
           .forEach((mob: Mob) => {
             if (alreadyCastedOn.length > this.maxConcurrentHits) {
               return
@@ -52,17 +52,17 @@ export class BarrageMagicWeapon extends MagicWeapon {
               return
             }
             alreadyCastedOn.push(mob)
-            this.attack(game, from, mob, { magicBaseSpellDamage: 30 }, {hidden: true})
+            this.attack(world, from, mob, { magicBaseSpellDamage: 30 }, {hidden: true})
           })
       })
     } else {
-      this.attack(game, from, to, { magicBaseSpellDamage: 30 })
+      this.attack(world, from, to, { magicBaseSpellDamage: 30 })
     }
   }
 
-  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     options.forceSWTile = true;
-    super.attack(game, from, to, bonuses, options)    
+    super.attack(world, from, to, bonuses, options)    
     if (this.damage > 0) {
       to.frozen = 32
     }
