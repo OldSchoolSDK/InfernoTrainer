@@ -95,15 +95,5 @@
     <div id="build_version" style="display: none;"></div>
 
     <script src="./main.js"></script>
-    <script>
-      // Janky NR browser agent integration
-      let timer = setInterval(() => {
-        let version = document.getElementById('build_version').innerHTML;
-        if (version.length) {
-          clearInterval(timer);
-          newrelic.addRelease('inferno-trainer', version);
-        }
-      }, 30)
-    </script>
   </body>
 </html>
