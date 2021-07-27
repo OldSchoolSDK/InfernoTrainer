@@ -374,6 +374,7 @@ export class World {
     this.viewportCtx.save()
 
     // Performance info
+    this.viewportCtx.textAlign = 'left'
     this.viewportCtx.fillStyle = '#FFFF0066'
     this.viewportCtx.font = '16px OSRS'
     this.viewportCtx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
