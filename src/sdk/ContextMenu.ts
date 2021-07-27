@@ -1,6 +1,7 @@
 import { World } from './World';
 import { Settings } from './Settings'
 import { Location } from './GameObject';
+import { Pathing } from './Pathing';
 
 export interface MultiColorTextBlock {
   text: string;
@@ -22,7 +23,7 @@ export class ContextMenu {
   height: number = 0;
   menuOptions: MenuOption[] = []
   linesOfText: MenuOption[] = []
-
+  destinationLocation: any;
 
   setPosition (position: Location) {
     this.location = position
@@ -72,8 +73,8 @@ export class ContextMenu {
           text: [{ text: 'Walk Here', fillStyle: 'white' }],
           action: () => {
             world.yellowClick()
-            let x = this.location.x
-            let y = this.location.y
+            let x = this.destinationLocation.x * Settings.tileSize
+            let y = this.destinationLocation.y * Settings.tileSize
             if (Settings.rotated === 'south') {
               x = world.viewportWidth * Settings.tileSize - x
               y = world.viewportHeight * Settings.tileSize - y

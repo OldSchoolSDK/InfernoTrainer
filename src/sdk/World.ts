@@ -107,11 +107,19 @@ export class World {
 
     const tickPercent = this.frameCounter / Settings.framesPerTick
 
-    let x = e.offsetX
-    let y = e.offsetY
+
+
+    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, tickPercent)
+
+    const viewportX = perceivedX - this._viewport.width / 2;
+    const viewportY = perceivedY - this._viewport.height / 2;
+
+    let x = e.offsetX + viewportX * Settings.tileSize
+    let y = e.offsetY + viewportY * Settings.tileSize
     if (Settings.rotated === 'south') {
-      x = this.viewportWidth * Settings.tileSize - e.offsetX
-      y = this.viewportHeight * Settings.tileSize - e.offsetY
+      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
 
     if (e.offsetX > this.viewportWidth * Settings.tileSize) {
@@ -156,14 +164,28 @@ export class World {
   }
 
   rightClick (e: MouseEvent) {
-    let x = e.offsetX
-    let y = e.offsetY
 
-    this.contextMenu.setPosition({ x, y })
+    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
+
+    const viewportX = perceivedX - this._viewport.width / 2;
+    const viewportY = perceivedY - this._viewport.height / 2;
+
+    let x = e.offsetX + viewportX * Settings.tileSize
+    let y = e.offsetY + viewportY * Settings.tileSize
+
+    this.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
+
     if (Settings.rotated === 'south') {
-      x = this.viewportWidth * Settings.tileSize - e.offsetX
-      y = this.viewportHeight * Settings.tileSize - e.offsetY
+      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
+
+    this.contextMenu.destinationLocation = {
+      x : Math.floor(x / Settings.tileSize),
+      y : Math.floor(y / Settings.tileSize)
+    }
+    
 
     /* gather options */
     const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.frameCounter / Settings.framesPerTick)
@@ -287,10 +309,10 @@ export class World {
     const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
 
-    const viewportX = perceivedX - this._viewport.width / 2;
-    const viewportY = perceivedY - this._viewport.height / 2;
+    const viewportX = (perceivedX - this._viewport.width / 2) * Settings.tileSize;
+    const viewportY = (perceivedY - this._viewport.height / 2) * Settings.tileSize;
 
-    this.viewportCtx.drawImage(this.worldCanvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
+    this.viewportCtx.drawImage(this.worldCanvas, -viewportX, -viewportY);
 
     this.viewportCtx.restore()
     this.viewportCtx.save();
