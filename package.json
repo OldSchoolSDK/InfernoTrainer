@@ -33,6 +33,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@types/new-relic-browser": "^0.1118.2",
     "chebyshev": "^0.2.1",
     "color-scales": "^3.0.2",
     "source-map-loader": "^3.0.0"
