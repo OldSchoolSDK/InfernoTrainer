@@ -94,6 +94,27 @@
     <div>Please disable adblockers. We use Google Analytics and New Relic Browser Agent to discover usage and bugs. Ad Blockers reduce our ability to do so. We do not serve ads.</div>
     <div id="build_version" style="display: none;"></div>
 
+    <!-- OffscreenCanvas polyfill -->
+    <script>
+      if (!window.OffscreenCanvas) {
+        window.OffscreenCanvas = class OffscreenCanvas {
+          constructor(width, height) {
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = width;
+            this.canvas.height = height;
+
+            this.canvas.convertToBlob = () => {
+              return new Promise(resolve => {
+                this.canvas.toBlob(resolve);
+              });
+            };
+
+            return this.canvas;
+          }
+        };
+      }      
+    </script>
+    
     <script src="./main.js"></script>
   </body>
 </html>
