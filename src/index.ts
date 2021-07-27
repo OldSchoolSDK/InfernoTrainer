@@ -47,4 +47,5 @@ const interval = setInterval(() => {
 /// /////////////////////////////////////////////////////////
 
 document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF + ' - ' + process.env.BUILD_DATE
-document.getElementById('build_version').innerHTML = process.env.COMMIT_REF;
+newrelic.addRelease('inferno-trainer', process.env.COMMIT_REF)
+
