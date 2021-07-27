@@ -98,9 +98,7 @@ export class InfernoRegion extends Region {
   }
 
   drawWorldBackground(ctx: any) {
-    // ctx.drawImage(this.gridCanvas, 0, 0);
     if (this.mapImage){
-
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
       ctx.imageSmoothingEnabled = false;

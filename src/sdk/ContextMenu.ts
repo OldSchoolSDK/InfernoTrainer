@@ -1,6 +1,7 @@
 import { World } from './World';
 import { Settings } from './Settings'
 import { Location } from './GameObject';
+import { Pathing } from './Pathing';
 
 export interface MultiColorTextBlock {
   text: string;
@@ -22,7 +23,7 @@ export class ContextMenu {
   height: number = 0;
   menuOptions: MenuOption[] = []
   linesOfText: MenuOption[] = []
-
+  destinationLocation: any;
 
   setPosition (position: Location) {
     this.location = position
@@ -41,7 +42,7 @@ export class ContextMenu {
   }
 
   cursorMovedTo (world: World, x: number, y: number) {
-    const cRect = world.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
+    const cRect = world.viewport.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
     
@@ -72,13 +73,7 @@ export class ContextMenu {
           text: [{ text: 'Walk Here', fillStyle: 'white' }],
           action: () => {
             world.yellowClick()
-            let x = this.location.x
-            let y = this.location.y
-            if (Settings.rotated === 'south') {
-              x = world.width * Settings.tileSize - x
-              y = world.height * Settings.tileSize - y
-            }
-            world.playerWalkClick(x, y)
+            world.playerWalkClick(this.destinationLocation.x * Settings.tileSize, this.destinationLocation.y * Settings.tileSize)
           }
         },
         {
@@ -88,33 +83,33 @@ export class ContextMenu {
           }
         }
       ]
-      world.ctx.textAlign = 'left';
+      world.viewportCtx.textAlign = 'left';
 
-      world.ctx.font = '17px OSRS'
+      world.viewportCtx.font = '17px OSRS'
 
       this.width = 0
       this.linesOfText.forEach((line) => {
-        this.width = Math.max(this.width, this.fillMixedTextWidth(world.ctx, line.text) + 10)
+        this.width = Math.max(this.width, this.fillMixedTextWidth(world.viewportCtx, line.text) + 10)
       })
 
       this.height = 22 + (this.linesOfText.length - 1) * 20
 
-      world.ctx.fillStyle = '#5f5445'
-      world.ctx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
+      world.viewportCtx.fillStyle = '#5f5445'
+      world.viewportCtx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
 
-      world.ctx.fillStyle = 'black'
-      world.ctx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
+      world.viewportCtx.fillStyle = 'black'
+      world.viewportCtx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
 
-      world.ctx.lineWidth = 1
-      world.ctx.strokeStyle = 'black'
-      world.ctx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
+      world.viewportCtx.lineWidth = 1
+      world.viewportCtx.strokeStyle = 'black'
+      world.viewportCtx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
 
       for (let i = 0; i < this.linesOfText.length; i++) {
         this.linesOfText[0].text
-        this.drawLineOfText(world.ctx, this.linesOfText[i].text, this.width, i * 20)
+        this.drawLineOfText(world.viewportCtx, this.linesOfText[i].text, this.width, i * 20)
       }
     }
-    world.ctx.restore()
+    world.viewportCtx.restore()
   }
 
   fillMixedText (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], x: number, y: number, inputColor: string) {

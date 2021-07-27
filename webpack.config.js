@@ -9,7 +9,7 @@ if (!process.env.COMMIT_REF) {
 }
 if (!process.env.BUILD_DATE) {
   isDevBuild = true;
-  process.env.BUILD_DATE = "n/a";
+  process.env.BUILD_DATE = "";
 }
 const config = {
   mode: isDevBuild ? 'development' : 'production',
