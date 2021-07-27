@@ -73,13 +73,7 @@ export class ContextMenu {
           text: [{ text: 'Walk Here', fillStyle: 'white' }],
           action: () => {
             world.yellowClick()
-            let x = this.destinationLocation.x * Settings.tileSize
-            let y = this.destinationLocation.y * Settings.tileSize
-            if (Settings.rotated === 'south') {
-              x = world.viewportWidth * Settings.tileSize - x
-              y = world.viewportHeight * Settings.tileSize - y
-            }
-            world.playerWalkClick(x, y)
+            world.playerWalkClick(this.destinationLocation.x * Settings.tileSize, this.destinationLocation.y * Settings.tileSize)
           }
         },
         {

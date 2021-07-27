@@ -104,29 +104,7 @@ export class World {
     }
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
-
-
-
-    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
-
-    let viewportX = perceivedX - this._viewport.width / 2;
-    let viewportY = perceivedY - this._viewport.height / 2;
-
-
-    if (viewportX < 0) {
-      viewportX = 0
-    }
-    if (viewportY < 0) {
-      viewportY = 0;
-    }
-    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
-      viewportX = this.region.width - this._viewport.width;
-    }
-    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
-      viewportY = this.region.height - this._viewport.height;
-    }
-
+    const { viewportX, viewportY } = this.getViewport();
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
     if (Settings.rotated === 'south') {
@@ -176,29 +154,11 @@ export class World {
   }
 
   rightClick (e: MouseEvent) {
-
-    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
-
-    let viewportX = perceivedX - this._viewport.width / 2;
-    let viewportY = perceivedY - this._viewport.height / 2;
-
-    if (viewportX < 0) {
-      viewportX = 0
-    }
-    if (viewportY < 0) {
-      viewportY = 0;
-    }
-    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
-      viewportX = this.region.width - this._viewport.width;
-    }
-    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
-      viewportY = this.region.height - this._viewport.height;
-    }
+    
+    const { viewportX, viewportY } = this.getViewport();
 
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
-
     this.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
 
     if (Settings.rotated === 'south') {
@@ -211,7 +171,6 @@ export class World {
       y : Math.floor(y / Settings.tileSize)
     }
     
-
     /* gather options */
     const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
     let menuOptions: MenuOption[] = []
@@ -312,6 +271,31 @@ export class World {
     this.worldCtx.restore();
   }
 
+  getViewport() {
+
+    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
+
+    let viewportX = perceivedX - this._viewport.width / 2;
+    let viewportY = perceivedY - this._viewport.height / 2;
+
+
+    if (viewportX < 0) {
+      viewportX = 0
+    }
+    if (viewportY < 0) {
+      viewportY = 0;
+    }
+    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
+      viewportX = this.region.width - this._viewport.width;
+    }
+    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
+      viewportY = this.region.height - this._viewport.height;
+    }
+
+    return {viewportX, viewportY}
+  }
+
   draw () {
     this.viewportCtx.globalAlpha = 1
     this.viewportCtx.fillStyle = '#3B3224'
@@ -330,27 +314,9 @@ export class World {
 
     this.drawWorld(this.tickPercent)
 
+    const { viewportX, viewportY } = this.getViewport();
 
-    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
-
-    let viewportX = (perceivedX - this._viewport.width / 2) * Settings.tileSize;
-    let viewportY = (perceivedY - this._viewport.height / 2) * Settings.tileSize;
-
-    if (viewportX < 0) {
-      viewportX = 0
-    }
-    if (viewportY < 0) {
-      viewportY = 0;
-    }
-    if (viewportX + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
-      viewportX = (this.region.width - this._viewport.width) * Settings.tileSize;
-    }
-    if (viewportY + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
-      viewportY = (this.region.height - this._viewport.height) * Settings.tileSize;
-    }
-
-    this.viewportCtx.drawImage(this.worldCanvas, -viewportX, -viewportY);
+    this.viewportCtx.drawImage(this.worldCanvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
 
     this.viewportCtx.restore()
     this.viewportCtx.save();
@@ -375,15 +341,18 @@ export class World {
 
     // Performance info
     this.viewportCtx.textAlign = 'left'
-    this.viewportCtx.fillStyle = '#FFFF0066'
-    this.viewportCtx.font = '16px OSRS'
-    this.viewportCtx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
-    this.viewportCtx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
-    this.viewportCtx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
-    this.viewportCtx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
-    this.viewportCtx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
-    this.viewportCtx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
-    this.viewportCtx.fillText(`Wave: ${this.wave}`, 0, 112)
+
+    if (!process.env.BUILD_DATE) {
+      this.viewportCtx.fillStyle = '#FFFF0066'
+      this.viewportCtx.font = '16px OSRS'
+      this.viewportCtx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
+      this.viewportCtx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
+      this.viewportCtx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
+      this.viewportCtx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
+      this.viewportCtx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
+      this.viewportCtx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
+      this.viewportCtx.fillText(`Wave: ${this.wave}`, 0, 112)  
+    }
 
     if (this.getReadyTimer) {
       this.viewportCtx.font = '72px OSRS'
