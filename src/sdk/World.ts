@@ -54,8 +54,8 @@ export class World {
   viewportController: Viewport;
 
   _viewport = {
-    width: 30,
-    height: 29
+    width: 29,
+    height: 30
   }
 
   get viewportCtx() {
