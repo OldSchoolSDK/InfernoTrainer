@@ -30,11 +30,11 @@ export class AncientsSpellbookControls extends BaseControls {
   }
 
   draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
-    ctrl.ctx.drawImage(this.panelImage, x, y)
+    game.ctx.drawImage(this.panelImage, x, y)
 
     if (game.player.manualSpellCastSelection) {
-      ctrl.ctx.fillStyle = '#D1BB7773'
-      ctrl.ctx.fillRect(47, 225, 21, 21)
+      game.ctx.fillStyle = '#D1BB7773'
+      game.ctx.fillRect(47, 225, 21, 21)
     }
   }
 }

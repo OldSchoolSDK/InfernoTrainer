@@ -111,6 +111,16 @@ export class Game {
       }
     }
 
+    if (e.offsetX > this.canvas.width - this.controlPanel.width) {
+      if (e.offsetY > this.height * Settings.tileSize - this.controlPanel.height){
+        const intercepted = this.controlPanel.controlPanelClick(e);
+        if (intercepted) {
+          return;
+        }
+  
+      }
+    }
+
 
     const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
     const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
@@ -175,8 +185,6 @@ export class Game {
   }
 
   drawGame (tickPercent: number) {
-    // Give control panel a chance to draw, canvas -> canvas
-    this.controlPanel.draw(this)
     
     // Draw all things on the map
     this.entities.forEach((entity) => entity.draw(tickPercent))
@@ -227,11 +235,13 @@ export class Game {
 
   draw () {
     this.ctx.globalAlpha = 1
-    this.ctx.fillStyle = 'black'
+    this.ctx.fillStyle = '#3B3224'
 
     this.ctx.restore()
     this.ctx.save()
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.fillStyle = '#3B3224'
+
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
     if (Settings.rotated === 'south') {
       this.ctx.translate(-this.mapController.width, 0);
@@ -243,6 +253,13 @@ export class Game {
     
 
     this.drawGame(this.tickPercent)
+
+
+    this.ctx.save();
+    this.ctx.translate(this.canvas.width - this.controlPanel.width, this.canvas.height - this.controlPanel.height)
+    this.controlPanel.draw(this)
+
+    this.ctx.restore();
 
     XpDropController.controller.draw(this.ctx, this.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.ctx, this.tickPercent);
