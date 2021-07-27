@@ -260,21 +260,21 @@ export class Mob extends Unit {
   drawOnTile(tickPercent: number) {
 
     if (this.dying > -1) {
-      this.world.viewportCtx.fillStyle = '#964B0073'
+      this.world.worldCtx.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.world.viewportCtx.fillStyle = '#00FF0073'
+      this.world.worldCtx.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.world.viewportCtx.fillStyle = '#FF000073'
+      this.world.worldCtx.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.world.viewportCtx.fillStyle = '#FFFF0073'
+      this.world.worldCtx.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.world.viewportCtx.fillStyle = '#FF730073'
+      this.world.worldCtx.fillStyle = '#FF730073'
     } else {
-      this.world.viewportCtx.fillStyle = '#FFFFFF22'
+      this.world.worldCtx.fillStyle = '#FFFFFF22'
     }
 
     // Draw mob
-    this.world.viewportCtx.fillRect(
+    this.world.worldCtx.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,

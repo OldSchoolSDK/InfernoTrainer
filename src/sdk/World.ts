@@ -53,6 +53,11 @@ export class World {
 
   viewportController: Viewport;
 
+  _viewport = {
+    width: 22,
+    height: 22
+  }
+
   get viewportCtx() {
     return this.viewport.getContext('2d');
   }
@@ -76,16 +81,11 @@ export class World {
     this.viewport = document.getElementById(selector) as HTMLCanvasElement;
 
 
-    const _viewport = {
-      width: 22,
-      height: 22
-    }
-
     // create new canvas that is the on screen canvas
-    this.viewport.width = Settings.tileSize * _viewport.width + this.mapController.width;
-    this.viewport.height = Settings.tileSize * _viewport.height
-    this.viewportWidth = _viewport.width
-    this.viewportHeight = _viewport.height
+    this.viewport.width = Settings.tileSize * this._viewport.width + this.mapController.width;
+    this.viewport.height = Settings.tileSize * this._viewport.height
+    this.viewportWidth = this._viewport.width
+    this.viewportHeight = this._viewport.height
 
     this.registerClickActions();
 
@@ -283,7 +283,14 @@ export class World {
 
     this.drawWorld(this.tickPercent)
 
-    this.viewportCtx.drawImage(this.worldCanvas, 0, 0);
+
+    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
+
+    const viewportX = perceivedX - this._viewport.width / 2;
+    const viewportY = perceivedY - this._viewport.height / 2;
+
+    this.viewportCtx.drawImage(this.worldCanvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
 
     this.viewportCtx.restore()
     this.viewportCtx.save();
