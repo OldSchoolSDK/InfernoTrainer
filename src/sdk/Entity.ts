@@ -1,11 +1,11 @@
 'use strict'
-import { WorldObject, Location } from './WorldObject';
+import { GameObject, Location } from './GameObject';
 import { World } from './World'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
 
 
-export class Entity extends WorldObject{
+export class Entity extends GameObject{
   world: World;
   location: Location;
 

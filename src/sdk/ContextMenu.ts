@@ -1,6 +1,6 @@
 import { World } from './World';
 import { Settings } from './Settings'
-import { Location } from './WorldObject';
+import { Location } from './GameObject';
 
 export interface MultiColorTextBlock {
   text: string;

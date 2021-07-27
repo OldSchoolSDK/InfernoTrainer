@@ -8,7 +8,7 @@ import { Pathing } from './Pathing'
 import { Weapon } from './Weapons/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
 import { World } from './World'
-import { Location } from './WorldObject'
+import { Location } from './GameObject'
 import { ImageLoader } from './Utils/ImageLoader'
 
 export enum AttackIndicators {

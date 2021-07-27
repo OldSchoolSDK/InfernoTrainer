@@ -10,7 +10,7 @@ export enum CollisionType {
   BLOCK_LOS = 2,
 }
 
-export class WorldObject {
+export class GameObject {
   location: Location;
   dying: number = -1;
 

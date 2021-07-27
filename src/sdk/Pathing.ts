@@ -1,6 +1,6 @@
 'use strict'
 import { filter, sortBy } from 'lodash'
-import { CollisionType, WorldObject, Location } from './WorldObject'
+import { CollisionType, GameObject, Location } from './GameObject'
 import { World } from './World'
 import { Settings } from './Settings'
 import { Unit } from './Unit'
@@ -45,7 +45,7 @@ export class Pathing {
 
   // Same as above but only returns entities with collision enabled.
   static collideableEntitiesAtPoint(world: World, x: number, y: number, s: number) {
-    return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: WorldObject) => entity.collisionType != CollisionType.NONE);
+    return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number) {
@@ -67,7 +67,7 @@ export class Pathing {
   }
 
   // point.x + to.location.x, point.y + to.location.y
-  static mobsInAreaOfEffectOfMob (world: World, mob: WorldObject, point: Location) {
+  static mobsInAreaOfEffectOfMob (world: World, mob: GameObject, point: Location) {
     const mobs = []
     for (let i = 0; i < world.mobs.length; i++) {
       const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
@@ -77,10 +77,10 @@ export class Pathing {
       }
     }
 
-    return sortBy(mobs, (m: WorldObject) => mob !== m)
+    return sortBy(mobs, (m: GameObject) => mob !== m)
   }
 
-  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: WorldObject = null) {
+  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
     for (let i = 0; i < world.mobs.length; i++) {
       if (world.mobs[i] === mobToAvoid) {
         continue
@@ -95,11 +95,11 @@ export class Pathing {
     return null
   }
 
-  static collidesWithMob (world: World, x: number, y: number, s: number, mob: WorldObject) {
+  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
     return (Pathing.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
   }
 
-  static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: WorldObject = null) {
+  static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
     if (y - (s - 1) < 0 || x + (s - 1) > 28) {
       return false
     }
@@ -204,7 +204,7 @@ export class Pathing {
     return pathTiles
   }
 
-  static path (world: World, startPoint: Location, endPoint: Location, speed: number, seeking: WorldObject) {
+  static path (world: World, startPoint: Location, endPoint: Location, speed: number, seeking: GameObject) {
     let x, y
     const path = Pathing.constructPath(world, startPoint, endPoint)
     if (path.length === 0) {

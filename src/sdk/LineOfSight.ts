@@ -4,7 +4,7 @@ import { minBy } from 'lodash'
 import { Settings } from './Settings'
 import { Pathing } from './Pathing'
 import { World } from './World'
-import { WorldObject, Location } from './WorldObject'
+import { GameObject, Location } from './GameObject'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -36,7 +36,7 @@ export class LineOfSight {
     return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
   }
 
-  static closestPointTo (x: number, y: number, mob: WorldObject) {
+  static closestPointTo (x: number, y: number, mob: GameObject) {
     const corners = []
     for (let xx = 0; xx < mob.size; xx++) {
       for (let yy = 0; yy < mob.size; yy++) {
@@ -50,7 +50,7 @@ export class LineOfSight {
     return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
 
-  static hasLineOfSightOfMob (world: World, x: number, y: number, mob: WorldObject, r = 1, isNPC = false) {
+  static hasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
     const mobPoint = LineOfSight.closestPointTo(x, y, mob)
     return LineOfSight.hasLineOfSight(world, x, y, mobPoint.x, mobPoint.y, 1, r, false)
   }

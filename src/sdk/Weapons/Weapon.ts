@@ -1,6 +1,6 @@
 'use strict'
 
-import { WorldObject } from "../WorldObject";
+import { GameObject } from "../GameObject";
 import { Item } from "../Item"
 import { BasePrayer } from "../BasePrayer";
 import { World } from "../World";
@@ -36,14 +36,14 @@ export class Weapon extends Item{
     return false;
   }
   
-  cast(world: World, from: Unit, to: WorldObject) {
+  cast(world: World, from: Unit, to: GameObject) {
 
   }
 
-  attack (stage: World, from: Unit, to: WorldObject, bonuses: AttackBonuses = {}) {
+  attack (stage: World, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
   }
   
-  isBlockable (from: Unit, to: WorldObject, bonuses: AttackBonuses): boolean {
+  isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
     return false;
   }
 

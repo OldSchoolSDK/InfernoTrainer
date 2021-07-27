@@ -8,7 +8,7 @@ import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { World } from '../../../sdk/World'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/Weapons/Projectile'
-import { Location } from '../../../sdk/WorldObject'
+import { Location } from '../../../sdk/GameObject'
 import { ImageLoader } from '../../../sdk/Utils/ImageLoader'
 
 export class InfernoPillar extends Entity {

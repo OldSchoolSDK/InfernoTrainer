@@ -9,7 +9,7 @@ import { BasePrayer } from './BasePrayer'
 import { Projectile } from './Weapons/Projectile'
 import { XpDrop } from './XpDrop'
 import { Weapon } from './Weapons/Weapon'
-import { WorldObject, Location } from './WorldObject'
+import { GameObject, Location } from './GameObject'
 import { Pathing } from './Pathing'
 import { ImageLoader } from './Utils/ImageLoader'
 
@@ -25,7 +25,7 @@ export interface WeaponsMap {
 
 export interface UnitOptions {
   weapon?: Weapon;
-  aggro?: WorldObject;
+  aggro?: GameObject;
 }
 
 export interface UnitStats {
@@ -64,12 +64,12 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
-export class Unit extends WorldObject {
+export class Unit extends GameObject {
 
   world: World;
   prayers: BasePrayer[] = [];
   lastOverhead?: BasePrayer = null;
-  aggro?: WorldObject;
+  aggro?: GameObject;
   perceivedLocation: Location;
   attackCooldownTicks: number = 0;
   hasLOS: boolean = false;
