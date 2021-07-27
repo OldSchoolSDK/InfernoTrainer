@@ -4,39 +4,39 @@ import PrayerTab from '../../assets/images/tabs/prayer.png'
 import { intersection } from 'lodash'
 
 import { BaseControls } from './BaseControls'
-import { ProtectMelee } from '../Prayers/ProtectMelee'
-import { ProtectMage } from '../Prayers/ProtectMage'
-import { ProtectRange } from '../Prayers/ProtectRange'
-import { Rigour } from '../Prayers/Rigour'
-import { SharpEye } from '../Prayers/SharpEye'
-import { HawkEye } from '../Prayers/HawkEye'
-import { EagleEye } from '../Prayers/EagleEye'
-import { MysticWill } from '../Prayers/MysticWill'
-import { MysticLore } from '../Prayers/MysticLore'
-import { MysticMight } from '../Prayers/MysticMight'
-import { Augury } from '../Prayers/Augury'
-import { ThickSkin } from '../Prayers/ThickSkin'
-import { BurstOfStrength } from '../Prayers/BurstOfStrength'
-import { ClarityOfThought } from '../Prayers/ClarityOfThought'
-import { RockSkin } from '../Prayers/RockSkin'
-import { SuperhumanStrength } from '../Prayers/SuperhumanStrength'
-import { ImprovedReflexes } from '../Prayers/ImprovedReflexes'
-import { SteelSkin } from '../Prayers/SteelSkin'
-import { UltimateStrength } from '../Prayers/UltimateStrength'
-import { IncredibleReflexes } from '../Prayers/IncredibleReflexes'
-import { Chivalry } from '../Prayers/Chivalry'
-import { Piety } from '../Prayers/Piety'
+import { ProtectMelee } from '../../content/prayers/ProtectMelee'
+import { ProtectMage } from '../../content/prayers/ProtectMage'
+import { ProtectRange } from '../../content/prayers/ProtectRange'
+import { Rigour } from '../../content/prayers/Rigour'
+import { SharpEye } from '../../content/prayers/SharpEye'
+import { HawkEye } from '../../content/prayers/HawkEye'
+import { EagleEye } from '../../content/prayers/EagleEye'
+import { MysticWill } from '../../content/prayers/MysticWill'
+import { MysticLore } from '../../content/prayers/MysticLore'
+import { MysticMight } from '../../content/prayers/MysticMight'
+import { Augury } from '../../content/prayers/Augury'
+import { ThickSkin } from '../../content/prayers/ThickSkin'
+import { BurstOfStrength } from '../../content/prayers/BurstOfStrength'
+import { ClarityOfThought } from '../../content/prayers/ClarityOfThought'
+import { RockSkin } from '../../content/prayers/RockSkin'
+import { SuperhumanStrength } from '../../content/prayers/SuperhumanStrength'
+import { ImprovedReflexes } from '../../content/prayers/ImprovedReflexes'
+import { SteelSkin } from '../../content/prayers/SteelSkin'
+import { UltimateStrength } from '../../content/prayers/UltimateStrength'
+import { IncredibleReflexes } from '../../content/prayers/IncredibleReflexes'
+import { Chivalry } from '../../content/prayers/Chivalry'
+import { Piety } from '../../content/prayers/Piety'
 import { Settings } from '../Settings'
-import { BasePrayer } from '../Prayers/BasePrayer'
-import { Game } from '../Game'
+import { BasePrayer } from '../BasePrayer'
+import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
-import { Retribution } from '../Prayers/Retribution'
-import { Redemption } from '../Prayers/Redemption'
-import { Smite } from '../Prayers/Smite'
-import { Preserve } from '../Prayers/Preserve'
-import { RapidRestore } from '../Prayers/RapidRestore'
-import { RapidHeal } from '../Prayers/RapidHeal'
-import { ProtectItem } from '../Prayers/ProtectItem'
+import { Retribution } from '../../content/prayers/Retribution'
+import { Redemption } from '../../content/prayers/Redemption'
+import { Smite } from '../../content/prayers/Smite'
+import { Preserve } from '../../content/prayers/Preserve'
+import { RapidRestore } from '../../content/prayers/RapidRestore'
+import { RapidHeal } from '../../content/prayers/RapidHeal'
+import { ProtectItem } from '../../content/prayers/ProtectItem'
 
 export class PrayerControls extends BaseControls {
 
@@ -111,12 +111,12 @@ export class PrayerControls extends BaseControls {
 
   }
 
-  clickedPanel (game: Game, x: number, y: number) {
+  clickedPanel (world: World, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 
     const clickedPrayer = PrayerControls.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
-    if (clickedPrayer && game.player.currentStats.prayer > 0) {
+    if (clickedPrayer && world.player.currentStats.prayer > 0) {
 
       this.getCurrentActivePrayers().forEach((prayer) => {
         if (intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
@@ -132,18 +132,18 @@ export class PrayerControls extends BaseControls {
     }
   }
 
-  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(game, ctrl, x, y)
+  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(world, ctrl, x, y)
 
     PrayerControls.prayers.forEach((prayer, index) => {
       if (prayer.isActive) {
         const x2 = index % 5
         const y2 = Math.floor(index / 5)
 
-        ctrl.ctx.beginPath()
-        ctrl.ctx.fillStyle = '#D1BB7773'
-        ctrl.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
-        ctrl.ctx.fill()
+        world.ctx.beginPath()
+        world.ctx.fillStyle = '#D1BB7773'
+        world.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.ctx.fill()
       }
     })
   }

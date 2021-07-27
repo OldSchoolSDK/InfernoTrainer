@@ -1,8 +1,8 @@
 'use strict'
 
-import { Inferno } from './content/inferno/Inferno'
+import { InfernoRegion } from './content/inferno/InfernoRegion'
 import { VerzikP3 } from './content/verzik/VerzikP3'
-import { Game } from './sdk/Game'
+import { World } from './sdk/World'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
@@ -14,34 +14,29 @@ Settings.readFromStorage()
 const selectedRegionName = Settings.region
 let selectedRegion: Region;
 
-console.log('selected region is ' + selectedRegionName)
 switch (selectedRegionName) {
   case 'verzikp3':
     selectedRegion = new VerzikP3()
     break
   case 'inferno':
   default:
-    selectedRegion = new Inferno()
+    selectedRegion = new InfernoRegion()
 }
 
-// Create game
-const game = new Game('game', selectedRegion);
+// Create world
 
 
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
-MapController.controller.setGame(game);
 
-game.setMapController(MapController.controller)
-game.setControlPanel(controlPanel)
-controlPanel.setGame(game)
+const world = new World('world', selectedRegion, MapController.controller, controlPanel);
 
-selectedRegion.initialize(game)
+selectedRegion.initialize(world)
 
 ImageLoader.onAllImagesLoaded(() => {
   // Start the engine
-  game.startTicking()
+  world.startTicking()
 })
 
 const interval = setInterval(() => { 

@@ -5,7 +5,7 @@ import { Mob } from '../../../../sdk/Mob'
 import { Pathing } from '../../../../sdk/Pathing'
 import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalImKot extends Mob {
   get displayName () {
@@ -22,7 +22,7 @@ export class JalImKot extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -98,7 +98,7 @@ export class JalImKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.world.ctx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
   movementStep () {
@@ -112,21 +112,21 @@ export class JalImKot extends Mob {
 
   dig () {
     this.attackCooldownTicks = 8
-    if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x - 3, this.game.player.location.y + 3, this.size)) {
-      this.location.x = this.game.player.location.x - this.size + 1
-      this.location.y = this.game.player.location.y + this.size - 1
-    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x, this.game.player.location.y, this.size)) {
-      this.location.x = this.game.player.location.x
-      this.location.y = this.game.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x - 3, this.game.player.location.y, this.size)) {
-      this.location.x = this.game.player.location.x - this.size + 1
-      this.location.y = this.game.player.location.y
-    } else if (!Pathing.collidesWithAnyEntities(this.game, this.game.player.location.x, this.game.player.location.y + 3, this.size)) {
-      this.location.x = this.game.player.location.x
-      this.location.y = this.game.player.location.y + this.size - 1
+    if (!Pathing.collidesWithAnyEntities(this.world, this.world.player.location.x - 3, this.world.player.location.y + 3, this.size)) {
+      this.location.x = this.world.player.location.x - this.size + 1
+      this.location.y = this.world.player.location.y + this.size - 1
+    } else if (!Pathing.collidesWithAnyEntities(this.world, this.world.player.location.x, this.world.player.location.y, this.size)) {
+      this.location.x = this.world.player.location.x
+      this.location.y = this.world.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(this.world, this.world.player.location.x - 3, this.world.player.location.y, this.size)) {
+      this.location.x = this.world.player.location.x - this.size + 1
+      this.location.y = this.world.player.location.y
+    } else if (!Pathing.collidesWithAnyEntities(this.world, this.world.player.location.x, this.world.player.location.y + 3, this.size)) {
+      this.location.x = this.world.player.location.x
+      this.location.y = this.world.player.location.y + this.size - 1
     } else {
-      this.location.x = this.game.player.location.x - 1
-      this.location.y = this.game.player.location.y + 1
+      this.location.x = this.world.player.location.x - 1
+      this.location.y = this.world.player.location.y + 1
     }
     this.perceivedLocation = this.location
   }

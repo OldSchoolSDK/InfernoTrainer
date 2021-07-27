@@ -1,5 +1,5 @@
 import { ControlPanelController } from "../ControlPanelController";
-import { Game } from "../Game";
+import { World } from "../World";
 import { ImageLoader } from "../Utils/ImageLoader";
 
 export class BaseControls {
@@ -19,13 +19,13 @@ export class BaseControls {
     return ''
   }
 
-  clickedPanel (game: Game, x: number, y: number) {
+  clickedPanel (world: World, x: number, y: number) {
     console.log(x, y)
   }
 
-  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
+  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     if (this.panelImage) {
-      ctrl.ctx.drawImage(this.panelImage, x, y)
+      world.ctx.drawImage(this.panelImage, x, y)
     }
   }
 }

@@ -4,7 +4,7 @@ import InventoryTab from '../../assets/images/tabs/inventory.png'
 import { Pathing } from '../Pathing'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
-import { Game } from '../Game'
+import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../Weapons/Weapon'
@@ -25,7 +25,7 @@ export class InventoryControls extends BaseControls {
     return Settings.inventory_key
   }
 
-  clickedPanel (game: Game, x: number, y: number) {
+  clickedPanel (world: World, x: number, y: number) {
     let itemX, itemY
     const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -44,20 +44,20 @@ export class InventoryControls extends BaseControls {
     if (clickedItem) {
       const isLeftClickable = true
       if (isLeftClickable) { // "Is this something with a left click action"
-        const currentWeapon = game.player.weapon
+        const currentWeapon = world.player.weapon
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon
-        game.player.weapon = clickedItem
-        game.player.aggro = null
-        game.player.bonuses = clickedItem.bonuses // temp code
-        game.mapController.updateOrbsMask(null, null)
+        world.player.weapon = clickedItem
+        world.player.aggro = null
+        world.player.bonuses = clickedItem.bonuses // temp code
+        world.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }
     }
   }
 
-  draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(game, ctrl, x, y)
+  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(world, ctrl, x, y)
 
     InventoryControls.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
@@ -67,7 +67,7 @@ export class InventoryControls extends BaseControls {
       const itemY = 17 + y + (y2) * 35
 
       if (inventoryItem !== null) {
-        ctrl.ctx.drawImage(
+        world.ctx.drawImage(
           inventoryItem.inventorySprite,
           itemX,
           itemY,
@@ -76,10 +76,10 @@ export class InventoryControls extends BaseControls {
         )
 
         if (inventoryItem.selected) {
-          ctrl.ctx.beginPath()
-          ctrl.ctx.fillStyle = '#D1BB7773'
-          ctrl.ctx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
-          ctrl.ctx.fill()
+          world.ctx.beginPath()
+          world.ctx.fillStyle = '#D1BB7773'
+          world.ctx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
+          world.ctx.fill()
         }
       }
     })

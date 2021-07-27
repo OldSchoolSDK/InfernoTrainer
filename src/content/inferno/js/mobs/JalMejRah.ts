@@ -4,7 +4,7 @@ import { Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalMejRah extends Mob {
   get displayName () {
@@ -21,7 +21,7 @@ export class JalMejRah extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -97,6 +97,6 @@ export class JalMejRah extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 }

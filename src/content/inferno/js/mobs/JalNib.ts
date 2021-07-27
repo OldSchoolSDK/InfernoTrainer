@@ -8,12 +8,12 @@ import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile } from '../../../../sdk/Weapons/Projectile'
-import { Game } from '../../../../sdk/Game'
+import { World } from '../../../../sdk/World'
 import { Unit } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/Weapons/Weapon'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack (game: Game, from: Unit, to: Unit, bonuses: AttackBonuses) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {
     const damage = Math.floor(Math.random() * 5)
     this.damage = damage;
     to.addProjectile(new Projectile(this, this.damage, from, to, 'crush'))
@@ -114,7 +114,7 @@ export class JalNib extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.ctx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 
   attackIfPossible () {

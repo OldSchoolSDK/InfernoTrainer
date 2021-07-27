@@ -6,7 +6,7 @@ import { Mob, AttackIndicators } from '../../../../sdk/Mob'
 import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
-import { MobDeathStore } from '../MobDeathStore'
+import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalZek extends Mob {
   get displayName () {
@@ -23,7 +23,7 @@ export class JalZek extends Mob {
 
   dead () {
     super.dead()
-    MobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -112,14 +112,14 @@ export class JalZek extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.game.ctx.rotate(tickPercent * Math.PI * 2)
+    this.world.ctx.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
-        if (!Pathing.collidesWithAnyMobs(this.game, x, y, mobToResurrect.size)) {
-          if (!Pathing.collidesWithAnyEntities(this.game, x, y, mobToResurrect.size)) {
+        if (!Pathing.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
+          if (!Pathing.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
             return { x, y }
           }
         }
@@ -147,7 +147,7 @@ export class JalZek extends Mob {
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
       if (Math.random() < 0.1) {
-        const mobToResurrect = MobDeathStore.selectMobToResurect()
+        const mobToResurrect = InfernoMobDeathStore.selectMobToResurect()
         if (!mobToResurrect) {
           this.attack()
         } else {
@@ -159,7 +159,7 @@ export class JalZek extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
-          this.game.addMob(mobToResurrect)
+          this.world.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
           this.attackCooldownTicks = this.cooldown
         }

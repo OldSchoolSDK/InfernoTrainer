@@ -1,7 +1,7 @@
 'use strict'
 import { filter, sortBy } from 'lodash'
 import { CollisionType, GameObject, Location } from './GameObject'
-import { Game } from './Game'
+import { World } from './World'
 import { Settings } from './Settings'
 import { Unit } from './Unit'
 
@@ -23,9 +23,9 @@ export class Pathing {
     return !(x > (x2 + s2 - 1) || (x + s - 1) < x2 || (y - s + 1) > y2 || y < (y2 - s2 + 1))
   }
 
-  static collidesWithAnyEntities (game: Game, x: number, y: number, s: number) {
-    for (var i = 0; i < game.entities.length; i++) {
-      let entity = game.entities[i];
+  static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
+    for (var i = 0; i < world.entities.length; i++) {
+      let entity = world.entities[i];
       if (entity.collisionType != CollisionType.NONE && Pathing.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return true;
       }
@@ -33,33 +33,33 @@ export class Pathing {
     return false;
   }
 
-  static entitiesAtPoint (game: Game, x: number, y: number, s: number) {
+  static entitiesAtPoint (world: World, x: number, y: number, s: number) {
     const entities = []
-    for (let i = 0; i < game.entities.length; i++) {
-      if (Pathing.collisionMath(x, y, s, game.entities[i].location.x, game.entities[i].location.y, game.entities[i].size)) {
-        entities.push(game.entities[i])
+    for (let i = 0; i < world.entities.length; i++) {
+      if (Pathing.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
+        entities.push(world.entities[i])
       }
     }
     return entities
   }
 
   // Same as above but only returns entities with collision enabled.
-  static collideableEntitiesAtPoint(game: Game, x: number, y: number, s: number) {
-    return filter(Pathing.entitiesAtPoint(game, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
+  static collideableEntitiesAtPoint(world: World, x: number, y: number, s: number) {
+    return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation (game: Game, x: number, y: number, tickPercent: number) {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number) {
     const mobs = []
-    for (let i = 0; i < game.mobs.length; i++) {
-      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(game, x, y, tickPercent, game.mobs[i])
+    for (let i = 0; i < world.mobs.length; i++) {
+      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.mobs[i])
       if (collidedWithSpecificMob) {
-        mobs.push(game.mobs[i])
+        mobs.push(world.mobs[i])
       }
     }
     return mobs
   }
 
-  static collidesWithMobAtPerceivedDisplayLocation (game: Game, x: number, y: number, tickPercent: number, mob: Unit) {
+  static collidesWithMobAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number, mob: Unit) {
     const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, tickPercent)
     const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
 
@@ -67,39 +67,39 @@ export class Pathing {
   }
 
   // point.x + to.location.x, point.y + to.location.y
-  static mobsInAreaOfEffectOfMob (game: Game, mob: GameObject, point: Location) {
+  static mobsInAreaOfEffectOfMob (world: World, mob: GameObject, point: Location) {
     const mobs = []
-    for (let i = 0; i < game.mobs.length; i++) {
-      const collidedWithSpecificMob = game.mobs[i].location.x === point.x + mob.location.x && game.mobs[i].location.y === point.y + mob.location.y
+    for (let i = 0; i < world.mobs.length; i++) {
+      const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
 
       if (collidedWithSpecificMob) {
-        mobs.push(game.mobs[i])
+        mobs.push(world.mobs[i])
       }
     }
 
     return sortBy(mobs, (m: GameObject) => mob !== m)
   }
 
-  static collidesWithAnyMobs (game: Game, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    for (let i = 0; i < game.mobs.length; i++) {
-      if (game.mobs[i] === mobToAvoid) {
+  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+    for (let i = 0; i < world.mobs.length; i++) {
+      if (world.mobs[i] === mobToAvoid) {
         continue
       }
 
-      const collidedWithSpecificMob = Pathing.collidesWithMob(game, x, y, s, game.mobs[i])
+      const collidedWithSpecificMob = Pathing.collidesWithMob(world, x, y, s, world.mobs[i])
 
-      if (collidedWithSpecificMob && game.mobs[i].consumesSpace) {
-        return game.mobs[i]
+      if (collidedWithSpecificMob && world.mobs[i].consumesSpace) {
+        return world.mobs[i]
       }
     }
     return null
   }
 
-  static collidesWithMob (game: Game, x: number, y: number, s: number, mob: GameObject) {
+  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
     return (Pathing.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
   }
 
-  static canTileBePathedTo (game: Game, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+  static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
     if (y - (s - 1) < 0 || x + (s - 1) > 28) {
       return false
     }
@@ -107,17 +107,17 @@ export class Pathing {
       return false
     }
     let collision = false
-    collision = collision || Pathing.collidesWithAnyEntities(game, x, y, s)
+    collision = collision || Pathing.collidesWithAnyEntities(world, x, y, s)
 
     if (mobToAvoid) { // if no mobs to avoid, avoid them all
       // Player can walk under mobs
-      collision = collision || Pathing.collidesWithAnyMobs(game, x, y, s, mobToAvoid) !== null
+      collision = collision || Pathing.collidesWithAnyMobs(world, x, y, s, mobToAvoid) !== null
     }
 
     return !collision
   }
 
-  static constructPath (game: Game, startPoint: Location, endPoint: Location) {
+  static constructPath (world: World, startPoint: Location, endPoint: Location) {
     // if (endPoint === -1) {
     //   return []
     // }
@@ -126,7 +126,7 @@ export class Pathing {
     const y = startPoint.y
     const toX = endPoint.x
     const toY = endPoint.y
-    if (!Pathing.canTileBePathedTo(game, toX, toY, 1)) {
+    if (!Pathing.canTileBePathedTo(world, toX, toY, 1)) {
       return []
     }
 
@@ -168,7 +168,7 @@ export class Pathing {
         pathX = parentNode.x + iDirection.x
         pathY = parentNode.y + iDirection.y
 
-        if (!Pathing.canTileBePathedTo(game, pathX, pathY, 1, null)) {
+        if (!Pathing.canTileBePathedTo(world, pathX, pathY, 1, null)) {
           // Destination is not a valid square
           continue
         }
@@ -176,12 +176,12 @@ export class Pathing {
           // Check neighbourin squares for diagonal moves
           let neighbourX = parentNode.x
           let neighbourY = parentNode.y + iDirection.y
-          if (!Pathing.canTileBePathedTo(game, neighbourX, neighbourY, 1, null)) {
+          if (!Pathing.canTileBePathedTo(world, neighbourX, neighbourY, 1, null)) {
             continue
           }
           neighbourX = parentNode.x + iDirection.x
           neighbourY = parentNode.y
-          if (!Pathing.canTileBePathedTo(game, neighbourX, neighbourY, 1, null)) {
+          if (!Pathing.canTileBePathedTo(world, neighbourX, neighbourY, 1, null)) {
             continue
           }
         }
@@ -204,13 +204,13 @@ export class Pathing {
     return pathTiles
   }
 
-  static path (game: Game, startPoint: Location, endPoint: Location, speed: number, seeking: GameObject) {
+  static path (world: World, startPoint: Location, endPoint: Location, speed: number, seeking: GameObject) {
     let x, y
-    const path = Pathing.constructPath(game, startPoint, endPoint)
+    const path = Pathing.constructPath(world, startPoint, endPoint)
     if (path.length === 0) {
       return startPoint
     }
-    if (seeking && Pathing.collidesWithMob(game, path[0].x, path[0].y, 1, seeking)) {
+    if (seeking && Pathing.collidesWithMob(world, path[0].x, path[0].y, 1, seeking)) {
       path.shift()
     }
 
