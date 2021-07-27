@@ -90,6 +90,10 @@ export class Game {
 
   mapClick (e: MouseEvent) {
 
+
+    if (e.button !== 0) {
+      return;
+    }
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
 

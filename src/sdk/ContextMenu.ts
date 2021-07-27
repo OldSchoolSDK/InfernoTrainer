@@ -88,6 +88,8 @@ export class ContextMenu {
           }
         }
       ]
+      game.ctx.textAlign = 'left';
+
       game.ctx.font = '17px OSRS'
 
       this.width = 0
