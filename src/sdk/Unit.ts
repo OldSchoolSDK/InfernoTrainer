@@ -329,13 +329,16 @@ export class Unit extends GameObject {
 
     const overheads = this.prayers.filter(prayer => prayer.isOverhead())
     if (overheads.length) {
-      this.game.ctx.drawImage(
-        overheads[0].overheadImage(),
-        -Settings.tileSize / 2,
-        -Settings.tileSize * 3,
-        Settings.tileSize,
-        Settings.tileSize
-      )
+      const overheadImg = overheads[0].overheadImage();
+      if (overheadImg){
+        this.game.ctx.drawImage(
+          overheadImg,
+          -Settings.tileSize / 2,
+          -Settings.tileSize * 3,
+          Settings.tileSize,
+          Settings.tileSize
+        )  
+      }
     }
   }
 

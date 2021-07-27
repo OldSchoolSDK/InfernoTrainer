@@ -63,6 +63,7 @@ export class BasePrayer {
   overheadImage () {
     if (!this.cachedImage && this.overheadImageReference()) {
       this.cachedImage = ImageLoader.createImage(this.overheadImageReference())
+      return null;
     }
 
     return this.cachedImage
