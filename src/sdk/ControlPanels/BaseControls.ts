@@ -25,7 +25,7 @@ export class BaseControls {
 
   draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
     if (this.panelImage) {
-      ctrl.ctx.drawImage(this.panelImage, x, y)
+      game.ctx.drawImage(this.panelImage, x, y)
     }
   }
 }

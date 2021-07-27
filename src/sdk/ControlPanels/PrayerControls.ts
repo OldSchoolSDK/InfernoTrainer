@@ -4,9 +4,9 @@ import PrayerTab from '../../assets/images/tabs/prayer.png'
 import { intersection } from 'lodash'
 
 import { BaseControls } from './BaseControls'
-import { ProtectMelee } from '../../content/Prayers/ProtectMelee'
+import { ProtectMelee } from '../../content/prayers/ProtectMelee'
 import { ProtectMage } from '../../content/prayers/ProtectMage'
-import { ProtectRange } from '../../content/Prayers/ProtectRange'
+import { ProtectRange } from '../../content/prayers/ProtectRange'
 import { Rigour } from '../../content/prayers/Rigour'
 import { SharpEye } from '../../content/prayers/SharpEye'
 import { HawkEye } from '../../content/prayers/HawkEye'
@@ -140,10 +140,10 @@ export class PrayerControls extends BaseControls {
         const x2 = index % 5
         const y2 = Math.floor(index / 5)
 
-        ctrl.ctx.beginPath()
-        ctrl.ctx.fillStyle = '#D1BB7773'
-        ctrl.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
-        ctrl.ctx.fill()
+        game.ctx.beginPath()
+        game.ctx.fillStyle = '#D1BB7773'
+        game.ctx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        game.ctx.fill()
       }
     })
   }

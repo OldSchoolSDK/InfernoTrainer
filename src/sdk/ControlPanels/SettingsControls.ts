@@ -119,47 +119,47 @@ export class SettingsControls extends BaseControls {
   draw (game: Game, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(game, ctrl, x, y)
 
-    ctrl.ctx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)
+    game.ctx.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20, y + 20)
 
-    ctrl.ctx.drawImage(this.redUpImage, x + 90, y + 20)
-    ctrl.ctx.fillStyle = '#FFFF00'
-    ctrl.ctx.font = '16px OSRS'
-    ctrl.ctx.textAlign = 'center'
-    ctrl.ctx.fillText(String(Settings.inputDelay), x + 96, y + 48)
-    ctrl.ctx.drawImage(this.greenDownImage, x + 90, y + 51)
-    ctrl.ctx.fillText('Lag', x + 97, y + 81)
+    game.ctx.drawImage(this.redUpImage, x + 90, y + 20)
+    game.ctx.fillStyle = '#FFFF00'
+    game.ctx.font = '16px OSRS'
+    game.ctx.textAlign = 'center'
+    game.ctx.fillText(String(Settings.inputDelay), x + 96, y + 48)
+    game.ctx.drawImage(this.greenDownImage, x + 90, y + 51)
+    game.ctx.fillText('Lag', x + 97, y + 81)
 
-    ctrl.ctx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
-    ctrl.ctx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
+    game.ctx.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
+    game.ctx.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
 
-    ctrl.ctx.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
-    ctrl.ctx.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
+    game.ctx.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
+    game.ctx.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
 
-    ctrl.ctx.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
-    ctrl.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
-    ctrl.ctx.fillText('Reload to change region', x + 100, y + 160)
+    game.ctx.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
+    game.ctx.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
+    game.ctx.fillText('Reload to change region', x + 100, y + 160)
 
 
-    ctrl.ctx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
-    ctrl.ctx.drawImage(this.inventoryImage, x + 25, y + 172)
-    ctrl.ctx.fillText(Settings.inventory_key, x + 25 + 30, y + 172 + 30)
+    game.ctx.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 170)
+    game.ctx.drawImage(this.inventoryImage, x + 25, y + 172)
+    game.ctx.fillText(Settings.inventory_key, x + 25 + 30, y + 172 + 30)
 
-    ctrl.ctx.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 170)
-    ctrl.ctx.drawImage(this.spellbookImage, x + 85, y + 172)
-    ctrl.ctx.fillText(Settings.spellbook_key, x + 85 + 30, y + 172 + 30)
+    game.ctx.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 170)
+    game.ctx.drawImage(this.spellbookImage, x + 85, y + 172)
+    game.ctx.fillText(Settings.spellbook_key, x + 85 + 30, y + 172 + 30)
 
-    ctrl.ctx.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 170)
-    ctrl.ctx.drawImage(this.prayerImage, x + 145, y + 172)
-    ctrl.ctx.fillText(Settings.prayer_key, x + 145 + 30, y + 172 + 30)
+    game.ctx.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 170)
+    game.ctx.drawImage(this.prayerImage, x + 145, y + 172)
+    game.ctx.fillText(Settings.prayer_key, x + 145 + 30, y + 172 + 30)
 
-    ctrl.ctx.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
-    ctrl.ctx.drawImage(this.equipmentImage, x + 25, y + 222)
-    ctrl.ctx.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
+    game.ctx.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
+    game.ctx.drawImage(this.equipmentImage, x + 25, y + 222)
+    game.ctx.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
   
     if (this.bindingKey === null){
-      ctrl.ctx.fillText('Key Bindings', x + 125, y + 212 + 30)
+      game.ctx.fillText('Key Bindings', x + 125, y + 212 + 30)
     }else{
-      ctrl.ctx.fillText('Press Key To Bind', x + 135, y + 212 + 30)
+      game.ctx.fillText('Press Key To Bind', x + 135, y + 212 + 30)
     }
   }
 }

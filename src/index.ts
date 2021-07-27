@@ -14,7 +14,6 @@ Settings.readFromStorage()
 const selectedRegionName = Settings.region
 let selectedRegion: Region;
 
-console.log('selected region is ' + selectedRegionName)
 switch (selectedRegionName) {
   case 'verzikp3':
     selectedRegion = new VerzikP3()
@@ -25,17 +24,13 @@ switch (selectedRegionName) {
 }
 
 // Create game
-const game = new Game('game', selectedRegion);
 
 
 const controlPanel = new ControlPanelController()
 InventoryControls.inventory = selectedRegion.getInventory()
 
-MapController.controller.setGame(game);
 
-game.setMapController(MapController.controller)
-game.setControlPanel(controlPanel)
-controlPanel.setGame(game)
+const game = new Game('game', selectedRegion, MapController.controller, controlPanel);
 
 selectedRegion.initialize(game)
 

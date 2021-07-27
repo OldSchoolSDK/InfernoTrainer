@@ -21,8 +21,8 @@ export class Game {
   inputDelay?: NodeJS.Timeout = null;
   frameCounter: number = 0
   getReadyTimer: number = 6
-  controlPanel?: ControlPanelController;
-  mapController?: MapController;
+  controlPanel: ControlPanelController;
+  mapController: MapController;
   player?: Player;
   entities: Entity[] = [];
   width: number;
@@ -42,13 +42,18 @@ export class Game {
   tickPercent: number;
   isPaused: boolean = true;
 
-  constructor (selector: string, region: Region) {
+  constructor (selector: string, region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
+
+    this.mapController = mapController;
+    this.controlPanel = controlPanel;
+    this.controlPanel.setGame(this);
+    this.mapController.setGame(this)
 
     this.region = region;
 
     this.canvas = document.getElementById(selector) as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d')
-    this.canvas.width = Settings.tileSize * region.width
+    this.canvas.width = Settings.tileSize * region.width + this.mapController.width;
     this.canvas.height = Settings.tileSize * region.height
     this.width = region.width
     this.height = region.height
@@ -58,7 +63,9 @@ export class Game {
   }
 
   registerClickActions() {
-    this.canvas.addEventListener('click', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousedown', this.mapClick.bind(this))
+    this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
+
     this.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.canvas.addEventListener('contextmenu', (e: MouseEvent) => {
       let x = e.offsetX
@@ -82,6 +89,14 @@ export class Game {
   }
 
   mapClick (e: MouseEvent) {
+
+
+    if (e.button !== 0) {
+      return;
+    }
+    
+    this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
+
     const tickPercent = this.frameCounter / Settings.framesPerTick
 
     let x = e.offsetX
@@ -90,6 +105,26 @@ export class Game {
       x = this.width * Settings.tileSize - e.offsetX
       y = this.height * Settings.tileSize - e.offsetY
     }
+
+    if (e.offsetX > this.width * Settings.tileSize) {
+      if (e.offsetY < this.mapController.height) {
+        const intercepted = this.mapController.clicked(e);
+        if (intercepted) {
+          return;
+        }
+      }
+    }
+
+    if (e.offsetX > this.canvas.width - this.controlPanel.width) {
+      if (e.offsetY > this.height * Settings.tileSize - this.controlPanel.height){
+        const intercepted = this.controlPanel.controlPanelClick(e);
+        if (intercepted) {
+          return;
+        }
+  
+      }
+    }
+
 
     const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
     const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
@@ -154,9 +189,7 @@ export class Game {
   }
 
   drawGame (tickPercent: number) {
-    // Give control panel a chance to draw, canvas -> canvas
-    this.controlPanel.draw(this)
-
+    
     // Draw all things on the map
     this.entities.forEach((entity) => entity.draw(tickPercent))
 
@@ -174,11 +207,6 @@ export class Game {
 
 
     this.ctx.restore()
-
-    this.contextMenu.draw(this)
-    if (this.clickAnimation) {
-      this.clickAnimation.draw(this, tickPercent)
-    }
   }
 
   gameLoop () {
@@ -211,11 +239,16 @@ export class Game {
 
   draw () {
     this.ctx.globalAlpha = 1
-    this.ctx.fillStyle = 'black'
+    this.ctx.fillStyle = '#3B3224'
 
     this.ctx.restore()
     this.ctx.save()
+    this.ctx.fillStyle = '#3B3224'
+
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+
     if (Settings.rotated === 'south') {
+      this.ctx.translate(-this.mapController.width, 0);
       this.ctx.rotate(Math.PI)
       this.ctx.translate(-this.canvas.width, -this.canvas.height)
     }
@@ -225,8 +258,21 @@ export class Game {
 
     this.drawGame(this.tickPercent)
 
-    XpDropController.controller.draw(this.ctx, this.canvas.width - 140, 0, this.tickPercent);
-    MapController.controller.draw(this.tickPercent);
+
+    this.ctx.save();
+    this.ctx.translate(this.canvas.width - this.controlPanel.width, this.canvas.height - this.controlPanel.height)
+    this.controlPanel.draw(this)
+
+    this.ctx.restore();
+
+    XpDropController.controller.draw(this.ctx, this.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
+    MapController.controller.draw(this.ctx, this.tickPercent);
+
+
+    this.contextMenu.draw(this)
+    if (this.clickAnimation) {
+      this.clickAnimation.draw(this, this.tickPercent)
+    }
 
     this.ctx.restore()
     this.ctx.save()
@@ -259,14 +305,6 @@ export class Game {
 
   setPlayer (player: Player) {
     this.player = player
-  }
-
-  setControlPanel (controlPanel: ControlPanelController) {
-    this.controlPanel = controlPanel
-  }
-
-  setMapController( mapController: MapController) {
-    this.mapController = mapController;
   }
 
   addEntity (entity: Entity) {
