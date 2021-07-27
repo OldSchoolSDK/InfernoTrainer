@@ -9,6 +9,13 @@ import { InventoryControls } from './sdk/ControlPanels/InventoryControls'
 import { Region } from './sdk/Region'
 import { MapController } from './sdk/MapController'
 import { ImageLoader } from './sdk/Utils/ImageLoader'
+import NewRelicBrowser from 'new-relic-browser';
+
+declare global {
+  interface Window {
+    newrelic: typeof NewRelicBrowser
+  }
+}
 
 Settings.readFromStorage()
 const selectedRegionName = Settings.region
@@ -47,3 +54,5 @@ const interval = setInterval(() => {
 /// /////////////////////////////////////////////////////////
 
 document.getElementById('version').innerHTML = 'Version ' + process.env.COMMIT_REF + ' - ' + process.env.BUILD_DATE
+window.newrelic.addRelease('inferno-trainer', process.env.COMMIT_REF)
+
