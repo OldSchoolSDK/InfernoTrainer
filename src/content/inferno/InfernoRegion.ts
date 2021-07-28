@@ -28,6 +28,8 @@ import { HolyBlessing } from '../equipment/HolyBlessing';
 import { BarrowsGloves } from '../equipment/BarrowsGloves';
 import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
 import { CrystalShield } from '../equipment/CrystalShield';
+import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
+import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
 
 export class InfernoRegion extends Region {
 
@@ -37,7 +39,7 @@ export class InfernoRegion extends Region {
   }
 
   getInventory () {
-    return [new Blowpipe()]
+    return [new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new CrystalShield(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots()]
   }
 
   initialize (world: World) {
@@ -55,7 +57,7 @@ export class InfernoRegion extends Region {
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
       { equipment: { 
-          weapon: new TwistedBow(), 
+          weapon: new Blowpipe(), 
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),

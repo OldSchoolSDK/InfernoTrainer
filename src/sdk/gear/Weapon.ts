@@ -3,9 +3,10 @@
 import { GameObject } from "../GameObject";
 import { BasePrayer } from "../BasePrayer";
 import { World } from "../World";
-import { Unit } from "../Unit";
+import { Unit, UnitEquipment } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
+import { Player } from "../Player";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -31,6 +32,15 @@ export class Weapon extends Equipment{
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
   
+
+  assignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.weapon = this;
+  }
+
+  currentEquipment(player: Player): Equipment {
+    return player.equipment.weapon;
+  }
+
   hasSpecialAttack(): boolean {
     return false;
   }

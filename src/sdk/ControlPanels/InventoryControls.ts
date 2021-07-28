@@ -26,7 +26,7 @@ export class InventoryControls extends BaseControls {
   }
 
   clickedPanel (world: World, x: number, y: number) {
-    let itemX, itemY
+
     const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
@@ -34,21 +34,16 @@ export class InventoryControls extends BaseControls {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
       inventoryItem.inventoryPosition = index
-      itemX = 16 + (x2) * 43
-      itemY = 16 + (y2 + 1) * 35
-      return Pathing.collisionMath(x, y, 1, itemX, itemY, 35)
+      const itemX = 20 + x2 * 43
+      const itemY = 17 + (y2 + 1) * 35
+      return Pathing.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Weapon
 
     InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 
     if (clickedItem) {
-      const isLeftClickable = true
-      if (isLeftClickable) { // "Is this something with a left click action"
-        const currentWeapon = world.player.equipment.weapon
-        InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon
-        world.player.equipment.weapon = clickedItem
-        world.player.aggro = null
-        world.player.bonuses = clickedItem.bonuses // temp code
+      if (clickedItem.hasLeftClick) {
+        clickedItem.leftClick(world.player);
         world.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
@@ -63,17 +58,20 @@ export class InventoryControls extends BaseControls {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
 
-      const itemX = 21 + x + (x2) * 43
+      const itemX = 20 + x + (x2) * 43
       const itemY = 17 + y + (y2) * 35
 
       if (inventoryItem !== null) {
-        world.viewportCtx.drawImage(
-          inventoryItem.inventorySprite,
-          itemX,
-          itemY,
-          32,
-          32
-        )
+
+
+        
+        world.viewportCtx.fillStyle = "#ffffff22"
+        world.viewportCtx.fillRect(itemX, itemY, 32, 32)
+        const sprite = inventoryItem.inventorySprite;
+
+        const xOff = (32 - sprite.width)/2;
+        const yOff = (32 - sprite.height)/2
+        world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
 
         if (inventoryItem.selected) {
           world.viewportCtx.beginPath()

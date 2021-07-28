@@ -1,10 +1,10 @@
-import { Helmet } from "../../sdk/gear/Helmet";
+import { Chest } from "../../sdk/gear/Chest";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Justiciar_faceguard.png';
+import InventImage from '../../assets/images/equipment/Justiciar_chestguard.png';
 import { SetEffect } from "../../sdk/SetEffect";
 import { JusticiarSetEffect } from "../seteffects/JusticiarSetEffect";
 
-export class JusticiarFaceguard extends Helmet{
+export class JusticiarChestguard extends Chest{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   equipmentSetEffect(): SetEffect{
