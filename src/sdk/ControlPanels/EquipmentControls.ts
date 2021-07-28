@@ -29,13 +29,6 @@ export class EquipmentControls extends BaseControls {
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-
-    if (world.player.equipment.weapon) {
-      world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      const weaponSprite = world.player.equipment.weapon.inventorySprite;
-      world.viewportCtx.drawImage(weaponSprite, x + 46 - weaponSprite.width / 2 , y + 107 - weaponSprite.height / 2)
-
-    }
     if (world.player.equipment.helmet) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 11)
       const helmetSprite = world.player.equipment.helmet.inventorySprite;
@@ -51,11 +44,28 @@ export class EquipmentControls extends BaseControls {
       const necklaceSprite = world.player.equipment.necklace.inventorySprite;
       world.viewportCtx.drawImage(necklaceSprite, x + 102 - necklaceSprite.width / 2 , y + 69 - necklaceSprite.height / 2)
     }
+    if (world.player.equipment.ammo) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 124, y + 50)
+      const ammoSprite = world.player.equipment.ammo.inventorySprite;
+      world.viewportCtx.drawImage(ammoSprite, x + 142 - ammoSprite.width / 2 , y + 69 - ammoSprite.height / 2)
+    }
+    if (world.player.equipment.weapon) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 89)
+      const weaponSprite = world.player.equipment.weapon.inventorySprite;
+      world.viewportCtx.drawImage(weaponSprite, x + 46 - weaponSprite.width / 2 , y + 107 - weaponSprite.height / 2)
+    }
+
     if (world.player.equipment.chest) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 89)
       const chestSprite = world.player.equipment.chest.inventorySprite;
-      world.viewportCtx.drawImage(chestSprite, x + 102 - chestSprite.width / 2 , y + 108 - chestSprite.height / 2)
+      world.viewportCtx.drawImage(chestSprite, x + 102 - chestSprite.width / 2 , y + 107 - chestSprite.height / 2)
     }
+    if (world.player.equipment.offhand) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 140, y + 89)
+      const offhandSprite = world.player.equipment.offhand.inventorySprite;
+      world.viewportCtx.drawImage(offhandSprite, x + 158 - offhandSprite.width / 2 , y + 107 - offhandSprite.height / 2)
+    }
+
 
     if (world.player.equipment.legs) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 129)
@@ -64,12 +74,24 @@ export class EquipmentControls extends BaseControls {
     }
 
 
+    if (world.player.equipment.gloves) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 169)
+      const glovesSprite = world.player.equipment.gloves.inventorySprite;
+      world.viewportCtx.drawImage(glovesSprite, x + 46 - glovesSprite.width / 2 , y + 186 - glovesSprite.height / 2)
+    }
+
     if (world.player.equipment.feet) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 169)
       const feetSprite = world.player.equipment.feet.inventorySprite;
       world.viewportCtx.drawImage(feetSprite, x + 102 - feetSprite.width / 2 , y + 186 - feetSprite.height / 2)
     }
 
+
+    if (world.player.equipment.ring) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 140, y + 169)
+      const ringSprite = world.player.equipment.ring.inventorySprite;
+      world.viewportCtx.drawImage(ringSprite, x + 158 - ringSprite.width / 2 , y + 186 - ringSprite.height / 2)
+    }
 
   }
 }

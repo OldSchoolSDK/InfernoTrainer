@@ -24,6 +24,10 @@ import { ArmadylChestplate } from '../equipment/ArmadylChestplate';
 import { ArmadylChainskirt } from '../equipment/ArmadylChainskirt';
 import { PegasianBoots } from '../equipment/PegasianBoots';
 import { AvasAssembler } from '../equipment/AvasAssembler';
+import { HolyBlessing } from '../equipment/HolyBlessing';
+import { BarrowsGloves } from '../equipment/BarrowsGloves';
+import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
+import { CrystalShield } from '../equipment/CrystalShield';
 
 export class InfernoRegion extends Region {
 
@@ -55,9 +59,12 @@ export class InfernoRegion extends Region {
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),
+          ammo: new HolyBlessing(),
           chest: new ArmadylChestplate(),
           legs: new ArmadylChainskirt(),
-          feet: new PegasianBoots()
+          feet: new PegasianBoots(),
+          gloves: new BarrowsGloves(),
+          ring: new RingOfSufferingImbued(), 
         }
       })
     world.setPlayer(player)
