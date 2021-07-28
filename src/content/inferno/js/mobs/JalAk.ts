@@ -1,10 +1,10 @@
 'use strict'
 
 import { find } from 'lodash'
-import { MagicWeapon } from '../../../../sdk/sdfg/MagicWeapon'
-import { MeleeWeapon } from '../../../../sdk/sdfg/MeleeWeapon'
+import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/sdfg/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import BlobImage from '../../assets/images/blob.png'
 import BlobSound from '../../assets/sounds/blob.ogg'
 

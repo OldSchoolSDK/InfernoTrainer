@@ -1,7 +1,7 @@
 'use strict'
 
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/sdfg/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'

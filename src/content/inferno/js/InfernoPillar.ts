@@ -7,7 +7,7 @@ import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { World } from '../../../sdk/World'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
-import { Projectile } from '../../../sdk/sdfg/Projectile'
+import { Projectile } from '../../../sdk/weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
 

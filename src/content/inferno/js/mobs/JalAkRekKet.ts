@@ -1,6 +1,6 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/sdfg/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
 import { Settings } from '../../../../sdk/Settings'

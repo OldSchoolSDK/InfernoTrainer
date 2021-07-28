@@ -1,13 +1,13 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/sdfg/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 
 import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
-import { Projectile } from '../../../../sdk/sdfg/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/Weapon'
