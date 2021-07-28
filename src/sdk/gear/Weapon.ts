@@ -51,7 +51,6 @@ export class Weapon extends Equipment{
 
 
   inventoryLeftClick(player: Player) {
-    // player.bonuses = clickedItem.bonuses // temp code
     const currentWeapon = player.equipment.weapon || null;
     const currentOffhand = player.equipment.offhand || null;
 
@@ -69,19 +68,19 @@ export class Weapon extends Equipment{
       neededInventorySlots--;
     }
 
-    if (neededInventorySlots <= openInventorySlots.length) {
-      this.assignToUnitEquipment(player.equipment);
-      if (currentWeapon) {
-        InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
-      }else{
-        InventoryControls.inventory[openInventorySlots.shift()] = null; 
-        openInventorySlots = InventoryControls.openInventorySlots()       
-      }
-      if (this.isTwoHander && currentOffhand) {
-        console.log('open', openInventorySlots)
-        InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
-        player.equipment.offhand = null;
-      }
+    if (neededInventorySlots > openInventorySlots.length) {
+      return;
+    }
+    this.assignToUnitEquipment(player.equipment);
+    if (currentWeapon) {
+      InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
+    }else{
+      InventoryControls.inventory[openInventorySlots.shift()] = null; 
+      openInventorySlots = InventoryControls.openInventorySlots()       
+    }
+    if (this.isTwoHander && currentOffhand) {
+      InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
+      player.equipment.offhand = null;
     }
   }
   

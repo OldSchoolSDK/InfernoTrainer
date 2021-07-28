@@ -30,13 +30,9 @@ export class Equipment extends Item {
   }
 
   inventoryLeftClick(player: Player) {
-    console.log('eq')
-    // player.bonuses = clickedItem.bonuses // temp code
     const currentItem = this.currentEquipment(player) || null; 
-
     let openInventorySlots = InventoryControls.openInventorySlots()
     openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
-
     this.assignToUnitEquipment(player.equipment);
     InventoryControls.inventory[openInventorySlots.shift()] = currentItem;
   }
