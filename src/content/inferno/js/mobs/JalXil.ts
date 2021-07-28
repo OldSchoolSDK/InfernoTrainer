@@ -1,15 +1,15 @@
 'use strict'
 
 import { Settings } from '../../../../sdk/Settings'
-import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/sdfg/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/sdfg/RangedWeapon'
 import RangeImage from '../../assets/images/ranger.png'
 import RangerSound from '../../assets/sounds/ranger.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { Pathing } from '../../../../sdk/Pathing'
 import { Unit } from '../../../../sdk/Unit'
-import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { Projectile } from '../../../../sdk/sdfg/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 
 
