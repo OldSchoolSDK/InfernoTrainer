@@ -26,13 +26,13 @@ export interface WeaponsMap {
 
 
 export class UnitEquipment {
-  weapon: Weapon = null
-  helmet: Helmet = null
+  weapon?: Weapon = null
+  helmet?: Helmet = null
 }
 
 export interface UnitOptions {
-  weapon?: Weapon;
   aggro?: GameObject;
+  equipment?: UnitEquipment;
 }
 
 export interface UnitStats {
@@ -108,8 +108,8 @@ export class Unit extends GameObject {
 
     this.currentStats.hitpoint = this.stats.hitpoint
 
-    if (options.weapon) {
-      this.bonuses = options.weapon.bonuses // temp code
+    if (options.equipment && options.equipment.weapon) {
+      this.bonuses = options.equipment.weapon.bonuses // temp code
     }
   }
   

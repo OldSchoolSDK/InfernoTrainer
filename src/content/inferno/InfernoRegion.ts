@@ -18,6 +18,7 @@ import { World } from '../../sdk/World'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
 import { ImageLoader } from '../../sdk/utils/ImageLoader'
+import { JusticiarFaceguard } from '../equipment/JusticiarFaceguard';
 
 export class InfernoRegion extends Region {
 
@@ -38,12 +39,13 @@ export class InfernoRegion extends Region {
     if (isNaN(wave)){
       wave = 1;
     }
+    
 
     // Add player
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
-      { weapon: new TwistedBow() })
+      { equipment: { weapon: new TwistedBow(), helmet: new JusticiarFaceguard() }})
     world.setPlayer(player)
 
     // Add mobs

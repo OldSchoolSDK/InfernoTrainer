@@ -41,7 +41,7 @@ export class VerzikP3 extends Region {
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
-      { weapon: new ScytheOfVitur() });
+      { equipment: { weapon: new ScytheOfVitur() }});
     world.setPlayer(player);
 
     // Add mobs

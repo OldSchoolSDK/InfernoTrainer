@@ -32,7 +32,16 @@ export class EquipmentControls extends BaseControls {
 
     if (world.player.equipment.weapon) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      world.viewportCtx.drawImage(world.player.equipment.weapon.inventorySprite, x + 32, y + 92)
+      const weaponSprite = world.player.equipment.weapon.inventorySprite;
+      world.viewportCtx.drawImage(weaponSprite, x + 46 - weaponSprite.width / 2 , y + 107 - weaponSprite.height / 2)
+
     }
+    if (world.player.equipment.helmet) {
+      world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 11)
+      const helmetSprite = world.player.equipment.helmet.inventorySprite;
+      world.viewportCtx.drawImage(helmetSprite, x + 101 - helmetSprite.width / 2 , y + 28 - helmetSprite.height / 2)
+    }
+
+    
   }
 }

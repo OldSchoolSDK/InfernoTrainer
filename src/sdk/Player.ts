@@ -38,7 +38,7 @@ export class Player extends Unit {
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.equipment.weapon = options.weapon;
+    this.equipment = options.equipment;
     this.clearXpDrops();
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
