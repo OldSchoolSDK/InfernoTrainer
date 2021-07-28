@@ -6,7 +6,7 @@ import UsedSpotBackground from '../../assets/images/interface/equipment_spot_use
 import { Settings } from '../Settings'
 import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
-import { ImageLoader } from '../Utils/ImageLoader'
+import { ImageLoader } from '../utils/ImageLoader'
 
 export class EquipmentControls extends BaseControls {
   usedSpotBackground: HTMLImageElement = ImageLoader.createImage(UsedSpotBackground)
@@ -30,9 +30,9 @@ export class EquipmentControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    if (world.player.weapon) {
+    if (world.player.equipment.weapon) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 89)
-      world.viewportCtx.drawImage(world.player.weapon.inventorySprite, x + 32, y + 92)
+      world.viewportCtx.drawImage(world.player.equipment.weapon.inventorySprite, x + 32, y + 92)
     }
   }
 }

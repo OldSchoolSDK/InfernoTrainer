@@ -10,14 +10,14 @@ import { JalXil } from './js/mobs/JalXil'
 import { JalImKot } from './js/mobs/JalImKot'
 import { JalAk } from './js/mobs/JalAk'
 import { JalMejRah } from './js/mobs/JalMejRah'
-import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
+import { BrowserUtils } from '../../sdk/utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Region } from '../../sdk/Region'
 import { World } from '../../sdk/World'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
-import { ImageLoader } from '../../sdk/Utils/ImageLoader'
+import { ImageLoader } from '../../sdk/utils/ImageLoader'
 
 export class InfernoRegion extends Region {
 

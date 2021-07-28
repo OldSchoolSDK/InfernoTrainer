@@ -3,15 +3,15 @@ import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { minBy, range, filter, find, map, min } from 'lodash'
-import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
+import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
-import { Weapon } from './weapons/Weapon'
+import { Weapon } from './Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
 import { Mob } from './Mob'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
 
@@ -20,6 +20,7 @@ export interface PlayerStats extends UnitStats {
   run: number;
   specialAttack: number;
 }
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -37,7 +38,7 @@ export class Player extends Unit {
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.weapon = options.weapon
+    this.equipment.weapon = options.weapon;
     this.clearXpDrops();
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
@@ -177,7 +178,7 @@ export class Player extends Unit {
       this.manualSpellCastSelection = null
     } else {
       // use equipped weapon
-      this.weapon.attack(this.world, this, this.aggro)
+      this.equipment.weapon.attack(this.world, this, this.aggro)
     }
 
     // this.playAttackSound();
@@ -301,14 +302,14 @@ export class Player extends Unit {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange
     }
-    return this.weapon.attackRange
+    return this.equipment.weapon.attackRange
   }
 
   get attackSpeed () {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed
     }
-    return this.weapon.attackSpeed
+    return this.equipment.weapon.attackSpeed
   }
 
   drainPrayer() {

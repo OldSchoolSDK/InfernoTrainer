@@ -8,10 +8,11 @@ import { World } from './World'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './weapons/Projectile'
 import { XpDrop } from './XpDrop'
-import { Weapon } from './weapons/Weapon'
+import { Weapon } from './Weapon'
 import { GameObject, Location } from './GameObject'
 import { Pathing } from './Pathing'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
+import { Helmet } from './Helmet';
 
 export enum UnitTypes {
   MOB = 0,
@@ -21,6 +22,12 @@ export enum UnitTypes {
 
 export interface WeaponsMap {
   [key: string]: Weapon
+}
+
+
+export class UnitEquipment {
+  weapon: Weapon = null
+  helmet: Helmet = null
 }
 
 export interface UnitOptions {
@@ -84,6 +91,7 @@ export class Unit extends GameObject {
   currentStats: UnitStats;
   stats: UnitStats;
   bonuses: UnitBonuses;
+  equipment: UnitEquipment = new UnitEquipment();
 
   get type(): UnitTypes{
     return UnitTypes.MOB;

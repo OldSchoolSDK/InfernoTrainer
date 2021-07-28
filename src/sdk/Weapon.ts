@@ -1,12 +1,11 @@
 'use strict'
 
-import { GameObject } from "../GameObject";
-import { Item } from "../Item"
-import { BasePrayer } from "../BasePrayer";
-import { World } from "../World";
-import { Unit } from "../Unit";
-import { ImageLoader } from "../Utils/ImageLoader";
-
+import { GameObject } from "./GameObject";
+import { BasePrayer } from "./BasePrayer";
+import { World } from "./World";
+import { Unit } from "./Unit";
+import { ImageLoader } from "./utils/ImageLoader";
+import { Equipment } from './Equipment'
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -28,7 +27,7 @@ export interface AttackBonuses {
   effectivePrayers?: EffectivePrayers;
 }
 
-export class Weapon extends Item{
+export class Weapon extends Equipment{
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
   

@@ -8,7 +8,7 @@ import { Settings } from './sdk/Settings'
 import { InventoryControls } from './sdk/controlpanels/InventoryControls'
 import { Region } from './sdk/Region'
 import { MapController } from './sdk/MapController'
-import { ImageLoader } from './sdk/Utils/ImageLoader'
+import { ImageLoader } from './sdk/utils/ImageLoader'
 import NewRelicBrowser from 'new-relic-browser';
 
 declare global {

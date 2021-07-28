@@ -9,7 +9,7 @@ import { World } from '../../../sdk/World'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
-import { ImageLoader } from '../../../sdk/Utils/ImageLoader'
+import { ImageLoader } from '../../../sdk/utils/ImageLoader'
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];

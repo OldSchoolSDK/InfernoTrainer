@@ -23,10 +23,10 @@ import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
 
 
 import { Settings } from '../Settings'
-import { BrowserUtils } from '../Utils/BrowserUtils'
+import { BrowserUtils } from '../utils/BrowserUtils'
 import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
-import { ImageLoader } from '../Utils/ImageLoader'
+import { ImageLoader } from '../utils/ImageLoader'
 
 export class SettingsControls extends BaseControls {
   get panelImageReference () {

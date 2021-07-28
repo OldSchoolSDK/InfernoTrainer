@@ -7,7 +7,7 @@ import { Settings } from '../Settings'
 import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
-import { Weapon } from '../weapons/Weapon'
+import { Weapon } from '../Weapon'
 
 export class InventoryControls extends BaseControls {
 
@@ -44,9 +44,9 @@ export class InventoryControls extends BaseControls {
     if (clickedItem) {
       const isLeftClickable = true
       if (isLeftClickable) { // "Is this something with a left click action"
-        const currentWeapon = world.player.weapon
+        const currentWeapon = world.player.equipment.weapon
         InventoryControls.inventory[clickedItem.inventoryPosition] = currentWeapon
-        world.player.weapon = clickedItem
+        world.player.equipment.weapon = clickedItem
         world.player.aggro = null
         world.player.bonuses = clickedItem.bonuses // temp code
         world.mapController.updateOrbsMask(null, null)

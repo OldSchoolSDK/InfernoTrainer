@@ -5,11 +5,11 @@ import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
-import { Weapon } from './weapons/Weapon'
+import { Weapon } from './Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
 import { World } from './World'
 import { Location } from './GameObject'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 
 export enum AttackIndicators {
   NONE = 0,

@@ -10,7 +10,7 @@ import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit } from '../../../../sdk/Unit'
-import { AttackBonuses, Weapon } from '../../../../sdk/weapons/Weapon'
+import { AttackBonuses, Weapon } from '../../../../sdk/Weapon'
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {

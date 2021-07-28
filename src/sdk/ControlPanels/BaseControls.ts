@@ -1,6 +1,6 @@
 import { ControlPanelController } from "../ControlPanelController";
 import { World } from "../World";
-import { ImageLoader } from "../Utils/ImageLoader";
+import { ImageLoader } from "../utils/ImageLoader";
 
 export class BaseControls {
   panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
