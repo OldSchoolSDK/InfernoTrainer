@@ -8,26 +8,38 @@ import { World } from './World'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './weapons/Projectile'
 import { XpDrop } from './XpDrop'
-import { Weapon } from './Weapon'
 import { GameObject, Location } from './GameObject'
 import { Pathing } from './Pathing'
 import { ImageLoader } from './utils/ImageLoader'
-import { Helmet } from './Helmet';
-
+import { Weapon } from './gear/Weapon'
+import { Offhand } from './gear/Offhand';
+import { Helmet } from './gear/Helmet';
+import { Necklace } from './gear/Necklace';
+import { Chest } from './gear/Chest';
+import { Legs } from './gear/Legs';
+import { Feet } from './gear/Feet';
+import { Gloves } from './gear/Gloves';
+import { Ring } from './gear/Ring';
+import { Cape } from './gear/Cape';
+import { Ammo } from './gear/Ammo';
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
   ENTITY = 2,
 }
 
-export interface WeaponsMap {
-  [key: string]: Weapon
-}
-
-
 export class UnitEquipment {
   weapon?: Weapon = null
+  offhand?: Offhand = null
   helmet?: Helmet = null
+  necklace?: Necklace = null
+  chest?: Chest = null
+  legs?: Legs = null
+  feet?: Feet = null
+  gloves?: Gloves = null
+  ring?: Ring = null
+  cape?: Cape = null
+  ammo?: Ammo = null
 }
 
 export interface UnitOptions {

@@ -5,8 +5,8 @@ import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
-import { Weapon } from './Weapon'
-import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
+import { Weapon } from './gear/Weapon'
+import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from './GameObject'
 import { ImageLoader } from './utils/ImageLoader'
@@ -16,6 +16,10 @@ export enum AttackIndicators {
   HIT = 1,
   BLOCKED = 2,
   SCAN = 3,
+}
+
+export interface WeaponsMap {
+  [key: string]: Weapon
 }
 
 export class Mob extends Unit {

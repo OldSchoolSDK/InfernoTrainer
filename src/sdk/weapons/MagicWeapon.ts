@@ -4,7 +4,7 @@ import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile, ProjectileOptions } from './Projectile'
-import { AttackBonuses, Weapon } from '../Weapon'
+import { AttackBonuses, Weapon } from '../gear/Weapon'
 import MagerWeaponImage from '../../assets/images/prayers/mage.png'
 
 export class MagicWeapon extends Weapon {

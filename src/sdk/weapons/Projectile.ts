@@ -5,7 +5,7 @@ import chebyshev from 'chebyshev'
 import { GameObject, Location } from '../GameObject'
 import { Unit } from '../Unit'
 import { ImageLoader } from '../utils/ImageLoader'
-import { Weapon } from '../Weapon'
+import { Weapon } from '../gear/Weapon'
 
 export interface ProjectileOptions {
   forceSWTile?: boolean;

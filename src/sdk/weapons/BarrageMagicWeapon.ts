@@ -2,10 +2,9 @@ import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
 import { World } from '../World'
 import { Unit } from '../Unit'
-import { XpDrop } from '../XpDrop'
 import { MagicWeapon } from './MagicWeapon'
 import { ProjectileOptions } from './Projectile'
-import { AttackBonuses } from '../Weapon'
+import { AttackBonuses } from '../gear/Weapon'
 
 export class BarrageMagicWeapon extends MagicWeapon {
   get name () {

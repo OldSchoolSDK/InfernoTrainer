@@ -1,5 +1,5 @@
 
-import { Equipment, EquipmentTypes } from './Equipment';
+import { Equipment, EquipmentTypes } from '../Equipment';
 
 export class Helmet extends Equipment {
   

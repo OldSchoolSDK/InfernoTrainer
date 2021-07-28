@@ -4,7 +4,7 @@ import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
-import { AttackBonuses, Weapon } from '../Weapon'
+import { AttackBonuses, Weapon } from '../gear/Weapon'
 import RangerWeaponImage from '../../assets/images/prayers/range.png'
 
 export class RangedWeapon extends Weapon {

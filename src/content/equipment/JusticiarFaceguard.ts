@@ -1,4 +1,4 @@
-import { Helmet } from "../../sdk/Helmet";
+import { Helmet } from "../../sdk/gear/Helmet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Justiciar_faceguard.png';
 
