@@ -2,8 +2,8 @@
 
 import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
 import { Unit, UnitBonuses } from '../../sdk/Unit'
-import { RangedWeapon } from '../../sdk/Weapons/RangedWeapon'
-import { AttackBonuses } from '../../sdk/Weapons/Weapon'
+import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
+import { AttackBonuses } from '../../sdk/weapons/Weapon'
 
 export class TwistedBow extends RangedWeapon {
   constructor() {

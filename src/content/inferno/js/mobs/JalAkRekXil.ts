@@ -2,7 +2,7 @@
 
 import { Mob } from '../../../../sdk/Mob'
 import { Settings } from '../../../../sdk/Settings'
-import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
 export class JalAkRekXil extends Mob {

@@ -1,7 +1,7 @@
 'use strict'
 
-import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob, AttackIndicators } from '../../../../sdk/Mob'
 import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'

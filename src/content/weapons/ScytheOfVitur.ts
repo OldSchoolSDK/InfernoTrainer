@@ -3,8 +3,8 @@
 import ScytheInventImage from '../../assets/images/weapons/scytheOfVitur.png'
 import { World } from '../../sdk/World'
 import { Unit } from '../../sdk/Unit'
-import { MeleeWeapon } from '../../sdk/Weapons/MeleeWeapon'
-import { AttackBonuses } from '../../sdk/Weapons/Weapon'
+import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
+import { AttackBonuses } from '../../sdk/weapons/Weapon'
 
 export class ScytheOfVitur extends MeleeWeapon {
 

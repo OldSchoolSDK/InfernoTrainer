@@ -7,7 +7,7 @@ import { Settings } from '../Settings'
 import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
-import { Weapon } from '../Weapons/Weapon'
+import { Weapon } from '../weapons/Weapon'
 
 export class InventoryControls extends BaseControls {
 

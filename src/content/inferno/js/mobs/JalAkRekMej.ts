@@ -2,7 +2,7 @@
 
 import { Mob } from '../../../../sdk/Mob'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
-import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
+import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
 
 export class JalAkRekMej extends Mob {

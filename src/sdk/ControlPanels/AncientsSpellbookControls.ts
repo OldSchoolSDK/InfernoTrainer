@@ -2,7 +2,7 @@
 import StandardSpellbookTab from '../../assets/images/tabs/standard_spellbook.png'
 import AncientsPanel from '../../assets/images/panels/ancients.png'
 import { BaseControls } from './BaseControls'
-import { BarrageMagicWeapon } from '../Weapons/BarrageMagicWeapon'
+import { BarrageMagicWeapon } from '../weapons/BarrageMagicWeapon'
 import { Settings } from '../Settings'
 import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
