@@ -5,6 +5,7 @@ import { UnitEquipment } from "../Unit";
 export class Ammo extends Equipment {
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     unitEquipment.ammo = this;
+    
   }
 
   currentEquipment(player: Player): Equipment {

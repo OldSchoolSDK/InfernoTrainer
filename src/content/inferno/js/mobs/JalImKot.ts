@@ -6,6 +6,7 @@ import { Pathing } from '../../../../sdk/Pathing'
 import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
+import { UnitBonuses } from '../../../../sdk/Unit'
 
 export class JalImKot extends Mob {
   get displayName () {
@@ -44,8 +45,11 @@ export class JalImKot extends Mob {
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
+  }
 
-    this.bonuses = {
+
+  get bonuses(): UnitBonuses{ 
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -66,9 +70,8 @@ export class JalImKot extends Mob {
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
-
   get cooldown () {
     return 4
   }

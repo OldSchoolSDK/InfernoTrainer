@@ -2,6 +2,7 @@
 
 import { Mob } from '../../../../sdk/Mob'
 import { Settings } from '../../../../sdk/Settings'
+import { UnitBonuses } from '../../../../sdk/Unit'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
@@ -53,7 +54,10 @@ export class JalAkRekXil extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -74,7 +78,7 @@ export class JalAkRekXil extends Mob {
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
 
   get cooldown () {

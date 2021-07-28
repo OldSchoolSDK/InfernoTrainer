@@ -102,7 +102,6 @@ export class Unit extends GameObject {
   currentAnimationTickLength: number = 0;
   currentStats: UnitStats;
   stats: UnitStats;
-  bonuses: UnitBonuses;
   equipment: UnitEquipment = new UnitEquipment();
 
   get type(): UnitTypes{
@@ -120,9 +119,6 @@ export class Unit extends GameObject {
 
     this.currentStats.hitpoint = this.stats.hitpoint
 
-    if (options.equipment && options.equipment.weapon) {
-      this.bonuses = options.equipment.weapon.bonuses // temp code
-    }
   }
   
   grantXp(xpDrop: XpDrop) { }
@@ -132,6 +128,68 @@ export class Unit extends GameObject {
   draw(tickPercent: number) { }
   drawUILayer(tickPercent: number) { }
   removedFromWorld () { }
+
+  static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses{
+    return {
+      attack: {
+        stab: firstBonuses.attack.stab + secondBonuses.attack.stab,
+        slash: firstBonuses.attack.slash + secondBonuses.attack.slash,
+        crush: firstBonuses.attack.crush + secondBonuses.attack.crush,
+        magic: firstBonuses.attack.magic + secondBonuses.attack.magic,
+        range: firstBonuses.attack.range + secondBonuses.attack.range
+      },
+      defence: {
+        stab: firstBonuses.defence.stab + secondBonuses.defence.stab,
+        slash: firstBonuses.defence.slash + secondBonuses.defence.slash,
+        crush: firstBonuses.defence.crush + secondBonuses.defence.crush,
+        magic: firstBonuses.defence.magic + secondBonuses.defence.magic,
+        range: firstBonuses.defence.range + secondBonuses.defence.range
+      },
+      other: {
+        meleeStrength: firstBonuses.other.meleeStrength + secondBonuses.other.meleeStrength,
+        rangedStrength: firstBonuses.other.rangedStrength + secondBonuses.other.rangedStrength,
+        magicDamage: firstBonuses.other.magicDamage + secondBonuses.other.magicDamage,
+        prayer: firstBonuses.other.prayer + secondBonuses.other.prayer
+      },
+      targetSpecific: {
+        undead: firstBonuses.targetSpecific.undead + secondBonuses.targetSpecific.undead,
+        slayer: firstBonuses.targetSpecific.slayer + secondBonuses.targetSpecific.slayer
+      }
+    };
+  }
+
+  static emptyBonuses(): UnitBonuses {
+    return {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    };
+  }
+
+  get bonuses(): UnitBonuses {
+    return Unit.emptyBonuses();
+  }
 
   get cooldown () {
     return 0

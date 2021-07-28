@@ -16,7 +16,7 @@ import VerzikRange8 from "../../assets/images/verzik-range0007.png";
 import BatSound from "../../assets/sounds/bat.ogg";
 import { AoeRangedWeapon } from "../../../../sdk/weapons/AoeRangedWeapon";
 import { Location } from "../../../../sdk/GameObject";
-import { Unit, UnitOptions } from "../../../../sdk/Unit";
+import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { World } from "../../../../sdk/World";
 
 export class Verzik extends Mob{
@@ -61,7 +61,10 @@ export class Verzik extends Mob{
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -82,7 +85,7 @@ export class Verzik extends Mob{
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
   
   get cooldown() {

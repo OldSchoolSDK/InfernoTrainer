@@ -4,6 +4,7 @@ import { Mob } from '../../../../sdk/Mob'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
+import { UnitBonuses } from '../../../../sdk/Unit'
 
 export class JalAkRekMej extends Mob {
   get displayName () {
@@ -55,7 +56,10 @@ export class JalAkRekMej extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -76,7 +80,7 @@ export class JalAkRekMej extends Mob {
         magicDamage: 1.25,
         prayer: 0
       }
-    }
+    };
   }
 
   get cooldown () {

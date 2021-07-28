@@ -28,7 +28,6 @@ export class Mob extends Unit {
   attackFeedback: AttackIndicators;
   stats: UnitStats;
   currentStats: UnitStats;
-  bonuses: UnitBonuses;
   hadLOS: boolean;
   hasLOS: boolean;
   weapons: WeaponsMap;
@@ -60,7 +59,18 @@ export class Mob extends Unit {
       hitpoint: 99
     }
 
-    this.bonuses = {
+  }
+
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
+
+    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
+      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
+    }
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -81,15 +91,7 @@ export class Mob extends Unit {
         magicDamage: 0,
         prayer: 0
       }
-    }
-  }
-
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
-
-    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
-    }
+    };
   }
 
   movementStep () {

@@ -7,6 +7,7 @@ import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
+import { UnitBonuses } from '../../../../sdk/Unit'
 
 export class JalZek extends Mob {
   get displayName () {
@@ -47,7 +48,10 @@ export class JalZek extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -68,7 +72,7 @@ export class JalZek extends Mob {
         magicDamage: 1.0,
         prayer: 0
       }
-    }
+    };
   }
 
   get cooldown () {

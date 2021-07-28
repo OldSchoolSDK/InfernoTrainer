@@ -1,6 +1,7 @@
 'use strict'
 
 import { Mob } from '../../../../sdk/Mob'
+import { UnitBonuses } from '../../../../sdk/Unit'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
@@ -44,7 +45,10 @@ export class JalMejRah extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -65,9 +69,8 @@ export class JalMejRah extends Mob {
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
-
   get cooldown () {
     return 3
   }

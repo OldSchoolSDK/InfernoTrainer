@@ -14,6 +14,7 @@ import { Mob } from './Mob'
 import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
+import { Equipment } from './Equipment'
 
 export interface PlayerStats extends UnitStats { 
   prayer: number
@@ -29,11 +30,11 @@ export class Player extends Unit {
 
   stats: PlayerStats;
   currentStats: PlayerStats;
-  bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
   running = true;
   prayerDrainCounter: number = 0;
+  cachedBonuses: UnitBonuses = null;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -43,6 +44,34 @@ export class Player extends Unit {
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
+  }
+
+  get bonuses(): UnitBonuses {
+    if (!this.cachedBonuses){
+      this.cachedBonuses = Unit.emptyBonuses();
+      let gear = [
+        this.equipment.weapon, 
+        this.equipment.offhand,
+        this.equipment.helmet,
+        this.equipment.necklace,
+        this.equipment.chest,
+        this.equipment.legs,
+        this.equipment.feet,
+        this.equipment.gloves,
+        this.equipment.ring,
+        this.equipment.cape,
+        this.equipment.ammo,
+      ]
+
+      gear.forEach((gear: Equipment) => {
+        if (gear && gear.bonuses){
+          this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
+        }
+      })
+      console.log('updated cache', this.cachedBonuses)
+    }
+
+    return this.cachedBonuses;
   }
 
   setStats () {
@@ -71,34 +100,6 @@ export class Player extends Unit {
       run: 100,
       specialAttack: 100
     }
-
-    this.bonuses = {
-      attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 128
-      },
-      defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
-      },
-      other: {
-        meleeStrength: 15,
-        rangedStrength: 62,
-        magicDamage: 1.27,
-        prayer: 12
-      },
-      targetSpecific: {
-        undead: 0,
-        slayer: 0
-      }
-    }
-
 
   }
 

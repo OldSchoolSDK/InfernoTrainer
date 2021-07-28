@@ -16,7 +16,6 @@ export enum EquipmentTypes {
   BACK = 'back'
 }
 
-
 export class Equipment extends Item {
   bonuses: UnitBonuses;
 

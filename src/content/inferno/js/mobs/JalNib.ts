@@ -9,7 +9,7 @@ import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
-import { Unit } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 
 class NibblerWeapon extends MeleeWeapon {
@@ -57,7 +57,10 @@ export class JalNib extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
