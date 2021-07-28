@@ -25,6 +25,16 @@ export class InventoryControls extends BaseControls {
     return Settings.inventory_key
   }
 
+  static openInventorySlots(): number[] {
+    const openSpots = [];
+    for (let i=0; i<28; i++) {
+      if (!InventoryControls.inventory[i]) {
+        openSpots.push(i);
+      }
+    }
+    return openSpots;
+  }
+
   clickedPanel (world: World, x: number, y: number) {
 
     const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
@@ -42,8 +52,8 @@ export class InventoryControls extends BaseControls {
     InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 
     if (clickedItem) {
-      if (clickedItem.hasLeftClick) {
-        clickedItem.leftClick(world.player);
+      if (clickedItem.hasInventoryLeftClick) {
+        clickedItem.inventoryLeftClick(world.player);
         world.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true

@@ -7,6 +7,7 @@ import { Unit, UnitEquipment } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
 import { Player } from "../Player";
+import { InventoryControls } from "../controlpanels/InventoryControls";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -31,7 +32,6 @@ export interface AttackBonuses {
 export class Weapon extends Equipment{
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
-  
 
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     unitEquipment.weapon = this;
@@ -44,6 +44,47 @@ export class Weapon extends Equipment{
   hasSpecialAttack(): boolean {
     return false;
   }
+
+  get isTwoHander(): boolean {
+    return false;
+  }
+
+
+  inventoryLeftClick(player: Player) {
+    // player.bonuses = clickedItem.bonuses // temp code
+    const currentWeapon = player.equipment.weapon || null;
+    const currentOffhand = player.equipment.offhand || null;
+
+    let openInventorySlots = InventoryControls.openInventorySlots()
+    openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
+
+    let neededInventorySlots = 0;
+    if (this.isTwoHander && currentWeapon) {
+      neededInventorySlots++;
+    }
+    if (this.isTwoHander && currentOffhand) {
+      neededInventorySlots++;
+    }
+    if (currentWeapon) {
+      neededInventorySlots--;
+    }
+
+    if (neededInventorySlots <= openInventorySlots.length) {
+      this.assignToUnitEquipment(player.equipment);
+      if (currentWeapon) {
+        InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
+      }else{
+        InventoryControls.inventory[openInventorySlots.shift()] = null; 
+        openInventorySlots = InventoryControls.openInventorySlots()       
+      }
+      if (this.isTwoHander && currentOffhand) {
+        console.log('open', openInventorySlots)
+        InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
+        player.equipment.offhand = null;
+      }
+    }
+  }
+  
   
   cast(world: World, from: Unit, to: GameObject) {
 

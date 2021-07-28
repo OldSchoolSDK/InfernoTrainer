@@ -5,10 +5,10 @@ export class Item {
   inventoryPosition: number;
   selected: boolean;
 
-  get hasLeftClick(): boolean {
+  get hasInventoryLeftClick(): boolean {
     return false;
   }
-  leftClick(player: Player) {
+  inventoryLeftClick(player: Player) {
     // world.player.equipment.weapon = clickedItem
   }
 

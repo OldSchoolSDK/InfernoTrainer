@@ -25,18 +25,20 @@ export class Equipment extends Item {
     this.setStats();
   }
 
-  get hasLeftClick(): boolean {
+  get hasInventoryLeftClick(): boolean {
     return true;
   }
 
-  leftClick(player: Player) {
-    player.aggro = null
+  inventoryLeftClick(player: Player) {
+    console.log('eq')
     // player.bonuses = clickedItem.bonuses // temp code
- 
-    const currentItem = this.currentEquipment(player) || null;    
-    this.assignToUnitEquipment(player.equipment);
-    InventoryControls.inventory[this.inventoryPosition] = currentItem;
+    const currentItem = this.currentEquipment(player) || null; 
 
+    let openInventorySlots = InventoryControls.openInventorySlots()
+    openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
+
+    this.assignToUnitEquipment(player.equipment);
+    InventoryControls.inventory[openInventorySlots.shift()] = currentItem;
   }
 
 

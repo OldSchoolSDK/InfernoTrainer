@@ -194,7 +194,11 @@ export class MapController {
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.world.player.equipment.weapon.hasSpecialAttack() ? this.mapSpecOrb : this.mapNoSpecOrb, 0, 0)
+    let specOrb = this.mapNoSpecOrb;
+    if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
+      specOrb = this.mapSpecOrb;
+    }
+    ctx.drawImage(specOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapSpecOrb.height * (1 - specPercentage), this.mapRunOrb.width, this.mapRunOrb.height * specPercentage)
     ctx.globalCompositeOperation = 'source-over'

@@ -35,6 +35,11 @@ export class TwistedBow extends RangedWeapon {
       }
     }
   }
+
+  get isTwoHander(): boolean {
+    return true;
+  }
+
   get attackRange () {
     return 10
   }

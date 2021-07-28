@@ -37,6 +37,12 @@ export class ScytheOfVitur extends MeleeWeapon {
       }
     };
   }
+
+
+  get isTwoHander(): boolean {
+    return true;
+  }
+  
   get attackRange () {
     return 1
   }

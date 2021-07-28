@@ -1,9 +1,10 @@
 'use strict'
 
-import BPInventImage from '../../assets/images/weapons/blowpipe.png'
-import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
+import BPInventImage from '../../assets/images/equipment/Kodai_wand.png'
+import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 
-export class Blowpipe extends RangedWeapon {
+export class KodaiWand extends MeleeWeapon {
+
   constructor() {
     super();
 
@@ -37,19 +38,20 @@ export class Blowpipe extends RangedWeapon {
 
 
   get isTwoHander(): boolean {
-    return true;
+    return false;
   }
   
   hasSpecialAttack(): boolean {
-    return true;
+    return false;
   }
 
   get attackRange () {
-    return 5
+    // TODO: Override with spell selection
+    return 1
   }
 
   get attackSpeed () {
-    return 2
+    return 4
   }
 
   get inventoryImage () {

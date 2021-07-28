@@ -178,7 +178,11 @@ export class Player extends Unit {
       this.manualSpellCastSelection = null
     } else {
       // use equipped weapon
-      this.equipment.weapon.attack(this.world, this, this.aggro)
+      if (this.equipment.weapon){
+        this.equipment.weapon.attack(this.world, this, this.aggro)
+      }else{
+        console.log('TODO: Implement punching')
+      }
     }
 
     // this.playAttackSound();
@@ -302,14 +306,20 @@ export class Player extends Unit {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange
     }
-    return this.equipment.weapon.attackRange
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackRange
+    }
+    return 1;
   }
 
   get attackSpeed () {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed
     }
-    return this.equipment.weapon.attackSpeed
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackSpeed
+    }
+    return 4;
   }
 
   drainPrayer() {

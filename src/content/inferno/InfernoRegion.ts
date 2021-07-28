@@ -30,6 +30,8 @@ import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
 import { CrystalShield } from '../equipment/CrystalShield';
 import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
 import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
+import { KodaiWand } from '../weapons/KodaiWand'
+import { DevoutBoots } from '../equipment/DevoutBoots'
 
 export class InfernoRegion extends Region {
 
@@ -39,7 +41,7 @@ export class InfernoRegion extends Region {
   }
 
   getInventory () {
-    return [new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new CrystalShield(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots(), new PegasianBoots()]
+    return [new TwistedBow(), new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new CrystalShield(), new PegasianBoots(), new DevoutBoots()]
   }
 
   initialize (world: World) {
@@ -57,7 +59,8 @@ export class InfernoRegion extends Region {
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
       { equipment: { 
-          weapon: new Blowpipe(), 
+          weapon: new KodaiWand(), 
+          offhand: new CrystalShield(),
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),
