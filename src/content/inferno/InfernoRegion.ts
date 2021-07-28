@@ -19,6 +19,11 @@ import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
 import { ImageLoader } from '../../sdk/utils/ImageLoader'
 import { JusticiarFaceguard } from '../equipment/JusticiarFaceguard';
+import { NecklaceOfAnguish } from '../equipment/NecklaceOfAnguish';
+import { ArmadylChestplate } from '../equipment/ArmadylChestplate';
+import { ArmadylChainskirt } from '../equipment/ArmadylChainskirt';
+import { PegasianBoots } from '../equipment/PegasianBoots';
+import { AvasAssembler } from '../equipment/AvasAssembler';
 
 export class InfernoRegion extends Region {
 
@@ -45,7 +50,16 @@ export class InfernoRegion extends Region {
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
-      { equipment: { weapon: new TwistedBow(), helmet: new JusticiarFaceguard() }})
+      { equipment: { 
+          weapon: new TwistedBow(), 
+          helmet: new JusticiarFaceguard(),
+          necklace: new NecklaceOfAnguish(),
+          cape: new AvasAssembler(),
+          chest: new ArmadylChestplate(),
+          legs: new ArmadylChainskirt(),
+          feet: new PegasianBoots()
+        }
+      })
     world.setPlayer(player)
 
     // Add mobs
