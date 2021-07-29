@@ -10,6 +10,7 @@ import MapPrayerSelectedOrb from '../assets/images/interface/map_prayer_on_orb.p
 import MapRunOrb from '../assets/images/interface/map_run_orb.png'
 import MapNoSpecOrb from '../assets/images/interface/map_no_spec_orb.png'
 import MapSpecOrb from '../assets/images/interface/map_spec_orb.png'
+import MapSpecOnOrb from '../assets/images/interface/map_spec_on_orb.png'
 
 import MapXpButton from '../assets/images/interface/map_xp_button.png'
 import MapXpHoverButton from '../assets/images/interface/map_xp_hover_button.png'
@@ -56,6 +57,7 @@ export class MapController {
   mapRunOrb = ImageLoader.createImage(MapRunOrb);
   mapNoSpecOrb = ImageLoader.createImage(MapNoSpecOrb)
   mapSpecOrb = ImageLoader.createImage(MapSpecOrb);
+  mapSpecOnOrb = ImageLoader.createImage(MapSpecOnOrb);
   mapHitpointIcon = ImageLoader.createImage(MapHitpointIcon);
   mapPrayerIcon = ImageLoader.createImage(MapPrayerIcon);
   mapWalkIcon = ImageLoader.createImage(MapWalkIcon);
@@ -108,46 +110,6 @@ export class MapController {
 
   }
 
-  clicked(event: MouseEvent): boolean {
-    let intercepted = false;
-    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
-    const y = event.offsetY;
-
-    if (x > 4 && x < 23 && y > 31 && y < 51) {
-      Settings.displayXpDrops = !Settings.displayXpDrops;
-      intercepted = true;
-    }else if (x > 33 && x < 67 && y > 5 && y < 39){
-      intercepted = true;
-      
-      if (Settings.rotated === 'south') {
-        Settings.rotated = 'north'
-      } else {
-        Settings.rotated = 'south'
-      }
-      Settings.persistToStorage();
-    }else if (x > 4 && x < 48 && y > 53 && y < 76){
-      intercepted = true;
-      // this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
-      intercepted = true;
-      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
-      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
-        this.world.player.prayerDrainCounter = 0;
-      }else {
-        ControlPanelController.controls.PRAYER.activateQuickPrayers();
-      }
-    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
-      intercepted = true;
-      this.world.player.running = !this.world.player.running;
-    }else if (x > 38 && x < 74 && y > 148 && y < 170) {
-      intercepted = true;
-      // this.hovering = MapHover.SPEC;
-    }
-    this.updateOrbsMask(this.currentStats, this.stats);
-    return intercepted;
-  }
-
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
 
     if (currentStats){
@@ -196,7 +158,11 @@ export class MapController {
     ctx.fillStyle="white";
     let specOrb = this.mapNoSpecOrb;
     if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
-      specOrb = this.mapSpecOrb;
+      if (this.world.player.useSpecialAttack) {
+        specOrb = this.mapSpecOnOrb;
+      }else{
+        specOrb = this.mapSpecOrb;
+      }
     }
     ctx.drawImage(specOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
@@ -271,6 +237,48 @@ export class MapController {
     mapContext.drawImage(this.mapAlphaImage, 0, 0)
     mapContext.globalCompositeOperation = 'source-over'
     mapContext.restore()
+  }
+
+  clicked(event: MouseEvent): boolean {
+    let intercepted = false;
+    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const y = event.offsetY;
+
+    if (x > 4 && x < 23 && y > 31 && y < 51) {
+      Settings.displayXpDrops = !Settings.displayXpDrops;
+      intercepted = true;
+    }else if (x > 33 && x < 67 && y > 5 && y < 39){
+      intercepted = true;
+      
+      if (Settings.rotated === 'south') {
+        Settings.rotated = 'north'
+      } else {
+        Settings.rotated = 'south'
+      }
+      Settings.persistToStorage();
+    }else if (x > 4 && x < 48 && y > 53 && y < 76){
+      intercepted = true;
+      // this.hovering = MapHover.HITPOINT;
+    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
+      intercepted = true;
+      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+        this.world.player.prayerDrainCounter = 0;
+      }else {
+        ControlPanelController.controls.PRAYER.activateQuickPrayers();
+      }
+    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
+      intercepted = true;
+      this.world.player.running = !this.world.player.running;
+    }else if (x > 38 && x < 74 && y > 148 && y < 170) {
+      intercepted = true;
+      if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
+        this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+      }
+    }
+    this.updateOrbsMask(this.currentStats, this.stats);
+    return intercepted;
   }
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){

@@ -3,6 +3,11 @@
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { ItemNames } from "../../sdk/ItemNames";
+import { World } from '../../sdk/World';
+import { Unit } from '../../sdk/Unit';
+import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { SetEffect, SetEffectTypes } from '../../sdk/SetEffect';
+import { find } from 'lodash';
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -33,6 +38,30 @@ export class Blowpipe extends RangedWeapon {
         slayer: 0
       }
     }
+  }
+
+
+  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    
+    bonuses.isSpecialAttack = true;
+    super.attack(world, from, to, bonuses)
+    
+    const healAttackerBy = Math.floor(this.damage / 2);
+    from.currentStats.hitpoint += healAttackerBy;
+    from.currentStats.hitpoint = Math.min(from.currentStats.hitpoint, from.stats.hitpoint);
+  }
+
+  _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    if (bonuses.isSpecialAttack) {
+      return 1.5;
+    }
+    return 1;
+  }
+  _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    if (bonuses.isSpecialAttack) {
+      return 2;
+    }
+    return 1;
   }
 
   get itemName(): ItemNames {
