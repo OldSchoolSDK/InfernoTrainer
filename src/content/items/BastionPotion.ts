@@ -1,15 +1,15 @@
 
 import { ItemNames } from "../../sdk/ItemNames";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import OneDose from '../../assets/images/potions/Stamina_potion_1.png';
-import TwoDose from '../../assets/images/potions/Stamina_potion_2.png';
-import ThreeDose from '../../assets/images/potions/Stamina_potion_3.png';
-import FourDose from '../../assets/images/potions/Stamina_potion_4.png';
+import OneDose from '../../assets/images/potions/Bastion_potion_1.png';
+import TwoDose from '../../assets/images/potions/Bastion_potion_2.png';
+import ThreeDose from '../../assets/images/potions/Bastion_potion_3.png';
+import FourDose from '../../assets/images/potions/Bastion_potion_4.png';
 import Vial from '../../assets/images/potions/Vial.png';
 import { Player } from "../../sdk/Player";
 import { Potion } from "../../sdk/gear/Potion"
 
-export class StaminaPotion extends Potion {
+export class BastionPotion extends Potion {
   oneDose: HTMLImageElement = ImageLoader.createImage(OneDose)
   twoDose: HTMLImageElement = ImageLoader.createImage(TwoDose)
   threeDose: HTMLImageElement = ImageLoader.createImage(ThreeDose)
@@ -34,16 +34,21 @@ export class StaminaPotion extends Potion {
     return Vial;
   }
   get itemName(): ItemNames {
-    return ItemNames.SARADOMIN_BREW
+    return ItemNames.BASTION_POTION
   }
   
   inventoryLeftClick(player: Player) {
 
     if (this.doses > 0) {
-      player.effects.stamina = 200; // 2 minutes = 200 ticks
-      player.currentStats.run += 2000;
-      player.currentStats.run = Math.min(Math.max(player.currentStats.run, 0), 10000);
+      const rangedBoost = Math.floor(player.currentStats.defence * 0.10) + 4
+      player.currentStats.range += rangedBoost;
+      player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangedBoost)
+
+      const defenceBoost = Math.floor(player.currentStats.defence * 0.15) + 5
+      player.currentStats.defence += defenceBoost;
+      player.currentStats.defence = Math.min(player.currentStats.defence, player.stats.defence + defenceBoost);
     }
+
     this.doses--;
 
     this.updateInventorySprite();
