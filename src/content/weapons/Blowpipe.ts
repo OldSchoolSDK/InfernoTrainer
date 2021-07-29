@@ -51,14 +51,12 @@ export class Blowpipe extends RangedWeapon {
     from.currentStats.hitpoint = Math.min(from.currentStats.hitpoint, from.stats.hitpoint);
   }
 
-  _maxHit (from: Unit, to: Unit, bonuses: AttackBonuses) {
+  _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     if (bonuses.isSpecialAttack) {
-      return Math.floor(super._maxHit(from, to, bonuses) * 1.5);
+      return 1.5;
     }
-    return super._maxHit(from, to, bonuses)
+    return 1;
   }
-
-
   _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     if (bonuses.isSpecialAttack) {
       return 2;
