@@ -255,16 +255,17 @@ export class MapController {
     }
     mapContext.translate(-76, -76)
 
-    const compatCtx = mapContext as any;
-    compatCtx.webkitImageSmoothingEnabled = false;
-    compatCtx.mozImageSmoothingEnabled = false;
-    compatCtx.imageSmoothingEnabled = false;
 
-    mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
-    compatCtx.webkitImageSmoothingEnabled = true;
-    compatCtx.mozImageSmoothingEnabled = true;
-    compatCtx.imageSmoothingEnabled = true;
-
+    if (this.world.region.mapImage){
+      const compatCtx = mapContext as any;
+      compatCtx.webkitImageSmoothingEnabled = false;
+      compatCtx.mozImageSmoothingEnabled = false;
+      compatCtx.imageSmoothingEnabled = false;
+      mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
+      compatCtx.webkitImageSmoothingEnabled = true;
+      compatCtx.mozImageSmoothingEnabled = true;
+      compatCtx.imageSmoothingEnabled = true;
+    }
 
     mapContext.globalCompositeOperation = 'destination-out'
     mapContext.drawImage(this.mapAlphaImage, 0, 0)
