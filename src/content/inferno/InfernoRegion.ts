@@ -32,6 +32,8 @@ import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
 import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
 import { KodaiWand } from '../weapons/KodaiWand'
 import { DevoutBoots } from '../equipment/DevoutBoots'
+import { AncestralRobetop } from '../equipment/AncestralRobetop'
+import { AncestralRobebottom } from '../equipment/AncestralRobebottom'
 
 export class InfernoRegion extends Region {
 
@@ -43,7 +45,7 @@ export class InfernoRegion extends Region {
   getInventory () {
     return [
       new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
-      new CrystalShield(), new DevoutBoots()
+      new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom()
     ]
   }
 

@@ -16,5 +16,8 @@ export enum ItemNames {
   TOXIC_BLOWPIPE = 'Toxic Blowpipe',
   TWISTED_BOW = 'Twisted Bow',
   SCYTHE_OF_VITUR = 'Scythe of Vitur',
-  KODAI_WAND = 'Kodai Wand'
+  KODAI_WAND = 'Kodai Wand',
+  ANCESTRAL_ROBETOP = 'Ancestral Robe top',
+  ANCESTRAL_ROBEBOTTOM = 'Ancestral Robe bottom',
+  
 }
