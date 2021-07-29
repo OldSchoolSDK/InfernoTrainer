@@ -34,6 +34,11 @@ class PlayerEffects {
   stamina: number = 0;
 }
 
+interface PlayerRegenTimers {
+  spec: number;
+  hitpoint: number;
+}
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -49,11 +54,13 @@ export class Player extends Unit {
   cachedBonuses: UnitBonuses = null;
   useSpecialAttack: boolean = false;
   effects = new PlayerEffects();
+  regenTimers: PlayerRegenTimers;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
     this.equipment = options.equipment;
+    this.regenTimers = { spec: 50, hitpoint: 100 };
     this.equipmentChanged();
     this.clearXpDrops();
 
@@ -253,6 +260,9 @@ export class Player extends Unit {
           if (this.currentStats.specialAttack >= this.equipment.weapon.specialAttackDrain()) {
             this.equipment.weapon.specialAttack(this.world, this, this.aggro as Unit /* hack */)
             this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
+            if (this.regenTimers.spec <=0) {
+              this.regenTimers.spec = 50;
+            }
           }
           this.useSpecialAttack  = false;
         }else{
@@ -435,6 +445,24 @@ export class Player extends Unit {
     }
   }
 
+  specRegen() {
+    this.regenTimers.spec--;
+    if (this.regenTimers.spec === 0) {
+      this.regenTimers.spec = 50;
+      this.currentStats.specialAttack += 10;
+      this.currentStats.specialAttack = Math.min(100, this.currentStats.specialAttack);
+    }
+  }
+
+  hitpointRegen() {
+    this.regenTimers.hitpoint--;
+    if (this.regenTimers.hitpoint === 0) {
+      this.regenTimers.hitpoint = 100;
+      this.currentStats.hitpoint++;
+      this.currentStats.hitpoint = Math.min(this.stats.hitpoint, this.currentStats.hitpoint);
+    }
+  }
+
   attackStep () {
     
     
@@ -444,6 +472,10 @@ export class Player extends Unit {
     this.clearXpDrops();
 
     this.attackIfPossible()
+    
+    this.specRegen();
+
+    this.hitpointRegen();
 
     this.sendXpToController();
 
