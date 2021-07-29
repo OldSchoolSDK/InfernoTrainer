@@ -38,6 +38,8 @@ import { AncestralRobebottom } from '../equipment/AncestralRobebottom'
 import { StaminaPotion } from '../items/StaminaPotion'
 import { SaradominBrew } from '../items/SaradominBrew'
 import { SuperRestore } from '../items/SuperRestore'
+import { BastionPotion } from '../items/BastionPotion'
+
 export class InfernoRegion extends Region {
 
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
@@ -53,7 +55,7 @@ export class InfernoRegion extends Region {
       new SaradominBrew(), new SaradominBrew(), new SaradominBrew(), new SaradominBrew(),
       new SuperRestore(), new SuperRestore(), new SuperRestore(), new SuperRestore(), 
       new SuperRestore(), new SuperRestore(), new SuperRestore(), new SuperRestore(), 
-      new SuperRestore(), new SuperRestore(), new SuperRestore(), new SuperRestore(), 
+      new SuperRestore(), new SuperRestore(), new SuperRestore(), new BastionPotion(), 
     ]
   }
 

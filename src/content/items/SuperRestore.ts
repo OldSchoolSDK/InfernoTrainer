@@ -34,7 +34,7 @@ export class SuperRestore extends Potion {
     return Vial;
   }
   get itemName(): ItemNames {
-    return ItemNames.BARROWS_GLOVES
+    return ItemNames.SUPER_RESTORE
   }
   
   inventoryLeftClick(player: Player) {
