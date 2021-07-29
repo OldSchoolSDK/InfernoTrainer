@@ -36,6 +36,7 @@ import { DevoutBoots } from '../equipment/DevoutBoots'
 import { AncestralRobetop } from '../equipment/AncestralRobetop'
 import { AncestralRobebottom } from '../equipment/AncestralRobebottom'
 import { StaminaPotion } from '../items/StaminaPotion'
+import { SaradominBrew } from '../items/SaradominBrew'
 export class InfernoRegion extends Region {
 
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
@@ -47,7 +48,8 @@ export class InfernoRegion extends Region {
     return [
       new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
       new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom(),
-      new RingOfEndurance(), new StaminaPotion(), new StaminaPotion(), 
+      new RingOfEndurance(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
+      new SaradominBrew(),new SaradominBrew(),new SaradominBrew(),new SaradominBrew(),
     ]
   }
 

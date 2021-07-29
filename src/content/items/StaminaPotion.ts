@@ -1,44 +1,40 @@
 
-import { Item } from "../../sdk/Item";
 import { ItemNames } from "../../sdk/ItemNames";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import StamPot1 from '../../assets/images/potions/Stamina_potion_1.png';
-import StamPot2 from '../../assets/images/potions/Stamina_potion_2.png';
-import StamPot3 from '../../assets/images/potions/Stamina_potion_3.png';
-import StamPot4 from '../../assets/images/potions/Stamina_potion_4.png';
+import OneDose from '../../assets/images/potions/Stamina_potion_1.png';
+import TwoDose from '../../assets/images/potions/Stamina_potion_2.png';
+import ThreeDose from '../../assets/images/potions/Stamina_potion_3.png';
+import FourDose from '../../assets/images/potions/Stamina_potion_4.png';
 import Vial from '../../assets/images/potions/Vial.png';
 import { Player } from "../../sdk/Player";
+import { Potion } from "../../sdk/gear/Potion"
 
-export class StaminaPotion extends Item {
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
-  stamPot1: HTMLImageElement = ImageLoader.createImage(StamPot1)
-  stamPot2: HTMLImageElement = ImageLoader.createImage(StamPot2)
-  stamPot3: HTMLImageElement = ImageLoader.createImage(StamPot3)
-  stamPot4: HTMLImageElement = ImageLoader.createImage(StamPot4)
-  vial: HTMLImageElement = ImageLoader.createImage(Vial)
-  doses: number = 4;
+export class StaminaPotion extends Potion {
+  oneDose: HTMLImageElement = ImageLoader.createImage(OneDose)
+  twoDose: HTMLImageElement = ImageLoader.createImage(TwoDose)
+  threeDose: HTMLImageElement = ImageLoader.createImage(ThreeDose)
+  fourDose: HTMLImageElement = ImageLoader.createImage(FourDose)
 
+  constructor(doses: number = 4) {
+    super();
+    this.doses = doses;
+    this.updateInventorySprite();
+  }
+  
   get inventoryImage () {
     if (this.doses === 4) {
-      return StamPot4;
+      return FourDose;
     }else if (this.doses === 3) {
-      return StamPot3;
+      return ThreeDose;
     }else if (this.doses === 2) {
-      return StamPot2;
+      return TwoDose;
     }else if (this.doses === 1) {
-      return StamPot1;
+      return OneDose;
     }
     return Vial;
   }
   get itemName(): ItemNames {
     return ItemNames.BARROWS_GLOVES
-  }
-  get weight(): number {
-    return 0.226;
-  }
-
-  get hasInventoryLeftClick(): boolean {
-    return true;
   }
   
   inventoryLeftClick(player: Player) {
@@ -55,22 +51,16 @@ export class StaminaPotion extends Item {
 
   updateInventorySprite() {
     if (this.doses === 4){
-      this.inventorySprite = this.stamPot4;      
+      this.inventorySprite = this.fourDose;      
     }else if (this.doses === 3) {
-      this.inventorySprite = this.stamPot3;
+      this.inventorySprite = this.threeDose;
     }else if (this.doses === 2){
-      this.inventorySprite = this.stamPot2;
+      this.inventorySprite = this.twoDose;
     }else if (this.doses === 1){
-      this.inventorySprite = this.stamPot1;
+      this.inventorySprite = this.oneDose;
     }else {
       this.inventorySprite = this.vial;
     }
-  }
-
-  constructor(doses: number = 4) {
-    super();
-    this.doses = doses;
-    this.updateInventorySprite();
   }
 
 }
