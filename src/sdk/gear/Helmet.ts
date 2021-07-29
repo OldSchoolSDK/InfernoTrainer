@@ -12,6 +12,9 @@ export class Helmet extends Equipment {
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     unitEquipment.helmet = this;
   }
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.helmet = null;
+  }
 
 
   currentEquipment(player: Player): Equipment {

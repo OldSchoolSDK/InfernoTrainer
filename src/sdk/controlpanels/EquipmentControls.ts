@@ -24,7 +24,40 @@ export class EquipmentControls extends BaseControls {
   }
 
   clickedPanel (world: World, x: number, y: number) {
-
+    if (x > 84 && y > 11 && x < 84 + 36 && y < 11 + 36) {
+      // helmet
+      world.player.equipment.helmet.unequip(world.player);
+    }else if (x > 43 && y > 50 && x < 43 + 36 && y < 50 + 36) {
+      // cape
+      world.player.equipment.cape.unequip(world.player);
+    }else if (x > 84 && y > 50 && x < 84 + 36 && y < 50 + 36) {
+      // necklace
+      world.player.equipment.necklace.unequip(world.player);
+    }else if (x > 124 && y > 50 && x < 124 + 36 && y < 50 + 36) {
+      // ammo
+      world.player.equipment.ammo.unequip(world.player);
+    }else if (x > 28 && y > 89 && x < 28 + 36 && y < 89 + 36) {
+      // weapon 
+      world.player.equipment.weapon.unequip(world.player);
+    }else if (x > 84 && y > 89 && x < 84 + 36 && y < 89 + 36) {
+      // chest
+      world.player.equipment.chest.unequip(world.player);
+    }else if (x > 140 && y > 89 && x < 140 + 36 && y < 89 + 36) {
+      // offhand
+      world.player.equipment.offhand.unequip(world.player);
+    }else if (x > 84 && y > 129 && x < 84 + 36 && y < 129 + 36) {
+      // legs
+      world.player.equipment.legs.unequip(world.player);
+    }else if (x > 28 && y > 169 && x < 28 + 36 && y < 169 + 36) {
+      // gloves
+      world.player.equipment.gloves.unequip(world.player);
+    }else if (x > 84 && y > 169 && x < 84 + 36 && y < 169 + 36) {
+      // feet
+      world.player.equipment.feet.unequip(world.player);
+    }else if (x > 140 && y > 169 && x < 140 + 36 && y < 169 + 36) {
+      // ring
+      world.player.equipment.ring.unequip(world.player);
+    }
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
@@ -54,7 +87,6 @@ export class EquipmentControls extends BaseControls {
       const weaponSprite = world.player.equipment.weapon.inventorySprite;
       world.viewportCtx.drawImage(weaponSprite, x + 46 - weaponSprite.width / 2 , y + 107 - weaponSprite.height / 2)
     }
-
     if (world.player.equipment.chest) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 89)
       const chestSprite = world.player.equipment.chest.inventorySprite;
@@ -65,15 +97,11 @@ export class EquipmentControls extends BaseControls {
       const offhandSprite = world.player.equipment.offhand.inventorySprite;
       world.viewportCtx.drawImage(offhandSprite, x + 158 - offhandSprite.width / 2 , y + 107 - offhandSprite.height / 2)
     }
-
-
     if (world.player.equipment.legs) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 84, y + 129)
       const legsSprite = world.player.equipment.legs.inventorySprite;
       world.viewportCtx.drawImage(legsSprite, x + 102 - legsSprite.width / 2 , y + 147 - legsSprite.height / 2)
     }
-
-
     if (world.player.equipment.gloves) {
       world.viewportCtx.drawImage(this.usedSpotBackground, x + 28, y + 169)
       const glovesSprite = world.player.equipment.gloves.inventorySprite;

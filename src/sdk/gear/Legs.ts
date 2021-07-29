@@ -8,6 +8,9 @@ export class Legs extends Equipment {
     unitEquipment.legs = this;
   }
 
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.legs = null;
+  }
   currentEquipment(player: Player): Equipment {
     return player.equipment.legs;
   }

@@ -43,6 +43,9 @@ export class Offhand extends Equipment {
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     unitEquipment.offhand = this;
   }
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.offhand = null;
+  }
 
   currentEquipment(player: Player): Equipment {
     return player.equipment.offhand;

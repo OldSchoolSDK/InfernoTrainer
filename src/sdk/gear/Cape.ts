@@ -7,6 +7,9 @@ export class Cape extends Equipment {
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     unitEquipment.cape = this;
   }
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.cape = null;
+  }
 
   currentEquipment(player: Player): Equipment {
     return player.equipment.cape;

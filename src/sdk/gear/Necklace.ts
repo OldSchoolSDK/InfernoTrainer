@@ -8,6 +8,9 @@ export class Necklace extends Equipment {
     unitEquipment.necklace = this;
   }
 
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.necklace = null;
+  }
   currentEquipment(player: Player): Equipment {
     return player.equipment.necklace;
   }

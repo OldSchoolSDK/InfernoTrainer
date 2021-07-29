@@ -41,6 +41,9 @@ export class Weapon extends Equipment{
     unitEquipment.weapon = this;
   }
 
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    unitEquipment.weapon = null;
+  }
   currentEquipment(player: Player): Equipment {
     return player.equipment.weapon;
   }

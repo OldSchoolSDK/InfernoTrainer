@@ -27,7 +27,6 @@ export class Equipment extends Item {
   get hasInventoryLeftClick(): boolean {
     return true;
   }
-
   inventoryLeftClick(player: Player) {
     const currentItem = this.currentEquipment(player) || null; 
     let openInventorySlots = InventoryControls.openInventorySlots()
@@ -51,6 +50,20 @@ export class Equipment extends Item {
 
   assignToUnitEquipment(unitEquipment: UnitEquipment) {
     throw new Error('not able to assign to unit equipment')
+  }
+
+  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+    throw new Error('not able to unassign to unit equipment')
+  }
+
+  unequip(player: Player) {
+    let openInventorySlots = InventoryControls.openInventorySlots()
+    if (openInventorySlots.length === 0) {
+      return;
+    }
+    this.unassignToUnitEquipment(player.equipment)
+    
+    InventoryControls.inventory[openInventorySlots.shift()] = this;
   }
 
   get type(): EquipmentTypes {
