@@ -5,11 +5,11 @@ import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
-import { Weapon } from './Weapons/Weapon'
-import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes, WeaponsMap } from './Unit'
+import { Weapon } from './gear/Weapon'
+import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from './GameObject'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -18,13 +18,16 @@ export enum AttackIndicators {
   SCAN = 3,
 }
 
+export interface WeaponsMap {
+  [key: string]: Weapon
+}
+
 export class Mob extends Unit {
 
   hasResurrected: boolean = false;
   attackFeedback: AttackIndicators;
   stats: UnitStats;
   currentStats: UnitStats;
-  bonuses: UnitBonuses;
   hadLOS: boolean;
   hasLOS: boolean;
   weapons: WeaponsMap;
@@ -56,7 +59,18 @@ export class Mob extends Unit {
       hitpoint: 99
     }
 
-    this.bonuses = {
+  }
+
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
+
+    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
+      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
+    }
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -77,15 +91,7 @@ export class Mob extends Unit {
         magicDamage: 0,
         prayer: 0
       }
-    }
-  }
-
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
-
-    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
-    }
+    };
   }
 
   movementStep () {
@@ -208,7 +214,7 @@ export class Mob extends Unit {
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.world, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
     if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {

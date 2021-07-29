@@ -2,32 +2,33 @@
 
 import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
 import { Unit, UnitBonuses } from '../../sdk/Unit'
-import { RangedWeapon } from '../../sdk/Weapons/RangedWeapon'
-import { AttackBonuses } from '../../sdk/Weapons/Weapon'
+import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
+import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { ItemNames } from "../../sdk/ItemNames"
 
 export class TwistedBow extends RangedWeapon {
   constructor() {
     super();
     this.bonuses = {
       attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 168
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 70
       },
       defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
       },
       other: {
-        meleeStrength: 15,
-        rangedStrength: 87,
-        magicDamage: 1.27,
-        prayer: 12
+        meleeStrength: 0,
+        rangedStrength: 20,
+        magicDamage: 0,
+        prayer: 0
       },
       targetSpecific: {
         undead: 0,
@@ -35,6 +36,16 @@ export class TwistedBow extends RangedWeapon {
       }
     }
   }
+
+
+  get itemName(): ItemNames {
+    return ItemNames.TWISTED_BOW
+  }
+
+  get isTwoHander(): boolean {
+    return true;
+  }
+
   get attackRange () {
     return 10
   }

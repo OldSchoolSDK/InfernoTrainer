@@ -1,10 +1,10 @@
 'use strict'
 
 import { find } from 'lodash'
-import { MagicWeapon } from '../../../../sdk/Weapons/MagicWeapon'
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import BlobImage from '../../assets/images/blob.png'
 import BlobSound from '../../assets/sounds/blob.ogg'
 
@@ -13,6 +13,7 @@ import { JalAkRekMej } from './JalAkRekMej'
 import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
+import { UnitBonuses } from '../../../../sdk/Unit'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -56,7 +57,10 @@ export class JalAk extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -77,9 +81,8 @@ export class JalAk extends Mob {
         magicDamage: 1.0,
         prayer: 0
       }
-    }
+    };
   }
-
   // Since blobs attack on a 6 tick cycle, but these mechanics are odd, i set the
   // attack speed to 3. The attack code exits early during a scan, so it always is
   // double the cooldown between actual attacks.

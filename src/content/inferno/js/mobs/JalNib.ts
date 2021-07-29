@@ -1,16 +1,16 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 
 import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
-import { Projectile } from '../../../../sdk/Weapons/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
-import { Unit } from '../../../../sdk/Unit'
-import { AttackBonuses, Weapon } from '../../../../sdk/Weapons/Weapon'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -57,7 +57,10 @@ export class JalNib extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,

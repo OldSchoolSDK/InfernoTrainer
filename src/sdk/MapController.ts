@@ -10,6 +10,7 @@ import MapPrayerSelectedOrb from '../assets/images/interface/map_prayer_on_orb.p
 import MapRunOrb from '../assets/images/interface/map_run_orb.png'
 import MapNoSpecOrb from '../assets/images/interface/map_no_spec_orb.png'
 import MapSpecOrb from '../assets/images/interface/map_spec_orb.png'
+import MapSpecOnOrb from '../assets/images/interface/map_spec_on_orb.png'
 
 import MapXpButton from '../assets/images/interface/map_xp_button.png'
 import MapXpHoverButton from '../assets/images/interface/map_xp_hover_button.png'
@@ -19,12 +20,13 @@ import MapHitpointIcon from '../assets/images/interface/map_hitpoint_icon.png'
 import MapPrayerIcon from '../assets/images/interface/map_prayer_icon.png'
 import MapWalkIcon from '../assets/images/interface/map_walk_icon.png'
 import MapRunIcon from '../assets/images/interface/map_run_icon.png'
+import MapStamIcon from '../assets/images/interface/map_stam_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { World } from './World';
 import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
 
@@ -56,10 +58,12 @@ export class MapController {
   mapRunOrb = ImageLoader.createImage(MapRunOrb);
   mapNoSpecOrb = ImageLoader.createImage(MapNoSpecOrb)
   mapSpecOrb = ImageLoader.createImage(MapSpecOrb);
+  mapSpecOnOrb = ImageLoader.createImage(MapSpecOnOrb);
   mapHitpointIcon = ImageLoader.createImage(MapHitpointIcon);
   mapPrayerIcon = ImageLoader.createImage(MapPrayerIcon);
   mapWalkIcon = ImageLoader.createImage(MapWalkIcon);
   mapRunIcon = ImageLoader.createImage(MapRunIcon);
+  mapStamIcon = ImageLoader.createImage(MapStamIcon);
   mapSpecIcon = ImageLoader.createImage(MapSpecIcon);
   mapXpButton = ImageLoader.createImage(MapXpButton);
   mapXpHoverButton = ImageLoader.createImage(MapXpHoverButton);
@@ -94,58 +98,18 @@ export class MapController {
     const y = event.offsetY;
 
     this.hovering = MapHover.NONE;
-    if (x > 4 && x < 23 && y > 31 && y < 51) {
+    if (x > 4 && x < 28 && y > 31 && y < 56) {
       this.hovering = MapHover.XP;
-    }else if (x > 4 && x < 48 && y > 53 && y < 76){
+    }else if (x > 4 && x < 53 && y > 53 && y < 81){
       this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
       this.hovering = MapHover.PRAYER;
-    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
       this.hovering = MapHover.RUN;
-    }else if (x > 38 && x < 85 && y > 148 && y < 170) {
+    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
       this.hovering = MapHover.SPEC;
     }
 
-  }
-
-  clicked(event: MouseEvent): boolean {
-    let intercepted = false;
-    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
-    const y = event.offsetY;
-
-    if (x > 4 && x < 23 && y > 31 && y < 51) {
-      Settings.displayXpDrops = !Settings.displayXpDrops;
-      intercepted = true;
-    }else if (x > 33 && x < 67 && y > 5 && y < 39){
-      intercepted = true;
-      
-      if (Settings.rotated === 'south') {
-        Settings.rotated = 'north'
-      } else {
-        Settings.rotated = 'south'
-      }
-      Settings.persistToStorage();
-    }else if (x > 4 && x < 48 && y > 53 && y < 76){
-      intercepted = true;
-      // this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
-      intercepted = true;
-      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
-      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
-        this.world.player.prayerDrainCounter = 0;
-      }else {
-        ControlPanelController.controls.PRAYER.activateQuickPrayers();
-      }
-    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
-      intercepted = true;
-      this.world.player.running = !this.world.player.running;
-    }else if (x > 38 && x < 74 && y > 148 && y < 170) {
-      intercepted = true;
-      // this.hovering = MapHover.SPEC;
-    }
-    this.updateOrbsMask(this.currentStats, this.stats);
-    return intercepted;
   }
 
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
@@ -180,7 +144,7 @@ export class MapController {
     ctx.fillRect(0,this.mapPrayerOrb.height * (1 - prayerPercentage), this.mapPrayerOrb.width, this.mapPrayerOrb.height * prayerPercentage)
     ctx.globalCompositeOperation = 'source-over'
 
-    const runPercentage = this.currentStats.run / 100;
+    const runPercentage = this.currentStats.run / 10000;
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext('2d')
     ctx.fillStyle="white";
@@ -194,7 +158,15 @@ export class MapController {
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.world.player.weapon.hasSpecialAttack() ? this.mapSpecOrb : this.mapNoSpecOrb, 0, 0)
+    let specOrb = this.mapNoSpecOrb;
+    if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
+      if (this.world.player.useSpecialAttack) {
+        specOrb = this.mapSpecOnOrb;
+      }else{
+        specOrb = this.mapSpecOrb;
+      }
+    }
+    ctx.drawImage(specOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapSpecOrb.height * (1 - specPercentage), this.mapRunOrb.width, this.mapRunOrb.height * specPercentage)
     ctx.globalCompositeOperation = 'source-over'
@@ -251,21 +223,64 @@ export class MapController {
     }
     mapContext.translate(-76, -76)
 
-    const compatCtx = mapContext as any;
-    compatCtx.webkitImageSmoothingEnabled = false;
-    compatCtx.mozImageSmoothingEnabled = false;
-    compatCtx.imageSmoothingEnabled = false;
 
-    mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
-    compatCtx.webkitImageSmoothingEnabled = true;
-    compatCtx.mozImageSmoothingEnabled = true;
-    compatCtx.imageSmoothingEnabled = true;
-
+    if (this.world.region.mapImage){
+      const compatCtx = mapContext as any;
+      compatCtx.webkitImageSmoothingEnabled = false;
+      compatCtx.mozImageSmoothingEnabled = false;
+      compatCtx.imageSmoothingEnabled = false;
+      mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
+      compatCtx.webkitImageSmoothingEnabled = true;
+      compatCtx.mozImageSmoothingEnabled = true;
+      compatCtx.imageSmoothingEnabled = true;
+    }
 
     mapContext.globalCompositeOperation = 'destination-out'
     mapContext.drawImage(this.mapAlphaImage, 0, 0)
     mapContext.globalCompositeOperation = 'source-over'
     mapContext.restore()
+  }
+
+  clicked(event: MouseEvent): boolean {
+    let intercepted = false;
+    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const y = event.offsetY;
+
+    if (x > 4 && x < 20 && y > 31 && y < 48) {
+      Settings.displayXpDrops = !Settings.displayXpDrops;
+      intercepted = true;
+    }else if (x > 33 && x < 64 && y > 5 && y < 36){
+      intercepted = true;
+      
+      if (Settings.rotated === 'south') {
+        Settings.rotated = 'north'
+      } else {
+        Settings.rotated = 'south'
+      }
+      Settings.persistToStorage();
+    }else if (x > 4 && x < 52 && y > 53 && y < 73){
+      intercepted = true;
+      // this.hovering = MapHover.HITPOINT;
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
+      intercepted = true;
+      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+        this.world.player.prayerDrainCounter = 0;
+      }else {
+        ControlPanelController.controls.PRAYER.activateQuickPrayers();
+      }
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
+      intercepted = true;
+      this.world.player.running = !this.world.player.running;
+    }else if (x > 38 && x < 79 && y > 148 && y < 175) {
+      intercepted = true;
+      if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
+        this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+      }
+    }
+    this.updateOrbsMask(this.currentStats, this.stats);
+    return intercepted;
   }
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
@@ -308,7 +323,14 @@ export class MapController {
     ctx.drawImage(this.mapPrayerOrbMasked, offset + 27, 85)
     ctx.drawImage(this.mapPrayerIcon, offset + 27, 85)
     ctx.drawImage(this.mapRunOrbMasked, offset + 37, 118)
-    ctx.drawImage(this.world.player.running ? this.mapRunIcon: this.mapWalkIcon, offset + 37, 118)
+
+    let mapRunIcon = this.mapWalkIcon;
+    if (this.world.player.effects.stamina){
+      mapRunIcon = this.mapStamIcon;
+    } else if (this.world.player.running) {
+      mapRunIcon = this.mapRunIcon;
+    }
+    ctx.drawImage(mapRunIcon, offset + 37, 118)
     ctx.drawImage(this.mapSpecOrbMasked, offset + 59, 144)
     ctx.drawImage(this.mapSpecIcon, offset + 57, 142, 30, 30)
 
@@ -328,9 +350,9 @@ export class MapController {
 
     // run
     ctx.fillStyle = 'black'
-    ctx.fillText( String(this.currentStats.run), offset + 25, 140 )
-    ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 100).toHexString()
-    ctx.fillText( String(this.currentStats.run), offset + 24, 139 )
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 25, 140 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 10000).toHexString()
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 24, 139 )
 
 
     // spec

@@ -1,7 +1,7 @@
 'use strict';
 
 import { Player } from '../../sdk/Player';
-import { BrowserUtils } from "../../sdk/Utils/BrowserUtils";
+import { BrowserUtils } from "../../sdk/utils/BrowserUtils";
 import { Verzik } from "./js/mobs/Verzik";
 import { Region } from "../../sdk/Region";
 import { ScytheOfVitur } from "../weapons/ScytheOfVitur"
@@ -41,7 +41,7 @@ export class VerzikP3 extends Region {
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar("x")) || 17, y: parseInt(BrowserUtils.getQueryVar("y")) || 3},
-      { weapon: new ScytheOfVitur() });
+      { equipment: { weapon: new ScytheOfVitur() }});
     world.setPlayer(player);
 
     // Add mobs

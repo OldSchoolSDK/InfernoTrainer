@@ -9,7 +9,7 @@ import RedX3 from '../assets/images/interface/red_x_3.png'
 import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
 import { World } from './World'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 
 interface ClickAnimationFrames {
   red: HTMLImageElement[];

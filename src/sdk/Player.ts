@@ -2,24 +2,43 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min } from 'lodash'
-import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
+import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
+import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
-import { Weapon } from './Weapons/Weapon'
+import { Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
 import { Mob } from './Mob'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
+import { Equipment } from './Equipment'
+import { SetEffect } from './SetEffect'
+import chebyshev from 'chebyshev'
+import { ItemNames } from './ItemNames'
+import { InventoryControls } from './controlpanels/InventoryControls'
+import { Item } from './Item'
 
-export interface PlayerStats extends UnitStats { 
+export interface PlayerStats extends UnitStats {
+  agility: number; 
   prayer: number
   run: number;
   specialAttack: number;
 }
+
+class PlayerEffects {
+  poisoned: number = 0;
+  venomed: number = 0;
+  stamina: number = 0;
+}
+
+interface PlayerRegenTimers {
+  spec: number;
+  hitpoint: number;
+}
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -28,20 +47,83 @@ export class Player extends Unit {
 
   stats: PlayerStats;
   currentStats: PlayerStats;
-  bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
   running = true;
   prayerDrainCounter: number = 0;
+  cachedBonuses: UnitBonuses = null;
+  useSpecialAttack: boolean = false;
+  effects = new PlayerEffects();
+  regenTimers: PlayerRegenTimers;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.weapon = options.weapon
+    this.equipment = options.equipment;
+    this.regenTimers = { spec: 50, hitpoint: 100 };
+    this.equipmentChanged();
     this.clearXpDrops();
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
+  }
+
+  equipmentChanged() {
+
+    let gear = [
+      this.equipment.weapon, 
+      this.equipment.offhand,
+      this.equipment.helmet,
+      this.equipment.necklace,
+      this.equipment.chest,
+      this.equipment.legs,
+      this.equipment.feet,
+      this.equipment.gloves,
+      this.equipment.ring,
+      this.equipment.cape,
+      this.equipment.ammo,
+    ]
+
+
+    // updated gear bonuses
+    this.cachedBonuses = Unit.emptyBonuses();
+    gear.forEach((gear: Equipment) => {
+      if (gear && gear.bonuses){
+        this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
+      }
+    })
+
+
+    // update set effects
+    const allSetEffects = [];
+    gear.forEach((equipment: Equipment) => {
+      if (equipment && equipment.equipmentSetEffect){
+        allSetEffects.push(equipment.equipmentSetEffect)
+      }
+    })
+    const completeSetEffects = [];
+    uniq(allSetEffects).forEach((setEffect: typeof SetEffect) => {
+      const itemsInSet = setEffect.itemsInSet();
+      let setItemsEquipped = 0;
+      find(itemsInSet, (itemName: string) => {
+        gear.forEach((equipment: Equipment) => {
+          if (!equipment){
+            return;
+          }
+          if (itemName === equipment.itemName){
+            setItemsEquipped++;
+          }
+        });
+      })
+      if (itemsInSet.length === setItemsEquipped) {
+        completeSetEffects.push(setEffect)
+      }
+    });
+    this.setEffects = completeSetEffects;
+  }
+
+  get bonuses(): UnitBonuses {
+    return this.cachedBonuses;
   }
 
   setStats () {
@@ -54,7 +136,8 @@ export class Player extends Unit {
       magic: 99,
       hitpoint: 99,
       prayer: 99,
-      run: 100,
+      agility: 99,
+      run: 10000,
       specialAttack: 100
     }
 
@@ -67,40 +150,35 @@ export class Player extends Unit {
       magic: 99,
       hitpoint: 99,
       prayer: 99,
-      run: 100,
+      agility: 99,
+      run: 10000,
       specialAttack: 100
     }
 
-    this.bonuses = {
-      attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 128
-      },
-      defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
-      },
-      other: {
-        meleeStrength: 15,
-        rangedStrength: 62,
-        magicDamage: 1.27,
-        prayer: 12
-      },
-      targetSpecific: {
-        undead: 0,
-        slayer: 0
-      }
-    }
-
-
   }
 
+
+  get weight(): number {
+
+    let gear: Item[] = [
+      this.equipment.weapon, 
+      this.equipment.offhand,
+      this.equipment.helmet,
+      this.equipment.necklace,
+      this.equipment.chest,
+      this.equipment.legs,
+      this.equipment.feet,
+      this.equipment.gloves,
+      this.equipment.ring,
+      this.equipment.cape,
+      this.equipment.ammo,
+    ]
+    gear = gear.concat(InventoryControls.inventory)
+    gear = filter(gear)
+
+    const kgs = Math.max(Math.min(64,sumBy(gear, 'weight')), 0)
+    return kgs;
+  }
 
   get prayerDrainResistance(): number {
     // https://oldschool.runescape.wiki/w/Prayer#Prayer_drain_mechanics
@@ -177,7 +255,22 @@ export class Player extends Unit {
       this.manualSpellCastSelection = null
     } else {
       // use equipped weapon
-      this.weapon.attack(this.world, this, this.aggro)
+      if (this.equipment.weapon){
+        if (this.equipment.weapon.hasSpecialAttack() && this.useSpecialAttack) {
+          if (this.currentStats.specialAttack >= this.equipment.weapon.specialAttackDrain()) {
+            this.equipment.weapon.specialAttack(this.world, this, this.aggro as Unit /* hack */)
+            this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
+            if (this.regenTimers.spec <=0) {
+              this.regenTimers.spec = 50;
+            }
+          }
+          this.useSpecialAttack  = false;
+        }else{
+          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
+        }
+      }else{
+        console.log('TODO: Implement punching')
+      }
     }
 
     // this.playAttackSound();
@@ -277,12 +370,34 @@ export class Player extends Unit {
   }
 
   moveTorwardsDestination () {
+    // Actually move the player
+
     this.perceivedLocation = this.location
-    // Actually move the player forward by run speed.
-    if (this.destinationLocation) {
-      this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+
+    // Calculate run energy
+    const dist = chebyshev([this.location.x, this.location.y], [this.destinationLocation.x, this.destinationLocation.y])
+    if (this.running && dist > 1) {
+      const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
+      if (this.effects.stamina) {
+        this.currentStats.run -= Math.floor(0.3 * runReduction);
+      }else if (this.equipment.ring.itemName === ItemNames.RING_OF_ENDURANCE){
+        this.currentStats.run -= Math.floor(0.85 * runReduction);
+      }else{
+        this.currentStats.run -= runReduction;
+      }
+    }else{
+      this.currentStats.run += Math.floor(this.currentStats.agility / 6) + 8
     }
-  }
+    this.currentStats.run = Math.min(Math.max(this.currentStats.run, 0), 10000);
+    if (this.currentStats.run === 0) {
+      this.running = false;
+    }
+    this.effects.stamina--;
+    this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
+
+
+    this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+}
 
   movementStep () {
 
@@ -301,14 +416,20 @@ export class Player extends Unit {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange
     }
-    return this.weapon.attackRange
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackRange
+    }
+    return 1;
   }
 
   get attackSpeed () {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed
     }
-    return this.weapon.attackSpeed
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackSpeed
+    }
+    return 4;
   }
 
   drainPrayer() {
@@ -324,6 +445,24 @@ export class Player extends Unit {
     }
   }
 
+  specRegen() {
+    this.regenTimers.spec--;
+    if (this.regenTimers.spec === 0) {
+      this.regenTimers.spec = 50;
+      this.currentStats.specialAttack += 10;
+      this.currentStats.specialAttack = Math.min(100, this.currentStats.specialAttack);
+    }
+  }
+
+  hitpointRegen() {
+    this.regenTimers.hitpoint--;
+    if (this.regenTimers.hitpoint === 0) {
+      this.regenTimers.hitpoint = 100;
+      this.currentStats.hitpoint++;
+      this.currentStats.hitpoint = Math.min(this.stats.hitpoint, this.currentStats.hitpoint);
+    }
+  }
+
   attackStep () {
     
     
@@ -333,6 +472,10 @@ export class Player extends Unit {
     this.clearXpDrops();
 
     this.attackIfPossible()
+    
+    this.specRegen();
+
+    this.hitpointRegen();
 
     this.sendXpToController();
 
