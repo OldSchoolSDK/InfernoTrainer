@@ -16,11 +16,20 @@ import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
+import chebyshev from 'chebyshev'
+import { ItemNames } from './ItemNames'
 
-export interface PlayerStats extends UnitStats { 
+export interface PlayerStats extends UnitStats {
+  agility: number; 
   prayer: number
   run: number;
   specialAttack: number;
+}
+
+class PlayerEffects {
+  poisoned: number = 0;
+  venomed: number = 0;
+  stamina: number = 0;
 }
 
 
@@ -37,6 +46,7 @@ export class Player extends Unit {
   prayerDrainCounter: number = 0;
   cachedBonuses: UnitBonuses = null;
   useSpecialAttack: boolean = false;
+  effects = new PlayerEffects();
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -117,7 +127,8 @@ export class Player extends Unit {
       magic: 99,
       hitpoint: 99,
       prayer: 99,
-      run: 100,
+      agility: 99,
+      run: 10000,
       specialAttack: 100
     }
 
@@ -130,12 +141,17 @@ export class Player extends Unit {
       magic: 99,
       hitpoint: 99,
       prayer: 99,
-      run: 100,
+      agility: 99,
+      run: 10000,
       specialAttack: 100
     }
 
   }
 
+
+  get weight(): number {
+    return 35;
+  }
 
   get prayerDrainResistance(): number {
     // https://oldschool.runescape.wiki/w/Prayer#Prayer_drain_mechanics
@@ -324,12 +340,31 @@ export class Player extends Unit {
   }
 
   moveTorwardsDestination () {
+    // Actually move the player
+
+    this.effects.stamina = 10;
+
     this.perceivedLocation = this.location
-    // Actually move the player forward by run speed.
-    if (this.destinationLocation) {
-      this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+
+    // Calculate run energy
+    const dist = chebyshev([this.location.x, this.location.y], [this.destinationLocation.x, this.destinationLocation.y])
+    if (this.running && dist > 1) {
+      const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
+      if (this.effects.stamina) {
+        this.currentStats.run -= Math.floor(0.3 * runReduction);
+      }else if (this.equipment.ring.itemName === ItemNames.RING_OF_ENDURANCE){
+        this.currentStats.run -= Math.floor(0.85 * runReduction);
+      }else{
+        this.currentStats.run -= runReduction;
+      }
+    }else{
+      this.currentStats.run += Math.floor(this.currentStats.agility / 6) + 8
     }
-  }
+    this.currentStats.run = Math.min(Math.max(this.currentStats.run, 0), 10000);
+
+
+    this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+}
 
   movementStep () {
 

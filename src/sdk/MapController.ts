@@ -20,6 +20,7 @@ import MapHitpointIcon from '../assets/images/interface/map_hitpoint_icon.png'
 import MapPrayerIcon from '../assets/images/interface/map_prayer_icon.png'
 import MapWalkIcon from '../assets/images/interface/map_walk_icon.png'
 import MapRunIcon from '../assets/images/interface/map_run_icon.png'
+import MapStamIcon from '../assets/images/interface/map_stam_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { World } from './World';
@@ -62,6 +63,7 @@ export class MapController {
   mapPrayerIcon = ImageLoader.createImage(MapPrayerIcon);
   mapWalkIcon = ImageLoader.createImage(MapWalkIcon);
   mapRunIcon = ImageLoader.createImage(MapRunIcon);
+  mapStamIcon = ImageLoader.createImage(MapStamIcon);
   mapSpecIcon = ImageLoader.createImage(MapSpecIcon);
   mapXpButton = ImageLoader.createImage(MapXpButton);
   mapXpHoverButton = ImageLoader.createImage(MapXpHoverButton);
@@ -321,7 +323,16 @@ export class MapController {
     ctx.drawImage(this.mapPrayerOrbMasked, offset + 27, 85)
     ctx.drawImage(this.mapPrayerIcon, offset + 27, 85)
     ctx.drawImage(this.mapRunOrbMasked, offset + 37, 118)
-    ctx.drawImage(this.world.player.running ? this.mapRunIcon: this.mapWalkIcon, offset + 37, 118)
+
+    let mapRunIcon = this.mapWalkIcon;
+    if (this.world.player.effects.stamina){
+      console.log('stam')
+      mapRunIcon = this.mapStamIcon;
+    } else if (this.world.player.running) {
+      console.log('run')
+      mapRunIcon = this.mapRunIcon;
+    }
+    ctx.drawImage(mapRunIcon, offset + 37, 118)
     ctx.drawImage(this.mapSpecOrbMasked, offset + 59, 144)
     ctx.drawImage(this.mapSpecIcon, offset + 57, 142, 30, 30)
 
@@ -341,9 +352,9 @@ export class MapController {
 
     // run
     ctx.fillStyle = 'black'
-    ctx.fillText( String(this.currentStats.run), offset + 25, 140 )
-    ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 100).toHexString()
-    ctx.fillText( String(this.currentStats.run), offset + 24, 139 )
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 25, 140 )
+    ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 10000).toHexString()
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 24, 139 )
 
 
     // spec

@@ -27,6 +27,7 @@ import { AvasAssembler } from '../equipment/AvasAssembler';
 import { HolyBlessing } from '../equipment/HolyBlessing';
 import { BarrowsGloves } from '../equipment/BarrowsGloves';
 import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
+import { RingOfEndurance } from '../equipment/RingOfEndurance';
 import { CrystalShield } from '../equipment/CrystalShield';
 import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
 import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
@@ -45,7 +46,8 @@ export class InfernoRegion extends Region {
   getInventory () {
     return [
       new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
-      new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom()
+      new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom(),
+      new RingOfEndurance()
     ]
   }
 

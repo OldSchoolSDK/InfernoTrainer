@@ -19,5 +19,5 @@ export enum ItemNames {
   KODAI_WAND = 'Kodai Wand',
   ANCESTRAL_ROBETOP = 'Ancestral Robe top',
   ANCESTRAL_ROBEBOTTOM = 'Ancestral Robe bottom',
-  
+  RING_OF_ENDURANCE = 'Ring of Endurance'
 }
