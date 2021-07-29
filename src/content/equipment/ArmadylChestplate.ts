@@ -12,6 +12,12 @@ export class ArmadylChestplate extends Chest{
   get itemName(): ItemNames {
     return ItemNames.ARMADYL_CHESTPLATE
   }
+
+  get weight(): number {
+    return 4;
+  }
+
+
   constructor() {
     super();
     this.bonuses = {

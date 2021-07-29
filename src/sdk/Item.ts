@@ -1,3 +1,4 @@
+import { ItemNames } from "./ItemNames";
 import { Player } from "./Player";
 
 export class Item {
@@ -12,10 +13,14 @@ export class Item {
     
   }
 
-  get itemName() {
-    return 'n/a'
+  get itemName(): ItemNames {
+    return null
   }
 
+  get weight(): number {
+    return 0;
+  }
+  
   
 
   get inventoryImage (): string {

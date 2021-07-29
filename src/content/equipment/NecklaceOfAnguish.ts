@@ -12,6 +12,10 @@ export class NecklaceOfAnguish extends Necklace{
   get itemName(): ItemNames {
     return ItemNames.NECKLACE_OF_ANGUISH
   }
+  get weight(): number {
+    return 0.01;
+  }
+  
   constructor() {
     super();
     this.bonuses = {

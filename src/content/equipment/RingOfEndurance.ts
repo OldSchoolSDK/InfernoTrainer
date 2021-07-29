@@ -1,21 +1,21 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Ancestral_robe_bottom.png';
-import { Legs } from "../../sdk/gear/Legs";
+import InventImage from '../../assets/images/equipment/Ring_of_endurance.png';
+import { Ring } from "../../sdk/gear/Ring";
 import { ItemNames } from "../../sdk/ItemNames";
 
-export class AncestralRobebottom extends Legs{
+export class RingOfEndurance extends Ring{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   get inventoryImage () {
     return InventImage
   }
   get itemName(): ItemNames {
-    return ItemNames.ANCESTRAL_ROBEBOTTOM
+    return ItemNames.RING_OF_ENDURANCE
   }
-
   get weight(): number {
-    return 1.814;
+    return 0.006;
   }
+  
 
   constructor() {
     super();
@@ -24,20 +24,20 @@ export class AncestralRobebottom extends Legs{
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 26,
-        range: -7
+        magic: 0,
+        range: 0
       },
       defence: {
-        stab: 27,
-        slash: 24,
-        crush: 30,
-        magic: 20,
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
         range: 0
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
-        magicDamage: 0.02,
+        magicDamage: 0,
         prayer: 0
       },
       targetSpecific: {

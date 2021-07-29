@@ -13,6 +13,10 @@ export class RingOfSufferingImbued extends Ring{
     return ItemNames.RING_OF_SUFFERING_I
   }
 
+  get weight(): number {
+    return 0.006;
+  }
+  
   constructor() {
     super();
     this.bonuses = {

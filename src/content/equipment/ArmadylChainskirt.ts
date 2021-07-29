@@ -13,6 +13,10 @@ export class ArmadylChainskirt extends Legs{
     return ItemNames.ARMADYL_CHAINSKIRT
   }
 
+  get weight(): number {
+    return 1;
+  }
+
   constructor() {
     super();
     this.bonuses = {

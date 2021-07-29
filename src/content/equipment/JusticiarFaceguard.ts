@@ -14,7 +14,10 @@ export class JusticiarFaceguard extends Helmet{
   get itemName(): ItemNames {
     return ItemNames.JUSTICIAR_FACEGUARD
   }
-
+  get weight(): number {
+    return 2.721;
+  }
+  
   get inventoryImage () {
     return InventImage
   }

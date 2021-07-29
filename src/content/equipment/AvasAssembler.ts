@@ -12,6 +12,10 @@ export class AvasAssembler extends Cape{
   get itemName(): ItemNames {
     return ItemNames.AVAS_ASSEMBLER
   }
+  get weight(): number {
+    return 5.896;
+  }
+  
   constructor() {
     super();
     this.bonuses = {
