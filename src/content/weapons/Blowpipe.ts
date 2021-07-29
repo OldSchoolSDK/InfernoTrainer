@@ -59,12 +59,11 @@ export class Blowpipe extends RangedWeapon {
   }
 
 
-  _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
+  _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     if (bonuses.isSpecialAttack) {
-      return Math.floor(2 * Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses))
-
+      return 2;
     }
-    return Math.floor(Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses))
+    return 1;
   }
 
   get itemName(): ItemNames {
