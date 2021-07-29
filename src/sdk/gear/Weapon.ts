@@ -30,6 +30,7 @@ export interface AttackBonuses {
   magicBaseSpellDamage?: number;
   overallMultiplier?: number;
   effectivePrayers?: EffectivePrayers;
+  isSpecialAttack?: boolean;
 }
 
 export class Weapon extends Equipment{
@@ -51,12 +52,12 @@ export class Weapon extends Equipment{
   hasSpecialAttack(): boolean {
     return false;
   }
-
-  get isTwoHander(): boolean {
-    return false;
+  specialAttackDrain(): number {
+    return 50;
   }
-
-
+  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  }
+  
   inventoryLeftClick(player: Player) {
 
     const currentWeapon = player.equipment.weapon || null;
@@ -99,7 +100,7 @@ export class Weapon extends Equipment{
   }
 
 
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
@@ -188,6 +189,10 @@ export class Weapon extends Equipment{
     return false
   }
 
+  get isTwoHander(): boolean {
+    return false;
+  }
+  
   static isMeleeAttackStyle (style: string) {
     return style === 'crush' || style === 'slash' || style === 'stab'
   }

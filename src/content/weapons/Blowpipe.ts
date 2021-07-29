@@ -3,6 +3,11 @@
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { ItemNames } from "../../sdk/ItemNames";
+import { World } from '../../sdk/World';
+import { Unit } from '../../sdk/Unit';
+import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { SetEffect, SetEffectTypes } from '../../sdk/SetEffect';
+import { find } from 'lodash';
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -33,6 +38,33 @@ export class Blowpipe extends RangedWeapon {
         slayer: 0
       }
     }
+  }
+
+
+  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    
+    bonuses.isSpecialAttack = true;
+    super.attack(world, from, to, bonuses)
+    
+    const healAttackerBy = Math.floor(this.damage / 2);
+    from.currentStats.hitpoint += healAttackerBy;
+    from.currentStats.hitpoint = Math.min(from.currentStats.hitpoint, from.stats.hitpoint);
+  }
+
+  _maxHit (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    if (bonuses.isSpecialAttack) {
+      return Math.floor(super._maxHit(from, to, bonuses) * 1.5);
+    }
+    return super._maxHit(from, to, bonuses)
+  }
+
+
+  _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    if (bonuses.isSpecialAttack) {
+      return Math.floor(2 * Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses))
+
+    }
+    return Math.floor(Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) * this._accuracyMultiplier(from, to, bonuses))
   }
 
   get itemName(): ItemNames {

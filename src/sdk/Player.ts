@@ -36,6 +36,7 @@ export class Player extends Unit {
   running = true;
   prayerDrainCounter: number = 0;
   cachedBonuses: UnitBonuses = null;
+  useSpecialAttack: boolean = false;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -212,7 +213,15 @@ export class Player extends Unit {
     } else {
       // use equipped weapon
       if (this.equipment.weapon){
-        this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
+        if (this.equipment.weapon.hasSpecialAttack() && this.useSpecialAttack) {
+          if (this.currentStats.specialAttack >= this.equipment.weapon.specialAttackDrain()) {
+            this.equipment.weapon.specialAttack(this.world, this, this.aggro as Unit /* hack */)
+            this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
+          }
+          this.useSpecialAttack  = false;
+        }else{
+          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
+        }
       }else{
         console.log('TODO: Implement punching')
       }
