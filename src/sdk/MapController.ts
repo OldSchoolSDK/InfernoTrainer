@@ -98,15 +98,15 @@ export class MapController {
     const y = event.offsetY;
 
     this.hovering = MapHover.NONE;
-    if (x > 4 && x < 23 && y > 31 && y < 51) {
+    if (x > 4 && x < 28 && y > 31 && y < 56) {
       this.hovering = MapHover.XP;
-    }else if (x > 4 && x < 48 && y > 53 && y < 76){
+    }else if (x > 4 && x < 53 && y > 53 && y < 81){
       this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
       this.hovering = MapHover.PRAYER;
-    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
       this.hovering = MapHover.RUN;
-    }else if (x > 38 && x < 85 && y > 148 && y < 170) {
+    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
       this.hovering = MapHover.SPEC;
     }
 
@@ -246,10 +246,10 @@ export class MapController {
     const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
     const y = event.offsetY;
 
-    if (x > 4 && x < 23 && y > 31 && y < 51) {
+    if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
-    }else if (x > 33 && x < 67 && y > 5 && y < 39){
+    }else if (x > 33 && x < 64 && y > 5 && y < 36){
       intercepted = true;
       
       if (Settings.rotated === 'south') {
@@ -258,10 +258,10 @@ export class MapController {
         Settings.rotated = 'south'
       }
       Settings.persistToStorage();
-    }else if (x > 4 && x < 48 && y > 53 && y < 76){
+    }else if (x > 4 && x < 52 && y > 53 && y < 73){
       intercepted = true;
       // this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 48 && y > 90 && y < 108) {
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
       intercepted = true;
       const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
       if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
@@ -270,10 +270,10 @@ export class MapController {
       }else {
         ControlPanelController.controls.PRAYER.activateQuickPrayers();
       }
-    }else if (x > 15 && x < 62 && y > 122 && y < 144) {
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
       this.world.player.running = !this.world.player.running;
-    }else if (x > 38 && x < 74 && y > 148 && y < 170) {
+    }else if (x > 38 && x < 79 && y > 148 && y < 175) {
       intercepted = true;
       if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
         this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
