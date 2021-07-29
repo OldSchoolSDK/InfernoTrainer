@@ -362,8 +362,6 @@ export class Player extends Unit {
   moveTorwardsDestination () {
     // Actually move the player
 
-    this.effects.stamina = 0;
-
     this.perceivedLocation = this.location
 
     // Calculate run energy
@@ -384,6 +382,9 @@ export class Player extends Unit {
     if (this.currentStats.run === 0) {
       this.running = false;
     }
+    this.effects.stamina--;
+    this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
+
 
     this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
 }
