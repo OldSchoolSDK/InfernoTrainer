@@ -3,8 +3,9 @@
 import ScytheInventImage from '../../assets/images/weapons/scytheOfVitur.png'
 import { World } from '../../sdk/World'
 import { Unit } from '../../sdk/Unit'
-import { MeleeWeapon } from '../../sdk/Weapons/MeleeWeapon'
-import { AttackBonuses } from '../../sdk/Weapons/Weapon'
+import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
+import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { ItemNames } from "../../sdk/ItemNames"
 
 export class ScytheOfVitur extends MeleeWeapon {
 
@@ -37,6 +38,12 @@ export class ScytheOfVitur extends MeleeWeapon {
       }
     };
   }
+
+
+  get isTwoHander(): boolean {
+    return true;
+  }
+  
   get attackRange () {
     return 1
   }
@@ -48,7 +55,10 @@ export class ScytheOfVitur extends MeleeWeapon {
   get inventoryImage () {
     return ScytheInventImage
   }
-
+  get itemName(): ItemNames {
+    return ItemNames.SCYTHE_OF_VITUR
+  }
+  
 
   // Scythe attacks in a 1x3 arc in front of the player.
   // TODO: Refactor/change method so that it can actually hit multiple targets.

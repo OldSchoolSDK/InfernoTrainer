@@ -6,7 +6,7 @@ import MagicXpDropImage from "../assets/images/xpdrops/magic.png";
 import HitpointXpDropImage from "../assets/images/xpdrops/hitpoint.png";
 import { find } from "lodash";
 import { XpDrop } from "./XpDrop";
-import { ImageLoader } from "./Utils/ImageLoader";
+import { ImageLoader } from "./utils/ImageLoader";
 import { Settings } from "./Settings";
 
 interface SkillTypes {

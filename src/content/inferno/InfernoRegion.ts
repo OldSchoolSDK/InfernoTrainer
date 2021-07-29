@@ -10,14 +10,28 @@ import { JalXil } from './js/mobs/JalXil'
 import { JalImKot } from './js/mobs/JalImKot'
 import { JalAk } from './js/mobs/JalAk'
 import { JalMejRah } from './js/mobs/JalMejRah'
-import { BrowserUtils } from '../../sdk/Utils/BrowserUtils'
+import { BrowserUtils } from '../../sdk/utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
 import { Blowpipe } from '../weapons/Blowpipe'
 import { Region } from '../../sdk/Region'
 import { World } from '../../sdk/World'
 import { Settings } from '../../sdk/Settings'
 import InfernoMapImage from './assets/images/map.png'
-import { ImageLoader } from '../../sdk/Utils/ImageLoader'
+import { ImageLoader } from '../../sdk/utils/ImageLoader'
+import { JusticiarFaceguard } from '../equipment/JusticiarFaceguard';
+import { NecklaceOfAnguish } from '../equipment/NecklaceOfAnguish';
+import { ArmadylChestplate } from '../equipment/ArmadylChestplate';
+import { ArmadylChainskirt } from '../equipment/ArmadylChainskirt';
+import { PegasianBoots } from '../equipment/PegasianBoots';
+import { AvasAssembler } from '../equipment/AvasAssembler';
+import { HolyBlessing } from '../equipment/HolyBlessing';
+import { BarrowsGloves } from '../equipment/BarrowsGloves';
+import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
+import { CrystalShield } from '../equipment/CrystalShield';
+import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
+import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
+import { KodaiWand } from '../weapons/KodaiWand'
+import { DevoutBoots } from '../equipment/DevoutBoots'
 
 export class InfernoRegion extends Region {
 
@@ -27,7 +41,10 @@ export class InfernoRegion extends Region {
   }
 
   getInventory () {
-    return [new Blowpipe()]
+    return [
+      new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
+      new CrystalShield(), new DevoutBoots()
+    ]
   }
 
   initialize (world: World) {
@@ -38,12 +55,25 @@ export class InfernoRegion extends Region {
     if (isNaN(wave)){
       wave = 1;
     }
+    
 
     // Add player
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
-      { weapon: new TwistedBow() })
+      { equipment: { 
+          weapon: new Blowpipe(),
+          helmet: new JusticiarFaceguard(),
+          necklace: new NecklaceOfAnguish(),
+          cape: new AvasAssembler(),
+          ammo: new HolyBlessing(),
+          chest: new ArmadylChestplate(),
+          legs: new ArmadylChainskirt(),
+          feet: new PegasianBoots(),
+          gloves: new BarrowsGloves(),
+          ring: new RingOfSufferingImbued(), 
+        }
+      })
     world.setPlayer(player)
 
     // Add mobs

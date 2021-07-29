@@ -1,10 +1,22 @@
-import { UnitBonuses } from "./Unit";
+import { Player } from "./Player";
 
 export class Item {
   inventorySprite: HTMLImageElement;
   inventoryPosition: number;
-  bonuses: UnitBonuses; //temp
   selected: boolean;
+
+  get hasInventoryLeftClick(): boolean {
+    return false;
+  }
+  inventoryLeftClick(player: Player) {
+    
+  }
+
+  get itemName() {
+    return 'n/a'
+  }
+
+  
 
   get inventoryImage (): string {
     return ''

@@ -1,40 +1,48 @@
 'use strict'
 
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
-import { RangedWeapon } from '../../sdk/Weapons/RangedWeapon'
+import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
     super();
-
     this.bonuses = {
       attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 138
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 20 + 35 // simulating dragon darts atm
       },
       defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
       },
       other: {
-        meleeStrength: 15,
-        rangedStrength: 62,
-        magicDamage: 1.27,
-        prayer: 12
+        meleeStrength: 0,
+        rangedStrength: 20,
+        magicDamage: 0,
+        prayer: 0
       },
       targetSpecific: {
         undead: 0,
         slayer: 0
       }
-    };
+    }
   }
 
+  get itemName(): ItemNames {
+    return ItemNames.TOXIC_BLOWPIPE
+  }
+  
+  get isTwoHander(): boolean {
+    return true;
+  }
+  
   hasSpecialAttack(): boolean {
     return true;
   }

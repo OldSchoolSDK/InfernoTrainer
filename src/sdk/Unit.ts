@@ -6,26 +6,46 @@ import { LineOfSight } from './LineOfSight'
 import { clamp, remove, filter } from 'lodash'
 import { World } from './World'
 import { BasePrayer } from './BasePrayer'
-import { Projectile } from './Weapons/Projectile'
+import { Projectile } from './weapons/Projectile'
 import { XpDrop } from './XpDrop'
-import { Weapon } from './Weapons/Weapon'
 import { GameObject, Location } from './GameObject'
 import { Pathing } from './Pathing'
-import { ImageLoader } from './Utils/ImageLoader'
-
+import { ImageLoader } from './utils/ImageLoader'
+import { Weapon } from './gear/Weapon'
+import { Offhand } from './gear/Offhand';
+import { Helmet } from './gear/Helmet';
+import { Necklace } from './gear/Necklace';
+import { Chest } from './gear/Chest';
+import { Legs } from './gear/Legs';
+import { Feet } from './gear/Feet';
+import { Gloves } from './gear/Gloves';
+import { Ring } from './gear/Ring';
+import { Cape } from './gear/Cape';
+import { Ammo } from './gear/Ammo';
+import { SetEffect } from './SetEffect'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
   ENTITY = 2,
 }
 
-export interface WeaponsMap {
-  [key: string]: Weapon
+export class UnitEquipment {
+  weapon?: Weapon = null
+  offhand?: Offhand = null
+  helmet?: Helmet = null
+  necklace?: Necklace = null
+  chest?: Chest = null
+  legs?: Legs = null
+  feet?: Feet = null
+  gloves?: Gloves = null
+  ring?: Ring = null
+  cape?: Cape = null
+  ammo?: Ammo = null
 }
 
 export interface UnitOptions {
-  weapon?: Weapon;
   aggro?: GameObject;
+  equipment?: UnitEquipment;
 }
 
 export interface UnitStats {
@@ -83,7 +103,12 @@ export class Unit extends GameObject {
   currentAnimationTickLength: number = 0;
   currentStats: UnitStats;
   stats: UnitStats;
-  bonuses: UnitBonuses;
+  equipment: UnitEquipment = new UnitEquipment();
+  setEffects: typeof SetEffect[] = [];
+
+  get completeSetEffects(): SetEffect[] {
+    return null;
+  }
 
   get type(): UnitTypes{
     return UnitTypes.MOB;
@@ -100,9 +125,6 @@ export class Unit extends GameObject {
 
     this.currentStats.hitpoint = this.stats.hitpoint
 
-    if (options.weapon) {
-      this.bonuses = options.weapon.bonuses // temp code
-    }
   }
   
   grantXp(xpDrop: XpDrop) { }
@@ -112,6 +134,68 @@ export class Unit extends GameObject {
   draw(tickPercent: number) { }
   drawUILayer(tickPercent: number) { }
   removedFromWorld () { }
+
+  static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses{
+    return {
+      attack: {
+        stab: firstBonuses.attack.stab + secondBonuses.attack.stab,
+        slash: firstBonuses.attack.slash + secondBonuses.attack.slash,
+        crush: firstBonuses.attack.crush + secondBonuses.attack.crush,
+        magic: firstBonuses.attack.magic + secondBonuses.attack.magic,
+        range: firstBonuses.attack.range + secondBonuses.attack.range
+      },
+      defence: {
+        stab: firstBonuses.defence.stab + secondBonuses.defence.stab,
+        slash: firstBonuses.defence.slash + secondBonuses.defence.slash,
+        crush: firstBonuses.defence.crush + secondBonuses.defence.crush,
+        magic: firstBonuses.defence.magic + secondBonuses.defence.magic,
+        range: firstBonuses.defence.range + secondBonuses.defence.range
+      },
+      other: {
+        meleeStrength: firstBonuses.other.meleeStrength + secondBonuses.other.meleeStrength,
+        rangedStrength: firstBonuses.other.rangedStrength + secondBonuses.other.rangedStrength,
+        magicDamage: firstBonuses.other.magicDamage + secondBonuses.other.magicDamage,
+        prayer: firstBonuses.other.prayer + secondBonuses.other.prayer
+      },
+      targetSpecific: {
+        undead: firstBonuses.targetSpecific.undead + secondBonuses.targetSpecific.undead,
+        slayer: firstBonuses.targetSpecific.slayer + secondBonuses.targetSpecific.slayer
+      }
+    };
+  }
+
+  static emptyBonuses(): UnitBonuses {
+    return {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 1,
+        prayer: 0
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    };
+  }
+
+  get bonuses(): UnitBonuses {
+    return Unit.emptyBonuses();
+  }
 
   get cooldown () {
     return 0

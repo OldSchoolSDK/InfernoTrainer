@@ -2,24 +2,27 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min } from 'lodash'
-import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions } from './Unit'
+import { minBy, range, filter, find, map, min, uniq } from 'lodash'
+import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
-import { Weapon } from './Weapons/Weapon'
+import { Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from './GameObject'
 import { Mob } from './Mob'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
+import { Equipment } from './Equipment'
+import { SetEffect } from './SetEffect'
 
 export interface PlayerStats extends UnitStats { 
   prayer: number
   run: number;
   specialAttack: number;
 }
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -28,20 +31,79 @@ export class Player extends Unit {
 
   stats: PlayerStats;
   currentStats: PlayerStats;
-  bonuses: UnitBonuses;
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
   running = true;
   prayerDrainCounter: number = 0;
+  cachedBonuses: UnitBonuses = null;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.weapon = options.weapon
+    this.equipment = options.equipment;
+    this.equipmentChanged();
     this.clearXpDrops();
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
+  }
+
+  equipmentChanged() {
+
+    let gear = [
+      this.equipment.weapon, 
+      this.equipment.offhand,
+      this.equipment.helmet,
+      this.equipment.necklace,
+      this.equipment.chest,
+      this.equipment.legs,
+      this.equipment.feet,
+      this.equipment.gloves,
+      this.equipment.ring,
+      this.equipment.cape,
+      this.equipment.ammo,
+    ]
+
+
+    // updated gear bonuses
+    this.cachedBonuses = Unit.emptyBonuses();
+    gear.forEach((gear: Equipment) => {
+      if (gear && gear.bonuses){
+        this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
+      }
+    })
+
+
+    // update set effects
+    const allSetEffects = [];
+    gear.forEach((equipment: Equipment) => {
+      if (equipment && equipment.equipmentSetEffect){
+        allSetEffects.push(equipment.equipmentSetEffect)
+      }
+    })
+    const completeSetEffects = [];
+    uniq(allSetEffects).forEach((setEffect: typeof SetEffect) => {
+      const itemsInSet = setEffect.itemsInSet();
+      let setItemsEquipped = 0;
+      find(itemsInSet, (itemName: string) => {
+        gear.forEach((equipment: Equipment) => {
+          if (!equipment){
+            return;
+          }
+          if (itemName === equipment.itemName){
+            setItemsEquipped++;
+          }
+        });
+      })
+      if (itemsInSet.length === setItemsEquipped) {
+        completeSetEffects.push(setEffect)
+      }
+    });
+    this.setEffects = completeSetEffects;
+  }
+
+  get bonuses(): UnitBonuses {
+    return this.cachedBonuses;
   }
 
   setStats () {
@@ -70,34 +132,6 @@ export class Player extends Unit {
       run: 100,
       specialAttack: 100
     }
-
-    this.bonuses = {
-      attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 128
-      },
-      defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
-      },
-      other: {
-        meleeStrength: 15,
-        rangedStrength: 62,
-        magicDamage: 1.27,
-        prayer: 12
-      },
-      targetSpecific: {
-        undead: 0,
-        slayer: 0
-      }
-    }
-
 
   }
 
@@ -177,7 +211,11 @@ export class Player extends Unit {
       this.manualSpellCastSelection = null
     } else {
       // use equipped weapon
-      this.weapon.attack(this.world, this, this.aggro)
+      if (this.equipment.weapon){
+        this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
+      }else{
+        console.log('TODO: Implement punching')
+      }
     }
 
     // this.playAttackSound();
@@ -301,14 +339,20 @@ export class Player extends Unit {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange
     }
-    return this.weapon.attackRange
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackRange
+    }
+    return 1;
   }
 
   get attackSpeed () {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed
     }
-    return this.weapon.attackSpeed
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackSpeed
+    }
+    return 4;
   }
 
   drainPrayer() {

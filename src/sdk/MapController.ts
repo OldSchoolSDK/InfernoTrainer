@@ -24,7 +24,7 @@ import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 import { World } from './World';
 import ColorScale from 'color-scales'
 import { PlayerStats } from './Player'
-import { ImageLoader } from './Utils/ImageLoader'
+import { ImageLoader } from './utils/ImageLoader'
 import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
 
@@ -194,7 +194,11 @@ export class MapController {
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.world.player.weapon.hasSpecialAttack() ? this.mapSpecOrb : this.mapNoSpecOrb, 0, 0)
+    let specOrb = this.mapNoSpecOrb;
+    if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
+      specOrb = this.mapSpecOrb;
+    }
+    ctx.drawImage(specOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapSpecOrb.height * (1 - specPercentage), this.mapRunOrb.width, this.mapRunOrb.height * specPercentage)
     ctx.globalCompositeOperation = 'source-over'
@@ -251,16 +255,17 @@ export class MapController {
     }
     mapContext.translate(-76, -76)
 
-    const compatCtx = mapContext as any;
-    compatCtx.webkitImageSmoothingEnabled = false;
-    compatCtx.mozImageSmoothingEnabled = false;
-    compatCtx.imageSmoothingEnabled = false;
 
-    mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
-    compatCtx.webkitImageSmoothingEnabled = true;
-    compatCtx.mozImageSmoothingEnabled = true;
-    compatCtx.imageSmoothingEnabled = true;
-
+    if (this.world.region.mapImage){
+      const compatCtx = mapContext as any;
+      compatCtx.webkitImageSmoothingEnabled = false;
+      compatCtx.mozImageSmoothingEnabled = false;
+      compatCtx.imageSmoothingEnabled = false;
+      mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
+      compatCtx.webkitImageSmoothingEnabled = true;
+      compatCtx.mozImageSmoothingEnabled = true;
+      compatCtx.imageSmoothingEnabled = true;
+    }
 
     mapContext.globalCompositeOperation = 'destination-out'
     mapContext.drawImage(this.mapAlphaImage, 0, 0)

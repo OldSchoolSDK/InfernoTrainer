@@ -1,9 +1,10 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
 import { Settings } from '../../../../sdk/Settings'
+import { UnitBonuses } from '../../../../sdk/Unit'
 
 export class JalAkRekKet extends Mob {
   get displayName () {
@@ -55,7 +56,10 @@ export class JalAkRekKet extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
 
-    this.bonuses = {
+  }
+
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -76,7 +80,7 @@ export class JalAkRekKet extends Mob {
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
 
   get cooldown () {

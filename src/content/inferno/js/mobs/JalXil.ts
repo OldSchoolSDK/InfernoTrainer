@@ -1,15 +1,15 @@
 'use strict'
 
 import { Settings } from '../../../../sdk/Settings'
-import { MeleeWeapon } from '../../../../sdk/Weapons/MeleeWeapon'
+import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/Weapons/RangedWeapon'
+import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import RangeImage from '../../assets/images/ranger.png'
 import RangerSound from '../../assets/sounds/ranger.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { Pathing } from '../../../../sdk/Pathing'
-import { Unit } from '../../../../sdk/Unit'
-import { Projectile } from '../../../../sdk/Weapons/Projectile'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 
 
@@ -59,8 +59,10 @@ export class JalXil extends Mob {
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
+  }
 
-    this.bonuses = {
+  get bonuses(): UnitBonuses {
+    return {
       attack: {
         stab: 0,
         slash: 0,
@@ -81,7 +83,7 @@ export class JalXil extends Mob {
         magicDamage: 0,
         prayer: 0
       }
-    }
+    };
   }
 
   get cooldown () {
