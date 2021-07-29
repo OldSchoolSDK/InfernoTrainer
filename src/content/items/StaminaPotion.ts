@@ -2,10 +2,10 @@
 import { Item } from "../../sdk/Item";
 import { ItemNames } from "../../sdk/ItemNames";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import StamPot1 from '../../assets/images/potions/Stamina_Potion(1).png';
-import StamPot2 from '../../assets/images/potions/Stamina_Potion(2).png';
-import StamPot3 from '../../assets/images/potions/Stamina_Potion(3).png';
-import StamPot4 from '../../assets/images/potions/Stamina_Potion(4).png';
+import StamPot1 from '../../assets/images/potions/Stamina_Potion_1.png';
+import StamPot2 from '../../assets/images/potions/Stamina_Potion_2.png';
+import StamPot3 from '../../assets/images/potions/Stamina_Potion_3.png';
+import StamPot4 from '../../assets/images/potions/Stamina_Potion_4.png';
 import Vial from '../../assets/images/potions/Vial.png';
 import { Player } from "../../sdk/Player";
 
