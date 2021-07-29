@@ -7,7 +7,7 @@ import { Unit, UnitEquipment } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
 import { Player } from "../Player";
-import { InventoryControls } from "../controlpanels/InventoryControls";
+import { InventoryControls } from "../cps/InventoryControls";
 import { Projectile } from "../weapons/Projectile";
 import { find } from "lodash";
 import { SetEffect, SetEffectTypes } from "../SetEffect";

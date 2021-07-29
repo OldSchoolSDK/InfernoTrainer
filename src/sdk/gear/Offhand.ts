@@ -1,7 +1,7 @@
 import { Equipment } from "../Equipment";
 import { UnitEquipment } from "../Unit";
 import { Player } from "../Player";
-import { InventoryControls } from "../controlpanels/InventoryControls";
+import { InventoryControls } from "../cps/InventoryControls";
 
 export class Offhand extends Equipment {
 
