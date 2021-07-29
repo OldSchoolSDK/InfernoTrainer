@@ -40,9 +40,9 @@ export class BastionPotion extends Potion {
   inventoryLeftClick(player: Player) {
 
     if (this.doses > 0) {
-      const rangedBoost = Math.floor(player.stats.defence * 0.10) + 4
+      const rangedBoost = Math.floor(player.stats.range * 0.10) + 4
       player.currentStats.range += rangedBoost;
-      player.currentStats.range = Math.min(player.stats.range, player.stats.range + rangedBoost)
+      player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangedBoost)
 
       const defenceBoost = Math.floor(player.stats.defence * 0.15) + 5
       player.currentStats.defence += defenceBoost;
