@@ -8,4 +8,36 @@ export class DevoutBoots extends Feet{
   get inventoryImage () {
     return InventImage
   }
+  get itemName(): string {
+    return "Holy Blessing"
+  }
+  constructor() {
+    super();
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 5
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
+  }
 }

@@ -1,31 +1,13 @@
 import { find, intersection } from 'lodash'
 import { BasePrayer, PrayerGroups } from '../BasePrayer'
-import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
-import RangerWeaponImage from '../../assets/images/prayers/range.png'
 
 export class RangedWeapon extends Weapon {
-  damage: number;
 
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
-    this._calculatePrayerEffects(from, to, bonuses)
-    bonuses.styleBonus = bonuses.styleBonus || 0
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1
-
-    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
-    if (this.isBlockable(from, to, bonuses)) {
-      this.damage = 0
-    }
-
-    this.grantXp(from);
-    this.registerProjectile(from, to)
-  }
-  
-  registerProjectile(from: Unit, to: Unit) {
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range'))
   }
 
@@ -34,10 +16,6 @@ export class RangedWeapon extends Weapon {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('range', this.damage * 4));
     }
-  }
-
-  get image(): string { 
-    return null;
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -67,16 +45,6 @@ export class RangedWeapon extends Weapon {
       return true
     }
     return false
-  }
-
-  _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
-  }
-
-  _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    const attackRoll = this._attackRoll(from, to, bonuses)
-    const defenceRoll = this._defenceRoll(from, to, bonuses)
-    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
   _rangedAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {

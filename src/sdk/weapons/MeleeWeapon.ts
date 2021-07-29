@@ -1,5 +1,4 @@
 import { find, intersection } from 'lodash'
-import { Projectile } from './Projectile'
 import { Weapon, AttackBonuses } from '../gear/Weapon'
 import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
@@ -7,29 +6,18 @@ import { XpDrop } from '../XpDrop'
 import { World } from '../World'
 
 export class MeleeWeapon extends Weapon {
-  damage: number;
   
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
-    this._calculatePrayerEffects(from, to, bonuses)
-
     bonuses.attackStyle = bonuses.attackStyle || 'slash'
-    bonuses.styleBonus = bonuses.styleBonus || 0
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1
-    bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0
+    super.attack(world, from, to, bonuses);
+  }
 
-    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
+  grantXp(from: Unit) {
 
-    if (this.isBlockable(from, to, bonuses)) {
-      this.damage = 0
-    }
-    
     if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('attack', this.damage * 4));
     }
-
-    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle))
   }
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -73,9 +61,6 @@ export class MeleeWeapon extends Weapon {
     return false
   }
 
-  _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
-  }
 
   _strengthLevel (from: Unit, to: Unit, bonuses: AttackBonuses) {
     let prayerMultiplier = 1
@@ -164,12 +149,6 @@ export class MeleeWeapon extends Weapon {
       }
     }
     return (Math.floor(from.currentStats.defence * prayerMultiplier) + bonuses.styleBonus + 8)
-  }
-
-  _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    const attackRoll = this._attackRoll(from, to, bonuses)
-    const defenceRoll = this._defenceRoll(from, to, bonuses)
-    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
   get isMeleeAttack () {

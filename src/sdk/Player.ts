@@ -2,7 +2,7 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min } from 'lodash'
+import { minBy, range, filter, find, map, min, uniq } from 'lodash'
 import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
@@ -15,6 +15,7 @@ import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
 import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
+import { SetEffect } from './SetEffect'
 
 export interface PlayerStats extends UnitStats { 
   prayer: number
@@ -40,37 +41,68 @@ export class Player extends Unit {
     super(world, location, options)
     this.destinationLocation = location
     this.equipment = options.equipment;
+    this.equipmentChanged();
     this.clearXpDrops();
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
   }
 
-  get bonuses(): UnitBonuses {
-    if (!this.cachedBonuses){
-      this.cachedBonuses = Unit.emptyBonuses();
-      let gear = [
-        this.equipment.weapon, 
-        this.equipment.offhand,
-        this.equipment.helmet,
-        this.equipment.necklace,
-        this.equipment.chest,
-        this.equipment.legs,
-        this.equipment.feet,
-        this.equipment.gloves,
-        this.equipment.ring,
-        this.equipment.cape,
-        this.equipment.ammo,
-      ]
+  equipmentChanged() {
 
-      gear.forEach((gear: Equipment) => {
-        if (gear && gear.bonuses){
-          this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
-        }
+    let gear = [
+      this.equipment.weapon, 
+      this.equipment.offhand,
+      this.equipment.helmet,
+      this.equipment.necklace,
+      this.equipment.chest,
+      this.equipment.legs,
+      this.equipment.feet,
+      this.equipment.gloves,
+      this.equipment.ring,
+      this.equipment.cape,
+      this.equipment.ammo,
+    ]
+
+
+    // updated gear bonuses
+    this.cachedBonuses = Unit.emptyBonuses();
+    gear.forEach((gear: Equipment) => {
+      if (gear && gear.bonuses){
+        this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
+      }
+    })
+
+
+    // update set effects
+    const allSetEffects = [];
+    gear.forEach((equipment: Equipment) => {
+      if (equipment && equipment.equipmentSetEffect){
+        allSetEffects.push(equipment.equipmentSetEffect)
+      }
+    })
+    const completeSetEffects = [];
+    uniq(allSetEffects).forEach((setEffect: typeof SetEffect) => {
+      const itemsInSet = setEffect.itemsInSet();
+      let setItemsEquipped = 0;
+      find(itemsInSet, (itemName: string) => {
+        gear.forEach((equipment: Equipment) => {
+          if (!equipment){
+            return;
+          }
+          if (itemName === equipment.itemName){
+            setItemsEquipped++;
+          }
+        });
       })
-      console.log('updated cache', this.cachedBonuses)
-    }
+      if (itemsInSet.length === setItemsEquipped) {
+        completeSetEffects.push(setEffect)
+      }
+    });
+    this.cachedSetEffects = completeSetEffects;
+  }
 
+  get bonuses(): UnitBonuses {
     return this.cachedBonuses;
   }
 
@@ -180,7 +212,7 @@ export class Player extends Unit {
     } else {
       // use equipped weapon
       if (this.equipment.weapon){
-        this.equipment.weapon.attack(this.world, this, this.aggro)
+        this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
       }else{
         console.log('TODO: Implement punching')
       }

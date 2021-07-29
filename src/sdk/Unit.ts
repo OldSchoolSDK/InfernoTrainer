@@ -22,6 +22,7 @@ import { Gloves } from './gear/Gloves';
 import { Ring } from './gear/Ring';
 import { Cape } from './gear/Cape';
 import { Ammo } from './gear/Ammo';
+import { SetEffect } from './SetEffect'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -103,6 +104,11 @@ export class Unit extends GameObject {
   currentStats: UnitStats;
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
+  cachedSetEffects: typeof SetEffect[] = [];
+
+  get completeSetEffects(): SetEffect[] {
+    return null;
+  }
 
   get type(): UnitTypes{
     return UnitTypes.MOB;
@@ -177,7 +183,7 @@ export class Unit extends GameObject {
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
-        magicDamage: 0,
+        magicDamage: 1,
         prayer: 0
       },
       targetSpecific: {

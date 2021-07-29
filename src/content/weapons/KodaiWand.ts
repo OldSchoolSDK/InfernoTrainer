@@ -10,33 +10,36 @@ export class KodaiWand extends MeleeWeapon {
 
     this.bonuses = {
       attack: {
-        stab: -1,
-        slash: -1,
-        crush: -1,
-        magic: 53,
-        range: 138
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 28,
+        range: 0
       },
       defence: {
-        stab: 213,
-        slash: 202,
-        crush: 219,
-        magic: 135,
-        range: 215
+        stab: 0,
+        slash: 3,
+        crush: 3,
+        magic: 20,
+        range: 0
       },
       other: {
-        meleeStrength: 15,
-        rangedStrength: 62,
-        magicDamage: 1.27,
-        prayer: 12
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0.15,
+        prayer: 0
       },
       targetSpecific: {
         undead: 0,
         slayer: 0
       }
-    };
+    }
   }
-
-
+  
+  get itemName(): string {
+    return "Kodai Wand"
+  }
+  
   get isTwoHander(): boolean {
     return false;
   }

@@ -34,6 +34,8 @@ export class Offhand extends Equipment {
       InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
       player.equipment.weapon = null;
     }
+
+    player.equipmentChanged();
   }
   
 

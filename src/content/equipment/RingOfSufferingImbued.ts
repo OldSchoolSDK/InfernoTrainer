@@ -8,4 +8,37 @@ export class RingOfSufferingImbued extends Ring{
   get inventoryImage () {
     return InventImage
   }
+  get itemName(): string {
+    return "Ring of Suffering (i)"
+  }
+
+  constructor() {
+    super();
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 70
+      },
+      defence: {
+        stab: 20,
+        slash: 20,
+        crush: 20,
+        magic: 20,
+        range: 20
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 4
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
+  }
 }

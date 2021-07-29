@@ -3,36 +3,19 @@ import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
-import { Projectile, ProjectileOptions } from './Projectile'
+import { ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
-import MagerWeaponImage from '../../assets/images/prayers/mage.png'
 
 export class MagicWeapon extends Weapon {
-  damage: number;
-
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
-    this._calculatePrayerEffects(from, to, bonuses)
+    super.attack(world,from,to,bonuses);
+  }
 
-    bonuses.isAccurate = bonuses.isAccurate || false
-    bonuses.voidMultiplier = bonuses.voidMultiplier || 1
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1
-
-    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
-    if (this.isBlockable(from, to, bonuses)) {
-      this.damage = 0
-    }
-    
+  grantXp(from: Unit) {
     if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
       from.grantXp(new XpDrop('magic', this.damage * 4));
     }
-
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'magic', options))
-  }
-
-
-  get image(): string { 
-    return null;
   }
 
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -62,10 +45,6 @@ export class MagicWeapon extends Weapon {
         bonuses.effectivePrayers.overhead = overhead
       }
     }
-  }
-
-  _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
   }
 
   _magicLevel (from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -127,12 +106,6 @@ export class MagicWeapon extends Weapon {
     }
 
     return (9 + to.currentStats.magic * prayerMultiplier) * (to.bonuses.defence.magic + 64)
-  }
-
-  _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    const attackRoll = this._attackRoll(from, to, bonuses)
-    const defenceRoll = this._defenceRoll(from, to, bonuses)
-    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
   _maxHit (from: Unit, to: Unit, bonuses: AttackBonuses) {

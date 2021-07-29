@@ -34,10 +34,10 @@ export class Equipment extends Item {
     openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
     this.assignToUnitEquipment(player.equipment);
     InventoryControls.inventory[openInventorySlots.shift()] = currentItem;
+    player.equipmentChanged()
   }
 
-
-  equipmentSetEffect(): SetEffect{
+  get equipmentSetEffect(): typeof SetEffect{
     return null;
   }
 

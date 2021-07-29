@@ -53,7 +53,6 @@ export class InventoryControls extends BaseControls {
 
     if (clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
-        world.player.cachedBonuses = null; // Reset bonuses. This is probably bad code. 
         clickedItem.inventoryLeftClick(world.player);
         world.mapController.updateOrbsMask(null, null)
       } else {

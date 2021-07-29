@@ -7,11 +7,43 @@ import { JusticiarSetEffect } from "../seteffects/JusticiarSetEffect";
 export class JusticiarLegguards extends Legs{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
-  equipmentSetEffect(): SetEffect{
+  get equipmentSetEffect(): typeof SetEffect{
     return JusticiarSetEffect;
+  }
+  get itemName(): string {
+    return "Justiciar Legguards"
   }
 
   get inventoryImage () {
     return InventImage
+  }
+  constructor() {
+    super();
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: -31,
+        range: -17
+      },
+      defence: {
+        stab: 95,
+        slash: 92,
+        crush: 93,
+        magic: -14,
+        range: 102
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 4
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
   }
 }

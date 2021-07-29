@@ -1,7 +1,13 @@
 import { Equipment } from "./Equipment"
 
+export enum SetEffectTypes {
+  JUSTICIAR = 'JUSTICIAR'
+}
 export class SetEffect {
-  static itemsInSet(): Equipment[] {
+  static effectName(): string {
+    return '';
+  }
+  static itemsInSet(): string[] {
     return [ ]
   }
 }

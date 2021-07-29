@@ -7,11 +7,43 @@ import { JusticiarSetEffect } from "../seteffects/JusticiarSetEffect";
 export class JusticiarFaceguard extends Helmet{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
-  equipmentSetEffect(): SetEffect{
+  get equipmentSetEffect(): typeof SetEffect{
     return JusticiarSetEffect;
+  }
+  get itemName(): string {
+    return "Justiciar Faceguard"
   }
 
   get inventoryImage () {
     return InventImage
+  }
+  constructor() {
+    super();
+    this.bonuses = {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: -6,
+        range: -2
+      },
+      defence: {
+        stab: 60,
+        slash: 63,
+        crush: 59,
+        magic: -6,
+        range: 67
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 2
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
   }
 }

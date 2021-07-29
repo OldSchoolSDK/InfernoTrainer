@@ -214,7 +214,7 @@ export class Mob extends Unit {
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.world, this, this.aggro, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
     if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {

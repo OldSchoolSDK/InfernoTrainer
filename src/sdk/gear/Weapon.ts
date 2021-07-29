@@ -8,6 +8,9 @@ import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
 import { Player } from "../Player";
 import { InventoryControls } from "../controlpanels/InventoryControls";
+import { Projectile } from "../weapons/Projectile";
+import { find } from "lodash";
+import { SetEffect, SetEffectTypes } from "../SetEffect";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -30,6 +33,7 @@ export interface AttackBonuses {
 }
 
 export class Weapon extends Equipment{
+  damage: number;
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
@@ -51,6 +55,7 @@ export class Weapon extends Equipment{
 
 
   inventoryLeftClick(player: Player) {
+
     const currentWeapon = player.equipment.weapon || null;
     const currentOffhand = player.equipment.offhand || null;
 
@@ -82,6 +87,7 @@ export class Weapon extends Equipment{
       InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
       player.equipment.offhand = null;
     }
+    player.equipmentChanged();
   }
   
   
@@ -89,15 +95,71 @@ export class Weapon extends Equipment{
 
   }
 
-  attack (stage: World, from: Unit, to: GameObject, bonuses: AttackBonuses = {}) {
+
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    this._calculatePrayerEffects(from, to, bonuses)
+    bonuses.styleBonus = bonuses.styleBonus || 0
+    bonuses.voidMultiplier = bonuses.voidMultiplier || 1
+    bonuses.gearMultiplier = bonuses.gearMultiplier || 1
+    bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0
+
+    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
+    if (this.isBlockable(from, to, bonuses)) {
+      this.damage = 0
+    }
+    console.log('damage b4', this.damage);
+
+    if (to.cachedSetEffects) {
+      find(to.cachedSetEffects, (effect: typeof SetEffect) => {
+        if (effect.effectName() === SetEffectTypes.JUSTICIAR){
+          const justiciarDamageReduction = Math.max(to.bonuses.defence[bonuses.attackStyle] / 3000, 0);
+          this.damage -= Math.ceil(justiciarDamageReduction * this.damage);
+        }
+      })
+    }
+
+    this.grantXp(from);
+    this.registerProjectile(from, to, bonuses)
   }
   
+  _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
+  }
+
+  _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return 0; // weapons implement this at the type tier
+  }
+  _defenceRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return 0; // weapons implement this at the type tier
+  }
+  _maxHit (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return 0; // weapons implement this at the type tier
+  }
+
+  _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    const attackRoll = this._attackRoll(from, to, bonuses)
+    const defenceRoll = this._defenceRoll(from, to, bonuses)
+    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
+  }
+
   isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
-    return false;
+    return false; // weapons implement this at the type tier
+  }
+
+  grantXp(from: Unit) {
+    // weapons implement this at the type tier
+  }
+  
+  _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    // weapons implement this at the type tier
+  }
+
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle))
   }
 
   get image(): string {
-    return '';
+    return null;
   }
 
   get attackRange(): number {

@@ -54,7 +54,10 @@ export class ScytheOfVitur extends MeleeWeapon {
   get inventoryImage () {
     return ScytheInventImage
   }
-
+  get itemName(): string {
+    return "Scythe of Vitur"
+  }
+  
 
   // Scythe attacks in a 1x3 arc in front of the player.
   // TODO: Refactor/change method so that it can actually hit multiple targets.

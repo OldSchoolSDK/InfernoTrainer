@@ -8,4 +8,36 @@ export class BarrowsGloves extends Gloves{
   get inventoryImage () {
     return InventImage
   }
+  get itemName(): string {
+    return "Barrows Gloves"
+  }
+  constructor() {
+    super();
+    this.bonuses = {
+      attack: {
+        stab: 12,
+        slash: 12,
+        crush: 12,
+        magic: 6,
+        range: 12
+      },
+      defence: {
+        stab: 12,
+        slash: 12,
+        crush: 12,
+        magic: 6,
+        range: 12
+      },
+      other: {
+        meleeStrength: 12,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
+  }
 }

@@ -9,12 +9,14 @@ export class Item {
     return false;
   }
   inventoryLeftClick(player: Player) {
-    // world.player.equipment.weapon = clickedItem
+    
   }
 
-  get name() {
+  get itemName() {
     return 'n/a'
   }
+
+  
 
   get inventoryImage (): string {
     return ''
