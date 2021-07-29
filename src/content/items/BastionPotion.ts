@@ -43,10 +43,10 @@ export class BastionPotion extends Potion {
       const rangedBoost = Math.floor(player.currentStats.defence * 0.10) + 4
       player.currentStats.range += rangedBoost;
       player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangedBoost)
-      
+
       const defenceBoost = Math.floor(player.currentStats.defence * 0.15) + 5
       player.currentStats.defence += defenceBoost;
-      player.currentStats.defence = Math.min(player.currentStats.defence, player.stats.defence + defenceBoost;
+      player.currentStats.defence = Math.min(player.currentStats.defence, player.stats.defence + defenceBoost);
     }
 
     this.doses--;
