@@ -45,21 +45,28 @@ export class SuperRestore extends Potion {
       player.currentStats.prayer = Math.min(player.currentStats.prayer, player.stats.prayer);
 
 
-      const attackBonus = Math.floor(player.stats.attack  * 0.25) + 8
-      player.currentStats.attack += attackBonus;
-      player.currentStats.attack = Math.min(player.currentStats.attack, player.stats.attack + attackBonus);
+      if (player.currentStats.attack < player.stats.attack) {
+        const attackBonus = Math.floor(player.stats.attack  * 0.25) + 8
+        player.currentStats.attack += attackBonus;
+        player.currentStats.attack = Math.min(player.currentStats.attack, player.stats.attack);  
+      }
 
-      const strengthBonus = Math.floor(player.stats.strength  * 0.25) + 8
-      player.currentStats.strength += strengthBonus;
-      player.currentStats.strength = Math.min(player.currentStats.strength, player.stats.strength + strengthBonus);
+      if (player.currentStats.strength < player.stats.strength) {
+        const strengthBonus = Math.floor(player.stats.strength  * 0.25) + 8
+        player.currentStats.strength += strengthBonus;
+        player.currentStats.strength = Math.min(player.currentStats.strength, player.stats.strength);
+      }
 
-      const rangeBonus = Math.floor(player.stats.range  * 0.25) + 8
-      player.currentStats.range += rangeBonus;
-      player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangeBonus);
-
-      const magicBonus = Math.floor(player.stats.magic  * 0.25) + 8
-      player.currentStats.magic += magicBonus;
-      player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic + magicBonus);
+      if (player.currentStats.range < player.stats.range) {
+        const rangeBonus = Math.floor(player.stats.range  * 0.25) + 8
+        player.currentStats.range += rangeBonus;
+        player.currentStats.range = Math.min(player.currentStats.range, player.stats.range);
+      }
+      if (player.currentStats.magic < player.stats.magic) {
+        const magicBonus = Math.floor(player.stats.magic  * 0.25) + 8
+        player.currentStats.magic += magicBonus;
+        player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic);
+      }
 
       // todo: every skill
     }
