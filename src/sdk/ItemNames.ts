@@ -21,4 +21,7 @@ export enum ItemNames {
   ANCESTRAL_ROBEBOTTOM = 'Ancestral Robe bottom',
   RING_OF_ENDURANCE = 'Ring of Endurance',
   STAMINA_POTION = 'Stamina Potion',
+  SARADOMIN_BREW = 'Saradomin Brew',
+  SUPER_RESTORE = 'Super Restore',
+  BASTION_POTION = 'Bastion Potion'
 }
