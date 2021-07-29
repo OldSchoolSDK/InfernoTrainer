@@ -342,7 +342,7 @@ export class Player extends Unit {
   moveTorwardsDestination () {
     // Actually move the player
 
-    this.effects.stamina = 10;
+    this.effects.stamina = 0;
 
     this.perceivedLocation = this.location
 
@@ -361,7 +361,9 @@ export class Player extends Unit {
       this.currentStats.run += Math.floor(this.currentStats.agility / 6) + 8
     }
     this.currentStats.run = Math.min(Math.max(this.currentStats.run, 0), 10000);
-
+    if (this.currentStats.run === 0) {
+      this.running = false;
+    }
 
     this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
 }

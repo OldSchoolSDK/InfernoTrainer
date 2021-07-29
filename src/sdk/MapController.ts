@@ -144,7 +144,7 @@ export class MapController {
     ctx.fillRect(0,this.mapPrayerOrb.height * (1 - prayerPercentage), this.mapPrayerOrb.width, this.mapPrayerOrb.height * prayerPercentage)
     ctx.globalCompositeOperation = 'source-over'
 
-    const runPercentage = this.currentStats.run / 100;
+    const runPercentage = this.currentStats.run / 10000;
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext('2d')
     ctx.fillStyle="white";
@@ -326,10 +326,8 @@ export class MapController {
 
     let mapRunIcon = this.mapWalkIcon;
     if (this.world.player.effects.stamina){
-      console.log('stam')
       mapRunIcon = this.mapStamIcon;
     } else if (this.world.player.running) {
-      console.log('run')
       mapRunIcon = this.mapRunIcon;
     }
     ctx.drawImage(mapRunIcon, offset + 37, 118)
