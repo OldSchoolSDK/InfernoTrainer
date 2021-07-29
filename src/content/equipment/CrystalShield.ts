@@ -12,6 +12,11 @@ export class CrystalShield extends Offhand{
   get itemName(): ItemNames {
     return ItemNames.CRYSTAL_SHIELD
   }
+  get weight(): number {
+    return 2.721;
+  }
+  
+  
   constructor() {
     super();
     this.bonuses = {

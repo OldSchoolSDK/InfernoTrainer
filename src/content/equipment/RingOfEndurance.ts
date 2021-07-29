@@ -12,6 +12,10 @@ export class RingOfEndurance extends Ring{
   get itemName(): ItemNames {
     return ItemNames.RING_OF_ENDURANCE
   }
+  get weight(): number {
+    return 0.006;
+  }
+  
 
   constructor() {
     super();

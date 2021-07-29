@@ -17,6 +17,10 @@ export class Item {
     return null
   }
 
+  get weight(): number {
+    return 0;
+  }
+  
   
 
   get inventoryImage (): string {

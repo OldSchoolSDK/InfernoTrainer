@@ -13,6 +13,10 @@ export class AncestralRobebottom extends Legs{
     return ItemNames.ANCESTRAL_ROBEBOTTOM
   }
 
+  get weight(): number {
+    return 1.814;
+  }
+
   constructor() {
     super();
     this.bonuses = {

@@ -8,6 +8,11 @@ export class HolyBlessing extends Ammo{
   get inventoryImage () {
     return InventImage
   }
+  get weight(): number {
+    return 0.51;
+  }
+  
+  
   constructor() {
     super();
     this.bonuses = {

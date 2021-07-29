@@ -12,6 +12,11 @@ export class DevoutBoots extends Feet{
   get itemName(): ItemNames {
     return ItemNames.HOLY_BLESSING
   }
+  get weight(): number {
+    return 0.5;
+  }
+  
+  
   constructor() {
     super();
     this.bonuses = {

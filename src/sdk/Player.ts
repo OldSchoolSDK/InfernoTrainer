@@ -2,7 +2,7 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min, uniq } from 'lodash'
+import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
 import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
@@ -18,6 +18,8 @@ import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
 import { ItemNames } from './ItemNames'
+import { InventoryControls } from './controlpanels/InventoryControls'
+import { Item } from './Item'
 
 export interface PlayerStats extends UnitStats {
   agility: number; 
@@ -150,7 +152,25 @@ export class Player extends Unit {
 
 
   get weight(): number {
-    return 35;
+
+    let gear: Item[] = [
+      this.equipment.weapon, 
+      this.equipment.offhand,
+      this.equipment.helmet,
+      this.equipment.necklace,
+      this.equipment.chest,
+      this.equipment.legs,
+      this.equipment.feet,
+      this.equipment.gloves,
+      this.equipment.ring,
+      this.equipment.cape,
+      this.equipment.ammo,
+    ]
+    gear = gear.concat(InventoryControls.inventory)
+    gear = filter(gear)
+
+    const kgs = Math.max(Math.min(64,sumBy(gear, 'weight')), 0)
+    return kgs;
   }
 
   get prayerDrainResistance(): number {

@@ -14,7 +14,10 @@ export class JusticiarLegguards extends Legs{
   get itemName(): ItemNames {
     return ItemNames.JUSTICIAR_LEGGUARDS
   }
-
+  get weight(): number {
+    return 9.071;
+  }
+  
   get inventoryImage () {
     return InventImage
   }

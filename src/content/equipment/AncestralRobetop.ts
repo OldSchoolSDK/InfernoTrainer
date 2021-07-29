@@ -12,6 +12,11 @@ export class AncestralRobetop extends Chest{
   get itemName(): ItemNames {
     return ItemNames.ANCESTRAL_ROBETOP
   }
+  get weight(): number {
+    return 2.721;
+  }
+
+
   constructor() {
     super();
     this.bonuses = {

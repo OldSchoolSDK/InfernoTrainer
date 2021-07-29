@@ -12,6 +12,11 @@ export class BarrowsGloves extends Gloves{
   get itemName(): ItemNames {
     return ItemNames.BARROWS_GLOVES
   }
+  get weight(): number {
+    return 0.226;
+  }
+  
+  
   constructor() {
     super();
     this.bonuses = {

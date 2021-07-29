@@ -12,6 +12,10 @@ export class PegasianBoots extends Feet{
   get itemName(): ItemNames {
     return ItemNames.PEGASIAN_BOOTS
   }
+  get weight(): number {
+    return 1.814;
+  }
+  
   constructor() {
     super();
     this.bonuses = {

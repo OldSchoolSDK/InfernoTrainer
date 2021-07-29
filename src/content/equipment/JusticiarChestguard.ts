@@ -14,7 +14,10 @@ export class JusticiarChestguard extends Chest{
   get itemName(): ItemNames {
     return ItemNames.JUSTICIAR_CHESTGUARD
   }
-
+  get weight(): number {
+    return 9.979;
+  }
+  
   get inventoryImage () {
     return InventImage
   }
