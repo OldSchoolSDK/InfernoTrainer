@@ -4,6 +4,7 @@ import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
 import { Unit, UnitBonuses } from '../../sdk/Unit'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { ItemNames } from "../../sdk/ItemNames"
 
 export class TwistedBow extends RangedWeapon {
   constructor() {
@@ -37,8 +38,8 @@ export class TwistedBow extends RangedWeapon {
   }
 
 
-  get itemName(): string {
-    return "Twisted Bow"
+  get itemName(): ItemNames {
+    return ItemNames.TWISTED_BOW
   }
 
   get isTwoHander(): boolean {

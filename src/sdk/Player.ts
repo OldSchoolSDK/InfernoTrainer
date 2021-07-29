@@ -99,7 +99,7 @@ export class Player extends Unit {
         completeSetEffects.push(setEffect)
       }
     });
-    this.cachedSetEffects = completeSetEffects;
+    this.setEffects = completeSetEffects;
   }
 
   get bonuses(): UnitBonuses {

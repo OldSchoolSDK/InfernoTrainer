@@ -5,6 +5,7 @@ import { World } from '../../sdk/World'
 import { Unit } from '../../sdk/Unit'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
+import { ItemNames } from "../../sdk/ItemNames"
 
 export class ScytheOfVitur extends MeleeWeapon {
 
@@ -54,8 +55,8 @@ export class ScytheOfVitur extends MeleeWeapon {
   get inventoryImage () {
     return ScytheInventImage
   }
-  get itemName(): string {
-    return "Scythe of Vitur"
+  get itemName(): ItemNames {
+    return ItemNames.SCYTHE_OF_VITUR
   }
   
 

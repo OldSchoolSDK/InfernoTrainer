@@ -1,6 +1,7 @@
 import { Necklace } from "../../sdk/gear/Necklace";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Necklace_of_anguish.png';
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class NecklaceOfAnguish extends Necklace{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class NecklaceOfAnguish extends Necklace{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Necklace of Anguish"
+  get itemName(): ItemNames {
+    return ItemNames.NECKLACE_OF_ANGUISH
   }
   constructor() {
     super();

@@ -1,6 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Avas_assembler.png';
 import { Cape } from "../../sdk/gear/Cape";
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class AvasAssembler extends Cape{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class AvasAssembler extends Cape{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Avas Assembler"
+  get itemName(): ItemNames {
+    return ItemNames.AVAS_ASSEMBLER
   }
   constructor() {
     super();

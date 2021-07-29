@@ -1,6 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Armadyl_chainskirt.png';
 import { Legs } from "../../sdk/gear/Legs";
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class ArmadylChainskirt extends Legs{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class ArmadylChainskirt extends Legs{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Armadyl Chainskirt"
+  get itemName(): ItemNames {
+    return ItemNames.ARMADYL_CHAINSKIRT
   }
 
   constructor() {

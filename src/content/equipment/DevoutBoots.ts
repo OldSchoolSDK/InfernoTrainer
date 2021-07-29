@@ -1,6 +1,7 @@
 import { Feet } from "../../sdk/gear/Feet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Devout_boots.png';
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class DevoutBoots extends Feet{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class DevoutBoots extends Feet{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Holy Blessing"
+  get itemName(): ItemNames {
+    return ItemNames.HOLY_BLESSING
   }
   constructor() {
     super();

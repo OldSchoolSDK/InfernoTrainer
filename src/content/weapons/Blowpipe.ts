@@ -2,6 +2,7 @@
 
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -34,8 +35,8 @@ export class Blowpipe extends RangedWeapon {
     }
   }
 
-  get itemName(): string {
-    return "Toxic Blowpipe"
+  get itemName(): ItemNames {
+    return ItemNames.TOXIC_BLOWPIPE
   }
   
   get isTwoHander(): boolean {

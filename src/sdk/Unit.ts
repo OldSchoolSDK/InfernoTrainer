@@ -104,7 +104,7 @@ export class Unit extends GameObject {
   currentStats: UnitStats;
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
-  cachedSetEffects: typeof SetEffect[] = [];
+  setEffects: typeof SetEffect[] = [];
 
   get completeSetEffects(): SetEffect[] {
     return null;

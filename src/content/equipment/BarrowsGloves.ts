@@ -1,6 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Barrows_gloves.png';
 import { Gloves } from "../../sdk/gear/Gloves";
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class BarrowsGloves extends Gloves{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class BarrowsGloves extends Gloves{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Barrows Gloves"
+  get itemName(): ItemNames {
+    return ItemNames.BARROWS_GLOVES
   }
   constructor() {
     super();

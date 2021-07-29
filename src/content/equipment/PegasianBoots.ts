@@ -1,6 +1,7 @@
 import { Feet } from "../../sdk/gear/Feet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Pegasian_boots.png';
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class PegasianBoots extends Feet{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class PegasianBoots extends Feet{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Pegasian Boots"
+  get itemName(): ItemNames {
+    return ItemNames.PEGASIAN_BOOTS
   }
   constructor() {
     super();

@@ -107,10 +107,8 @@ export class Weapon extends Equipment{
     if (this.isBlockable(from, to, bonuses)) {
       this.damage = 0
     }
-    console.log('damage b4', this.damage);
-
-    if (to.cachedSetEffects) {
-      find(to.cachedSetEffects, (effect: typeof SetEffect) => {
+    if (to.setEffects) {
+      find(to.setEffects, (effect: typeof SetEffect) => {
         if (effect.effectName() === SetEffectTypes.JUSTICIAR){
           const justiciarDamageReduction = Math.max(to.bonuses.defence[bonuses.attackStyle] / 3000, 0);
           this.damage -= Math.ceil(justiciarDamageReduction * this.damage);

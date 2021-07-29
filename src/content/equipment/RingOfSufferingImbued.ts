@@ -1,6 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Ring_of_suffering_imbued.png';
 import { Ring } from "../../sdk/gear/Ring";
+import { ItemNames } from "../../sdk/ItemNames";
 
 export class RingOfSufferingImbued extends Ring{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -8,8 +9,8 @@ export class RingOfSufferingImbued extends Ring{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): string {
-    return "Ring of Suffering (i)"
+  get itemName(): ItemNames {
+    return ItemNames.RING_OF_SUFFERING_I
   }
 
   constructor() {
