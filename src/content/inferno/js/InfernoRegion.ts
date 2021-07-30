@@ -74,10 +74,13 @@ export class InfernoRegion extends Region {
   initialize (world: World) {
 
 
+    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+
+
     // Add player
     const player = new Player(
       world,
-      { x: parseInt(BrowserUtils.getQueryVar('x')) || 28, y: parseInt(BrowserUtils.getQueryVar('y')) || 17 },
+      { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 15 },
       { equipment: { 
           weapon: new Blowpipe(),
           helmet: new JusticiarFaceguard(),
@@ -94,7 +97,6 @@ export class InfernoRegion extends Region {
     world.setPlayer(player)
 
 
-    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
 
     if (wave !== 69) {
       // Add pillars
