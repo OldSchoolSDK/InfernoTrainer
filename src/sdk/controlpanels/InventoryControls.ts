@@ -44,7 +44,6 @@ export class InventoryControls extends BaseControls {
   cursorMovedto(world: World, x: number, y: number) {
 
     this.cursorLocation = { x, y }
-    console.log('e', x, y)
   }
 
 

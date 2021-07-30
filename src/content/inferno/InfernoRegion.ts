@@ -9,6 +9,7 @@ import { JalZek } from './js/mobs/JalZek'
 import { JalXil } from './js/mobs/JalXil'
 import { JalImKot } from './js/mobs/JalImKot'
 import { JalAk } from './js/mobs/JalAk'
+import { TzKalZuk } from './js/mobs/TzKalZuk'
 import { JalMejRah } from './js/mobs/JalMejRah'
 import { BrowserUtils } from '../../sdk/utils/BrowserUtils'
 import { TwistedBow } from '../weapons/TwistedBow'
@@ -71,24 +72,6 @@ export class InfernoRegion extends Region {
 
   initialize (world: World) {
 
-    // Add pillars
-    InfernoPillar.addPillarsToWorld(world)
-    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
-    if (isNaN(wave)){
-      wave = 1;
-    }
-    
-    const randomPillar = shuffle(world.entities)[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
-
-
-    for (let x = 10;x < 41;x++) {
-      world.addEntity(new MovementBlocker(world, { x, y: 13}))
-      world.addEntity(new MovementBlocker(world, { x, y: 44}))
-    }
-    for (let y = 14;y < 44;y++) {
-      world.addEntity(new MovementBlocker(world, { x: 10, y}))
-      world.addEntity(new MovementBlocker(world, { x: 40, y}))
-    }
 
     // Add player
     const player = new Player(
@@ -109,47 +92,77 @@ export class InfernoRegion extends Region {
       })
     world.setPlayer(player)
 
-    // Add mobs
 
-    const bat = BrowserUtils.getQueryVar('bat') || '[]'
-    const blob = BrowserUtils.getQueryVar('blob') || '[]'
-    const melee = BrowserUtils.getQueryVar('melee') || '[]'
-    const ranger = BrowserUtils.getQueryVar('ranger') || '[]'
-    const mager = BrowserUtils.getQueryVar('mager') || '[]'
-    const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
+    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+
+    if (wave !== 69) {
+      // Add pillars
+      InfernoPillar.addPillarsToWorld(world)
+      if (isNaN(wave)){
+        wave = 1;
+      }  
+      
+    }
+
+    const randomPillar = (shuffle(world.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
+
+
+    for (let x = 10;x < 41;x++) {
+      world.addEntity(new MovementBlocker(world, { x, y: 13}))
+      world.addEntity(new MovementBlocker(world, { x, y: 44}))
+    }
+    for (let y = 14;y < 44;y++) {
+      world.addEntity(new MovementBlocker(world, { x: 10, y}))
+      world.addEntity(new MovementBlocker(world, { x: 40, y}))
+    }
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
-    // world.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
-    
-    if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
-      // Backwards compatibility layer for runelite plugin
-      world.wave = 'imported';
-      try {
-        JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-        JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-        JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-        JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-        JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
 
-        InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.addMob.bind(world))
-
-        replayLink.href = `/${window.location.search}`
-      } catch(ex){
-        console.log('failed to import wave from inferno stats');
-         
+    // Add mobs
+    if (wave !== 69) {
+      const bat = BrowserUtils.getQueryVar('bat') || '[]'
+      const blob = BrowserUtils.getQueryVar('blob') || '[]'
+      const melee = BrowserUtils.getQueryVar('melee') || '[]'
+      const ranger = BrowserUtils.getQueryVar('ranger') || '[]'
+      const mager = BrowserUtils.getQueryVar('mager') || '[]'
+      const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
+  
+      // world.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
+      
+      if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
+        // Backwards compatibility layer for runelite plugin
+        world.wave = 'imported';
+        try {
+          JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
+  
+          InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.addMob.bind(world))
+  
+          replayLink.href = `/${window.location.search}`
+        } catch(ex){
+          console.log('failed to import wave from inferno stats');
+           
+        }
+  
+      } else {
+        // Native approach
+        const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
+  
+        InfernoWaves.spawn(world, randomPillar, spawns, wave).forEach(world.addMob.bind(world))
+        world.wave = String(wave)
+  
+        const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
+        replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
+        waveInput.value = String(wave);
       }
-
-    } else {
-      // Native approach
-      const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
-
-      InfernoWaves.spawn(world, randomPillar, spawns, wave).forEach(world.addMob.bind(world))
-      world.wave = String(wave)
-
-      const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
-      replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
-      waveInput.value = String(wave);
+    }else {
+      // spawn zuk
+      world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player}))
     }
+
     /// /////////////////////////////////////////////////////////
     // UI controls
 
