@@ -14,10 +14,65 @@ export enum CollisionType {
 
 export class Collision {
 
+  static collisionMath (x: number, y: number, s: number, x2: number, y2: number, s2: number) {
+    return !(x > (x2 + s2 - 1) || (x + s - 1) < x2 || (y - s + 1) > y2 || y < (y2 - s2 + 1))
+  }
+
+
+  // Mob collision
+  
+  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
+    return (Collision.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
+  }
+
+  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+    for (let i = 0; i < world.mobs.length; i++) {
+      if (world.mobs[i] === mobToAvoid) {
+        continue
+      }
+
+      const collidedWithSpecificMob = Collision.collidesWithMob(world, x, y, s, world.mobs[i])
+
+      if (collidedWithSpecificMob && world.mobs[i].consumesSpace) {
+        return world.mobs[i]
+      }
+    }
+    return null
+  }
+
+
+  // Entity collision
+
   // Same as above but only returns entities with collision enabled.
   static collideableEntitiesAtPoint(world: World, x: number, y: number, s: number) {
     return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
+
+
+  static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
+    for (var i = 0; i < world.entities.length; i++) {
+      let entity = world.entities[i];
+      if (entity.collisionType != CollisionType.NONE && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static collidesWithAnyLoSBlockingEntities (world: World, x: number, y: number, s: number) {
+    for (var i = 0; i < world.entities.length; i++) {
+      let entity = world.entities[i];
+      if (entity.collisionType === CollisionType.BLOCK_LOS && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
+
+  // Perceived location works on the viewport size, so be careful as the numbers are a different scale
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number) {
     const mobs = []
@@ -35,41 +90,5 @@ export class Collision {
     const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
 
     return (Collision.collisionMath(x, y - Settings.tileSize, 1, perceivedX, perceivedY, (mob.size) * Settings.tileSize))
-  }
-
-
-  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    for (let i = 0; i < world.mobs.length; i++) {
-      if (world.mobs[i] === mobToAvoid) {
-        continue
-      }
-
-      const collidedWithSpecificMob = Collision.collidesWithMob(world, x, y, s, world.mobs[i])
-
-      if (collidedWithSpecificMob && world.mobs[i].consumesSpace) {
-        return world.mobs[i]
-      }
-    }
-    return null
-  }
-
-  static collisionMath (x: number, y: number, s: number, x2: number, y2: number, s2: number) {
-    return !(x > (x2 + s2 - 1) || (x + s - 1) < x2 || (y - s + 1) > y2 || y < (y2 - s2 + 1))
-  }
-
-  static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
-    for (var i = 0; i < world.entities.length; i++) {
-      let entity = world.entities[i];
-      if (entity.collisionType != CollisionType.NONE && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-
-  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
-    return (Collision.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
   }
 }

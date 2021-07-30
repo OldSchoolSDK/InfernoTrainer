@@ -10,6 +10,36 @@ interface PathingNode {
   parent?: any;
 }
 export class Pathing {
+
+  static entitiesAtPoint (world: World, x: number, y: number, s: number) {
+    const entities = []
+    for (let i = 0; i < world.entities.length; i++) {
+      if (Collision.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
+        entities.push(world.entities[i])
+      }
+    }
+    return entities
+  }
+
+
+  // TODO: Make this more like entitiesAtPoint
+  static mobsAtAoeOffset (world: World, mob: GameObject, point: Location) {
+    const mobs = []
+    for (let i = 0; i < world.mobs.length; i++) {
+      const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
+
+      if (collidedWithSpecificMob) {
+        mobs.push(world.mobs[i])
+      }
+    }
+
+    return sortBy(mobs, (m: GameObject) => mob !== m)
+  }
+
+
+
+  // Core pathing
+
   static linearInterpolation (x: number, y: number, a: number) {
     return ((y - x) * a) + x
   }
@@ -17,6 +47,7 @@ export class Pathing {
   static dist (x: number, y: number, x2: number, y2: number) {
     return Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2))
   }
+
 
   static closestPointTo (x: number, y: number, mob: GameObject) {
     const corners = []
@@ -31,31 +62,6 @@ export class Pathing {
 
     return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
-
-  static entitiesAtPoint (world: World, x: number, y: number, s: number) {
-    const entities = []
-    for (let i = 0; i < world.entities.length; i++) {
-      if (Collision.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
-        entities.push(world.entities[i])
-      }
-    }
-    return entities
-  }
-
-  // point.x + to.location.x, point.y + to.location.y
-  static mobsInAreaOfEffectOfMob (world: World, mob: GameObject, point: Location) {
-    const mobs = []
-    for (let i = 0; i < world.mobs.length; i++) {
-      const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
-
-      if (collidedWithSpecificMob) {
-        mobs.push(world.mobs[i])
-      }
-    }
-
-    return sortBy(mobs, (m: GameObject) => mob !== m)
-  }
-
 
   static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
     // if (y - (s - 1) < 0 || x + (s - 1) > 28) {

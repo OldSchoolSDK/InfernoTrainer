@@ -146,7 +146,7 @@ export class World {
     if (Settings.rotated === 'south') {
       x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
-    }
+    } 
 
     if (e.offsetX > this.viewportWidth * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {

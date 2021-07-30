@@ -44,7 +44,7 @@ export class LineOfSight {
   static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s: number = 1, r: number = 1, isNPC: boolean = false): boolean {
     const dx = x2 - x1
     const dy = y2 - y1
-    if (Collision.collidesWithAnyEntities(world, x1, y1, 1) || Collision.collidesWithAnyEntities(world, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
+    if (Collision.collidesWithAnyLoSBlockingEntities(world, x1, y1, 1) || Collision.collidesWithAnyLoSBlockingEntities(world, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
       return false
     }
     // assume range 1 is melee
@@ -72,12 +72,12 @@ export class LineOfSight {
       while (xTile !== x2) {
         xTile += xInc
         const yTile = y >>> 16
-        if (Collision.collidesWithAnyEntities(world, xTile, yTile, 1)) {
+        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
           return false
         }
         y += slope
         const newYTile = y >>> 16
-        if (newYTile !== yTile && Collision.collidesWithAnyEntities(world, xTile, newYTile, 1)) {
+        if (newYTile !== yTile && Collision.collidesWithAnyLoSBlockingEntities(world, xTile, newYTile, 1)) {
           return false
         }
       }
@@ -92,12 +92,12 @@ export class LineOfSight {
       while (yTile !== y2) {
         yTile += yInc
         const xTile = x >>> 16
-        if (Collision.collidesWithAnyEntities(world, xTile, yTile, 1)) {
+        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
           return false
         }
         x += slope
         const newXTile = x >>> 16
-        if (newXTile !== xTile && Collision.collidesWithAnyEntities(world, newXTile, yTile, 1)) {
+        if (newXTile !== xTile && Collision.collidesWithAnyLoSBlockingEntities(world, newXTile, yTile, 1)) {
           return false
         }
       }
