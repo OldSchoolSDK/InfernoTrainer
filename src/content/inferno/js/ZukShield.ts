@@ -98,7 +98,7 @@ export class ZukShield extends Mob {
     return false;
   }
   movementStep () {
-    this.perceivedLocation = this.location;
+    this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     if (this.frozen <= 0 ){
       if (this.movementDirection) {
