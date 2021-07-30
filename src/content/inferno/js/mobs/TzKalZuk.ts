@@ -20,6 +20,7 @@ export class TzKalZuk extends Mob {
     this.attackCooldownTicks = 13;
   }
   
+  
   get displayName () {
     return 'TzKal-Zuk'
   }
