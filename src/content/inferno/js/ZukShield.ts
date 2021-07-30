@@ -100,7 +100,7 @@ export class ZukShield extends Mob {
   movementStep () {
     this.processIncomingAttacks()
 
-    
+
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     if (this.frozen <= 0 ){
@@ -134,7 +134,7 @@ export class ZukShield extends Mob {
   }
 
   get color() {
-    return '#FF0000'
+    return '#FF7300'
   }
 
   
