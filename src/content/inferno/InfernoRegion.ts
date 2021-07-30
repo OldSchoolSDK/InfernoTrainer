@@ -119,6 +119,8 @@ export class InfernoRegion extends Region {
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
+    world.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
+    
     if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
       // Backwards compatibility layer for runelite plugin
       world.wave = 'imported';

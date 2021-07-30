@@ -1,5 +1,5 @@
 'use strict'
-import { filter, sortBy } from 'lodash'
+import { filter, sortBy, minBy } from 'lodash'
 import { CollisionType, GameObject, Location } from './GameObject'
 import { World } from './World'
 import { Settings } from './Settings'
@@ -31,6 +31,20 @@ export class Pathing {
       }
     }
     return false;
+  }
+
+  static closestPointTo (x: number, y: number, mob: GameObject) {
+    const corners = []
+    for (let xx = 0; xx < mob.size; xx++) {
+      for (let yy = 0; yy < mob.size; yy++) {
+        corners.push({
+          x: mob.location.x + xx,
+          y: mob.location.y - yy
+        })
+      }
+    }
+
+    return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
 
   static entitiesAtPoint (world: World, x: number, y: number, s: number) {
