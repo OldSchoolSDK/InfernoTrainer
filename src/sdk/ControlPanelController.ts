@@ -91,7 +91,53 @@ export class ControlPanelController {
     return { x: i * 33, y: 0 }
   }
 
-  controlPanelClick (e: MouseEvent): boolean {
+  cursorMovedTo (e: MouseEvent) {
+    if (this.selectedControl) {
+
+    const x = e.offsetX - (this.world.viewport.width - this.width);
+    const y = e.offsetY - (this.world.viewport.height - this.height);
+
+    const panelX = this.width - 204
+    const panelY = 0
+    const panelWidth = 204
+    const panelHeight = 275
+    if (panelX < x && x < panelX + panelWidth) {
+      if (panelY < y && y < panelY + panelHeight) {
+        const relativeX = x - panelX
+        const relativeY = y - panelY
+        this.selectedControl.cursorMovedto(this.world, relativeX, relativeY)
+      }
+    }
+
+
+    }
+  }
+
+  controlPanelClickUp (e: MouseEvent): boolean {
+
+    let intercepted = false;
+
+    const x = e.offsetX - (this.world.viewport.width - this.width);
+    const y = e.offsetY - (this.world.viewport.height - this.height);
+
+    const panelX = this.width - 204
+    const panelY = 0
+    const panelWidth = 204
+    const panelHeight = 275
+    if (panelX < x && x < panelX + panelWidth) {
+      if (panelY < y && y < panelY + panelHeight) {
+        const relativeX = x - panelX
+        const relativeY = y - panelY
+        intercepted = true;
+        this.selectedControl.panelClickUp(this.world, relativeX, relativeY)
+      }
+    }
+
+    return intercepted;
+
+  }
+
+  controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
 
     const x = e.offsetX - (this.world.viewport.width - this.width);
@@ -126,7 +172,7 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        this.selectedControl.clickedPanel(this.world, relativeX, relativeY)
+        this.selectedControl.panelClickDown(this.world, relativeX, relativeY)
       }
     }
 

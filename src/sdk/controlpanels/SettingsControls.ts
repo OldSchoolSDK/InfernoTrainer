@@ -85,7 +85,7 @@ export class SettingsControls extends BaseControls {
     return BrowserUtils.getQueryVar('settings_key') || '5'
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+  panelClickDown (world: World, x: number, y: number) {
     if (x > 20 && x < 56 && y > 20 && y < 56) {
       Settings.playsAudio = !Settings.playsAudio
     } else if (x > 90 && x < 105 && y > 20 && y < 36) {
