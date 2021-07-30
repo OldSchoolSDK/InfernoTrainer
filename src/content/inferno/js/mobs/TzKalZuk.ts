@@ -17,7 +17,7 @@ export class TzKalZuk extends Mob {
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
-    this.attackCooldownTicks = 10;
+    this.attackCooldownTicks = 13;
   }
   
   get displayName () {
@@ -32,13 +32,16 @@ export class TzKalZuk extends Mob {
     return 'red'
   }
 
+  canMove() {
+    return false;
+  }
 
   magicMaxHit () {
     return 251
   }
   
   setStats () {
-    this.stunned = 1
+    this.stunned = 4
 
     this.weapons = {
       magic: new MagicWeapon()

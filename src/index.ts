@@ -1,6 +1,6 @@
 'use strict'
 
-import { InfernoRegion } from './content/inferno/InfernoRegion'
+import { InfernoRegion } from './content/inferno/js/InfernoRegion'
 import { VerzikP3 } from './content/verzik/VerzikP3'
 import { World } from './sdk/World'
 import { ControlPanelController } from './sdk/ControlPanelController'

@@ -2,45 +2,46 @@
 
 import { shuffle } from 'lodash'
 
-import { InfernoPillar } from './js/InfernoPillar'
-import { Player } from '../../sdk/Player'
-import { InfernoWaves } from './js/InfernoWaves'
-import { JalZek } from './js/mobs/JalZek'
-import { JalXil } from './js/mobs/JalXil'
-import { JalImKot } from './js/mobs/JalImKot'
-import { JalAk } from './js/mobs/JalAk'
-import { TzKalZuk } from './js/mobs/TzKalZuk'
-import { JalMejRah } from './js/mobs/JalMejRah'
-import { BrowserUtils } from '../../sdk/utils/BrowserUtils'
-import { TwistedBow } from '../weapons/TwistedBow'
-import { Blowpipe } from '../weapons/Blowpipe'
-import { Region } from '../../sdk/Region'
-import { World } from '../../sdk/World'
-import { Settings } from '../../sdk/Settings'
-import InfernoMapImage from './assets/images/map.png'
-import { ImageLoader } from '../../sdk/utils/ImageLoader'
-import { JusticiarFaceguard } from '../equipment/JusticiarFaceguard';
-import { NecklaceOfAnguish } from '../equipment/NecklaceOfAnguish';
-import { ArmadylChestplate } from '../equipment/ArmadylChestplate';
-import { ArmadylChainskirt } from '../equipment/ArmadylChainskirt';
-import { PegasianBoots } from '../equipment/PegasianBoots';
-import { AvasAssembler } from '../equipment/AvasAssembler';
-import { HolyBlessing } from '../equipment/HolyBlessing';
-import { BarrowsGloves } from '../equipment/BarrowsGloves';
-import { RingOfSufferingImbued } from '../equipment/RingOfSufferingImbued';
-import { RingOfEndurance } from '../equipment/RingOfEndurance';
-import { CrystalShield } from '../equipment/CrystalShield';
-import { JusticiarChestguard } from '../equipment/JusticiarChestguard'
-import { JusticiarLegguards } from '../equipment/JusticiarLegguards'
-import { KodaiWand } from '../weapons/KodaiWand'
-import { DevoutBoots } from '../equipment/DevoutBoots'
-import { AncestralRobetop } from '../equipment/AncestralRobetop'
-import { AncestralRobebottom } from '../equipment/AncestralRobebottom'
-import { StaminaPotion } from '../items/StaminaPotion'
-import { SaradominBrew } from '../items/SaradominBrew'
-import { SuperRestore } from '../items/SuperRestore'
-import { BastionPotion } from '../items/BastionPotion'
-import { MovementBlocker } from '../MovementBlocker'
+import { InfernoPillar } from './InfernoPillar'
+import { Player } from '../../../sdk/Player'
+import { InfernoWaves } from './InfernoWaves'
+import { JalZek } from './mobs/JalZek'
+import { JalXil } from './mobs/JalXil'
+import { JalImKot } from './mobs/JalImKot'
+import { JalAk } from './mobs/JalAk'
+import { TzKalZuk } from './mobs/TzKalZuk'
+import { JalMejRah } from './mobs/JalMejRah'
+import { BrowserUtils } from '../../../sdk/utils/BrowserUtils'
+import { TwistedBow } from '../../weapons/TwistedBow'
+import { Blowpipe } from '../../weapons/Blowpipe'
+import { Region } from '../../../sdk/Region'
+import { World } from '../../../sdk/World'
+import { Settings } from '../../../sdk/Settings'
+import InfernoMapImage from '../assets/images/map.png'
+import { ImageLoader } from '../../../sdk/utils/ImageLoader'
+import { JusticiarFaceguard } from '../../equipment/JusticiarFaceguard';
+import { NecklaceOfAnguish } from '../../equipment/NecklaceOfAnguish';
+import { ArmadylChestplate } from '../../equipment/ArmadylChestplate';
+import { ArmadylChainskirt } from '../../equipment/ArmadylChainskirt';
+import { PegasianBoots } from '../../equipment/PegasianBoots';
+import { AvasAssembler } from '../../equipment/AvasAssembler';
+import { HolyBlessing } from '../../equipment/HolyBlessing';
+import { BarrowsGloves } from '../../equipment/BarrowsGloves';
+import { RingOfSufferingImbued } from '../../equipment/RingOfSufferingImbued';
+import { RingOfEndurance } from '../../equipment/RingOfEndurance';
+import { CrystalShield } from '../../equipment/CrystalShield';
+import { JusticiarChestguard } from '../../equipment/JusticiarChestguard'
+import { JusticiarLegguards } from '../../equipment/JusticiarLegguards'
+import { KodaiWand } from '../../weapons/KodaiWand'
+import { DevoutBoots } from '../../equipment/DevoutBoots'
+import { AncestralRobetop } from '../../equipment/AncestralRobetop'
+import { AncestralRobebottom } from '../../equipment/AncestralRobebottom'
+import { StaminaPotion } from '../../items/StaminaPotion'
+import { SaradominBrew } from '../../items/SaradominBrew'
+import { SuperRestore } from '../../items/SuperRestore'
+import { BastionPotion } from '../../items/BastionPotion'
+import { MovementBlocker } from '../../MovementBlocker'
+import { ZukShield } from "./ZukShield"
 
 export class InfernoRegion extends Region {
 
@@ -161,6 +162,7 @@ export class InfernoRegion extends Region {
     }else {
       // spawn zuk
       world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player}))
+      world.addEntity(new ZukShield(world, { x: 24, y: 12}))
     }
 
     /// /////////////////////////////////////////////////////////

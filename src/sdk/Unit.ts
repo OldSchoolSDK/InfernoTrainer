@@ -248,7 +248,7 @@ export class Unit extends GameObject {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackCooldownTicks === this.cooldown && this.dying === -1
+    return this.attackCooldownTicks === this.cooldown && this.dying === -1 && this.isStunned() === false;
   }
 
   setHasLOS () {
