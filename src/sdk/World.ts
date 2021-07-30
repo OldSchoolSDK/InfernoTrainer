@@ -178,7 +178,7 @@ export class World {
 
       const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
       this.player.aggro = null
-      if (mobs.length) {
+      if (mobs.length && mobs[0].canBeAttacked()) {
         this.redClick()
         this.playerAttackClick(mobs[0])
       } else {

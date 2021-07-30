@@ -4,10 +4,17 @@ import { World } from './World'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
 
+export enum EntityName {
+  INFERNO_SHIELD = 'Inferno Shield',
+}
 
 export class Entity extends GameObject{
   world: World;
   location: Location;
+
+  entityName(): EntityName {
+    return null;
+  }
 
   constructor (world: World, location: Location) {
     super()

@@ -1,7 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Crystal_shield.png';
 import { Offhand } from "../../sdk/gear/Offhand";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class CrystalShield extends Offhand{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class CrystalShield extends Offhand{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.CRYSTAL_SHIELD
+  get itemName(): ItemName {
+    return ItemName.CRYSTAL_SHIELD
   }
   get weight(): number {
     return 2.721;

@@ -103,10 +103,6 @@ export class JalAkRekMej extends Mob {
     return null
   }
 
-  get color () {
-    return '#aadd7333'
-  }
-
   get attackStyle () {
     return 'magic'
   }

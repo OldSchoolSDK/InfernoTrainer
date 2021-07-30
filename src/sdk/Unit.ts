@@ -23,6 +23,7 @@ import { Ring } from './gear/Ring';
 import { Cape } from './gear/Cape';
 import { Ammo } from './gear/Ammo';
 import { SetEffect } from './SetEffect'
+import { EntityName } from './Entity'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -112,6 +113,10 @@ export class Unit extends GameObject {
 
   get type(): UnitTypes{
     return UnitTypes.MOB;
+  }
+
+  mobName(): EntityName { 
+    return null;
   }
 
   constructor (world: World, location: Location, options?: UnitOptions) {
@@ -244,7 +249,7 @@ export class Unit extends GameObject {
   }
 
   get color (): string {
-    return '#FFFFFF'
+    return '#FFFFFF00'
   }
 
   shouldShowAttackAnimation () {
@@ -252,6 +257,10 @@ export class Unit extends GameObject {
   }
 
   setHasLOS () {
+    if (!this.aggro) {
+      this.hasLOS = false;
+      return;
+    }
     if (this.aggro === this.world.player) {
       this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
@@ -281,16 +290,6 @@ export class Unit extends GameObject {
     return isWithinMeleeRange
   }
 
-  // Returns true if this mob is on the specified tile.
-  isOnTile (x: number, y: number) {
-    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
-  }
-
-  // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo (x: number, y: number) {
-    // We simply clamp the target point to our own boundary box.
-    return [clamp(x, this.location.x, this.location.x + this.size), clamp(y, this.location.y, this.location.y - this.size)]
-  }
 
   addProjectile (projectile: Projectile) {
     this.incomingProjectiles.push(projectile)
@@ -344,6 +343,10 @@ export class Unit extends GameObject {
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
   }
 
+  drawHitsplat(projectile: Projectile): boolean { 
+    return true;
+  }
+
   drawHPBar () {
     this.world.worldCtx.fillStyle = 'red'
     this.world.worldCtx.fillRect(
@@ -380,32 +383,35 @@ export class Unit extends GameObject {
         return
       }
       projectileCounter++
-      const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
-      if (!projectile.offsetX && !projectile.offsetY) {
-        projectile.offsetX = projectileOffsets[0][0]
-        projectile.offsetY = projectileOffsets[0][1]
+      if (this.drawHitsplat(projectile)) {
+        const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
+        if (!projectile.offsetX && !projectile.offsetY) {
+          projectile.offsetX = projectileOffsets[0][0]
+          projectile.offsetY = projectileOffsets[0][1]
+        }
+  
+        projectileOffsets = remove(projectileOffsets, (offset) => {
+          return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
+        })
+  
+        this.world.worldCtx.drawImage(
+          image,
+          projectile.offsetX - 12,
+          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
+          24,
+          23
+        )
+        this.world.worldCtx.fillStyle = '#FFFFFF'
+        this.world.worldCtx.font = '16px Stats_11'
+        this.world.worldCtx.textAlign = 'center'
+        this.world.worldCtx.fillText(
+          String(projectile.damage),
+          projectile.offsetX,
+          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
+        )
+        this.world.worldCtx.textAlign = 'left'
       }
 
-      projectileOffsets = remove(projectileOffsets, (offset) => {
-        return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
-      })
-
-      this.world.worldCtx.drawImage(
-        image,
-        projectile.offsetX - 12,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
-        24,
-        23
-      )
-      this.world.worldCtx.fillStyle = '#FFFFFF'
-      this.world.worldCtx.font = '16px Stats_11'
-      this.world.worldCtx.textAlign = 'center'
-      this.world.worldCtx.fillText(
-        String(projectile.damage),
-        projectile.offsetX,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
-      )
-      this.world.worldCtx.textAlign = 'left'
     })
   }
 

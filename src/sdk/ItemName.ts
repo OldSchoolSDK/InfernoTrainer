@@ -1,5 +1,5 @@
 
-export enum ItemNames {
+export enum ItemName {
   JUSTICIAR_FACEGUARD = 'Justiciar Faceguard',
   JUSTICIAR_CHESTGUARD = 'Justiciar Chestguard',
   JUSTICIAR_LEGGUARDS = 'Justiciar Legguards',

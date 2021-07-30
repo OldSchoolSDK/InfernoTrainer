@@ -91,9 +91,6 @@ export class JalMejRah extends Mob {
     return BatSound
   }
 
-  get color () {
-    return '#aadd7333'
-  }
 
   get attackStyle () {
     return 'range'

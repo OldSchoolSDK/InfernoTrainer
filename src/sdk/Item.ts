@@ -1,4 +1,4 @@
-import { ItemNames } from "./ItemNames";
+import { ItemName } from "./ItemName";
 import { Player } from "./Player";
 
 export class Item {
@@ -13,7 +13,7 @@ export class Item {
     
   }
 
-  get itemName(): ItemNames {
+  get itemName(): ItemName {
     return null
   }
 

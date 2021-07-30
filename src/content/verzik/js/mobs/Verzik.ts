@@ -122,9 +122,6 @@ export class Verzik extends Mob{
     return BatSound;
   }
   
-  get color() {
-    return "#aadd7333";
-  }
   // Verzik always has line-of-sight.
   setHasLOS() {
     this.hasLOS = true;

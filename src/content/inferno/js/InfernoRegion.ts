@@ -163,8 +163,10 @@ export class InfernoRegion extends Region {
       }
     }else {
       // spawn zuk
-      world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player}))
-      world.addEntity(new ZukShield(world, { x: 24, y: 12}))
+      const shield = new ZukShield(world, { x: 24, y: 12}, {});
+      world.addMob(shield)
+
+      world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player }))
     }
 
     /// /////////////////////////////////////////////////////////

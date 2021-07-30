@@ -22,6 +22,7 @@ export class Projectile {
   options: ProjectileOptions = {};
   remainingDelay: number;
   currentLocation: Location;
+  attackStyle: string;
 
   offsetX: number;
   offsetY: number;
@@ -32,6 +33,7 @@ export class Projectile {
   */
   constructor (weapon: Weapon, damage: number, from: Unit, to: Unit, attackStyle: string, options: ProjectileOptions = {}) {
 
+    this.attackStyle = attackStyle;
     this.damage = Math.floor(damage)
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint

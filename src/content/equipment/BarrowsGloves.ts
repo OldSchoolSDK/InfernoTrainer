@@ -1,7 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Barrows_gloves.png';
 import { Gloves } from "../../sdk/gear/Gloves";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class BarrowsGloves extends Gloves{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class BarrowsGloves extends Gloves{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.BARROWS_GLOVES
+  get itemName(): ItemName {
+    return ItemName.BARROWS_GLOVES
   }
   get weight(): number {
     return 0.226;

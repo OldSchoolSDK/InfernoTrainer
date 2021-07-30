@@ -1,25 +1,74 @@
 'use strict'
 
-import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { Pathing } from '../../../../sdk/Pathing'
 import ZukImage from '../../assets/images/TzKal-Zuk.png'
-import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { UnitBonuses } from '../../../../sdk/Unit'
-import { Collision } from '../../../../sdk/Collision'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { World } from '../../../../sdk/World'
 import { UnitOptions } from '../../../../sdk/Unit'
 import { Location } from '../../../../sdk/GameObject'
+import { ZukShield } from '../ZukShield'
+import { find } from 'lodash'
+import { Entity, EntityName } from '../../../../sdk/Entity'
+import { Weapon } from '../../../../sdk/gear/Weapon'
+import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
+import ZukAttackImage from '../../assets/images/zuk_attack.png';
+import { Projectile } from '../../../../sdk/weapons/Projectile'
+
+class ZukWeapon extends MagicWeapon {
+
+  get image(): string {
+    return ZukAttackImage; 
+  }
+
+  registerProjectile(from: Unit, to: Unit) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
+  }
+
+}
 
 export class TzKalZuk extends Mob {
 
+  shield: ZukShield;
+  enraged: boolean = false;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.attackCooldownTicks = 14;
+
+    this.shield = find(world.mobs, (mob: Unit) => {
+      return mob.mobName() === EntityName.INFERNO_SHIELD;
+    }) as ZukShield;
   }
   
+
+  attackIfPossible () {
+    this.attackCooldownTicks--
+
+    if (this.canAttack() && this.attackCooldownTicks <= 0) {
+      this.attack()
+    }
+  }
+
+
+  attack () {
+
+    let shieldOrPlayer = this.shield as any;
+    const shieldLocation = this.shield.location;
+
+    if (this.world.player.location.x >= this.shield.location.x - 1 && this.world.player.location.x < this.shield.location.x + 4) {
+      shieldOrPlayer = this.shield;
+    }else{
+      shieldOrPlayer = this.world.player;
+    }
+    if (this.world.player.location.y > 16){
+      shieldOrPlayer = this.world.player;
+    }
+    this.weapons['typeless'].attack(this.world, this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer === this.world.player ? this.magicMaxHit() : 0 });
+
+    this.attackCooldownTicks = this.cooldown
+  }
+
 
   get displayName () {
     return 'TzKal-Zuk'
@@ -42,10 +91,10 @@ export class TzKalZuk extends Mob {
   }
   
   setStats () {
-    this.stunned = 4
+    this.stunned = 8
 
     this.weapons = {
-      magic: new MagicWeapon()
+      typeless: new ZukWeapon()
     }
 
     // non boosted numbers
@@ -61,7 +110,6 @@ export class TzKalZuk extends Mob {
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
   }
-
 
   get bonuses(): UnitBonuses{ 
     return {
@@ -88,6 +136,9 @@ export class TzKalZuk extends Mob {
     };
   }
   get cooldown () {
+    if (this.enraged) {
+      return 7;
+    }
     return 10
   }
 
@@ -111,14 +162,7 @@ export class TzKalZuk extends Mob {
     return null
   }
 
-  get color () {
-    return '#ACFF5633'
-  }
-
   attackAnimation (tickPercent: number) {
     this.world.worldCtx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
-
-
-
 }

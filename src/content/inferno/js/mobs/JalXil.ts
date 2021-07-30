@@ -106,10 +106,6 @@ export class JalXil extends Mob {
     return RangerSound
   }
 
-  get color () {
-    return '#AC88B933'
-  }
-
   get attackStyle () {
     return 'range'
   }

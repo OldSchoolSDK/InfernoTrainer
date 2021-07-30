@@ -1,5 +1,6 @@
 import { filter } from 'lodash';
 import { GameObject } from './GameObject'
+import { Mob } from './Mob';
 import { Pathing } from './Pathing';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
@@ -74,7 +75,7 @@ export class Collision {
 
   // Perceived location works on the viewport size, so be careful as the numbers are a different scale
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number) {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number): Mob[] {
     const mobs = []
     for (let i = 0; i < world.mobs.length; i++) {
       const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.mobs[i])

@@ -1,7 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Armadyl_chestplate.png';
 import { Chest } from "../../sdk/gear/Chest";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class ArmadylChestplate extends Chest{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class ArmadylChestplate extends Chest{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.ARMADYL_CHESTPLATE
+  get itemName(): ItemName {
+    return ItemName.ARMADYL_CHESTPLATE
   }
 
   get weight(): number {

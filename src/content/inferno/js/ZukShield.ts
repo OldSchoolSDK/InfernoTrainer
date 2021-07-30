@@ -1,18 +1,105 @@
 
 import { CollisionType } from '../../../sdk/Collision';
-import { Entity } from '../../../sdk/Entity'
+import { Entity, EntityName } from '../../../sdk/Entity'
 import { Settings } from '../../../sdk/Settings'
+import { Projectile } from '../../../sdk/weapons/Projectile';
+import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
 
-export class ZukShield extends Entity {
+import MissSplat from '../../../assets/images/hitsplats/miss.png'
+import DamageSplat from '../../../assets/images/hitsplats/damage.png'
+import { ImageLoader } from '../../../sdk/utils/ImageLoader';
+import { Location } from '../../../sdk/GameObject'
+import { World } from '../../../sdk/World';
+import { filter, remove } from 'lodash';
+import { Pathing } from '../../../sdk/Pathing';
+import { Mob } from '../../../sdk/Mob';
+
+export class ZukShield extends Mob {
+  incomingProjectiles: Projectile[] = [];
+  missedHitsplatImage: HTMLImageElement;
+  damageHitsplatImage: HTMLImageElement;
+  stats: UnitStats;
+  currentStats: UnitStats;
+
 
   movementDirection: boolean = Math.random() < 0.5 ? true : false;
   frozen: number = 1;
 
-  get collisionType() {
-    return CollisionType.NONE;
+
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
+
+    this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
+    this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
+
+    // non boosted numbers
+    this.stats = {
+      attack: 0,
+      strength: 0,
+      defence: 0,
+      range: 0,
+      magic: 0,
+      hitpoint: 255
+    }
+
+    // with boosts
+    this.currentStats = {
+      attack: 0,
+      strength: 0,
+      defence: 0,
+      range: 0,
+      magic: 0,
+      hitpoint: 255
+    }
+
   }
 
-  tick () {
+  get bonuses(): UnitBonuses {
+    return {
+      attack: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0,
+      },
+      defence: {
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0,
+      },
+      other: {
+        meleeStrength: 0,
+        rangedStrength: 0,
+        magicDamage: 0,
+        prayer: 0
+      },
+      targetSpecific: {
+        undead: 0,
+        slayer: 0
+      }
+    }
+  }
+
+  dead () {
+    this.dying = 3
+    // TODO: needs to AOE the nibblers around it
+  }
+
+
+  mobName(): EntityName { 
+    return EntityName.INFERNO_SHIELD;
+  }
+
+
+  canBeAttacked() {
+    return false;
+  }
+  movementStep () {
+    this.perceivedLocation = this.location;
+
     if (this.frozen <= 0 ){
       if (this.movementDirection) {
         this.location.x++;
@@ -28,28 +115,45 @@ export class ZukShield extends Entity {
         this.movementDirection = !this.movementDirection;
       }      
     }
-
     this.frozen--;
+
+    this.processIncomingAttacks()
+
+    if (this.currentStats.hitpoint <= 0) {
+      return this.dead()
+    }
+  }
+
+  drawHitsplat(projectile: Projectile): boolean { 
+    return projectile.attackStyle !== 'typeless';
   }
 
   get size() {
     return 3;
   }
 
-  drawUILayer(tickPercent: number){
-
+  get color() {
+    return '#FF0000'
   }
 
   
-  draw (tickPercent: number) {
-    this.world.worldCtx.fillStyle = '#000073'
+  get collisionType() {
+    return CollisionType.NONE;
+  }
 
-    this.world.worldCtx.fillRect(
-      this.location.x * Settings.tileSize,
-      (this.location.y - this.size + 1) * Settings.tileSize,
-      this.size * Settings.tileSize,
-      this.size * Settings.tileSize
-    )
+
+  entityName(): EntityName {
+    return EntityName.INFERNO_SHIELD;
+  }
+
+  
+
+  canMove() {
+    return false;
+  }
+
+  attackIfPossible() {
+
   }
 
 }

@@ -17,7 +17,7 @@ import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
-import { ItemNames } from './ItemNames'
+import { ItemName } from './ItemName'
 import { InventoryControls } from './controlpanels/InventoryControls'
 import { Item } from './Item'
 import { Collision } from './Collision'
@@ -381,7 +381,7 @@ export class Player extends Unit {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
         this.currentStats.run -= Math.floor(0.3 * runReduction);
-      }else if (this.equipment.ring.itemName === ItemNames.RING_OF_ENDURANCE){
+      }else if (this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE){
         this.currentStats.run -= Math.floor(0.85 * runReduction);
       }else{
         this.currentStats.run -= runReduction;

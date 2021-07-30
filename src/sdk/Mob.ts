@@ -39,6 +39,10 @@ export class Mob extends Unit {
     return UnitTypes.MOB
   }
 
+  canBeAttacked() {
+    return true;
+  }
+
   setStats () {
     // non boosted numbers
     this.stats = {
@@ -277,7 +281,7 @@ export class Mob extends Unit {
     } else if (this.hasLOS) {
       this.world.worldCtx.fillStyle = '#FF730073'
     } else {
-      this.world.worldCtx.fillStyle = '#FFFFFF22'
+      this.world.worldCtx.fillStyle = this.color;
     }
 
     // Draw mob
@@ -345,15 +349,18 @@ export class Mob extends Unit {
     }
 
     
-    if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
-      this.world.worldCtx.strokeStyle = '#00FF0073'
-      this.world.worldCtx.lineWidth = 1
-      this.world.worldCtx.strokeRect(
-        -(this.size * Settings.tileSize) / 2,
-        -(this.size * Settings.tileSize) / 2,
-        this.size * Settings.tileSize,
-        this.size * Settings.tileSize
-      )
+    if (this.aggro) {
+
+      if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
+        this.world.worldCtx.strokeStyle = '#00FF0073'
+        this.world.worldCtx.lineWidth = 1
+        this.world.worldCtx.strokeRect(
+          -(this.size * Settings.tileSize) / 2,
+          -(this.size * Settings.tileSize) / 2,
+          this.size * Settings.tileSize,
+          this.size * Settings.tileSize
+        )
+      }
     }
     this.world.worldCtx.restore()
 

@@ -95,11 +95,6 @@ export class JalZek extends Mob {
   get sound () {
     return MagerSound
   }
-
-  get color () {
-    return '#ffffff33'
-  }
-
   get attackStyle () {
     return 'magic'
   }

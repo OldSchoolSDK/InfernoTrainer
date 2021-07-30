@@ -109,10 +109,6 @@ export class JalNib extends Mob {
     return NibblerSound
   }
 
-  get color () {
-    return '#aadd7333'
-  }
-
   get attackStyle () {
     return 'crush'
   }
