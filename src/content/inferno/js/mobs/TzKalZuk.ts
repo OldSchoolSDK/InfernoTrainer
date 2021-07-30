@@ -17,10 +17,10 @@ export class TzKalZuk extends Mob {
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
-    this.attackCooldownTicks = 13;
+    this.attackCooldownTicks = 14;
   }
   
-  
+
   get displayName () {
     return 'TzKal-Zuk'
   }

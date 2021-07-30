@@ -6,7 +6,7 @@ import { Settings } from '../../../sdk/Settings'
 export class ZukShield extends Entity {
 
   movementDirection: boolean = Math.random() < 0.5 ? true : false;
-  frozen: number = 0;
+  frozen: number = 1;
 
   get collisionType() {
     return CollisionType.NONE;
@@ -20,11 +20,11 @@ export class ZukShield extends Entity {
         this.location.x--;
       }
       if (this.location.x < 12) {
-        this.frozen = 6;
+        this.frozen = 5;
         this.movementDirection = !this.movementDirection;
       }
       if (this.location.x > 36) {
-        this.frozen = 6;
+        this.frozen = 5;
         this.movementDirection = !this.movementDirection;
       }      
     }
