@@ -381,7 +381,7 @@ export class Player extends Unit {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
         this.currentStats.run -= Math.floor(0.3 * runReduction);
-      }else if (this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE){
+      }else if (this.equipment.ring && this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE){
         this.currentStats.run -= Math.floor(0.85 * runReduction);
       }else{
         this.currentStats.run -= runReduction;
