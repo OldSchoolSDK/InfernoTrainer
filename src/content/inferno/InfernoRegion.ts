@@ -39,6 +39,7 @@ import { StaminaPotion } from '../items/StaminaPotion'
 import { SaradominBrew } from '../items/SaradominBrew'
 import { SuperRestore } from '../items/SuperRestore'
 import { BastionPotion } from '../items/BastionPotion'
+import { MovementBlocker } from '../MovementBlocker'
 
 export class InfernoRegion extends Region {
 
@@ -47,6 +48,15 @@ export class InfernoRegion extends Region {
     return 'Inferno'
   }
 
+
+  get width (): number {
+    return 51
+  }
+
+  get height (): number {
+    return 57
+  }
+  
   getInventory () {
     return [
       new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
@@ -68,11 +78,22 @@ export class InfernoRegion extends Region {
       wave = 1;
     }
     
+    const randomPillar = shuffle(world.entities)[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
+
+
+    for (let x = 10;x < 41;x++) {
+      world.addEntity(new MovementBlocker(world, { x, y: 13}))
+      world.addEntity(new MovementBlocker(world, { x, y: 44}))
+    }
+    for (let y = 14;y < 44;y++) {
+      world.addEntity(new MovementBlocker(world, { x: 10, y}))
+      world.addEntity(new MovementBlocker(world, { x: 40, y}))
+    }
 
     // Add player
     const player = new Player(
       world,
-      { x: parseInt(BrowserUtils.getQueryVar('x')) || 17, y: parseInt(BrowserUtils.getQueryVar('y')) || 3 },
+      { x: parseInt(BrowserUtils.getQueryVar('x')) || 28, y: parseInt(BrowserUtils.getQueryVar('y')) || 17 },
       { equipment: { 
           weapon: new Blowpipe(),
           helmet: new JusticiarFaceguard(),
@@ -95,7 +116,6 @@ export class InfernoRegion extends Region {
     const melee = BrowserUtils.getQueryVar('melee') || '[]'
     const ranger = BrowserUtils.getQueryVar('ranger') || '[]'
     const mager = BrowserUtils.getQueryVar('mager') || '[]'
-    const randomPillar = shuffle(world.entities)[0]
     const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
@@ -103,11 +123,11 @@ export class InfernoRegion extends Region {
       // Backwards compatibility layer for runelite plugin
       world.wave = 'imported';
       try {
-        JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0], y: spawn[1] }, { aggro: player })));
-        JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0], y: spawn[1] }, { aggro: player })))
+        JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+        JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+        JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+        JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+        JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
 
         InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.addMob.bind(world))
 

@@ -194,9 +194,9 @@ export class InfernoPillar extends Entity {
 
   static addPillarsToWorld (world: World) {
     [
-      { x: 0, y: 9 },
-      { x: 17, y: 7 },
-      { x: 10, y: 23 }
+      { x: 11, y: 23 },
+      { x: 28, y: 21 },
+      { x: 21, y: 37 }
     ].forEach((position) => world.addEntity(new InfernoPillar(world, position)))
   }
 }

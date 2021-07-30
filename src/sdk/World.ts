@@ -54,7 +54,7 @@ export class World {
   viewportController: Viewport;
 
   _viewport = {
-    width: 29,
+    width: 40,
     height: 30
   }
 

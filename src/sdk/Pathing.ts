@@ -100,12 +100,12 @@ export class Pathing {
   }
 
   static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    if (y - (s - 1) < 0 || x + (s - 1) > 28) {
-      return false
-    }
-    if (y < 0 || x < 0) {
-      return false
-    }
+    // if (y - (s - 1) < 0 || x + (s - 1) > 28) {
+    //   return false
+    // }
+    // if (y < 0 || x < 0) {
+    //   return false
+    // }
     let collision = false
     collision = collision || Pathing.collidesWithAnyEntities(world, x, y, s)
 
