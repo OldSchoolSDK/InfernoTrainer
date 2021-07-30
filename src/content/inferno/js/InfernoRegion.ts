@@ -61,7 +61,7 @@ export class InfernoRegion extends Region {
   
   getInventory () {
     return [
-      new TwistedBow(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
+      new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
       new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom(),
       new RingOfEndurance(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
       new SaradominBrew(), new SaradominBrew(), new SaradominBrew(), new SaradominBrew(),
@@ -82,7 +82,7 @@ export class InfernoRegion extends Region {
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 15 },
       { equipment: { 
-          weapon: new Blowpipe(),
+          weapon: new TwistedBow(),
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),
