@@ -21,7 +21,7 @@ export class AncientsSpellbookControls extends BaseControls {
     return Settings.spellbook_key
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+  panelClickDown (world: World, x: number, y: number) {
     if (x >= 21 && x <= 42) {
       if (y >= 229 && y <= 249) {
         world.player.manualSpellCastSelection = new BarrageMagicWeapon()

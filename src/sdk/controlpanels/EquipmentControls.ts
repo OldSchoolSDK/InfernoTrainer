@@ -23,7 +23,7 @@ export class EquipmentControls extends BaseControls {
     return Settings.equipment_key
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+  panelClickDown (world: World, x: number, y: number) {
     if (x > 84 && y > 11 && x < 84 + 36 && y < 11 + 36) {
       // helmet
       world.player.equipment.helmet.unequip(world.player);

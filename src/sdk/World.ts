@@ -92,13 +92,48 @@ export class World {
   }
 
   registerClickActions() {
-    this.viewport.addEventListener('mousedown', this.leftClick.bind(this))
+    this.viewport.addEventListener('mousedown', this.leftClickDown.bind(this))
+    this.viewport.addEventListener('mouseup', this.leftClickUp.bind(this))
+    this.viewport.addEventListener('mousemove', (e: MouseEvent) => this.controlPanel.cursorMovedTo(e))
     this.viewport.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
     this.viewport.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.viewport.addEventListener('contextmenu', this.rightClick.bind(this));
   }
 
-  leftClick (e: MouseEvent) {
+  leftClickUp (e: MouseEvent) {
+
+    if (e.button !== 0) {
+      return;
+    }
+    const { viewportX, viewportY } = this.getViewport();
+    let x = e.offsetX + viewportX * Settings.tileSize
+    let y = e.offsetY + viewportY * Settings.tileSize
+    if (Settings.rotated === 'south') {
+      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+    }
+
+    // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
+    //   if (e.offsetY < this.mapController.height) {
+    //     const intercepted = this.mapController.clicked(e);
+    //     if (intercepted) {
+    //       return;
+    //     }
+    //   }
+    // }
+
+    if (e.offsetX > this.viewport.width - this.controlPanel.width) {
+      if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
+        const intercepted = this.controlPanel.controlPanelClickUp(e);
+        if (intercepted) {
+          return;
+        }
+  
+      }
+    }
+
+  }
+  leftClickDown (e: MouseEvent) {
     if (e.button !== 0) {
       return;
     }
@@ -123,7 +158,7 @@ export class World {
 
     if (e.offsetX > this.viewport.width - this.controlPanel.width) {
       if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
-        const intercepted = this.controlPanel.controlPanelClick(e);
+        const intercepted = this.controlPanel.controlPanelClickDown(e);
         if (intercepted) {
           return;
         }
