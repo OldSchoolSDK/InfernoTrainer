@@ -38,7 +38,7 @@ export class Settings {
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
-    Settings.rotated = window.localStorage.getItem('rotated') || 'south'
+    Settings.rotated = window.localStorage.getItem('rotated') || 'north'
     Settings.region = window.localStorage.getItem('region') || 'inferno'
     Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true
 
