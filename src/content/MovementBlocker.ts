@@ -1,8 +1,7 @@
 'use strict'
-import { filter, remove } from 'lodash'
 import { Entity } from '../sdk/Entity'
 
-import { CollisionType } from '../sdk/GameObject'
+import { CollisionType } from '../sdk/Collision'
 
 export class MovementBlocker extends Entity {
 

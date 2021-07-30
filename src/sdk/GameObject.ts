@@ -1,13 +1,8 @@
+import { CollisionType } from "./Collision";
 
 export interface Location {
   x: number;
   y: number;
-}
-
-export enum CollisionType {
-  NONE = 0,
-  BLOCK_MOVEMENT = 1,
-  BLOCK_LOS = 2,
 }
 
 export class GameObject {

@@ -10,6 +10,7 @@ import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from './GameObject'
 import { ImageLoader } from './utils/ImageLoader'
+import { Collision } from './Collision'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -107,7 +108,7 @@ export class Mob extends Unit {
       let dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x)
       let dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y)
 
-      if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+      if (Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // Random movement if player is under the mob.
         if (Math.random() < 0.5) {
           dy = this.location.y
@@ -124,7 +125,7 @@ export class Mob extends Unit {
             dy = this.location.y - 1
           }
         }
-      } else if (Pathing.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+      } else if (Collision.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // allows corner safespotting
         dy = this.location.y
       }
@@ -187,7 +188,7 @@ export class Mob extends Unit {
     const weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack
     let isUnderAggro = false
     if (!weaponIsAreaAttack) {
-      isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+      isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     }
     this.attackFeedback = AttackIndicators.NONE
 

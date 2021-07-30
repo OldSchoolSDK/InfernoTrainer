@@ -20,6 +20,7 @@ import chebyshev from 'chebyshev'
 import { ItemNames } from './ItemNames'
 import { InventoryControls } from './controlpanels/InventoryControls'
 import { Item } from './Item'
+import { Collision } from './Collision'
 
 export interface PlayerStats extends UnitStats {
   agility: number; 
@@ -212,7 +213,7 @@ export class Player extends Unit {
     this.aggro = null
     this.manualSpellCastSelection = null
 
-    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.world, x, y, 1)
+    const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.world, x, y, 1)
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0]
@@ -223,7 +224,7 @@ export class Player extends Unit {
         for (let xOff = -maxDist; xOff < maxDist; xOff++) {
           const potentialX = x + xOff
           const potentialY = y + yOff
-          const e = Pathing.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
+          const e = Collision.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y)
             if (distance <= bestDistance) {
@@ -293,7 +294,7 @@ export class Player extends Unit {
         this.destinationLocation = this.location
         return
       }
-      const isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size)
+      const isUnderAggrodMob = Collision.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size)
       this.setHasLOS()
 
       if (isUnderAggrodMob) {
@@ -332,7 +333,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -345,7 +346,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py

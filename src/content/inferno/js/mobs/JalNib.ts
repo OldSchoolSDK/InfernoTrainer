@@ -11,6 +11,7 @@ import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
+import { Collision } from '../../../../sdk/Collision'
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -129,7 +130,7 @@ export class JalNib extends Mob {
     if (this.canAttack() === false) {
       return;
     }
-    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+    const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     this.attackFeedback = AttackIndicators.NONE
 
     const aggroPoint = Pathing.closestPointTo(this.location.x, this.location.y, this.aggro)

@@ -13,6 +13,7 @@ import { Mob } from './Mob'
 import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
+import { Collision } from './Collision'
 
 class Viewport {
   center: Location;
@@ -175,7 +176,7 @@ export class World {
         clearTimeout(this.inputDelay)
       }
 
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+      const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
       this.player.aggro = null
       if (mobs.length) {
         this.redClick()
@@ -207,7 +208,7 @@ export class World {
     }
     
     /* gather options */
-    const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
     let menuOptions: MenuOption[] = []
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(x, y))
