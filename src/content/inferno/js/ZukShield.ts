@@ -98,6 +98,9 @@ export class ZukShield extends Mob {
     return false;
   }
   movementStep () {
+    this.processIncomingAttacks()
+
+    
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     if (this.frozen <= 0 ){
@@ -116,8 +119,6 @@ export class ZukShield extends Mob {
       }      
     }
     this.frozen--;
-
-    this.processIncomingAttacks()
 
     if (this.currentStats.hitpoint <= 0) {
       return this.dead()
