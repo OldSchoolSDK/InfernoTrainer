@@ -171,7 +171,7 @@ export class InfernoRegion extends Region {
       const jad = new JalTokJad(world, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1, healers: 5 });
       world.addMob(jad)
     }else if (wave === 68){ 
-      player.location = { x: 25, y: 25}
+      player.location = { x: 25, y: 27}
 
       const jad1 = new JalTokJad(world, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1, healers: 3 });
       world.addMob(jad1)
@@ -179,7 +179,7 @@ export class InfernoRegion extends Region {
       const jad2 = new JalTokJad(world, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7, healers: 3 });
       world.addMob(jad2)
 
-      const jad3 = new JalTokJad(world, { x: 23, y: 33}, { aggro: player, attackSpeed: 9, stun: 4, healers: 3 });
+      const jad3 = new JalTokJad(world, { x: 23, y: 35}, { aggro: player, attackSpeed: 9, stun: 4, healers: 3 });
       world.addMob(jad3)
     }else if (wave === 69){
       player.location = { x: 25, y: 15}
