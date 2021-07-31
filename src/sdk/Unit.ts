@@ -106,6 +106,7 @@ export class Unit extends GameObject {
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
+  autoRetaliate: boolean = false;
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -128,6 +129,7 @@ export class Unit extends GameObject {
     this.location = location
     this.setStats()
 
+    this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint
 
   }
@@ -262,11 +264,13 @@ export class Unit extends GameObject {
       return;
     }
     if (this.aggro === this.world.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
+      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+    } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {
+      this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.world, this, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -338,6 +342,9 @@ export class Unit extends GameObject {
 
       if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
+        if (projectile.from !== this.aggro && this.autoRetaliate) {
+          this.aggro = projectile.from;
+        }
       }
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)

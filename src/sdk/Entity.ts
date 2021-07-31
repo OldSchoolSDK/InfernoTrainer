@@ -6,6 +6,7 @@ import { UnitTypes } from './Unit'
 
 export enum EntityName {
   INFERNO_SHIELD = 'Inferno Shield',
+  TZ_KAL_ZUK = 'TzKal-Zuk'
 }
 
 export class Entity extends GameObject{

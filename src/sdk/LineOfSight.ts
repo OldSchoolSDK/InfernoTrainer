@@ -5,6 +5,8 @@ import { Pathing } from './Pathing'
 import { World } from './World'
 import { GameObject, Location } from './GameObject'
 import { Collision } from './Collision'
+import { Mob } from './Mob'
+import { Unit } from './Unit'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -32,13 +34,18 @@ export class LineOfSight {
     world.worldCtx.globalAlpha = 1
   }
 
-  static hasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
+  static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
     return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
   }
 
-  static hasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
+  static playerHasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
     const mobPoint = Pathing.closestPointTo(x, y, mob)
     return LineOfSight.hasLineOfSight(world, x, y, mobPoint.x, mobPoint.y, 1, r, false)
+  }
+  static mobHasLineOfSightToMob (world: World, mob1: GameObject, mob2: GameObject, r = 1) {
+    const mob1Point = Pathing.closestPointTo(mob1.location.x, mob1.location.y, mob2)
+    const mob2Point = Pathing.closestPointTo(mob2.location.x, mob2.location.y, mob1)
+    return LineOfSight.hasLineOfSight(world, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false)
   }
   
   static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s: number = 1, r: number = 1, isNPC: boolean = false): boolean {

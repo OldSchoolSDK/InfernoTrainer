@@ -308,16 +308,6 @@ export class Mob extends Unit {
 
     this.drawOnTile(tickPercent)
     let currentImage = this.unitImage
-    // if (this.currentAnimation !== null) {
-    //   const animationLength = this.currentAnimation.length
-    //   // TODO multi-tick animations.
-    //   const currentFrame = Math.floor(tickPercent * animationLength)
-    //   if (currentFrame < animationLength) {
-    //     currentImage = this.currentAnimation[currentFrame]
-    //   } else {
-    //     this.currentAnimation = null
-    //   }
-    // }
 
     if (Settings.rotated === 'south') {
       this.world.worldCtx.rotate(Math.PI)
@@ -351,7 +341,7 @@ export class Mob extends Unit {
     
     if (this.aggro) {
 
-      if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
+      if (LineOfSight.playerHasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
         this.world.worldCtx.strokeStyle = '#00FF0073'
         this.world.worldCtx.lineWidth = 1
         this.world.worldCtx.strokeRect(

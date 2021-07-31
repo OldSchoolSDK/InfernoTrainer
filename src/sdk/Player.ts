@@ -64,6 +64,7 @@ export class Player extends Unit {
     this.regenTimers = { spec: 50, hitpoint: 100 };
     this.equipmentChanged();
     this.clearXpDrops();
+    this.autoRetaliate = false;
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 

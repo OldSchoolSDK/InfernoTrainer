@@ -114,11 +114,17 @@ export class Weapon extends Equipment{
     if (to.setEffects) {
       find(to.setEffects, (effect: typeof SetEffect) => {
         if (effect.effectName() === SetEffectTypes.JUSTICIAR){
-          const justiciarDamageReduction = Math.max(to.bonuses.defence[bonuses.attackStyle] / 3000, 0);
-          this.damage -= Math.ceil(justiciarDamageReduction * this.damage);
+          const tosDefenceBonus = to.bonuses.defence[bonuses.attackStyle];
+          if (tosDefenceBonus !== undefined) { // hack?
+            const justiciarDamageReduction = Math.max(tosDefenceBonus / 3000, 0);
+            this.damage -= Math.ceil(justiciarDamageReduction * this.damage);
+          }
         }
       })
     }
+
+    // sanitize damage output
+    this.damage = Math.floor(Math.max(Math.min(to.currentStats.hitpoint, this.damage), 0));
 
     this.grantXp(from);
     this.registerProjectile(from, to, bonuses)

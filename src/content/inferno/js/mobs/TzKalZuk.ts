@@ -10,7 +10,7 @@ import { Location } from '../../../../sdk/GameObject'
 import { ZukShield } from '../ZukShield'
 import { find } from 'lodash'
 import { Entity, EntityName } from '../../../../sdk/Entity'
-import { Weapon } from '../../../../sdk/gear/Weapon'
+import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
 import ZukAttackImage from '../../assets/images/zuk_attack.png';
 import { Projectile } from '../../../../sdk/weapons/Projectile'
@@ -23,6 +23,9 @@ class ZukWeapon extends MagicWeapon {
     return ZukAttackImage; 
   }
 
+  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return false;
+  }
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
   }
@@ -45,6 +48,10 @@ export class TzKalZuk extends Mob {
     }) as ZukShield;
   }
   
+
+  mobName(): EntityName {
+    return EntityName.TZ_KAL_ZUK;
+  }
 
   attackIfPossible () {
     this.attackCooldownTicks--
@@ -69,7 +76,7 @@ export class TzKalZuk extends Mob {
     let shieldOrPlayer: Unit = this.shield;
     const shieldLocation = this.shield.location;
 
-    if (this.world.player.location.x < this.shield.location.x - 1 || this.world.player.location.x >= this.shield.location.x + 4) {
+    if (this.world.player.location.x < this.shield.location.x || this.world.player.location.x >= this.shield.location.x + 5) {
       shieldOrPlayer = this.world.player;
     }
     if (this.world.player.location.y > 16){

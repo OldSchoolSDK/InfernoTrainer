@@ -12,7 +12,7 @@ import { Location } from '../../../sdk/GameObject'
 import { World } from '../../../sdk/World';
 import { filter, remove } from 'lodash';
 import { Pathing } from '../../../sdk/Pathing';
-import { Mob } from '../../../sdk/Mob';
+import { AttackIndicators, Mob } from '../../../sdk/Mob';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -103,21 +103,21 @@ export class ZukShield extends Mob {
 
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
-    // if (this.frozen <= 0 ){
-    //   if (this.movementDirection) {
-    //     this.location.x++;
-    //   }else{
-    //     this.location.x--;
-    //   }
-    //   if (this.location.x < 12) {
-    //     this.frozen = 5;
-    //     this.movementDirection = !this.movementDirection;
-    //   }
-    //   if (this.location.x > 36) {
-    //     this.frozen = 5;
-    //     this.movementDirection = !this.movementDirection;
-    //   }      
-    // }
+    if (this.frozen <= 0 ){
+      if (this.movementDirection) {
+        this.location.x++;
+      }else{
+        this.location.x--;
+      }
+      if (this.location.x < 11) {
+        this.frozen = 5;
+        this.movementDirection = !this.movementDirection;
+      }
+      if (this.location.x > 35) {
+        this.frozen = 5;
+        this.movementDirection = !this.movementDirection;
+      }      
+    }
     this.frozen--;
 
     if (this.currentStats.hitpoint <= 0) {
@@ -130,7 +130,7 @@ export class ZukShield extends Mob {
   }
 
   get size() {
-    return 3;
+    return 5;
   }
 
   get color() {
@@ -156,5 +156,19 @@ export class ZukShield extends Mob {
   attackIfPossible() {
 
   }
+
+  
+  drawOnTile(tickPercent: number) {
+
+    this.world.worldCtx.fillStyle = this.color;
+    // Draw mob
+    this.world.worldCtx.fillRect(
+      -(3 * Settings.tileSize) / 2,
+      -(3 * Settings.tileSize) / 2,
+      3 * Settings.tileSize,
+      3 * Settings.tileSize
+    )
+  }
+
 
 }
