@@ -342,12 +342,17 @@ export class Unit extends GameObject {
 
       if (projectile.remainingDelay === 0) {
         this.currentStats.hitpoint -= projectile.damage
+        this.damageTaken();
         if (projectile.from !== this.aggro && this.autoRetaliate) {
           this.aggro = projectile.from;
         }
       }
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
+  }
+
+  damageTaken() {
+    
   }
 
   drawHitsplat(projectile: Projectile): boolean { 

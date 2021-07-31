@@ -39,7 +39,7 @@ export class ZukShield extends Mob {
       defence: 0,
       range: 0,
       magic: 0,
-      hitpoint: 255
+      hitpoint: 600
     }
 
     // with boosts
@@ -49,7 +49,7 @@ export class ZukShield extends Mob {
       defence: 0,
       range: 0,
       magic: 0,
-      hitpoint: 255
+      hitpoint: 600
     }
 
   }

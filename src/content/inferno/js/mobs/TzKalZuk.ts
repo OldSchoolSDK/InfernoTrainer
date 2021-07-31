@@ -38,6 +38,8 @@ export class TzKalZuk extends Mob {
   enraged: boolean = false;
 
   setTimer: number = 75;
+  timerPaused: boolean = false;
+  hasPaused: boolean = false;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -55,15 +57,18 @@ export class TzKalZuk extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
-    this.setTimer--;
 
-    if (this.setTimer === 0) {
-      this.setTimer = 150;
+    if (this.timerPaused === false) {
+      this.setTimer--;
 
-      const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield})
-      this.world.addMob(mager);
-      const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield})
-      this.world.addMob(ranger);
+      if (this.setTimer === 0) {
+        this.setTimer = 350;
+  
+        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield})
+        this.world.addMob(mager);
+        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield})
+        this.world.addMob(ranger);
+      }  
     }
 
     if (this.canAttack() && this.attackCooldownTicks <= 0) {
@@ -71,6 +76,27 @@ export class TzKalZuk extends Mob {
     }
   }
 
+
+  damageTaken() {
+    if (this.timerPaused === false) {
+      if (this.currentStats.hitpoint < 600 && this.hasPaused === false) {
+        this.timerPaused = true;
+        this.hasPaused = true;
+      }
+    }else{
+      if (this.currentStats.hitpoint < 480) {
+        this.setTimer += 175;
+        this.timerPaused = false;
+        // Spawn Jad
+      }  
+    }
+
+    if (this.currentStats.hitpoint < 240 && this.enraged === false) {
+      this.enraged = true;
+      // spawn healers
+    }
+    
+  }
 
   attack () {
     let shieldOrPlayer: Unit = this.shield;
