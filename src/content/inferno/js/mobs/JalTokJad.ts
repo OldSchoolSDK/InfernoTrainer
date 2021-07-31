@@ -5,14 +5,62 @@ import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JadImage from '../../assets/images/JalTok-Jad.png'
-import { UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
 import { Location } from '../../../../sdk/GameObject'
+import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
+import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { DelayedAction } from '../../../../sdk/DelayedAction'
+import { BasePrayer } from '../../../../sdk/BasePrayer'
 
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
   stun: number;
+}
+
+class JadMagicWeapon extends MagicWeapon {
+
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+    DelayedAction.registerDelayedAction(new DelayedAction(() => {
+
+      const overheads = world.player.prayers.filter(prayer => prayer.isOverhead())
+      from.attackFeedback = AttackIndicators.HIT
+      if (overheads.length > 0){
+        const overhead: BasePrayer = overheads[0];
+        if (overhead.feature() === 'magic') {
+          from.attackFeedback = AttackIndicators.BLOCKED
+        }
+      }
+
+      super.attack(world, from, to, bonuses);
+    }, 2));
+  }
+  
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
+  }
+}
+class JadRangeWeapon extends RangedWeapon {
+
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+    DelayedAction.registerDelayedAction(new DelayedAction(() => {
+
+      const overheads = world.player.prayers.filter(prayer => prayer.isOverhead())
+      from.attackFeedback = AttackIndicators.HIT
+      if (overheads.length > 0){
+        const overhead: BasePrayer = overheads[0];
+        if (overhead.feature() === 'range') {
+          from.attackFeedback = AttackIndicators.BLOCKED
+        }
+      }
+      
+      super.attack(world, from, to, bonuses);
+    }, 2));
+  }
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
+  }
 }
 
 export class JalTokJad extends Mob {
@@ -40,8 +88,8 @@ export class JalTokJad extends Mob {
 
     this.weapons = {
       stab: new MeleeWeapon(),
-      magic: new MagicWeapon(),
-      range: new RangedWeapon()
+      magic: new JadMagicWeapon(),
+      range: new JadRangeWeapon()
     }
 
     // non boosted numbers
@@ -109,7 +157,11 @@ export class JalTokJad extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    if (this.attackStyle === 'magic') {
+      this.world.worldCtx.rotate(tickPercent * Math.PI * 2)
+    }else{
+      this.world.worldCtx.rotate(Math.sin(-tickPercent * Math.PI))
+    }
   }
 
   shouldShowAttackAnimation () {
@@ -126,6 +178,11 @@ export class JalTokJad extends Mob {
 
   magicMaxHit () {
     return 113
+  }
+
+  attack () {
+    super.attack();
+    this.attackFeedback = AttackIndicators.NONE
   }
 
   // attackIfPossible () {

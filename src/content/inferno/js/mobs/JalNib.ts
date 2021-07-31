@@ -7,17 +7,17 @@ import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
-import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
     const damage = Math.floor(Math.random() * 5)
     this.damage = damage;
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'crush'))
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'crush', options))
   }
 }
 

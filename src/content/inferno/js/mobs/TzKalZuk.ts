@@ -13,7 +13,7 @@ import { Entity, EntityName } from '../../../../sdk/Entity'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
 import ZukAttackImage from '../../assets/images/zuk_attack.png';
-import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
@@ -27,7 +27,7 @@ class ZukWeapon extends MagicWeapon {
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {
     return false;
   }
-  registerProjectile(from: Unit, to: Unit) {
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
   }
 

@@ -2,13 +2,13 @@ import { find, intersection } from 'lodash'
 import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
-import { Projectile } from './Projectile'
+import { Projectile, ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
 
 export class RangedWeapon extends Weapon {
 
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'range'))
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'range', options))
   }
 
   grantXp(from: Unit) {

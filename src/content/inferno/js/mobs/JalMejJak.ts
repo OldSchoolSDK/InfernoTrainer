@@ -10,16 +10,13 @@ import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
+import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 
 class HealWeapon extends Weapon {
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions) {
     this.damage = -Math.floor(Math.random() * 25);
-    this.registerProjectile(from, to, bonuses)
-  }
-
-  get isAreaAttack () {
-    return false
+    this.registerProjectile(from, to, bonuses, options)
   }
 }
 

@@ -5,7 +5,7 @@ import { Settings } from '../../../sdk/Settings'
 
 import { World } from '../../../sdk/World'
 import { Unit, UnitBonuses, UnitStats } from '../../../sdk/Unit'
-import { Projectile } from '../../../sdk/weapons/Projectile'
+import { Projectile, ProjectileOptions } from '../../../sdk/weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
 
 
@@ -18,12 +18,13 @@ import { JalMejJak } from './mobs/JalMejJak'
 class InfernoSparkWeapon extends Weapon{
 
   static isMeleeAttackStyle (style: string) {
+    // fun way to make the attack instantaneous
     return true;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this.damage = Math.floor(Math.random() * 11);
-    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle))
+    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
   }
 }
 

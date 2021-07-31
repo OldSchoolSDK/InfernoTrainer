@@ -8,7 +8,7 @@ import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
 import { Player } from "../Player";
 import { InventoryControls } from "../controlpanels/InventoryControls";
-import { Projectile } from "../weapons/Projectile";
+import { Projectile, ProjectileOptions } from "../weapons/Projectile";
 import { find } from "lodash";
 import { SetEffect, SetEffectTypes } from "../SetEffect";
 
@@ -100,7 +100,7 @@ export class Weapon extends Equipment{
   }
 
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
@@ -162,8 +162,8 @@ export class Weapon extends Equipment{
     // weapons implement this at the type tier
   }
 
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle))
+  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
   }
 
   get image(): string {
