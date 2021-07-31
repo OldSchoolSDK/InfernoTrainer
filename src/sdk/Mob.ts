@@ -108,7 +108,7 @@ export class Mob extends Unit {
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     this.setHasLOS()
-    if (this.canMove()) {
+    if (this.canMove() && this.aggro) {
       let dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x)
       let dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y)
 

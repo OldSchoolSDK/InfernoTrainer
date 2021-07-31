@@ -91,12 +91,14 @@ export class JalMejRah extends Mob {
     return BatSound
   }
 
-
+  
   get attackStyle () {
     return 'range'
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.worldCtx.translate(
+      Math.sin(tickPercent * Math.PI * 4) * 2, 
+      Math.sin(tickPercent * Math.PI * -2))
   }
 }

@@ -102,7 +102,14 @@ export class JalImKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.world.worldCtx.transform(
+      1, 
+      0, 
+      Math.sin(-tickPercent * Math.PI * 2) / 2, 
+      1, 
+      0, 
+      0
+    )
   }
 
   movementStep () {

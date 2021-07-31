@@ -1,4 +1,5 @@
 
+import HealSplat from '../assets/images/hitsplats/heal.png'
 import MissSplat from '../assets/images/hitsplats/miss.png'
 import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
@@ -97,6 +98,7 @@ export class Unit extends GameObject {
   frozen: number = 0;
   stunned: number = 0;
   incomingProjectiles: Projectile[] = [];
+  healHitsplatImage: HTMLImageElement = ImageLoader.createImage(HealSplat);
   missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
   damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
   unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
@@ -341,7 +343,15 @@ export class Unit extends GameObject {
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
-        this.currentStats.hitpoint -= projectile.damage
+        if (projectile.damage < 0) {
+          // subtracting a negative gives a positive
+          if (this.currentStats.hitpoint < this.stats.hitpoint) {
+            this.currentStats.hitpoint -= projectile.damage
+            this.currentStats.hitpoint = Math.min(this.currentStats.hitpoint, this.stats.hitpoint)
+          }
+        }else{
+          this.currentStats.hitpoint -= projectile.damage
+        }
         this.damageTaken();
         if (projectile.from !== this.aggro && this.autoRetaliate) {
           this.aggro = projectile.from;
@@ -352,7 +362,7 @@ export class Unit extends GameObject {
   }
 
   damageTaken() {
-    
+
   }
 
   drawHitsplat(projectile: Projectile): boolean { 
@@ -396,7 +406,7 @@ export class Unit extends GameObject {
       }
       projectileCounter++
       if (this.drawHitsplat(projectile)) {
-        const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
+        let image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
         if (!projectile.offsetX && !projectile.offsetY) {
           projectile.offsetX = projectileOffsets[0][0]
           projectile.offsetY = projectileOffsets[0][1]
@@ -405,6 +415,10 @@ export class Unit extends GameObject {
         projectileOffsets = remove(projectileOffsets, (offset) => {
           return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
         })
+        
+        if (projectile.damage < 0) {
+          image = this.healHitsplatImage;
+        }
   
         this.world.worldCtx.drawImage(
           image,
@@ -417,7 +431,7 @@ export class Unit extends GameObject {
         this.world.worldCtx.font = '16px Stats_11'
         this.world.worldCtx.textAlign = 'center'
         this.world.worldCtx.fillText(
-          String(projectile.damage),
+          String(Math.abs(projectile.damage)),
           projectile.offsetX,
           -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
         )

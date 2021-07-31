@@ -424,7 +424,7 @@ export class World {
   }
 
   addMob (mob: Mob) {
-    this.mobs.push(mob)
+    this.mobs.unshift(mob)
   }
 
   removeMob (mob: Unit) {

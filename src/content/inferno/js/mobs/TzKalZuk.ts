@@ -16,6 +16,7 @@ import ZukAttackImage from '../../assets/images/zuk_attack.png';
 import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
+import { JalMejJak } from './JalMejJak'
 
 class ZukWeapon extends MagicWeapon {
 
@@ -48,6 +49,19 @@ export class TzKalZuk extends Mob {
     this.shield = find(world.mobs, (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
+    setTimeout(() => {
+      this.currentStats.hitpoint = 240;
+
+      const healer1 = new JalMejJak(world, {x: 16, y: 9}, { aggro: this });
+      const healer2 = new JalMejJak(world, {x: 20, y: 9}, { aggro: this });
+      const healer3 = new JalMejJak(world, {x: 30, y: 9}, { aggro: this });
+      const healer4 = new JalMejJak(world, {x: 34, y: 9}, { aggro: this });
+      world.addMob(healer1);
+      world.addMob(healer2);
+      world.addMob(healer3);
+      world.addMob(healer4);
+
+    }, 5000)
   }
   
 
@@ -153,6 +167,7 @@ export class TzKalZuk extends Mob {
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
+    this.currentStats.hitpoint = 240;
   }
 
   get bonuses(): UnitBonuses{ 

@@ -363,7 +363,6 @@ export class Player extends Unit {
         const shortestPaths = filter(map(potentialPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
         // Take the path that is the shortest absolute distance from player
         this.destinationLocation = minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
-
       } else {
         this.destinationLocation = this.location
       }

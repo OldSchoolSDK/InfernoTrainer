@@ -22,7 +22,6 @@ export class TileMarker extends Entity {
     return 1;
   }
   draw () {
-    console.log('drawing')
     this.world.worldCtx.lineWidth = 2
 
     this.world.worldCtx.strokeStyle = this.color
