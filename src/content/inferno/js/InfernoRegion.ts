@@ -42,6 +42,7 @@ import { SuperRestore } from '../../items/SuperRestore'
 import { BastionPotion } from '../../items/BastionPotion'
 import { MovementBlocker } from '../../MovementBlocker'
 import { Wall } from '../../Wall'
+import { TileMarker } from '../../TileMarker'
 import { ZukShield } from "./ZukShield"
 
 export class InfernoRegion extends Region {
@@ -175,6 +176,25 @@ export class InfernoRegion extends Region {
       world.addEntity(new Wall(world, {x: 29, y: 7}));
       world.addEntity(new Wall(world, {x: 29, y: 6}));
       world.addEntity(new Wall(world, {x: 29, y: 5}));
+
+      world.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00'));
+
+      world.addEntity(new TileMarker(world, {x: 16, y: 14}, '#FF0000'));
+      world.addEntity(new TileMarker(world, {x: 17, y: 14}, '#FF0000'));
+      world.addEntity(new TileMarker(world, {x: 18, y: 14}, '#FF0000'));
+
+      world.addEntity(new TileMarker(world, {x: 20, y: 14}, '#00FF00'));
+      
+      world.addEntity(new TileMarker(world, {x: 30, y: 14}, '#00FF00'));
+
+
+      world.addEntity(new TileMarker(world, {x: 32, y: 14}, '#FF0000'));
+      world.addEntity(new TileMarker(world, {x: 33, y: 14}, '#FF0000'));
+      world.addEntity(new TileMarker(world, {x: 34, y: 14}, '#FF0000'));
+
+
+      world.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00'));
+
     }
 
     /// /////////////////////////////////////////////////////////

@@ -87,7 +87,7 @@ export class World {
 
     this._viewport.width = Math.floor(width / Settings.tileSize  - (204 / Settings.tileSize) )
     this._viewport.height = Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) )
-    
+
     // create new canvas that is the on screen canvas
     this.viewport.width = Settings.tileSize * this._viewport.width + this.mapController.width;
     this.viewport.height = Settings.tileSize * this._viewport.height
