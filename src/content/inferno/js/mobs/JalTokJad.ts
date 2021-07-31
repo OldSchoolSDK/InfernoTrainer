@@ -12,11 +12,15 @@ import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
+import { YtHurKot } from './YtHurKot';
+import { Collision } from '../../../../sdk/Collision'
 
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
   stun: number;
+  healers: number;
+  autoRetaliate?: boolean;
 }
 
 class JadMagicWeapon extends MagicWeapon {
@@ -66,11 +70,15 @@ class JadRangeWeapon extends RangedWeapon {
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
   waveCooldown: number;
+  hasProccedHealers: boolean = false;
+  healers: number;
 
   constructor (world: World, location: Location, options: JadUnitOptions) {
     super(world, location, options)
     this.waveCooldown = options.attackSpeed;
     this.stunned = options.stun;
+    this.healers = options.healers;
+    this.autoRetaliate = options.autoRetaliate || false;
   }
 
   get displayName () {
@@ -107,6 +115,30 @@ export class JalTokJad extends Mob {
 
   }
 
+  damageTaken() {
+
+    if (this.currentStats.hitpoint < this.stats.hitpoint / 2) {
+      if (this.hasProccedHealers === false){
+        this.autoRetaliate = false;
+        this.hasProccedHealers = true;
+        for (let i=0; i < this.healers; i++) {
+          // Spawn healer
+
+          let xOff = 0;
+          let yOff = 0;
+
+          while (Collision.collidesWithMob(this.world, this.location.x + xOff, this.location.y + yOff, 1, this)){
+            xOff = Math.floor(Math.random() * 11) - 5;
+            yOff = Math.floor(Math.random() * 15) - 5 - this.size;
+          }
+
+          const healer = new YtHurKot(this.world, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
+          this.world.addMob(healer)
+
+        }
+      }  
+    }
+  }
   get bonuses(): UnitBonuses {
     return {
       attack: {

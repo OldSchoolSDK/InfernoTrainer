@@ -125,6 +125,8 @@ export class InfernoRegion extends Region {
 
     // Add mobs
     if (wave < 67) {
+      player.location = { x: 28, y: 17}
+
       const bat = BrowserUtils.getQueryVar('bat') || '[]'
       const blob = BrowserUtils.getQueryVar('blob') || '[]'
       const melee = BrowserUtils.getQueryVar('melee') || '[]'
@@ -164,20 +166,24 @@ export class InfernoRegion extends Region {
         waveInput.value = String(wave);
       }
     }else if (wave === 67){ 
-
-      const jad = new JalTokJad(world, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1 });
+ 
+      player.location = { x: 18, y: 25}
+      const jad = new JalTokJad(world, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1, healers: 5 });
       world.addMob(jad)
     }else if (wave === 68){ 
+      player.location = { x: 25, y: 25}
 
-      const jad1 = new JalTokJad(world, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1 });
+      const jad1 = new JalTokJad(world, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1, healers: 3 });
       world.addMob(jad1)
 
-      const jad2 = new JalTokJad(world, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7 });
+      const jad2 = new JalTokJad(world, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7, healers: 3 });
       world.addMob(jad2)
 
-      const jad3 = new JalTokJad(world, { x: 23, y: 33}, { aggro: player, attackSpeed: 9, stun: 4 });
+      const jad3 = new JalTokJad(world, { x: 23, y: 33}, { aggro: player, attackSpeed: 9, stun: 4, healers: 3 });
       world.addMob(jad3)
     }else if (wave === 69){
+      player.location = { x: 25, y: 15}
+
       // spawn zuk
       const shield = new ZukShield(world, { x: 23, y: 13}, {});
       world.addMob(shield)
@@ -211,6 +217,8 @@ export class InfernoRegion extends Region {
 
     }
 
+    player.perceivedLocation = player.location
+    player.destinationLocation = player.location
     /// /////////////////////////////////////////////////////////
     // UI controls
 

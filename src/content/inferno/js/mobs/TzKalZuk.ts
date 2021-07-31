@@ -17,6 +17,7 @@ import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectil
 import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
+import { JalTokJad } from './JalTokJad'
 
 class ZukWeapon extends MagicWeapon {
 
@@ -91,6 +92,9 @@ export class TzKalZuk extends Mob {
         this.setTimer += 175;
         this.timerPaused = false;
         // Spawn Jad
+        const jad = new JalTokJad(this.world, { x: 25, y: 21}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, autoRetaliate: true });
+        this.world.addMob(jad)
+        
       }  
     }
 
