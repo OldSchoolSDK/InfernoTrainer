@@ -32,6 +32,7 @@ export class Mob extends Unit {
   hadLOS: boolean;
   hasLOS: boolean;
   weapons: WeaponsMap;
+  attackStyle: string;
 
   mobRangeAttackAnimation: any;
 
@@ -179,7 +180,7 @@ export class Mob extends Unit {
 
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'slash'
   }
 
@@ -189,6 +190,9 @@ export class Mob extends Unit {
     this.hadLOS = this.hasLOS
     this.setHasLOS()
 
+    this.attackStyle = this.attackStyleForNewAttack()
+
+    
     const weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack
     let isUnderAggro = false
     if (!weaponIsAreaAttack) {
@@ -206,23 +210,22 @@ export class Mob extends Unit {
   }
 
   attack () {
-    let attackStyle = this.attackStyle
 
-    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false) {
+    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(this.attackStyle) === false) {
       if (this.isWithinMeleeRange() && Math.random() < 0.5) {
-        attackStyle = this.canMeleeIfClose()
+        this.attackStyle = this.canMeleeIfClose()
       }
     }
 
-    if (this.weapons[attackStyle].isBlockable(this, this.aggro, { attackStyle })) {
+    if (this.weapons[this.attackStyle].isBlockable(this, this.aggro, { attackStyle: this.attackStyle })) {
       this.attackFeedback = AttackIndicators.BLOCKED
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[this.attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
-    if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
+    if (this.attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
       this.currentAnimation = this.mobRangeAttackAnimation
       this.currentAnimationTickLength = 1
     }

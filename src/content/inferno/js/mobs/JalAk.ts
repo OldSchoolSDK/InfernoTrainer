@@ -113,7 +113,7 @@ export class JalAk extends Mob {
     return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     if (this.playerPrayerScan !== 'magic' && this.playerPrayerScan !== 'range') {
       return (Math.random() < 0.5) ? 'magic' : 'range'
     }
@@ -138,6 +138,8 @@ export class JalAk extends Mob {
     if (this.canAttack() === false) {
       return;
     }
+    
+    this.attackStyle = this.attackStyleForNewAttack()
     
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {

@@ -103,7 +103,7 @@ export class JalAkRekMej extends Mob {
     return null
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'magic'
   }
 

@@ -106,7 +106,7 @@ export class JalXil extends Mob {
     return RangerSound
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'range'
   }
 

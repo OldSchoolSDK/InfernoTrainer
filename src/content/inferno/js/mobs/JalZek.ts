@@ -107,7 +107,7 @@ export class JalZek extends Mob {
   get sound () {
     return MagerSound
   }
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'magic'
   }
 
@@ -144,6 +144,7 @@ export class JalZek extends Mob {
   attackIfPossible () {
     this.attackCooldownTicks--
     
+    this.attackStyle = this.attackStyleForNewAttack()
 
     this.attackFeedback = AttackIndicators.NONE
 

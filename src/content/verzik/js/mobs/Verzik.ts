@@ -139,7 +139,7 @@ export class Verzik extends Mob{
     return 'melee';
   }
 
-  get attackStyle() {
+  attackStyleForNewAttack() {
     return 'range';
   }
   

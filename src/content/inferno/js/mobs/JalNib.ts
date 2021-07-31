@@ -109,7 +109,7 @@ export class JalNib extends Mob {
     return NibblerSound
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'crush'
   }
 
@@ -119,6 +119,7 @@ export class JalNib extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
+    this.attackStyle = this.attackStyleForNewAttack()
 
     if (this.aggro.dying === 0) {
       this.dead() // cheat way for now. pillar should AOE

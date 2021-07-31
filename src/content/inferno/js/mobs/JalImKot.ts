@@ -77,7 +77,7 @@ export class JalImKot extends Mob {
     return 4
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'slash'
   }
 

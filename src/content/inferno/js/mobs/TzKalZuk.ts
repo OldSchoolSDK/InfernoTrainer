@@ -59,6 +59,8 @@ export class TzKalZuk extends Mob {
   attackIfPossible () {
     this.attackCooldownTicks--
 
+    this.attackStyle = this.attackStyleForNewAttack()
+
     if (this.timerPaused === false) {
       this.setTimer--;
 
@@ -200,7 +202,7 @@ export class TzKalZuk extends Mob {
     return 10
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'magic'
   }
 

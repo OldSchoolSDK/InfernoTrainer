@@ -101,7 +101,7 @@ export class JalAkRekXil extends Mob {
     return null
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'range'
   }
 

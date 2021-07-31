@@ -92,7 +92,7 @@ export class JalMejRah extends Mob {
   }
 
   
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'range'
   }
 

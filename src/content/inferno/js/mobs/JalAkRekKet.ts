@@ -103,7 +103,7 @@ export class JalAkRekKet extends Mob {
     return null
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'crush'
   }
 
