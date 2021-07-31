@@ -14,6 +14,8 @@ import { Weapon } from '../../../../sdk/gear/Weapon'
 import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
 import ZukAttackImage from '../../assets/images/zuk_attack.png';
 import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { JalZek } from './JalZek'
+import { JalXil } from './JalXil'
 
 class ZukWeapon extends MagicWeapon {
 
@@ -32,6 +34,8 @@ export class TzKalZuk extends Mob {
   shield: ZukShield;
   enraged: boolean = false;
 
+  setTimer: number = 5;
+
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.attackCooldownTicks = 14;
@@ -44,6 +48,16 @@ export class TzKalZuk extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
+    this.setTimer--;
+
+    if (this.setTimer === 0) {
+      this.setTimer = 150;
+
+      const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield})
+      this.world.addMob(mager);
+      const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield})
+      this.world.addMob(ranger);
+    }
 
     if (this.canAttack() && this.attackCooldownTicks <= 0) {
       this.attack()
@@ -52,13 +66,10 @@ export class TzKalZuk extends Mob {
 
 
   attack () {
-
-    let shieldOrPlayer = this.shield as any;
+    let shieldOrPlayer: Unit = this.shield;
     const shieldLocation = this.shield.location;
 
-    if (this.world.player.location.x >= this.shield.location.x - 1 && this.world.player.location.x < this.shield.location.x + 4) {
-      shieldOrPlayer = this.shield;
-    }else{
+    if (this.world.player.location.x < this.shield.location.x - 1 || this.world.player.location.x >= this.shield.location.x + 4) {
       shieldOrPlayer = this.world.player;
     }
     if (this.world.player.location.y > 16){

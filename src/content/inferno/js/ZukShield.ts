@@ -103,21 +103,21 @@ export class ZukShield extends Mob {
 
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
-    if (this.frozen <= 0 ){
-      if (this.movementDirection) {
-        this.location.x++;
-      }else{
-        this.location.x--;
-      }
-      if (this.location.x < 12) {
-        this.frozen = 5;
-        this.movementDirection = !this.movementDirection;
-      }
-      if (this.location.x > 36) {
-        this.frozen = 5;
-        this.movementDirection = !this.movementDirection;
-      }      
-    }
+    // if (this.frozen <= 0 ){
+    //   if (this.movementDirection) {
+    //     this.location.x++;
+    //   }else{
+    //     this.location.x--;
+    //   }
+    //   if (this.location.x < 12) {
+    //     this.frozen = 5;
+    //     this.movementDirection = !this.movementDirection;
+    //   }
+    //   if (this.location.x > 36) {
+    //     this.frozen = 5;
+    //     this.movementDirection = !this.movementDirection;
+    //   }      
+    // }
     this.frozen--;
 
     if (this.currentStats.hitpoint <= 0) {
