@@ -11,6 +11,7 @@ import { JalImKot } from './mobs/JalImKot'
 import { JalAk } from './mobs/JalAk'
 import { TzKalZuk } from './mobs/TzKalZuk'
 import { JalMejRah } from './mobs/JalMejRah'
+import { JalTokJad } from './mobs/JalTokJad'
 import { BrowserUtils } from '../../../sdk/utils/BrowserUtils'
 import { TwistedBow } from '../../weapons/TwistedBow'
 import { Blowpipe } from '../../weapons/Blowpipe'
@@ -77,12 +78,15 @@ export class InfernoRegion extends Region {
 
 
     let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+    if (isNaN(wave)){
+      wave = 1;
+    }
 
 
     // Add player
     const player = new Player(
       world,
-      { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 15 },
+      { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
       { equipment: { 
           weapon: new TwistedBow(),
           helmet: new JusticiarFaceguard(),
@@ -100,13 +104,9 @@ export class InfernoRegion extends Region {
 
 
 
-    if (wave !== 69) {
+    if (wave < 67) {
       // Add pillars
       InfernoPillar.addPillarsToWorld(world)
-      if (isNaN(wave)){
-        wave = 1;
-      }  
-      
     }
 
     const randomPillar = (shuffle(world.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
@@ -124,7 +124,7 @@ export class InfernoRegion extends Region {
 
 
     // Add mobs
-    if (wave !== 69) {
+    if (wave < 67) {
       const bat = BrowserUtils.getQueryVar('bat') || '[]'
       const blob = BrowserUtils.getQueryVar('blob') || '[]'
       const melee = BrowserUtils.getQueryVar('melee') || '[]'
@@ -163,7 +163,21 @@ export class InfernoRegion extends Region {
         replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
         waveInput.value = String(wave);
       }
-    }else {
+    }else if (wave === 67){ 
+
+      const jad = new JalTokJad(world, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1 });
+      world.addMob(jad)
+    }else if (wave === 68){ 
+
+      const jad1 = new JalTokJad(world, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1 });
+      world.addMob(jad1)
+
+      const jad2 = new JalTokJad(world, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7 });
+      world.addMob(jad2)
+
+      const jad3 = new JalTokJad(world, { x: 23, y: 33}, { aggro: player, attackSpeed: 9, stun: 4 });
+      world.addMob(jad3)
+    }else if (wave === 69){
       // spawn zuk
       const shield = new ZukShield(world, { x: 23, y: 13}, {});
       world.addMob(shield)

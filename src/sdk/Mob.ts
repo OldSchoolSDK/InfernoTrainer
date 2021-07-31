@@ -190,6 +190,10 @@ export class Mob extends Unit {
     this.hadLOS = this.hasLOS
     this.setHasLOS()
 
+    if (this.canAttack() === false) {
+      return;
+    }
+
     this.attackStyle = this.attackStyleForNewAttack()
 
     

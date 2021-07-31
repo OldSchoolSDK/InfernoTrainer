@@ -5,10 +5,25 @@ import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JadImage from '../../assets/images/JalTok-Jad.png'
-import { UnitBonuses } from '../../../../sdk/Unit'
+import { UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
+import { World } from '../../../../sdk/World'
+import { Location } from '../../../../sdk/GameObject'
+
+
+interface JadUnitOptions extends UnitOptions {
+  attackSpeed: number;
+  stun: number;
+}
 
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
+  waveCooldown: number;
+
+  constructor (world: World, location: Location, options: JadUnitOptions) {
+    super(world, location, options)
+    this.waveCooldown = options.attackSpeed;
+    this.stunned = options.stun;
+  }
 
   get displayName () {
     return 'JalTok-Jad'
@@ -22,7 +37,6 @@ export class JalTokJad extends Mob {
     return 'red'
   }
   setStats () {
-    this.stunned = 1
 
     this.weapons = {
       stab: new MeleeWeapon(),
@@ -71,7 +85,7 @@ export class JalTokJad extends Mob {
   }
   
   get cooldown () {
-    return 8
+    return this.waveCooldown
   }
 
   get attackRange () {
@@ -106,6 +120,10 @@ export class JalTokJad extends Mob {
     return 'stab'
   }
 
+  canMove() {
+    return false;
+  }
+
   magicMaxHit () {
     return 113
   }
@@ -133,12 +151,12 @@ export class JalTokJad extends Mob {
   //   }
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
-    if (this.playerPrayerScan && this.attackCooldownTicks <= 0) {
-      this.attack()
-      this.attackCooldownTicks = this.cooldown
-      this.playerPrayerScan = null
-    }
-  }
+  //   if (this.playerPrayerScan && this.attackCooldownTicks <= 0) {
+  //     this.attack()
+  //     this.attackCooldownTicks = this.cooldown
+  //     this.playerPrayerScan = null
+  //   }
+  // }
 
   removedFromWorld () {
   }
