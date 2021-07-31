@@ -49,19 +49,6 @@ export class TzKalZuk extends Mob {
     this.shield = find(world.mobs, (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
-    setTimeout(() => {
-      this.currentStats.hitpoint = 240;
-
-      const healer1 = new JalMejJak(world, {x: 16, y: 9}, { aggro: this });
-      const healer2 = new JalMejJak(world, {x: 20, y: 9}, { aggro: this });
-      const healer3 = new JalMejJak(world, {x: 30, y: 9}, { aggro: this });
-      const healer4 = new JalMejJak(world, {x: 34, y: 9}, { aggro: this });
-      world.addMob(healer1);
-      world.addMob(healer2);
-      world.addMob(healer3);
-      world.addMob(healer4);
-
-    }, 5000)
   }
   
 
@@ -107,7 +94,19 @@ export class TzKalZuk extends Mob {
 
     if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
-      // spawn healers
+
+      const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this });
+      this.world.addMob(healer1);
+
+      const healer2 = new JalMejJak(this.world, {x: 20, y: 9}, { aggro: this });
+      this.world.addMob(healer2);
+
+      const healer3 = new JalMejJak(this.world, {x: 30, y: 9}, { aggro: this });
+      this.world.addMob(healer3);
+
+      const healer4 = new JalMejJak(this.world, {x: 34, y: 9}, { aggro: this });
+      this.world.addMob(healer4);
+
     }
     
   }
