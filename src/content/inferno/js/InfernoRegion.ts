@@ -41,6 +41,7 @@ import { SaradominBrew } from '../../items/SaradominBrew'
 import { SuperRestore } from '../../items/SuperRestore'
 import { BastionPotion } from '../../items/BastionPotion'
 import { MovementBlocker } from '../../MovementBlocker'
+import { Wall } from '../../Wall'
 import { ZukShield } from "./ZukShield"
 
 export class InfernoRegion extends Region {
@@ -167,6 +168,13 @@ export class InfernoRegion extends Region {
       world.addMob(shield)
 
       world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player }))
+
+      world.addEntity(new Wall(world, {x: 21, y: 7}));
+      world.addEntity(new Wall(world, {x: 21, y: 6}));
+      world.addEntity(new Wall(world, {x: 21, y: 5}));
+      world.addEntity(new Wall(world, {x: 29, y: 7}));
+      world.addEntity(new Wall(world, {x: 29, y: 6}));
+      world.addEntity(new Wall(world, {x: 29, y: 5}));
     }
 
     /// /////////////////////////////////////////////////////////

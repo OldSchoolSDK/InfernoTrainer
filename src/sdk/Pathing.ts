@@ -114,6 +114,9 @@ export class Pathing {
       { x: -1, y: -1 },
       { x: 1, y: -1 }
     ]
+    
+    let bestBackupTile = {x: -1, y: -1};
+    let bestBackupTileDistance = 99999;
 
     // Djikstra search for the optimal route
     const explored: any = {}
@@ -155,14 +158,28 @@ export class Pathing {
             continue
           } else {
             explored[pathX][pathY] = true
+            if (Pathing.dist(toX, toY, pathX, pathY) < bestBackupTileDistance) {
+              bestBackupTileDistance = Pathing.dist(toX, toY, pathX, pathY);
+              bestBackupTile = {x: pathX, y: pathY };
+            }
           }
         } else {
           explored[pathX] = {}
           explored[pathX][pathY] = true
+
+          if (Pathing.dist(toX, toY, pathX, pathY) < bestBackupTileDistance) {
+            bestBackupTileDistance = Pathing.dist(toX, toY, pathX, pathY);
+            bestBackupTile = {x: pathX, y: pathY };
+          }
         }
 
         nodes.push({ x: pathX, y: pathY, parent: parentNode })
       }
+    }
+
+    if (pathTiles.length === 0) {
+      // No LoS
+      return Pathing.constructPath(world, startPoint, bestBackupTile)
     }
 
     return pathTiles

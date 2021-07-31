@@ -322,7 +322,6 @@ export class Player extends Unit {
         }
       } else if (!this.hasLOS) {
 
-
         const seekingTiles: Location[] = [];
         // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
         // "within melee range of the npc, object, or player."
