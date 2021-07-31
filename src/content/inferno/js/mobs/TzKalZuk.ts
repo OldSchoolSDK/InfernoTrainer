@@ -37,7 +37,7 @@ export class TzKalZuk extends Mob {
   shield: ZukShield;
   enraged: boolean = false;
 
-  setTimer: number = 5;
+  setTimer: number = 75;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
