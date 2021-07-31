@@ -85,8 +85,9 @@ export class World {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    this._viewport.width = Math.floor(width / Settings.tileSize  - (204 / Settings.tileSize) )
-    this._viewport.height = Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) )
+    this._viewport.width = Math.min(this.region.width - (204 / Settings.tileSize), Math.floor(width / Settings.tileSize  - (204 / Settings.tileSize) ))
+    this._viewport.height = Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) ))
+
 
     // create new canvas that is the on screen canvas
     this.viewport.width = Settings.tileSize * this._viewport.width + this.mapController.width;
