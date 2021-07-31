@@ -20,7 +20,6 @@ interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
   stun: number;
   healers: number;
-  autoRetaliate?: boolean;
 }
 
 class JadMagicWeapon extends MagicWeapon {
@@ -78,7 +77,7 @@ export class JalTokJad extends Mob {
     this.waveCooldown = options.attackSpeed;
     this.stunned = options.stun;
     this.healers = options.healers;
-    this.autoRetaliate = options.autoRetaliate || false;
+    this.autoRetaliate = true;
   }
 
   get displayName () {
