@@ -1,7 +1,7 @@
 import { Necklace } from "../../sdk/gear/Necklace";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Necklace_of_anguish.png';
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class NecklaceOfAnguish extends Necklace{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class NecklaceOfAnguish extends Necklace{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.NECKLACE_OF_ANGUISH
+  get itemName(): ItemName {
+    return ItemName.NECKLACE_OF_ANGUISH
   }
   get weight(): number {
     return 0.01;

@@ -3,17 +3,17 @@ import { JusticiarChestguard } from "../equipment/JusticiarChestguard"
 import { JusticiarLegguards } from "../equipment/JusticiarLegguards"
 import { Equipment } from "../../sdk/Equipment"
 import { SetEffect, SetEffectTypes } from "../../sdk/SetEffect"
-import { ItemNames } from "../../sdk/ItemNames"
+import { ItemName } from "../../sdk/ItemName"
 
 export class JusticiarSetEffect extends SetEffect {
   static effectName(): string {
     return SetEffectTypes.JUSTICIAR;
   }
-  static itemsInSet(): ItemNames[] {
+  static itemsInSet(): ItemName[] {
     return [
-      ItemNames.JUSTICIAR_FACEGUARD,
-      ItemNames.JUSTICIAR_CHESTGUARD,
-      ItemNames.JUSTICIAR_LEGGUARDS
+      ItemName.JUSTICIAR_FACEGUARD,
+      ItemName.JUSTICIAR_CHESTGUARD,
+      ItemName.JUSTICIAR_LEGGUARDS
     ]
   }
 }

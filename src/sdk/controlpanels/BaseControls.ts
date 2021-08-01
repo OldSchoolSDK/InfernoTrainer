@@ -19,7 +19,13 @@ export class BaseControls {
     return ''
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+  cursorMovedto(world: World, x: number, y: number) {
+  }
+
+  panelClickDown (world: World, x: number, y: number) {
+    console.log(x, y)
+  }
+  panelClickUp (world: World, x: number, y: number) {
     console.log(x, y)
   }
 

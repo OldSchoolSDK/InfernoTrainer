@@ -17,9 +17,10 @@ import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
-import { ItemNames } from './ItemNames'
+import { ItemName } from './ItemName'
 import { InventoryControls } from './controlpanels/InventoryControls'
 import { Item } from './Item'
+import { Collision } from './Collision'
 
 export interface PlayerStats extends UnitStats {
   agility: number; 
@@ -63,6 +64,7 @@ export class Player extends Unit {
     this.regenTimers = { spec: 50, hitpoint: 100 };
     this.equipmentChanged();
     this.clearXpDrops();
+    this.autoRetaliate = false;
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
@@ -212,7 +214,7 @@ export class Player extends Unit {
     this.aggro = null
     this.manualSpellCastSelection = null
 
-    const clickedOnEntities = Pathing.collideableEntitiesAtPoint(this.world, x, y, 1)
+    const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.world, x, y, 1)
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0]
@@ -223,7 +225,7 @@ export class Player extends Unit {
         for (let xOff = -maxDist; xOff < maxDist; xOff++) {
           const potentialX = x + xOff
           const potentialY = y + yOff
-          const e = Pathing.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
+          const e = Collision.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y)
             if (distance <= bestDistance) {
@@ -293,7 +295,7 @@ export class Player extends Unit {
         this.destinationLocation = this.location
         return
       }
-      const isUnderAggrodMob = Pathing.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size)
+      const isUnderAggrodMob = Collision.collisionMath(this.location.x, this.location.y, 1, this.aggro.location.x, this.aggro.location.y, this.aggro.size)
       this.setHasLOS()
 
       if (isUnderAggrodMob) {
@@ -320,7 +322,6 @@ export class Player extends Unit {
         }
       } else if (!this.hasLOS) {
 
-
         const seekingTiles: Location[] = [];
         // "When clicking on an npc, object, or player, the requested tiles will be all tiles"
         // "within melee range of the npc, object, or player."
@@ -332,7 +333,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -345,7 +346,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Pathing.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -362,7 +363,6 @@ export class Player extends Unit {
         const shortestPaths = filter(map(potentialPathLengths, (length, index) => (length === shortestPathLength) ? seekingTiles[index] : null));
         // Take the path that is the shortest absolute distance from player
         this.destinationLocation = minBy(shortestPaths, (point) => Pathing.dist(this.location.x, this.location.y, point.x, point.y));
-
       } else {
         this.destinationLocation = this.location
       }
@@ -380,7 +380,7 @@ export class Player extends Unit {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
         this.currentStats.run -= Math.floor(0.3 * runReduction);
-      }else if (this.equipment.ring.itemName === ItemNames.RING_OF_ENDURANCE){
+      }else if (this.equipment.ring && this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE){
         this.currentStats.run -= Math.floor(0.85 * runReduction);
       }else{
         this.currentStats.run -= runReduction;
@@ -502,7 +502,7 @@ export class Player extends Unit {
 
   
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
+    // LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0099', this.type === UnitTypes.MOB)
 
     this.world.worldCtx.save();
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)

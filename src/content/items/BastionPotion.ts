@@ -1,5 +1,5 @@
 
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import OneDose from '../../assets/images/potions/Bastion_potion_1.png';
 import TwoDose from '../../assets/images/potions/Bastion_potion_2.png';
@@ -33,8 +33,8 @@ export class BastionPotion extends Potion {
     }
     return Vial;
   }
-  get itemName(): ItemNames {
-    return ItemNames.BASTION_POTION
+  get itemName(): ItemName {
+    return ItemName.BASTION_POTION
   }
   
   inventoryLeftClick(player: Player) {

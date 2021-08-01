@@ -7,9 +7,15 @@ import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { UnitBonuses } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Collision } from '../../../../sdk/Collision'
+import { TzKalZuk } from './TzKalZuk'
+import { EntityName } from '../../../../sdk/Entity'
+import { find } from 'lodash'
 
 export class JalZek extends Mob {
+  isZukWave: boolean;
+
   get displayName () {
     return 'Jal-Zek'
   }
@@ -28,6 +34,13 @@ export class JalZek extends Mob {
   }
 
   setStats () {
+
+    // Scan for a zuk
+    const zuk = find(this.world.mobs, (mob: Unit) => {
+      return mob.mobName() === EntityName.TZ_KAL_ZUK;
+    }) as TzKalZuk;
+    this.isZukWave = zuk !== null
+
     this.stunned = 1
 
     this.weapons = {
@@ -94,12 +107,7 @@ export class JalZek extends Mob {
   get sound () {
     return MagerSound
   }
-
-  get color () {
-    return '#ffffff33'
-  }
-
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'magic'
   }
 
@@ -122,8 +130,8 @@ export class JalZek extends Mob {
   respawnLocation (mobToResurrect: Mob) {
     for (let x = 15; x < 21; x++) {
       for (let y = 10; y < 22; y++) {
-        if (!Pathing.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
-          if (!Pathing.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
+        if (!Collision.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
+          if (!Collision.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
             return { x, y }
           }
         }
@@ -136,6 +144,7 @@ export class JalZek extends Mob {
   attackIfPossible () {
     this.attackCooldownTicks--
     
+    this.attackStyle = this.attackStyleForNewAttack()
 
     this.attackFeedback = AttackIndicators.NONE
 
@@ -147,10 +156,10 @@ export class JalZek extends Mob {
       return;
     }
     
-    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+    const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.1 && !this.isZukWave) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect()
         if (!mobToResurrect) {
           this.attack()

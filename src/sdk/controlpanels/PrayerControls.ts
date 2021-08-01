@@ -111,7 +111,7 @@ export class PrayerControls extends BaseControls {
 
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+  panelClickDown (world: World, x: number, y: number) {
     const gridX = x - 14
     const gridY = y - 22
 

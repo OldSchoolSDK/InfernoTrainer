@@ -1,13 +1,9 @@
+import { clamp } from "lodash";
+import { CollisionType } from "./Collision";
 
 export interface Location {
   x: number;
   y: number;
-}
-
-export enum CollisionType {
-  NONE = 0,
-  BLOCK_MOVEMENT = 1,
-  BLOCK_LOS = 2,
 }
 
 export class GameObject {
@@ -24,6 +20,17 @@ export class GameObject {
 
   get collisionType() {
     return CollisionType.BLOCK_LOS;
+  }
+
+  // Returns true if this mob is on the specified tile.
+  isOnTile (x: number, y: number) {
+    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
+  }
+
+  // Returns the closest tile on this mob to the specified point.
+  getClosestTileTo (x: number, y: number) {
+    // We simply clamp the target point to our own boundary box.
+    return [clamp(x, this.location.x, this.location.x + this.size), clamp(y, this.location.y, this.location.y - this.size)]
   }
 
   constructor(){

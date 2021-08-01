@@ -1,5 +1,5 @@
 
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import OneDose from '../../assets/images/potions/Saradomin_brew_1.png';
 import TwoDose from '../../assets/images/potions/Saradomin_brew_2.png';
@@ -32,8 +32,8 @@ export class SaradominBrew extends Potion {
     }
     return Vial;
   }
-  get itemName(): ItemNames {
-    return ItemNames.SARADOMIN_BREW
+  get itemName(): ItemName {
+    return ItemName.SARADOMIN_BREW
   }
   inventoryLeftClick(player: Player) {
 

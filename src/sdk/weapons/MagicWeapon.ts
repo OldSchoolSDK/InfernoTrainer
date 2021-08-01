@@ -8,7 +8,7 @@ import { AttackBonuses, Weapon } from '../gear/Weapon'
 
 export class MagicWeapon extends Weapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
-    super.attack(world,from,to,bonuses);
+    super.attack(world,from,to,bonuses, options);
   }
 
   grantXp(from: Unit) {

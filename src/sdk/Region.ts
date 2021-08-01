@@ -12,11 +12,11 @@ export class Region{
   }
 
   get width (): number {
-    return 29
+    return 0
   }
 
   get height (): number {
-    return 30
+    return 0
   }
 
   getInventory (): Item[]{

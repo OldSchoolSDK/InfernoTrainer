@@ -4,13 +4,16 @@ export class DelayedAction {
   static delayedActions: DelayedAction[] = [];
   action: () => void;
   delay: number;
+  identifier: number;
   constructor(action: () => void, delay: number){
     this.action = action;
     this.delay = delay + 1;
+    this.identifier = Math.random() * 1000000;
   }
 
-  static registerDelayedAction(delayedAction: DelayedAction) {
+  static registerDelayedAction(delayedAction: DelayedAction): number {
     DelayedAction.delayedActions.push(delayedAction);
+    return delayedAction.identifier;
   }
 
   static tick() {

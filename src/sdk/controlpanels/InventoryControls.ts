@@ -8,9 +8,14 @@ import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../gear/Weapon'
+import { Location } from '../../sdk/GameObject'
+import { Collision } from '../Collision'
 
 export class InventoryControls extends BaseControls {
 
+  clickedDownItem: Item = null;
+  clickedDownLocation: Location = null;
+  cursorLocation: Location = null;
   static inventory: Item[] = new Array(28).fill(null);
 
   get panelImageReference () {
@@ -35,7 +40,14 @@ export class InventoryControls extends BaseControls {
     return openSpots;
   }
 
-  clickedPanel (world: World, x: number, y: number) {
+
+  cursorMovedto(world: World, x: number, y: number) {
+
+    this.cursorLocation = { x, y }
+  }
+
+
+  panelClickUp (world: World, x: number, y: number) {
 
     const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -46,18 +58,45 @@ export class InventoryControls extends BaseControls {
       inventoryItem.inventoryPosition = index
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Pathing.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Weapon
 
-    InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
-
-    if (clickedItem) {
+    if (clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
         clickedItem.inventoryLeftClick(world.player);
         world.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }
+    }else{
+      const theItemWereReplacing = clickedItem;
+      InventoryControls.inventory[theItemWereReplacing.inventoryPosition] = this.clickedDownItem;
+      InventoryControls.inventory[this.clickedDownItem.inventoryPosition] = theItemWereReplacing;
+    }
+    this.clickedDownItem = null;
+    this.cursorLocation = null;
+  }
+
+  panelClickDown (world: World, x: number, y: number) {
+    this.cursorLocation = { x, y }
+    this.clickedDownLocation = {x, y};
+
+    const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
+      if (!inventoryItem) {
+        return
+      }
+      const x2 = index % 4
+      const y2 = Math.floor(index / 4)
+      inventoryItem.inventoryPosition = index
+      const itemX = 20 + x2 * 43
+      const itemY = 17 + (y2 + 1) * 35
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+    })) as Weapon
+
+    InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
+
+    if (clickedItem) {
+      this.clickedDownItem = clickedItem;
     }
   }
 
@@ -72,8 +111,6 @@ export class InventoryControls extends BaseControls {
       const itemY = 17 + y + (y2) * 35
 
       if (inventoryItem !== null) {
-
-
         
         world.viewportCtx.fillStyle = "#ffffff22"
         world.viewportCtx.fillRect(itemX, itemY, 32, 32)
@@ -81,7 +118,18 @@ export class InventoryControls extends BaseControls {
 
         const xOff = (32 - sprite.width)/2;
         const yOff = (32 - sprite.height)/2
-        world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+        if (inventoryItem === this.clickedDownItem) {
+          world.viewportCtx.globalAlpha = 0.4;
+          if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {
+            world.viewportCtx.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
+          }else{
+            world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+          }
+          world.viewportCtx.globalAlpha = 1;
+
+        }else{
+          world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+        }
 
         if (inventoryItem.selected) {
           world.viewportCtx.beginPath()

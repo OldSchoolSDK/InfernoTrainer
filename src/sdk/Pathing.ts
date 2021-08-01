@@ -1,9 +1,8 @@
 'use strict'
-import { filter, sortBy } from 'lodash'
-import { CollisionType, GameObject, Location } from './GameObject'
+import { sortBy, minBy } from 'lodash'
+import { GameObject, Location } from './GameObject'
 import { World } from './World'
-import { Settings } from './Settings'
-import { Unit } from './Unit'
+import { Collision } from './Collision'
 
 interface PathingNode {
   x: number;
@@ -11,63 +10,20 @@ interface PathingNode {
   parent?: any;
 }
 export class Pathing {
-  static linearInterpolation (x: number, y: number, a: number) {
-    return ((y - x) * a) + x
-  }
-
-  static dist (x: number, y: number, x2: number, y2: number) {
-    return Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2))
-  }
-
-  static collisionMath (x: number, y: number, s: number, x2: number, y2: number, s2: number) {
-    return !(x > (x2 + s2 - 1) || (x + s - 1) < x2 || (y - s + 1) > y2 || y < (y2 - s2 + 1))
-  }
-
-  static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
-    for (var i = 0; i < world.entities.length; i++) {
-      let entity = world.entities[i];
-      if (entity.collisionType != CollisionType.NONE && Pathing.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   static entitiesAtPoint (world: World, x: number, y: number, s: number) {
     const entities = []
     for (let i = 0; i < world.entities.length; i++) {
-      if (Pathing.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
+      if (Collision.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
         entities.push(world.entities[i])
       }
     }
     return entities
   }
 
-  // Same as above but only returns entities with collision enabled.
-  static collideableEntitiesAtPoint(world: World, x: number, y: number, s: number) {
-    return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
-  }
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number) {
-    const mobs = []
-    for (let i = 0; i < world.mobs.length; i++) {
-      const collidedWithSpecificMob = Pathing.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.mobs[i])
-      if (collidedWithSpecificMob) {
-        mobs.push(world.mobs[i])
-      }
-    }
-    return mobs
-  }
-
-  static collidesWithMobAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number, mob: Unit) {
-    const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
-
-    return (Pathing.collisionMath(x, y - Settings.tileSize, 1, perceivedX, perceivedY, (mob.size) * Settings.tileSize))
-  }
-
-  // point.x + to.location.x, point.y + to.location.y
-  static mobsInAreaOfEffectOfMob (world: World, mob: GameObject, point: Location) {
+  // TODO: Make this more like entitiesAtPoint
+  static mobsAtAoeOffset (world: World, mob: GameObject, point: Location) {
     const mobs = []
     for (let i = 0; i < world.mobs.length; i++) {
       const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
@@ -80,38 +36,46 @@ export class Pathing {
     return sortBy(mobs, (m: GameObject) => mob !== m)
   }
 
-  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    for (let i = 0; i < world.mobs.length; i++) {
-      if (world.mobs[i] === mobToAvoid) {
-        continue
-      }
 
-      const collidedWithSpecificMob = Pathing.collidesWithMob(world, x, y, s, world.mobs[i])
 
-      if (collidedWithSpecificMob && world.mobs[i].consumesSpace) {
-        return world.mobs[i]
-      }
-    }
-    return null
+  // Core pathing
+
+  static linearInterpolation (x: number, y: number, a: number) {
+    return ((y - x) * a) + x
   }
 
-  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
-    return (Pathing.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
+  static dist (x: number, y: number, x2: number, y2: number) {
+    return Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2))
+  }
+
+
+  static closestPointTo (x: number, y: number, mob: GameObject) {
+    const corners = []
+    for (let xx = 0; xx < mob.size; xx++) {
+      for (let yy = 0; yy < mob.size; yy++) {
+        corners.push({
+          x: mob.location.x + xx,
+          y: mob.location.y - yy
+        })
+      }
+    }
+
+    return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
 
   static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    if (y - (s - 1) < 0 || x + (s - 1) > 28) {
-      return false
-    }
-    if (y < 0 || x < 0) {
-      return false
-    }
+    // if (y - (s - 1) < 0 || x + (s - 1) > 28) {
+    //   return false
+    // }
+    // if (y < 0 || x < 0) {
+    //   return false
+    // }
     let collision = false
-    collision = collision || Pathing.collidesWithAnyEntities(world, x, y, s)
+    collision = collision || Collision.collidesWithAnyEntities(world, x, y, s)
 
     if (mobToAvoid) { // if no mobs to avoid, avoid them all
       // Player can walk under mobs
-      collision = collision || Pathing.collidesWithAnyMobs(world, x, y, s, mobToAvoid) !== null
+      collision = collision || Collision.collidesWithAnyMobs(world, x, y, s, mobToAvoid) !== null
     }
 
     return !collision
@@ -150,6 +114,9 @@ export class Pathing {
       { x: -1, y: -1 },
       { x: 1, y: -1 }
     ]
+    
+    let bestBackupTile = {x: -1, y: -1};
+    let bestBackupTileDistance = 99999;
 
     // Djikstra search for the optimal route
     const explored: any = {}
@@ -191,14 +158,28 @@ export class Pathing {
             continue
           } else {
             explored[pathX][pathY] = true
+            if (Pathing.dist(toX, toY, pathX, pathY) < bestBackupTileDistance) {
+              bestBackupTileDistance = Pathing.dist(toX, toY, pathX, pathY);
+              bestBackupTile = {x: pathX, y: pathY };
+            }
           }
         } else {
           explored[pathX] = {}
           explored[pathX][pathY] = true
+
+          if (Pathing.dist(toX, toY, pathX, pathY) < bestBackupTileDistance) {
+            bestBackupTileDistance = Pathing.dist(toX, toY, pathX, pathY);
+            bestBackupTile = {x: pathX, y: pathY };
+          }
         }
 
         nodes.push({ x: pathX, y: pathY, parent: parentNode })
       }
+    }
+
+    if (pathTiles.length === 0) {
+      // No LoS
+      return Pathing.constructPath(world, startPoint, bestBackupTile)
     }
 
     return pathTiles
@@ -210,7 +191,7 @@ export class Pathing {
     if (path.length === 0) {
       return startPoint
     }
-    if (seeking && Pathing.collidesWithMob(world, path[0].x, path[0].y, 1, seeking)) {
+    if (seeking && Collision.collidesWithMob(world, path[0].x, path[0].y, 1, seeking)) {
       path.shift()
     }
 
