@@ -322,6 +322,10 @@ export class World {
     let viewportX = perceivedX + 0.5 - this._viewport.width / 2;
     let viewportY = perceivedY + 0.5 - this._viewport.height / 2;
 
+    if (parseInt(this.wave) < 67) {
+      viewportX = 15;
+      viewportY = 14;
+    }
 
     if (viewportX < 0) {
       viewportX = 0
