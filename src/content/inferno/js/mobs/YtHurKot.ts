@@ -4,7 +4,8 @@
 import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import HurKotImage from '../../assets/images/Yt-HurKot.png'
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Location } from '../../../../sdk/GameObject'
+import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
 import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
@@ -23,6 +24,24 @@ class HealWeapon extends Weapon {
 
 
 export class YtHurKot extends Mob {
+
+  myJad: Unit;
+
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
+    this.myJad = this.aggro as Unit;
+
+  }
+
+  attackStep() {
+    super.attackStep();
+
+    if (this.myJad.isDying()) {
+      this.dead();
+    }
+
+  }
+  
   get displayName () {
     return 'Yt-HurKot'
   }

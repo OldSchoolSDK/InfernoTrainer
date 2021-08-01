@@ -66,8 +66,6 @@ export class SuperRestore extends Potion {
       player.currentStats.magic += magicBonus;
       player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic);
     }
-
-    // todo: every other skill rip 
   }
   
 

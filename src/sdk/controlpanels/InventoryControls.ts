@@ -55,7 +55,6 @@ export class InventoryControls extends BaseControls {
       }
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
-      inventoryItem.inventoryPosition = index
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
@@ -70,8 +69,10 @@ export class InventoryControls extends BaseControls {
       }
     }else{
       const theItemWereReplacing = clickedItem;
-      InventoryControls.inventory[theItemWereReplacing.inventoryPosition] = this.clickedDownItem;
-      InventoryControls.inventory[this.clickedDownItem.inventoryPosition] = theItemWereReplacing;
+      const theItemWereReplacingPosition = clickedItem.inventoryPosition;
+      const thisPosition = this.clickedDownItem.inventoryPosition;
+      InventoryControls.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
+      InventoryControls.inventory[thisPosition] = theItemWereReplacing;
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
@@ -87,7 +88,6 @@ export class InventoryControls extends BaseControls {
       }
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
-      inventoryItem.inventoryPosition = index
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)

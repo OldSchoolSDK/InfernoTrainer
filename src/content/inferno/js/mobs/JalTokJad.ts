@@ -203,10 +203,6 @@ export class JalTokJad extends Mob {
     return 'stab'
   }
 
-  canMove() {
-    return false;
-  }
-
   magicMaxHit () {
     return 113
   }

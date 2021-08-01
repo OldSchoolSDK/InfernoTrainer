@@ -60,6 +60,7 @@ export class SaradominBrew extends Potion {
     const magicNerf = Math.floor(player.stats.magic * 0.10) + 2
     player.currentStats.magic -= magicNerf;
     player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic + magicNerf)
+
   }
 
   updateInventorySprite() {
