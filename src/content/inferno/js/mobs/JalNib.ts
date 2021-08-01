@@ -38,6 +38,7 @@ export class JalNib extends Mob {
 
   setStats () {
     this.stunned = 1
+    this.autoRetaliate = false;
     this.weapon = {
       attackRange: 1
     }
