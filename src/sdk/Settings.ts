@@ -43,9 +43,9 @@ export class Settings {
     Settings.region = 'inferno'
     Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true
 
-    Settings.inventory_key = window.localStorage.getItem('inventory_key') || '4'
-    Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || '2'
-    Settings.equipment_key = window.localStorage.getItem('equipment_key') || '1'
-    Settings.prayer_key = window.localStorage.getItem('prayer_key') || '3'
+    Settings.inventory_key = window.localStorage.getItem('inventory_key') || 'F4'
+    Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || 'F2'
+    Settings.equipment_key = window.localStorage.getItem('equipment_key') || 'F1'
+    Settings.prayer_key = window.localStorage.getItem('prayer_key') || 'F3'
   }
 }

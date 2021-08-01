@@ -36,45 +36,40 @@ export class SuperRestore extends Potion {
   get itemName(): ItemName {
     return ItemName.SUPER_RESTORE
   }
-  
-  inventoryLeftClick(player: Player) {
 
-    if (this.doses > 0) {
-      const prayerBonus = Math.floor(player.stats.prayer  * 0.27) + 8
-      player.currentStats.prayer += prayerBonus;
-      player.currentStats.prayer = Math.min(player.currentStats.prayer, player.stats.prayer);
+  potionEffect(player: Player) {
+
+    const prayerBonus = Math.floor(player.stats.prayer  * 0.27) + 8
+    player.currentStats.prayer += prayerBonus;
+    player.currentStats.prayer = Math.min(player.currentStats.prayer, player.stats.prayer);
 
 
-      if (player.currentStats.attack < player.stats.attack) {
-        const attackBonus = Math.floor(player.stats.attack  * 0.25) + 8
-        player.currentStats.attack += attackBonus;
-        player.currentStats.attack = Math.min(player.currentStats.attack, player.stats.attack);  
-      }
-
-      if (player.currentStats.strength < player.stats.strength) {
-        const strengthBonus = Math.floor(player.stats.strength  * 0.25) + 8
-        player.currentStats.strength += strengthBonus;
-        player.currentStats.strength = Math.min(player.currentStats.strength, player.stats.strength);
-      }
-
-      if (player.currentStats.range < player.stats.range) {
-        const rangeBonus = Math.floor(player.stats.range  * 0.25) + 8
-        player.currentStats.range += rangeBonus;
-        player.currentStats.range = Math.min(player.currentStats.range, player.stats.range);
-      }
-      if (player.currentStats.magic < player.stats.magic) {
-        const magicBonus = Math.floor(player.stats.magic  * 0.25) + 8
-        player.currentStats.magic += magicBonus;
-        player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic);
-      }
-
-      // todo: every skill
+    if (player.currentStats.attack < player.stats.attack) {
+      const attackBonus = Math.floor(player.stats.attack  * 0.25) + 8
+      player.currentStats.attack += attackBonus;
+      player.currentStats.attack = Math.min(player.currentStats.attack, player.stats.attack);  
     }
 
-    this.doses--;
+    if (player.currentStats.strength < player.stats.strength) {
+      const strengthBonus = Math.floor(player.stats.strength  * 0.25) + 8
+      player.currentStats.strength += strengthBonus;
+      player.currentStats.strength = Math.min(player.currentStats.strength, player.stats.strength);
+    }
 
-    this.updateInventorySprite();
+    if (player.currentStats.range < player.stats.range) {
+      const rangeBonus = Math.floor(player.stats.range  * 0.25) + 8
+      player.currentStats.range += rangeBonus;
+      player.currentStats.range = Math.min(player.currentStats.range, player.stats.range);
+    }
+    if (player.currentStats.magic < player.stats.magic) {
+      const magicBonus = Math.floor(player.stats.magic  * 0.25) + 8
+      player.currentStats.magic += magicBonus;
+      player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic);
+    }
+
+    // todo: every other skill rip 
   }
+  
 
   updateInventorySprite() {
     if (this.doses === 4){
