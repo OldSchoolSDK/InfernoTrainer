@@ -65,7 +65,8 @@ export class ControlPanelController {
 
     this.selectedControl = ControlPanelController.controls.PRAYER
 
-    document.addEventListener('keypress', (event) => {
+
+    document.addEventListener('keydown', (event) => {
       if (Settings.is_keybinding){
         return;
       }

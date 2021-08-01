@@ -57,7 +57,7 @@ export class SettingsControls extends BaseControls {
 
     this.bindingKey = null;
 
-    document.addEventListener('keypress', (event) => {
+    document.addEventListener('keydown', (event) => {
       const key = event.key;
       if (this.bindingKey){
 
