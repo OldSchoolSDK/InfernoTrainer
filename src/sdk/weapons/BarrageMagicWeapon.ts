@@ -42,7 +42,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
       const alreadyCastedOn: Unit[] = [ to ]
       this.attack(world, from, to, { magicBaseSpellDamage: 30 })
       this.aoe.forEach((point) => {
-        Pathing.mobsInAreaOfEffectOfMob(world, to, point)
+        Pathing.mobsAtAoeOffset(world, to, point)
           .forEach((mob: Mob) => {
             if (alreadyCastedOn.length > this.maxConcurrentHits) {
               return

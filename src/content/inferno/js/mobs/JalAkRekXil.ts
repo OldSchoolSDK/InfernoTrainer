@@ -101,11 +101,7 @@ export class JalAkRekXil extends Mob {
     return null
   }
 
-  get color () {
-    return '#aadd7333'
-  }
-
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'range'
   }
 

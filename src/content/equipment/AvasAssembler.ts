@@ -1,7 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Avas_assembler.png';
 import { Cape } from "../../sdk/gear/Cape";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class AvasAssembler extends Cape{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class AvasAssembler extends Cape{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.AVAS_ASSEMBLER
+  get itemName(): ItemName {
+    return ItemName.AVAS_ASSEMBLER
   }
   get weight(): number {
     return 5.896;

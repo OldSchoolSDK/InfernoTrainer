@@ -1,5 +1,5 @@
 
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import OneDose from '../../assets/images/potions/Super_restore_1.png';
 import TwoDose from '../../assets/images/potions/Super_restore_2.png';
@@ -33,8 +33,8 @@ export class SuperRestore extends Potion {
     }
     return Vial;
   }
-  get itemName(): ItemNames {
-    return ItemNames.SUPER_RESTORE
+  get itemName(): ItemName {
+    return ItemName.SUPER_RESTORE
   }
   
   inventoryLeftClick(player: Player) {

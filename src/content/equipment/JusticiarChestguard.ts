@@ -3,7 +3,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Justiciar_chestguard.png';
 import { SetEffect } from "../../sdk/SetEffect";
 import { JusticiarSetEffect } from "../seteffects/JusticiarSetEffect";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class JusticiarChestguard extends Chest{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -11,8 +11,8 @@ export class JusticiarChestguard extends Chest{
   get equipmentSetEffect(): typeof SetEffect{
     return JusticiarSetEffect;
   }
-  get itemName(): ItemNames {
-    return ItemNames.JUSTICIAR_CHESTGUARD
+  get itemName(): ItemName {
+    return ItemName.JUSTICIAR_CHESTGUARD
   }
   get weight(): number {
     return 9.979;

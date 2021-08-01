@@ -9,6 +9,7 @@ import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../gear/Weapon'
 import { Location } from '../../sdk/GameObject'
+import { Collision } from '../Collision'
 
 export class InventoryControls extends BaseControls {
 
@@ -43,7 +44,6 @@ export class InventoryControls extends BaseControls {
   cursorMovedto(world: World, x: number, y: number) {
 
     this.cursorLocation = { x, y }
-    console.log('e', x, y)
   }
 
 
@@ -58,7 +58,7 @@ export class InventoryControls extends BaseControls {
       inventoryItem.inventoryPosition = index
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Pathing.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Weapon
 
     if (clickedItem && this.clickedDownItem === clickedItem) {
@@ -90,7 +90,7 @@ export class InventoryControls extends BaseControls {
       inventoryItem.inventoryPosition = index
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Pathing.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Weapon
 
     InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))

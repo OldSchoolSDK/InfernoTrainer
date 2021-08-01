@@ -1,7 +1,7 @@
 import { Feet } from "../../sdk/gear/Feet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Pegasian_boots.png';
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class PegasianBoots extends Feet{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class PegasianBoots extends Feet{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.PEGASIAN_BOOTS
+  get itemName(): ItemName {
+    return ItemName.PEGASIAN_BOOTS
   }
   get weight(): number {
     return 1.814;

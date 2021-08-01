@@ -44,15 +44,15 @@ export class InfernoWaves {
   static spawnNibblers (n: number, world: World, pillar: Entity) {
     const mobs: Mob[] = []
     const nibblerSpawns = shuffle([
-      { x: 8, y: 13 },
-      { x: 9, y: 13 },
-      { x: 10, y: 13 },
-      { x: 8, y: 12 },
-      { x: 9, y: 12 },
-      { x: 10, y: 12 },
-      { x: 8, y: 11 },
-      { x: 9, y: 11 },
-      { x: 10, y: 11 }
+      { x: 8 + 11, y: 13 + 14 },
+      { x: 9 + 11, y: 13 + 14 },
+      { x: 10 + 11, y: 13 + 14 },
+      { x: 8 + 11, y: 12 + 14 },
+      { x: 9 + 11, y: 12 + 14 },
+      { x: 10 + 11, y: 12 + 14 },
+      { x: 8 + 11, y: 11 + 14 },
+      { x: 9 + 11, y: 11 + 14 },
+      { x: 10 + 11, y: 11 + 14 }
     ])
 
     const options: UnitOptions = { aggro: pillar || world.player };
@@ -62,15 +62,15 @@ export class InfernoWaves {
   }
 
   static spawns = [
-    { x: 1, y: 5 },
-    { x: 22, y: 5 },
-    { x: 3, y: 11 },
-    { x: 23, y: 12 },
-    { x: 16, y: 17 },
-    { x: 5, y: 23 },
-    { x: 23, y: 25 },
-    { x: 1, y: 28 },
-    { x: 15, y: 28 }
+    { x: 1 + 11, y: 5 + 14 },
+    { x: 22 + 11, y: 5 + 14 },
+    { x: 3 + 11, y: 11 + 14 },
+    { x: 23 + 11, y: 12 + 14 },
+    { x: 16 + 11, y: 17 + 14 },
+    { x: 5 + 11, y: 23 + 14 },
+    { x: 23 + 11, y: 25 + 14 },
+    { x: 1 + 11, y: 28 + 14 },
+    { x: 15 + 11, y: 28 + 14 }
   ];
 
   // cba to convert this to any other format

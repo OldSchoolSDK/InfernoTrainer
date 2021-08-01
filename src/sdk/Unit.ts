@@ -1,4 +1,5 @@
 
+import HealSplat from '../assets/images/hitsplats/heal.png'
 import MissSplat from '../assets/images/hitsplats/miss.png'
 import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
@@ -23,6 +24,7 @@ import { Ring } from './gear/Ring';
 import { Cape } from './gear/Cape';
 import { Ammo } from './gear/Ammo';
 import { SetEffect } from './SetEffect'
+import { EntityName } from './Entity'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -96,6 +98,7 @@ export class Unit extends GameObject {
   frozen: number = 0;
   stunned: number = 0;
   incomingProjectiles: Projectile[] = [];
+  healHitsplatImage: HTMLImageElement = ImageLoader.createImage(HealSplat);
   missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
   damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
   unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
@@ -105,6 +108,7 @@ export class Unit extends GameObject {
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
+  autoRetaliate: boolean = false;
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -112,6 +116,10 @@ export class Unit extends GameObject {
 
   get type(): UnitTypes{
     return UnitTypes.MOB;
+  }
+
+  mobName(): EntityName { 
+    return null;
   }
 
   constructor (world: World, location: Location, options?: UnitOptions) {
@@ -123,6 +131,7 @@ export class Unit extends GameObject {
     this.location = location
     this.setStats()
 
+    this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint
 
   }
@@ -244,20 +253,26 @@ export class Unit extends GameObject {
   }
 
   get color (): string {
-    return '#FFFFFF'
+    return '#FFFFFF00'
   }
 
   shouldShowAttackAnimation () {
-    return this.attackCooldownTicks === this.cooldown && this.dying === -1
+    return this.attackCooldownTicks === this.cooldown && this.dying === -1 && this.isStunned() === false;
   }
 
   setHasLOS () {
+    if (!this.aggro) {
+      this.hasLOS = false;
+      return;
+    }
     if (this.aggro === this.world.player) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
+      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+    } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {
+      this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.world, this, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.hasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -281,16 +296,6 @@ export class Unit extends GameObject {
     return isWithinMeleeRange
   }
 
-  // Returns true if this mob is on the specified tile.
-  isOnTile (x: number, y: number) {
-    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
-  }
-
-  // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo (x: number, y: number) {
-    // We simply clamp the target point to our own boundary box.
-    return [clamp(x, this.location.x, this.location.x + this.size), clamp(y, this.location.y, this.location.y - this.size)]
-  }
 
   addProjectile (projectile: Projectile) {
     this.incomingProjectiles.push(projectile)
@@ -338,10 +343,30 @@ export class Unit extends GameObject {
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
-        this.currentStats.hitpoint -= projectile.damage
+        if (projectile.damage < 0) {
+          // subtracting a negative gives a positive
+          if (this.currentStats.hitpoint < this.stats.hitpoint) {
+            this.currentStats.hitpoint -= projectile.damage
+            this.currentStats.hitpoint = Math.min(this.currentStats.hitpoint, this.stats.hitpoint)
+          }
+        }else{
+          this.currentStats.hitpoint -= projectile.damage
+        }
+        this.damageTaken();
+        if (projectile.from !== this.aggro && this.autoRetaliate) {
+          this.aggro = projectile.from;
+        }
       }
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
+  }
+
+  damageTaken() {
+
+  }
+
+  drawHitsplat(projectile: Projectile): boolean { 
+    return true;
   }
 
   drawHPBar () {
@@ -380,32 +405,39 @@ export class Unit extends GameObject {
         return
       }
       projectileCounter++
-      const image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
-      if (!projectile.offsetX && !projectile.offsetY) {
-        projectile.offsetX = projectileOffsets[0][0]
-        projectile.offsetY = projectileOffsets[0][1]
+      if (this.drawHitsplat(projectile)) {
+        let image = (projectile.damage === 0) ? this.missedHitsplatImage : this.damageHitsplatImage
+        if (!projectile.offsetX && !projectile.offsetY) {
+          projectile.offsetX = projectileOffsets[0][0]
+          projectile.offsetY = projectileOffsets[0][1]
+        }
+  
+        projectileOffsets = remove(projectileOffsets, (offset) => {
+          return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
+        })
+        
+        if (projectile.damage < 0) {
+          image = this.healHitsplatImage;
+        }
+  
+        this.world.worldCtx.drawImage(
+          image,
+          projectile.offsetX - 12,
+          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
+          24,
+          23
+        )
+        this.world.worldCtx.fillStyle = '#FFFFFF'
+        this.world.worldCtx.font = '16px Stats_11'
+        this.world.worldCtx.textAlign = 'center'
+        this.world.worldCtx.fillText(
+          String(Math.abs(projectile.damage)),
+          projectile.offsetX,
+          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
+        )
+        this.world.worldCtx.textAlign = 'left'
       }
 
-      projectileOffsets = remove(projectileOffsets, (offset) => {
-        return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
-      })
-
-      this.world.worldCtx.drawImage(
-        image,
-        projectile.offsetX - 12,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
-        24,
-        23
-      )
-      this.world.worldCtx.fillStyle = '#FFFFFF'
-      this.world.worldCtx.font = '16px Stats_11'
-      this.world.worldCtx.textAlign = 'center'
-      this.world.worldCtx.fillText(
-        String(projectile.damage),
-        projectile.offsetX,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
-      )
-      this.world.worldCtx.textAlign = 'left'
     })
   }
 

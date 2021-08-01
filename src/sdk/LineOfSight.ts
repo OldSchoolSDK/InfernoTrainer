@@ -1,10 +1,12 @@
 'use strict'
 
-import { minBy } from 'lodash'
 import { Settings } from './Settings'
 import { Pathing } from './Pathing'
 import { World } from './World'
 import { GameObject, Location } from './GameObject'
+import { Collision } from './Collision'
+import { Mob } from './Mob'
+import { Unit } from './Unit'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -32,33 +34,24 @@ export class LineOfSight {
     world.worldCtx.globalAlpha = 1
   }
 
-  static hasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
+  static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
     return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
   }
 
-  static closestPointTo (x: number, y: number, mob: GameObject) {
-    const corners = []
-    for (let xx = 0; xx < mob.size; xx++) {
-      for (let yy = 0; yy < mob.size; yy++) {
-        corners.push({
-          x: mob.location.x + xx,
-          y: mob.location.y - yy
-        })
-      }
-    }
-
-    return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
-  }
-
-  static hasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
-    const mobPoint = LineOfSight.closestPointTo(x, y, mob)
+  static playerHasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
+    const mobPoint = Pathing.closestPointTo(x, y, mob)
     return LineOfSight.hasLineOfSight(world, x, y, mobPoint.x, mobPoint.y, 1, r, false)
   }
-
+  static mobHasLineOfSightToMob (world: World, mob1: GameObject, mob2: GameObject, r = 1) {
+    const mob1Point = Pathing.closestPointTo(mob1.location.x, mob1.location.y, mob2)
+    const mob2Point = Pathing.closestPointTo(mob2.location.x, mob2.location.y, mob1)
+    return LineOfSight.hasLineOfSight(world, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false)
+  }
+  
   static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s: number = 1, r: number = 1, isNPC: boolean = false): boolean {
     const dx = x2 - x1
     const dy = y2 - y1
-    if (Pathing.collidesWithAnyEntities(world, x1, y1, 1) || Pathing.collidesWithAnyEntities(world, x2, y2, 1) || Pathing.collisionMath(x1, y1, s, x2, y2, 1)) {
+    if (Collision.collidesWithAnyLoSBlockingEntities(world, x1, y1, 1) || Collision.collidesWithAnyLoSBlockingEntities(world, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
       return false
     }
     // assume range 1 is melee
@@ -86,12 +79,12 @@ export class LineOfSight {
       while (xTile !== x2) {
         xTile += xInc
         const yTile = y >>> 16
-        if (Pathing.collidesWithAnyEntities(world, xTile, yTile, 1)) {
+        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
           return false
         }
         y += slope
         const newYTile = y >>> 16
-        if (newYTile !== yTile && Pathing.collidesWithAnyEntities(world, xTile, newYTile, 1)) {
+        if (newYTile !== yTile && Collision.collidesWithAnyLoSBlockingEntities(world, xTile, newYTile, 1)) {
           return false
         }
       }
@@ -106,12 +99,12 @@ export class LineOfSight {
       while (yTile !== y2) {
         yTile += yInc
         const xTile = x >>> 16
-        if (Pathing.collidesWithAnyEntities(world, xTile, yTile, 1)) {
+        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
           return false
         }
         x += slope
         const newXTile = x >>> 16
-        if (newXTile !== xTile && Pathing.collidesWithAnyEntities(world, newXTile, yTile, 1)) {
+        if (newXTile !== xTile && Collision.collidesWithAnyLoSBlockingEntities(world, newXTile, yTile, 1)) {
           return false
         }
       }

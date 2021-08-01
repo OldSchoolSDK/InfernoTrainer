@@ -7,16 +7,17 @@ import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
-import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
+import { Collision } from '../../../../sdk/Collision'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
     const damage = Math.floor(Math.random() * 5)
     this.damage = damage;
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'crush'))
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'crush', options))
   }
 }
 
@@ -37,6 +38,7 @@ export class JalNib extends Mob {
 
   setStats () {
     this.stunned = 1
+    this.autoRetaliate = false;
     this.weapon = {
       attackRange: 1
     }
@@ -108,11 +110,7 @@ export class JalNib extends Mob {
     return NibblerSound
   }
 
-  get color () {
-    return '#aadd7333'
-  }
-
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'crush'
   }
 
@@ -122,6 +120,7 @@ export class JalNib extends Mob {
 
   attackIfPossible () {
     this.attackCooldownTicks--
+    this.attackStyle = this.attackStyleForNewAttack()
 
     if (this.aggro.dying === 0) {
       this.dead() // cheat way for now. pillar should AOE
@@ -129,10 +128,10 @@ export class JalNib extends Mob {
     if (this.canAttack() === false) {
       return;
     }
-    const isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+    const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     this.attackFeedback = AttackIndicators.NONE
 
-    const aggroPoint = LineOfSight.closestPointTo(this.location.x, this.location.y, this.aggro)
+    const aggroPoint = Pathing.closestPointTo(this.location.x, this.location.y, this.aggro)
     if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0) {
       this.attack()
     }

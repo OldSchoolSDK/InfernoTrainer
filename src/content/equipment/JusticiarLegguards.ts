@@ -3,7 +3,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Justiciar_legguards.png';
 import { SetEffect } from "../../sdk/SetEffect";
 import { JusticiarSetEffect } from "../seteffects/JusticiarSetEffect";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class JusticiarLegguards extends Legs{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -11,8 +11,8 @@ export class JusticiarLegguards extends Legs{
   get equipmentSetEffect(): typeof SetEffect{
     return JusticiarSetEffect;
   }
-  get itemName(): ItemNames {
-    return ItemNames.JUSTICIAR_LEGGUARDS
+  get itemName(): ItemName {
+    return ItemName.JUSTICIAR_LEGGUARDS
   }
   get weight(): number {
     return 9.071;

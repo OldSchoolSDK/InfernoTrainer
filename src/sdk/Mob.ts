@@ -10,6 +10,7 @@ import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from './GameObject'
 import { ImageLoader } from './utils/ImageLoader'
+import { Collision } from './Collision'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -31,11 +32,16 @@ export class Mob extends Unit {
   hadLOS: boolean;
   hasLOS: boolean;
   weapons: WeaponsMap;
+  attackStyle: string;
 
   mobRangeAttackAnimation: any;
 
   get type () {
     return UnitTypes.MOB
+  }
+
+  canBeAttacked() {
+    return true;
   }
 
   setStats () {
@@ -103,11 +109,11 @@ export class Mob extends Unit {
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     this.setHasLOS()
-    if (this.canMove()) {
+    if (this.canMove() && this.aggro) {
       let dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x)
       let dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y)
 
-      if (Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+      if (Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // Random movement if player is under the mob.
         if (Math.random() < 0.5) {
           dy = this.location.y
@@ -124,7 +130,7 @@ export class Mob extends Unit {
             dy = this.location.y - 1
           }
         }
-      } else if (Pathing.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+      } else if (Collision.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // allows corner safespotting
         dy = this.location.y
       }
@@ -174,7 +180,7 @@ export class Mob extends Unit {
 
   }
 
-  get attackStyle () {
+  attackStyleForNewAttack () {
     return 'slash'
   }
 
@@ -184,10 +190,17 @@ export class Mob extends Unit {
     this.hadLOS = this.hasLOS
     this.setHasLOS()
 
+    if (this.canAttack() === false) {
+      return;
+    }
+
+    this.attackStyle = this.attackStyleForNewAttack()
+
+    
     const weaponIsAreaAttack = this.weapons[this.attackStyle].isAreaAttack
     let isUnderAggro = false
     if (!weaponIsAreaAttack) {
-      isUnderAggro = Pathing.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
+      isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
     }
     this.attackFeedback = AttackIndicators.NONE
 
@@ -201,23 +214,22 @@ export class Mob extends Unit {
   }
 
   attack () {
-    let attackStyle = this.attackStyle
 
-    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(attackStyle) === false) {
+    if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(this.attackStyle) === false) {
       if (this.isWithinMeleeRange() && Math.random() < 0.5) {
-        attackStyle = this.canMeleeIfClose()
+        this.attackStyle = this.canMeleeIfClose()
       }
     }
 
-    if (this.weapons[attackStyle].isBlockable(this, this.aggro, { attackStyle })) {
+    if (this.weapons[this.attackStyle].isBlockable(this, this.aggro, { attackStyle: this.attackStyle })) {
       this.attackFeedback = AttackIndicators.BLOCKED
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[this.attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     // hack hack
-    if (attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
+    if (this.attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
       this.currentAnimation = this.mobRangeAttackAnimation
       this.currentAnimationTickLength = 1
     }
@@ -276,7 +288,7 @@ export class Mob extends Unit {
     } else if (this.hasLOS) {
       this.world.worldCtx.fillStyle = '#FF730073'
     } else {
-      this.world.worldCtx.fillStyle = '#FFFFFF22'
+      this.world.worldCtx.fillStyle = this.color;
     }
 
     // Draw mob
@@ -303,16 +315,6 @@ export class Mob extends Unit {
 
     this.drawOnTile(tickPercent)
     let currentImage = this.unitImage
-    // if (this.currentAnimation !== null) {
-    //   const animationLength = this.currentAnimation.length
-    //   // TODO multi-tick animations.
-    //   const currentFrame = Math.floor(tickPercent * animationLength)
-    //   if (currentFrame < animationLength) {
-    //     currentImage = this.currentAnimation[currentFrame]
-    //   } else {
-    //     this.currentAnimation = null
-    //   }
-    // }
 
     if (Settings.rotated === 'south') {
       this.world.worldCtx.rotate(Math.PI)
@@ -344,15 +346,18 @@ export class Mob extends Unit {
     }
 
     
-    if (LineOfSight.hasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
-      this.world.worldCtx.strokeStyle = '#00FF0073'
-      this.world.worldCtx.lineWidth = 1
-      this.world.worldCtx.strokeRect(
-        -(this.size * Settings.tileSize) / 2,
-        -(this.size * Settings.tileSize) / 2,
-        this.size * Settings.tileSize,
-        this.size * Settings.tileSize
-      )
+    if (this.aggro) {
+
+      if (LineOfSight.playerHasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
+        this.world.worldCtx.strokeStyle = '#00FF0073'
+        this.world.worldCtx.lineWidth = 1
+        this.world.worldCtx.strokeRect(
+          -(this.size * Settings.tileSize) / 2,
+          -(this.size * Settings.tileSize) / 2,
+          this.size * Settings.tileSize,
+          this.size * Settings.tileSize
+        )
+      }
     }
     this.world.worldCtx.restore()
 

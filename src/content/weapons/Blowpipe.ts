@@ -2,7 +2,7 @@
 
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 import { World } from '../../sdk/World';
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
@@ -64,8 +64,8 @@ export class Blowpipe extends RangedWeapon {
     return 1;
   }
 
-  get itemName(): ItemNames {
-    return ItemNames.TOXIC_BLOWPIPE
+  get itemName(): ItemName {
+    return ItemName.TOXIC_BLOWPIPE
   }
   
   get isTwoHander(): boolean {

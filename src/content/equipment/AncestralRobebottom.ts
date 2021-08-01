@@ -1,7 +1,7 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Ancestral_robe_bottom.png';
 import { Legs } from "../../sdk/gear/Legs";
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class AncestralRobebottom extends Legs{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -9,8 +9,8 @@ export class AncestralRobebottom extends Legs{
   get inventoryImage () {
     return InventImage
   }
-  get itemName(): ItemNames {
-    return ItemNames.ANCESTRAL_ROBEBOTTOM
+  get itemName(): ItemName {
+    return ItemName.ANCESTRAL_ROBEBOTTOM
   }
 
   get weight(): number {

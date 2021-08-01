@@ -13,6 +13,7 @@ import { Mob } from './Mob'
 import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
+import { Collision } from './Collision'
 
 class Viewport {
   center: Location;
@@ -54,7 +55,7 @@ export class World {
   viewportController: Viewport;
 
   _viewport = {
-    width: 29,
+    width: 40,
     height: 30
   }
 
@@ -79,6 +80,13 @@ export class World {
 
     // convert this to a world map canvas (offscreencanvas)
     this.viewport = document.getElementById(selector) as HTMLCanvasElement;
+
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    this._viewport.width = Math.min(this.region.width - (223 / Settings.tileSize), Math.floor(width / Settings.tileSize  - (223 / Settings.tileSize) ))
+    this._viewport.height = Math.min(this.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) )))
 
 
     // create new canvas that is the on screen canvas
@@ -145,7 +153,7 @@ export class World {
     if (Settings.rotated === 'south') {
       x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
-    }
+    } 
 
     if (e.offsetX > this.viewportWidth * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
@@ -175,9 +183,9 @@ export class World {
         clearTimeout(this.inputDelay)
       }
 
-      const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+      const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
       this.player.aggro = null
-      if (mobs.length) {
+      if (mobs.length && mobs[0].canBeAttacked()) {
         this.redClick()
         this.playerAttackClick(mobs[0])
       } else {
@@ -207,7 +215,7 @@ export class World {
     }
     
     /* gather options */
-    const mobs = Pathing.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
     let menuOptions: MenuOption[] = []
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(x, y))
@@ -314,6 +322,10 @@ export class World {
     let viewportX = perceivedX + 0.5 - this._viewport.width / 2;
     let viewportY = perceivedY + 0.5 - this._viewport.height / 2;
 
+    if (parseInt(this.wave) < 67) {
+      viewportX = 11;
+      viewportY = 14;
+    }
 
     if (viewportX < 0) {
       viewportX = 0
@@ -417,7 +429,7 @@ export class World {
   }
 
   addMob (mob: Mob) {
-    this.mobs.push(mob)
+    this.mobs.unshift(mob)
   }
 
   removeMob (mob: Unit) {

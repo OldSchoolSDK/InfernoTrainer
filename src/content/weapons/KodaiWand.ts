@@ -2,7 +2,7 @@
 
 import BPInventImage from '../../assets/images/equipment/Kodai_wand.png'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
-import { ItemNames } from "../../sdk/ItemNames";
+import { ItemName } from "../../sdk/ItemName";
 
 export class KodaiWand extends MeleeWeapon {
 
@@ -37,8 +37,8 @@ export class KodaiWand extends MeleeWeapon {
     }
   }
   
-  get itemName(): ItemNames {
-    return ItemNames.KODAI_WAND
+  get itemName(): ItemName {
+    return ItemName.KODAI_WAND
   }
   
   get isTwoHander(): boolean {
