@@ -69,6 +69,9 @@ export class Projectile {
     this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6) + 1;
     if (this.options.reduceDelay) { 
       this.remainingDelay -= this.options.reduceDelay;
+      if (this.remainingDelay < 1) {
+        this.remainingDelay = 1;
+      }
     }
 
   }
