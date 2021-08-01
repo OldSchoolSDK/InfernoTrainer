@@ -68,8 +68,11 @@ export class SaradominBrew extends Potion {
 
     }
 
-    
     this.doses--;
+
+    if (this.doses === 0) {
+      this.consumeItem();
+    }
 
     this.updateInventorySprite();
   }
