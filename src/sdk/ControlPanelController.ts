@@ -67,6 +67,7 @@ export class ControlPanelController {
 
 
     document.addEventListener('keydown', (event) => {
+      event.preventDefault();
       if (Settings.is_keybinding){
         return;
       }
