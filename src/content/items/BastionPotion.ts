@@ -51,6 +51,9 @@ export class BastionPotion extends Potion {
 
     this.doses--;
 
+    if (this.doses === 0) {
+      this.consumeItem();
+    }
     this.updateInventorySprite();
   }
 

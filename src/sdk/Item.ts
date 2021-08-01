@@ -1,3 +1,4 @@
+import { InventoryControls } from "./controlpanels/InventoryControls";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
 
@@ -22,6 +23,9 @@ export class Item {
   }
   
   
+  consumeItem() {
+    InventoryControls.inventory[this.inventoryPosition] = null;
+  }
 
   get inventoryImage (): string {
     return ''

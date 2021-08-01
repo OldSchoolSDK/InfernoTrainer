@@ -73,6 +73,10 @@ export class SuperRestore extends Potion {
 
     this.doses--;
 
+    if (this.doses === 0) {
+      this.consumeItem();
+    }
+
     this.updateInventorySprite();
   }
 
