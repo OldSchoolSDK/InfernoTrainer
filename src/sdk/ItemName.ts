@@ -23,5 +23,7 @@ export enum ItemName {
   STAMINA_POTION = 'Stamina Potion',
   SARADOMIN_BREW = 'Saradomin Brew',
   SUPER_RESTORE = 'Super Restore',
-  BASTION_POTION = 'Bastion Potion'
+  BASTION_POTION = 'Bastion Potion',
+  SHARK = 'Shark',
+  KARAMBWAN = 'Karambwan'
 }

@@ -58,7 +58,7 @@ export class InventoryControls extends BaseControls {
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
-    })) as Weapon
+    })) as Item;
 
     if (clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
@@ -67,7 +67,7 @@ export class InventoryControls extends BaseControls {
       } else {
         clickedItem.selected = true
       }
-    }else{
+    }else if (clickedItem) {
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition;
       const thisPosition = this.clickedDownItem.inventoryPosition;
@@ -91,7 +91,7 @@ export class InventoryControls extends BaseControls {
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
-    })) as Weapon
+    })) as Item
 
     InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 

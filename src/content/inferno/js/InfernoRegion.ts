@@ -40,6 +40,8 @@ import { AncestralRobebottom } from '../../equipment/AncestralRobebottom'
 import { StaminaPotion } from '../../items/StaminaPotion'
 import { SaradominBrew } from '../../items/SaradominBrew'
 import { SuperRestore } from '../../items/SuperRestore'
+import { Shark } from '../../items/Shark'
+import { Karambwan } from '../../items/Karambwan'
 import { BastionPotion } from '../../items/BastionPotion'
 import { MovementBlocker } from '../../MovementBlocker'
 import { Wall } from '../../Wall'
@@ -67,9 +69,9 @@ export class InfernoRegion extends Region {
       new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
       new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom(),
       new RingOfEndurance(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
-      new SaradominBrew(), new SaradominBrew(), new SaradominBrew(), new SaradominBrew(),
-      new SuperRestore(), new SuperRestore(), new SuperRestore(), new SuperRestore(), 
-      new SuperRestore(), new SuperRestore(), new SuperRestore(), new SuperRestore(), 
+      new Shark(), new Shark(), new Karambwan(), new SaradominBrew(),
+      new Shark(), new Karambwan(), new SuperRestore(), new SuperRestore(), 
+      new Karambwan(), new Karambwan(), new SuperRestore(), new SuperRestore(), 
       new SuperRestore(), new SuperRestore(), new SuperRestore(), new BastionPotion(), 
     ]
   }
