@@ -379,7 +379,7 @@ export class Unit extends GameObject {
     )
 
     this.world.worldCtx.fillStyle = 'green'
-    const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
+    const w = Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
     this.world.worldCtx.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,

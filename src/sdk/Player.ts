@@ -553,6 +553,9 @@ export class Player extends Unit {
       this.currentStats.hitpoint = Math.min(this.stats.hitpoint, this.currentStats.hitpoint);
     }
   }
+  detectDeath (){
+    // Empty for now, to allow unlimited play time.
+  }
 
   attackStep () {
     
@@ -572,6 +575,8 @@ export class Player extends Unit {
     this.specRegen();
 
     this.hitpointRegen();
+
+    this.detectDeath();
 
     this.sendXpToController();
 
