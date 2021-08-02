@@ -51,6 +51,7 @@ class Eating {
   currentFood: Food;
   currentPotion: Potion;
   currentComboFood: Karambwan;
+  redemptioned: boolean = false;
 
   tickFood(player: Player) {
     this.foodDelay--;
@@ -59,18 +60,20 @@ class Eating {
     if (this.currentFood) {
       this.currentFood.eat(player);
       player.attackCooldownTicks +=3;
-
     }
-    
     if (this.currentPotion) {
       this.currentPotion.drink(player);
       player.attackCooldownTicks +=3;
-
     }
     if (this.currentComboFood) {
       this.currentComboFood.eat(player);
       player.attackCooldownTicks +=3;
+    }
 
+    if (this.redemptioned) {
+      player.currentStats.prayer = 0;
+      player.currentStats.hitpoint = Math.floor(player.stats.prayer / 4);
+      this.redemptioned = false;
     }
     
   }
@@ -553,6 +556,20 @@ export class Player extends Unit {
       this.currentStats.hitpoint = Math.min(this.stats.hitpoint, this.currentStats.hitpoint);
     }
   }
+
+  damageTaken() {
+    const hasRedemptionActive = filter(ControlPanelController.controls.PRAYER.getCurrentActivePrayers().map((prayer) => {
+      if (prayer.name === 'Redemption') {
+        return prayer;
+      }
+      return null;
+    })).length > 0
+
+    if (hasRedemptionActive && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
+      this.eats.redemptioned = true;
+    }
+  }
+
   detectDeath (){
     // Empty for now, to allow unlimited play time.
   }

@@ -2,6 +2,7 @@
 
 import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
 import { Settings } from '../../sdk/Settings'
+import OverheadImg from '../../assets/images/prayers/redemptionOver.png'
 
 export class Redemption extends BasePrayer {
   get name () {
@@ -17,9 +18,13 @@ export class Redemption extends BasePrayer {
   }
 
   isOverhead () {
-    return false
+    return true
   }
 
+
+  overheadImageReference () {
+    return OverheadImg
+  }
   feature () {
     return ''
   }
