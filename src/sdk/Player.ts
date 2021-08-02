@@ -59,17 +59,32 @@ class Eating {
     if (this.currentFood) {
       this.currentFood.eat(player);
       player.attackCooldownTicks +=3;
+<<<<<<< Updated upstream
 
+=======
+      this.currentFood = null;
+>>>>>>> Stashed changes
     }
     
     if (this.currentPotion) {
       this.currentPotion.drink(player);
       player.attackCooldownTicks +=3;
+<<<<<<< Updated upstream
 
+=======
+      this.currentPotion = null;
+>>>>>>> Stashed changes
     }
     if (this.currentComboFood) {
       this.currentComboFood.eat(player);
       player.attackCooldownTicks +=3;
+<<<<<<< Updated upstream
+=======
+      this.currentComboFood = null;
+    }
+    
+  }
+>>>>>>> Stashed changes
 
     }
     
