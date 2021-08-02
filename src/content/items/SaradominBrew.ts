@@ -36,7 +36,7 @@ export class SaradominBrew extends Potion {
     return ItemName.SARADOMIN_BREW
   }
 
-  potionEffect(player: Player) {
+  drink(player: Player) {
     const healAmount = Math.floor(player.stats.hitpoint * 0.15) + 2;
     player.currentStats.hitpoint += healAmount;
     player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint + healAmount)

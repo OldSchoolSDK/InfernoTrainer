@@ -67,13 +67,14 @@ export class ControlPanelController {
 
 
     document.addEventListener('keydown', (event) => {
-      event.preventDefault();
       if (Settings.is_keybinding){
         return;
       }
+      
       this.controls.forEach((control) => {
         if (control.keyBinding === event.key) {
           this.selectedControl = control
+          event.preventDefault();
         }
       })
     })
