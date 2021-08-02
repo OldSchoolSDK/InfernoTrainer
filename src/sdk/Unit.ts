@@ -359,6 +359,11 @@ export class Unit extends GameObject {
       }
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
+    this.postAttacksEvent();
+  }
+
+  postAttacksEvent() {
+
   }
 
   damageTaken() {
