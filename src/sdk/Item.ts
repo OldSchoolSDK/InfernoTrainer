@@ -6,11 +6,19 @@ import { Player } from "./Player";
 export class Item {
   inventorySprite: HTMLImageElement;
   selected: boolean;
-  serialNumber: string = String(Math.random() * 10000000000)
+  _serialNumber: string;
+
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
 
   get hasInventoryLeftClick(): boolean {
     return false;
   }
+
   inventoryLeftClick(player: Player) {
     
   }
@@ -24,9 +32,12 @@ export class Item {
   }
 
   get inventoryPosition(): number {
-    return filter(InventoryControls.inventory.map((item: Item) => {
+    return InventoryControls.inventory.map((item: Item) => {
+      if (!item) {
+        return null;
+      }
       return item.serialNumber;
-    })).indexOf(this.serialNumber);
+    }).indexOf(this.serialNumber);
   }
   
   

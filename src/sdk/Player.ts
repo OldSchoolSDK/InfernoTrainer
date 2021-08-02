@@ -2,7 +2,7 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
+import { minBy, range, filter, find, map, min, uniq, sumBy, times } from 'lodash'
 import { Unit, UnitTypes, UnitStats, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
@@ -21,6 +21,9 @@ import { ItemName } from './ItemName'
 import { InventoryControls } from './controlpanels/InventoryControls'
 import { Item } from './Item'
 import { Collision } from './Collision'
+import { Potion } from './gear/Potion'
+import { Food } from './gear/Food'
+import { Karambwan } from '../content/items/Karambwan'
 
 export interface PlayerStats extends UnitStats {
   agility: number; 
@@ -40,6 +43,88 @@ interface PlayerRegenTimers {
   hitpoint: number;
 }
 
+class Eating {
+  foodDelay: number = 0;
+  potionDelay: number = 0;
+  comboDelay: number = 0;
+
+  currentFood: Food;
+  currentPotion: Potion;
+  currentComboFood: Karambwan;
+
+  tickFood(player: Player) {
+    this.foodDelay--;
+    this.potionDelay--;
+    this.comboDelay--;
+    if (this.currentFood) {
+      this.currentFood.eat(player);
+      player.attackCooldownTicks +=3;
+
+    }
+    
+    if (this.currentPotion) {
+      this.currentPotion.drink(player);
+      player.attackCooldownTicks +=3;
+
+    }
+    if (this.currentComboFood) {
+      this.currentComboFood.eat(player);
+      player.attackCooldownTicks +=3;
+
+    }
+    
+  }
+
+  canEatFood(): boolean {
+    return this.foodDelay <= 0;
+  }
+
+  canDrinkPotion(): boolean {
+    return this.potionDelay <=0;
+  }
+
+  canEatComboFood(): boolean {
+    return this.comboDelay <=0;
+  }
+
+  // The weird way that the lower tiers also eat the higher tiers forces the behavior of food -> potion -> karambwan
+  eatFood(food: Food) {
+    if (!this.canEatFood()) {
+      return;
+    }
+    this.currentFood = food || null;
+    this.foodDelay = 3;
+    if (this.currentFood){
+      this.currentFood.consumeItem();
+    }
+  }
+
+  drinkPotion(potion: Potion) {
+    if (!this.canDrinkPotion()) {
+      return;
+    }
+    this.currentPotion = potion || null;
+    this.foodDelay = 3;
+    this.potionDelay = 3;
+    if (this.currentPotion){
+      this.currentPotion.doses--;
+    }
+  }
+
+  eatComboFood(karambwan: Karambwan) {
+    if (!this.canEatComboFood()) {
+      return;
+    }
+    this.foodDelay = 3;
+    this.potionDelay = 3;
+    this.currentComboFood = karambwan || null;
+    this.comboDelay = 3;
+    if (this.currentComboFood){
+      this.currentComboFood.consumeItem();
+    }
+  }
+}
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -57,6 +142,10 @@ export class Player extends Unit {
   effects = new PlayerEffects();
   regenTimers: PlayerRegenTimers;
 
+  eats: Eating = new Eating();
+
+  healedAmountThisTick: number = 0;
+
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
@@ -68,6 +157,10 @@ export class Player extends Unit {
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
+  }
+
+  eatFood(amount: number) {
+    this.healedAmountThisTick +=amount;
   }
 
   equipmentChanged() {
@@ -406,8 +499,6 @@ export class Player extends Unit {
 
     this.pathToAggro()
 
-    this.processIncomingAttacks()
-
     
     this.moveTorwardsDestination()
   }
@@ -466,13 +557,18 @@ export class Player extends Unit {
   attackStep () {
     
     
+
     this.drainPrayer();
 
 
     this.clearXpDrops();
 
     this.attackIfPossible()
-    
+
+    this.processIncomingAttacks()
+
+    this.eats.tickFood(this);
+
     this.specRegen();
 
     this.hitpointRegen();

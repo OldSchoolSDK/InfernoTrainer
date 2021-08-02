@@ -1,20 +1,23 @@
 import { Item } from "../Item";
 import { ImageLoader } from "../utils/ImageLoader";
-import Vial from '../../assets/images/potions/Vial.png';
 import { Player } from "../Player";
 
-export class Potion extends Item {
+export class Food extends Item {
+  healAmount: number = 0;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
-  vial: HTMLImageElement = ImageLoader.createImage(Vial)
-  doses: number = 4;
 
-  drink(player: Player) {
 
+  eat(player: Player) {
+    if (player.currentStats.hitpoint < player.stats.hitpoint) {
+      player.currentStats.hitpoint += this.healAmount;
+      player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint)
+    }
   }
 
   get weight(): number {
     return 0.226;
   }
+
   updateInventorySprite() {
   }
 
@@ -23,16 +26,6 @@ export class Potion extends Item {
     return true;
   }
   inventoryLeftClick(player: Player) {
-    if (this.doses > 0) {
-      player.eats.drinkPotion(this);
-    }
-    if (this.doses === 0){
-      this.consumeItem();
-    }
-    this.updateInventorySprite();
+    player.eats.eatFood(this);
   }
-
-  
-
-
 }

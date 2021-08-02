@@ -58,11 +58,11 @@ export class SettingsControls extends BaseControls {
     this.bindingKey = null;
 
     document.addEventListener('keydown', (event) => {
-      event.preventDefault();
 
       const key = event.key;
       if (this.bindingKey){
-
+        event.preventDefault();
+        
         if (this.bindingKey === 'inventory') {
           Settings.inventory_key = key
         }else if (this.bindingKey === 'spellbook'){
