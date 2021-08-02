@@ -49,7 +49,16 @@ export class InventoryControls extends BaseControls {
 
   panelClickUp (world: World, x: number, y: number) {
 
-    const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
+    const sanitizedInventory = InventoryControls.inventory.map((item: Item, index: number) => {
+      if (item) {
+        return item;
+      }
+      return {
+        inventoryPosition: index,
+        isPlaceholder: true
+      }
+    });
+    const clickedItem = first(filter(sanitizedInventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
       }
@@ -60,19 +69,25 @@ export class InventoryControls extends BaseControls {
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Item;
 
-    if (clickedItem && this.clickedDownItem === clickedItem) {
+    const isPlaceholder: boolean = !!(clickedItem as any).isPlaceholder;
+
+    if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
         clickedItem.inventoryLeftClick(world.player);
         world.mapController.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }
-    }else if (clickedItem) {
+    }else if (!isPlaceholder){
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition;
       const thisPosition = this.clickedDownItem.inventoryPosition;
       InventoryControls.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
       InventoryControls.inventory[thisPosition] = theItemWereReplacing;
+    }else{
+      const thisPosition = this.clickedDownItem.inventoryPosition;
+      InventoryControls.inventory[clickedItem.inventoryPosition] = this.clickedDownItem;
+      InventoryControls.inventory[thisPosition] = null;
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
