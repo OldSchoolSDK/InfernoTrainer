@@ -71,7 +71,6 @@ class Eating {
     }
 
     if (this.redemptioned) {
-      console.log('redeeming')
       player.currentStats.prayer = 0;
       player.currentStats.hitpoint = Math.floor(player.stats.prayer / 4);
       this.redemptioned = false;
