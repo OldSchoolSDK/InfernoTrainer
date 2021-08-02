@@ -60,22 +60,27 @@ class Eating {
     if (this.currentFood) {
       this.currentFood.eat(player);
       player.attackCooldownTicks +=3;
+      this.currentFood = null;
     }
     if (this.currentPotion) {
       this.currentPotion.drink(player);
       player.attackCooldownTicks +=3;
+      this.currentPotion = null;
     }
     if (this.currentComboFood) {
       this.currentComboFood.eat(player);
       player.attackCooldownTicks +=3;
+      this.currentComboFood = null;
     }
+    
+  }
 
+  checkRedemption(player: Player) {
     if (this.redemptioned) {
       player.currentStats.prayer = 0;
       player.currentStats.hitpoint += Math.floor(player.stats.prayer / 4);
       this.redemptioned = false;
     }
-    
   }
 
   canEatFood(): boolean {
@@ -160,6 +165,10 @@ export class Player extends Unit {
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
+  }
+
+  postAttacksEvent() {
+    this.eats.checkRedemption(this);
   }
 
   eatFood(amount: number) {
