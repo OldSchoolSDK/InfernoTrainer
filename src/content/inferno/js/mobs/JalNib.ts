@@ -9,9 +9,10 @@ import { Pathing } from '../../../../sdk/Pathing'
 import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
+import { Location } from '../../../../sdk/GameObject';
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
@@ -23,6 +24,11 @@ class NibblerWeapon extends MeleeWeapon {
 
 export class JalNib extends Mob {
   weapon: any;
+
+  constructor (world: World, location: Location, options: UnitOptions) {
+    super(world, location, options)
+    this.autoRetaliate = false;
+  }
 
   get displayName () {
     return 'Jal-Nib'
