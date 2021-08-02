@@ -142,7 +142,7 @@ export class Player extends Unit {
   effects = new PlayerEffects();
   regenTimers: PlayerRegenTimers;
 
-  eatDelays: Eating = new Eating();
+  eats: Eating = new Eating();
 
   healedAmountThisTick: number = 0;
 
@@ -567,7 +567,7 @@ export class Player extends Unit {
 
     this.processIncomingAttacks()
 
-    this.eatDelays.tickFood(this);
+    this.eats.tickFood(this);
 
     this.specRegen();
 

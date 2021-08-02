@@ -24,7 +24,7 @@ export class Potion extends Item {
   }
   inventoryLeftClick(player: Player) {
     if (this.doses > 0) {
-      player.eatDelays.drinkPotion(this);
+      player.eats.drinkPotion(this);
     }
     if (this.doses === 0){
       this.consumeItem();

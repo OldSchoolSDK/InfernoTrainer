@@ -15,6 +15,6 @@ export class Karambwan extends Food {
     return ItemName.KARAMBWAN
   }
   inventoryLeftClick(player: Player) {
-    player.eatDelays.eatComboFood(this);
+    player.eats.eatComboFood(this);
   }
 }

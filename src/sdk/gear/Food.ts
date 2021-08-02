@@ -26,6 +26,6 @@ export class Food extends Item {
     return true;
   }
   inventoryLeftClick(player: Player) {
-    player.eatDelays.eatFood(this);
+    player.eats.eatFood(this);
   }
 }
