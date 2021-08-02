@@ -36,22 +36,13 @@ export class StaminaPotion extends Potion {
   get itemName(): ItemName {
     return ItemName.SARADOMIN_BREW
   }
-  
-  inventoryLeftClick(player: Player) {
 
-    if (this.doses > 0) {
-      player.effects.stamina = 200; // 2 minutes = 200 ticks
-      player.currentStats.run += 2000;
-      player.currentStats.run = Math.min(Math.max(player.currentStats.run, 0), 10000);
-    }
-    this.doses--;
-
-    if (this.doses === 0) {
-      this.consumeItem();
-    }
-    this.updateInventorySprite();
+  potionEffect(player: Player) { 
+    player.effects.stamina = 200; // 2 minutes = 200 ticks
+    player.currentStats.run += 2000;
+    player.currentStats.run = Math.min(Math.max(player.currentStats.run, 0), 10000);
   }
-
+  
   updateInventorySprite() {
     if (this.doses === 4){
       this.inventorySprite = this.fourDose;      
