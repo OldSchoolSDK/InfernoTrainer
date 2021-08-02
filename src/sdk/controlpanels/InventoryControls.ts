@@ -69,7 +69,7 @@ export class InventoryControls extends BaseControls {
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Item;
 
-    const isPlaceholder: boolean = !!(clickedItem as any).isPlaceholder;
+    const isPlaceholder: boolean = clickedItem && !!(clickedItem as any).isPlaceholder;
 
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
