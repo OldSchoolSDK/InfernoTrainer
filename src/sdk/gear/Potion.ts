@@ -25,13 +25,15 @@ export class Potion extends Item {
   inventoryLeftClick(player: Player) {
 
     if (this.doses > 0) {
-      this.potionEffect(player);
+      if (player.eatDelays.canDrinkPotion()) {
+        player.eatDelays.drinkPotion();
+        this.potionEffect(player);
+        this.doses--;
+      }
     }
-
-    this.doses--;
 
     this.updateInventorySprite();
   }
-  
+
 
 }

@@ -40,6 +40,45 @@ interface PlayerRegenTimers {
   hitpoint: number;
 }
 
+class EatDelay {
+  food: number = 0;
+  potion: number = 0;
+  combo: number = 0;
+
+  tickFood() {
+    this.food--;
+    this.potion--;
+    this.combo--;
+  }
+
+  canEatFood(): boolean {
+    return this.food <= 0;
+  }
+
+  canDrinkPotion(): boolean {
+    return this.potion <=0;
+  }
+
+  canEatComboFood(): boolean {
+    return this.combo <=0;
+  }
+
+  // The weird way that the lower tiers also eat the higher tiers forces the behavior of food -> potion -> karambwan
+  eatFood() {
+    this.food = 3;
+  }
+
+  drinkPotion() {
+    this.eatFood();
+    this.potion = 3;
+  }
+
+  eatComboFood() {
+    this.drinkPotion();
+    this.combo = 2;
+  }
+}
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -56,6 +95,8 @@ export class Player extends Unit {
   useSpecialAttack: boolean = false;
   effects = new PlayerEffects();
   regenTimers: PlayerRegenTimers;
+
+  eatDelays: EatDelay = new EatDelay();
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -406,8 +447,6 @@ export class Player extends Unit {
 
     this.pathToAggro()
 
-    this.processIncomingAttacks()
-
     
     this.moveTorwardsDestination()
   }
@@ -466,12 +505,16 @@ export class Player extends Unit {
   attackStep () {
     
     
+    this.eatDelays.tickFood();
+
     this.drainPrayer();
 
 
     this.clearXpDrops();
 
     this.attackIfPossible()
+
+    this.processIncomingAttacks()
     
     this.specRegen();
 
