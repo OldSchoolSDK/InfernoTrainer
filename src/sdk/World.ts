@@ -250,9 +250,8 @@ export class World {
 
   worldTick () {
     this.tickCounter++;
-    console.log(this.tickCounter)
     if (this.newMobs.length){
-      this.mobs.push(...this.newMobs)
+      this.mobs.unshift(...this.newMobs)
       this.newMobs = [];
     }
     XpDropController.controller.tick();
@@ -441,7 +440,7 @@ export class World {
     if (this.tickCounter === 0) {
       this.mobs.push(mob)
     }else{
-      this.newMobs.unshift(mob)
+      this.newMobs.push(mob)
     }
   }
 
