@@ -55,7 +55,7 @@ export class Projectile {
     }
 
     if (weapon.image){
-      this.image = ImageLoader.createImage(weapon.image);
+      this.image = weapon.image
     }
 
     if (options.forceSWTile) {

@@ -20,10 +20,12 @@ import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
 import { Settings } from '../../../../sdk/Settings'
 
+const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
+
 class ZukWeapon extends MagicWeapon {
 
-  get image(): string {
-    return ZukAttackImage; 
+  get image(): HTMLImageElement {
+    return zukWeaponImage; 
   }
 
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {

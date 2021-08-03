@@ -172,7 +172,7 @@ export class Weapon extends Equipment{
     to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
   }
 
-  get image(): string {
+  get image(): HTMLImageElement {
     return null;
   }
 
