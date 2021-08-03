@@ -63,40 +63,40 @@ export class TzKalZuk extends Mob {
 
     this.attackStyle = this.attackStyleForNewAttack()
 
-    // if (this.timerPaused === false) {
-    //   this.setTimer--;
+    if (this.timerPaused === false) {
+      this.setTimer--;
 
-    //   if (this.setTimer === 0) {
-    //     this.setTimer = 350;
+      if (this.setTimer === 0) {
+        this.setTimer = 350;
   
-    //     const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield})
-    //     this.world.addMob(mager);
-    //     const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield})
-    //     this.world.addMob(ranger);
-    //   }  
-    // }
+        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield})
+        this.world.addMob(mager);
+        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield})
+        this.world.addMob(ranger);
+      }  
+    }
 
     if (this.canAttack() && this.attackCooldownTicks <= 0) {
       this.attack()
     }
   }
   damageTaken() {
-    // if (this.timerPaused === false) {
-    //   if (this.currentStats.hitpoint < 600 && this.hasPaused === false) {
-    //     this.timerPaused = true;
-    //     this.hasPaused = true;
-    //   }
-    // }else{
-    //   if (this.currentStats.hitpoint < 480) {
-    //     this.setTimer += 175;
-    //     this.timerPaused = false;
-    //     // Spawn Jad
-    //     const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3 });
-    //     this.world.addMob(jad)
-    //   }  
-    // }
+    if (this.timerPaused === false) {
+      if (this.currentStats.hitpoint < 600 && this.hasPaused === false) {
+        this.timerPaused = true;
+        this.hasPaused = true;
+      }
+    }else{
+      if (this.currentStats.hitpoint < 480) {
+        this.setTimer += 175;
+        this.timerPaused = false;
+        // Spawn Jad
+        const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3 });
+        this.world.addMob(jad)
+      }  
+    }
 
-    if (this.currentStats.hitpoint < 1199 && this.enraged === false) {
+    if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
 
       const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this });
