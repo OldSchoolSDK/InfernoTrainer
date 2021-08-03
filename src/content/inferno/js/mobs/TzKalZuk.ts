@@ -40,7 +40,7 @@ export class TzKalZuk extends Mob {
   shield: ZukShield;
   enraged: boolean = false;
 
-  setTimer: number = 74;
+  setTimer: number = 72;
   timerPaused: boolean = false;
   hasPaused: boolean = false;
 
