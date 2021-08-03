@@ -190,14 +190,26 @@ export class InfernoRegion extends Region {
       const shield = new ZukShield(world, { x: 23, y: 13}, {});
       world.addMob(shield)
 
-      world.addMob(new TzKalZuk(world, { x: 22, y: 7}, { aggro: player }))
+      world.addMob(new TzKalZuk(world, { x: 22, y: 8}, { aggro: player }))
 
+      world.addEntity(new Wall(world, {x: 21, y: 8}));
       world.addEntity(new Wall(world, {x: 21, y: 7}));
       world.addEntity(new Wall(world, {x: 21, y: 6}));
       world.addEntity(new Wall(world, {x: 21, y: 5}));
+      world.addEntity(new Wall(world, {x: 21, y: 4}));
+      world.addEntity(new Wall(world, {x: 21, y: 3}));
+      world.addEntity(new Wall(world, {x: 21, y: 2}));
+      world.addEntity(new Wall(world, {x: 21, y: 1}));
+      world.addEntity(new Wall(world, {x: 21, y: 0}));
+      world.addEntity(new Wall(world, {x: 29, y: 8}));
       world.addEntity(new Wall(world, {x: 29, y: 7}));
       world.addEntity(new Wall(world, {x: 29, y: 6}));
       world.addEntity(new Wall(world, {x: 29, y: 5}));
+      world.addEntity(new Wall(world, {x: 29, y: 4}));
+      world.addEntity(new Wall(world, {x: 29, y: 3}));
+      world.addEntity(new Wall(world, {x: 29, y: 2}));
+      world.addEntity(new Wall(world, {x: 29, y: 1}));
+      world.addEntity(new Wall(world, {x: 29, y: 0}));
 
       world.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00'));
 

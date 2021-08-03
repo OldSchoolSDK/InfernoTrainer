@@ -13,22 +13,30 @@ import { Unit } from './Unit'
  This algorithm makes no sense and is copy pasta'd between basically every trainer.
  I have no clue how it works, nor do I care.
 */
+
+export enum LineOfSightMasks {
+  LOS_FULL_MASK = 0x20000,
+  LOS_EAST_MASK = 0x1000,
+  LOS_WEST_MASK = 0x10000,
+  LOS_NORTH_MASK = 0x400,
+  LOS_SOUTH_MASK = 0x4000
+}
+
 export class LineOfSight {
   static drawLOS (world: World, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
     world.worldCtx.globalAlpha = 0.4
-    for (let i = 0; i < 870; i++) {
-      world.worldCtx.fillStyle = c
+    world.worldCtx.fillStyle = c
 
-      const x2 = i % 29
-      const y2 = Math.floor(i / 29)
-
-      if (LineOfSight.hasLineOfSight(world, x, y, x2, y2, s, r, isNPC)) {
-        world.worldCtx.fillRect(
-          x2 * Settings.tileSize,
-          y2 * Settings.tileSize,
-          Settings.tileSize,
-          Settings.tileSize
-        )
+    for (let x2 = -r; x2 < r; x2++){
+      for (let y2 = -r; y2 < r; y2++){
+        if (LineOfSight.hasLineOfSight(world, x, y, x + x2, y + y2, s, r, isNPC)) {
+          world.worldCtx.fillRect(
+            (x + x2) * Settings.tileSize,
+            (y + y2) * Settings.tileSize,
+            Settings.tileSize,
+            Settings.tileSize
+          )
+        }      
       }
     }
     world.worldCtx.globalAlpha = 1
@@ -72,10 +80,26 @@ export class LineOfSight {
       let xTile = x1
       let y = (y1 << 16) + 0x8000
       const slope = Math.trunc((dy << 16) / dxAbs) // Integer division
-      const xInc = (dx > 0) ? 1 : -1
-      if (dy < 0) {
-        y -= 1 // For correct rounding
+
+      let xInc: number;
+      let xMask: number;
+      let yMask: number;
+
+      if (dx > 0) {
+        xInc = 1;
+        xMask = LineOfSightMasks.LOS_WEST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      } else {
+        xInc = -1;
+        xMask = LineOfSightMasks.LOS_EAST_MASK | LineOfSightMasks.LOS_FULL_MASK;
       }
+      if (dy < 0) {
+        y -= 1; // For correct rounding
+        yMask = LineOfSightMasks.LOS_NORTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      } else {
+        yMask = LineOfSightMasks.LOS_SOUTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      }
+
+
       while (xTile !== x2) {
         xTile += xInc
         const yTile = y >>> 16
@@ -89,12 +113,26 @@ export class LineOfSight {
         }
       }
     } else {
-      let yTile = y1
-      let x = (x1 << 16) + 0x8000
-      const slope = Math.trunc((dx << 16) / dyAbs) // Integer division
-      const yInc = (dy > 0) ? 1 : -1
+      let yTile = y1;
+      let x = (x1 << 16) + 0x8000;
+      let slope = Math.trunc((dx << 16) / dyAbs); // Integer division
+      
+      let yInc;
+      let yMask;
+      if (dy > 0) {
+        yInc = 1;
+        yMask = LineOfSightMasks.LOS_SOUTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      } else {
+        yInc = -1;
+        yMask = LineOfSightMasks.LOS_NORTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      }
+      
+      let xMask;
       if (dx < 0) {
-        x -= 1 // For correct rounding
+        x -= 1; // For correct rounding
+        xMask = LineOfSightMasks.LOS_EAST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+      } else {
+        xMask = LineOfSightMasks.LOS_WEST_MASK | LineOfSightMasks.LOS_FULL_MASK;
       }
       while (yTile !== y2) {
         yTile += yInc
