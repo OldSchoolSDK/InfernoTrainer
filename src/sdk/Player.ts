@@ -64,7 +64,6 @@ class Eating {
     }
     if (this.currentPotion) {
       this.currentPotion.drink(player);
-      player.attackCooldownTicks +=3;
       this.currentPotion = null;
     }
     if (this.currentComboFood) {
