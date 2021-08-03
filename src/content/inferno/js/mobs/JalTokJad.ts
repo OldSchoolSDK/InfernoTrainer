@@ -37,7 +37,7 @@ class JadMagicWeapon extends MagicWeapon {
       }
 
       super.attack(world, from, to, bonuses);
-    }, 2));
+    }, 3));
   }
   
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
