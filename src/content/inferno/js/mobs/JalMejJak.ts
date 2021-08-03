@@ -38,6 +38,7 @@ class AoeWeapon extends Weapon {
     }, 4))
   }
 
+  
   get isAreaAttack () {
     return true
   }

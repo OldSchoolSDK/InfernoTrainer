@@ -8,7 +8,7 @@ export class Wall extends Entity {
 
 
   get collisionType() {
-    return CollisionType.BLOCK_LOS;
+    return CollisionType.BLOCK_MOVEMENT;
   }
 
   get size() {

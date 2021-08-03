@@ -5,6 +5,7 @@ import { CollisionType } from '../sdk/Collision'
 import { Settings } from '../sdk/Settings';
 import { Location } from '../sdk/GameObject';
 import { World } from '../sdk/World';
+import { LineOfSight, LineOfSightMask } from '../sdk/LineOfSight';
 
 export class TileMarker extends Entity {
   color: string = '#00FF00'
@@ -16,6 +17,10 @@ export class TileMarker extends Entity {
 
   get collisionType() {
     return CollisionType.NONE;
+  }
+
+  get lineOfSight() {
+    return LineOfSightMask.NONE;
   }
 
   get size() {

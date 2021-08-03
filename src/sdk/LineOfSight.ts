@@ -14,12 +14,13 @@ import { Unit } from './Unit'
  I have no clue how it works, nor do I care.
 */
 
-export enum LineOfSightMasks {
-  LOS_FULL_MASK = 0x20000,
-  LOS_EAST_MASK = 0x1000,
-  LOS_WEST_MASK = 0x10000,
-  LOS_NORTH_MASK = 0x400,
-  LOS_SOUTH_MASK = 0x4000
+export enum LineOfSightMask {
+  NONE = 0x0,
+  FULL_MASK = 0x20000,
+  EAST_MASK = 0x1000,
+  WEST_MASK = 0x10000,
+  NORTH_MASK = 0x400,
+  SOUTH_MASK = 0x4000
 }
 
 export class LineOfSight {
@@ -27,8 +28,8 @@ export class LineOfSight {
     world.worldCtx.globalAlpha = 0.4
     world.worldCtx.fillStyle = c
 
-    for (let x2 = -r - 1; x2 < r + 1; x2++){
-      for (let y2 = -r - 1; y2 < r + 1; y2++){
+    for (let x2 = -r; x2 < r + 1; x2++){
+      for (let y2 = -r; y2 < r + 1; y2++){
         if (LineOfSight.hasLineOfSight(world, x, y, x + x2, y + y2, s, r, isNPC)) {
           world.worldCtx.fillRect(
             (x + x2) * Settings.tileSize,
@@ -87,28 +88,28 @@ export class LineOfSight {
 
       if (dx > 0) {
         xInc = 1;
-        xMask = LineOfSightMasks.LOS_WEST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        xMask = LineOfSightMask.WEST_MASK | LineOfSightMask.FULL_MASK;
       } else {
         xInc = -1;
-        xMask = LineOfSightMasks.LOS_EAST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        xMask = LineOfSightMask.EAST_MASK | LineOfSightMask.FULL_MASK;
       }
       if (dy < 0) {
         y -= 1; // For correct rounding
-        yMask = LineOfSightMasks.LOS_NORTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        yMask = LineOfSightMask.NORTH_MASK | LineOfSightMask.FULL_MASK;
       } else {
-        yMask = LineOfSightMasks.LOS_SOUTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        yMask = LineOfSightMask.SOUTH_MASK | LineOfSightMask.FULL_MASK;
       }
 
 
       while (xTile !== x2) {
         xTile += xInc
         const yTile = y >>> 16
-        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
+        if ((Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1) & xMask) !== 0) {
           return false
         }
         y += slope
         const newYTile = y >>> 16
-        if (newYTile !== yTile && Collision.collidesWithAnyLoSBlockingEntities(world, xTile, newYTile, 1)) {
+        if (newYTile !== yTile && (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, newYTile, 1) & yMask) !== 0) {
           return false
         }
       }
@@ -121,28 +122,28 @@ export class LineOfSight {
       let yMask;
       if (dy > 0) {
         yInc = 1;
-        yMask = LineOfSightMasks.LOS_SOUTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        yMask = LineOfSightMask.SOUTH_MASK | LineOfSightMask.FULL_MASK;
       } else {
         yInc = -1;
-        yMask = LineOfSightMasks.LOS_NORTH_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        yMask = LineOfSightMask.NORTH_MASK | LineOfSightMask.FULL_MASK;
       }
       
       let xMask;
       if (dx < 0) {
         x -= 1; // For correct rounding
-        xMask = LineOfSightMasks.LOS_EAST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        xMask = LineOfSightMask.EAST_MASK | LineOfSightMask.FULL_MASK;
       } else {
-        xMask = LineOfSightMasks.LOS_WEST_MASK | LineOfSightMasks.LOS_FULL_MASK;
+        xMask = LineOfSightMask.WEST_MASK | LineOfSightMask.FULL_MASK;
       }
       while (yTile !== y2) {
         yTile += yInc
         const xTile = x >>> 16
-        if (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1)) {
+        if ((Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1) & yMask) !== 0) {
           return false
         }
         x += slope
         const newXTile = x >>> 16
-        if (newXTile !== xTile && Collision.collidesWithAnyLoSBlockingEntities(world, newXTile, yTile, 1)) {
+        if (newXTile !== xTile && (Collision.collidesWithAnyLoSBlockingEntities(world, newXTile, yTile, 1) & xMask) !== 0) {
           return false
         }
       }
