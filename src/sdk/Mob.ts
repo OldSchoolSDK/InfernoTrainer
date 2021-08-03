@@ -276,7 +276,11 @@ export class Mob extends Unit {
     ]
   }
 
-  drawOnTile(tickPercent: number) {
+  drawOverTile(tickPercent: number) {
+    
+  }
+
+  drawUnderTile(tickPercent: number) {
 
     if (this.dying > -1) {
       this.world.worldCtx.fillStyle = '#964B0073'
@@ -314,7 +318,7 @@ export class Mob extends Unit {
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
-    this.drawOnTile(tickPercent)
+    this.drawUnderTile(tickPercent)
     let currentImage = this.unitImage
 
     if (Settings.rotated === 'south') {
@@ -339,6 +343,7 @@ export class Mob extends Unit {
       )
 
     }
+    this.drawOverTile(tickPercent)
 
     this.world.worldCtx.restore()
 

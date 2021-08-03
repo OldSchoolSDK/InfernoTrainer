@@ -18,6 +18,7 @@ import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
+import { Settings } from '../../../../sdk/Settings'
 
 class ZukWeapon extends MagicWeapon {
 
@@ -39,7 +40,7 @@ export class TzKalZuk extends Mob {
   shield: ZukShield;
   enraged: boolean = false;
 
-  setTimer: number = 75;
+  setTimer: number = 74;
   timerPaused: boolean = false;
   hasPaused: boolean = false;
 
@@ -225,5 +226,20 @@ export class TzKalZuk extends Mob {
 
   attackAnimation (tickPercent: number) {
     this.world.worldCtx.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+  }
+
+
+  drawOverTile(tickPercent: number) {
+    super.drawOverTile(tickPercent);
+    // Draw mob
+
+    this.world.worldCtx.fillStyle = '#FFFF00'
+    this.world.worldCtx.font = '16px OSRS'
+
+    this.world.worldCtx.fillText(
+      String(this.currentStats.hitpoint),
+      0,
+      0
+    )
   }
 }

@@ -157,7 +157,7 @@ export class ZukShield extends Mob {
   }
 
   
-  drawOnTile(tickPercent: number) {
+  drawUnderTile(tickPercent: number) {
 
     this.world.worldCtx.fillStyle = this.color;
     // Draw mob

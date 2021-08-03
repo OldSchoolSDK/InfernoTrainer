@@ -250,7 +250,7 @@ export class World {
 
   worldTick () {
     this.tickCounter++;
-    // console.log(this.tickCounter)
+    console.log(this.tickCounter)
     if (this.newMobs.length){
       this.mobs.push(...this.newMobs)
       this.newMobs = [];
