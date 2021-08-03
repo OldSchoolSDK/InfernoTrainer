@@ -60,13 +60,13 @@ export class TwistedBow extends RangedWeapon {
 
   _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic)
-    const multiplier = 140 + ((10 * 3 * magic / 10 - 10) / 100) - (Math.pow(3 * magic / 10 - 100, 2) / 100) / 100
+    const multiplier = (140 + ((10 * 3 * magic / 10 - 10) / 100) - (Math.pow(3 * magic / 10 - 100, 2) / 100)) / 100
     return Math.min(1.40, Math.max(0, multiplier))
   }
 
   _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
     const magic = Math.max(to.currentStats.magic, to.bonuses.attack.magic)
-    const multiplier = 250 + ((10 * 3 * magic / 10 - 14) / 100) - (Math.pow(3 * magic / 10 - 140, 2) / 100) / 100
+    const multiplier = (250 + ((10 * 3 * magic / 10 - 14) / 100) - (Math.pow(3 * magic / 10 - 140, 2) / 100)) / 100
     return Math.min(2.50, Math.max(0, multiplier))
   }
 }
