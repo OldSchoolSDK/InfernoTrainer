@@ -3,12 +3,12 @@ import { Player } from "../Player";
 import { UnitEquipment } from "../Unit";
 
 export class Ammo extends Equipment {
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.ammo = this;
+  assignToPlayer(player: Player) {
+    player.equipment.ammo = this;
   }
 
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.ammo = null;
+  unassignToPlayer(player: Player) {
+    player.equipment.ammo = null;
   }
 
   currentEquipment(player: Player): Equipment {

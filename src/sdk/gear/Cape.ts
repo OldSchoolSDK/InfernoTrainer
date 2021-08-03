@@ -4,11 +4,11 @@ import { Player } from "../Player";
 
 export class Cape extends Equipment {
   
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.cape = this;
+  assignToPlayer(player: Player) {
+    player.equipment.cape = this;
   }
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.cape = null;
+  unassignToPlayer(player: Player) {
+    player.equipment.cape = null;
   }
 
   currentEquipment(player: Player): Equipment {

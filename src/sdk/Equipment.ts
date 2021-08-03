@@ -31,7 +31,7 @@ export class Equipment extends Item {
     const currentItem = this.currentEquipment(player) || null; 
     let openInventorySlots = InventoryControls.openInventorySlots()
     openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
-    this.assignToUnitEquipment(player.equipment);
+    this.assignToPlayer(player);
     InventoryControls.inventory[openInventorySlots.shift()] = currentItem;
     player.equipmentChanged()
   }
@@ -48,11 +48,11 @@ export class Equipment extends Item {
     return null;
   }
 
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
+  assignToPlayer(player: Player) {
     throw new Error('not able to assign to unit equipment')
   }
 
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
+  unassignToPlayer(player: Player) {
     throw new Error('not able to unassign to unit equipment')
   }
 
@@ -61,7 +61,7 @@ export class Equipment extends Item {
     if (openInventorySlots.length === 0) {
       return;
     }
-    this.unassignToUnitEquipment(player.equipment)
+    this.unassignToPlayer(player)
     
     InventoryControls.inventory[openInventorySlots.shift()] = this;
   }

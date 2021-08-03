@@ -39,12 +39,13 @@ export class Weapon extends Equipment{
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.weapon = this;
+  assignToPlayer(player: Player) {
+    player.equipment.weapon = this;
+    player.aggro = null;
   }
 
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.weapon = null;
+  unassignToPlayer(player: Player) {
+    player.equipment.weapon = null;
   }
   currentEquipment(player: Player): Equipment {
     return player.equipment.weapon;
@@ -81,7 +82,7 @@ export class Weapon extends Equipment{
     if (neededInventorySlots > openInventorySlots.length) {
       return;
     }
-    this.assignToUnitEquipment(player.equipment);
+    this.assignToPlayer(player);
     if (currentWeapon) {
       InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
     }else{

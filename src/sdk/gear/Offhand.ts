@@ -22,7 +22,7 @@ export class Offhand extends Equipment {
       return;
     }
     
-    this.assignToUnitEquipment(player.equipment);
+    this.assignToPlayer(player);
     if (currentOffhand){
       InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
     }else{
@@ -40,11 +40,11 @@ export class Offhand extends Equipment {
   
 
 
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.offhand = this;
+  assignToPlayer(player: Player) {
+    player.equipment.offhand = this;
   }
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.offhand = null;
+  unassignToPlayer(player: Player) {
+    player.equipment.offhand = null;
   }
 
   currentEquipment(player: Player): Equipment {

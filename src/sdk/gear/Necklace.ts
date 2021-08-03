@@ -4,12 +4,12 @@ import { Player } from "../Player";
 
 export class Necklace extends Equipment {
 
-  assignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.necklace = this;
+  assignToPlayer(player: Player) {
+    player.equipment.necklace = this;
   }
 
-  unassignToUnitEquipment(unitEquipment: UnitEquipment) {
-    unitEquipment.necklace = null;
+  unassignToPlayer(player: Player) {
+    player.equipment.necklace = null;
   }
   currentEquipment(player: Player): Equipment {
     return player.equipment.necklace;
