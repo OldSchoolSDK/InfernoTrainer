@@ -59,6 +59,8 @@ export class World {
     height: 30
   }
 
+  tickCounter: number = 0;
+
   get viewportCtx() {
     return this.viewport.getContext('2d');
   }
@@ -246,6 +248,7 @@ export class World {
   }
 
   worldTick () {
+    this.tickCounter++;
     XpDropController.controller.tick();
     
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())

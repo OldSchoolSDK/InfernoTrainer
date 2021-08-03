@@ -23,12 +23,12 @@ export class ZukShield extends Mob {
 
 
   movementDirection: boolean = Math.random() < 0.5 ? true : false;
-  frozen: number = 1;
 
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
 
+    this.frozen = 1;
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
     this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
 
@@ -118,7 +118,6 @@ export class ZukShield extends Mob {
         this.movementDirection = !this.movementDirection;
       }      
     }
-    this.frozen--;
 
     if (this.currentStats.hitpoint <= 0) {
       return this.dead()
