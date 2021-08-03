@@ -27,8 +27,8 @@ export class LineOfSight {
     world.worldCtx.globalAlpha = 0.4
     world.worldCtx.fillStyle = c
 
-    for (let x2 = -r; x2 < r; x2++){
-      for (let y2 = -r; y2 < r; y2++){
+    for (let x2 = -r - 1; x2 < r + 1; x2++){
+      for (let y2 = -r - 1; y2 < r + 1; y2++){
         if (LineOfSight.hasLineOfSight(world, x, y, x + x2, y + y2, s, r, isNPC)) {
           world.worldCtx.fillRect(
             (x + x2) * Settings.tileSize,
