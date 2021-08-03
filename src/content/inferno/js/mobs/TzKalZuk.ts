@@ -48,6 +48,8 @@ export class TzKalZuk extends Mob {
     super(world, location, options)
     this.attackCooldownTicks = 14;
 
+    // this.currentStats.hitpoint = 80;
+
     this.shield = find(world.mobs, (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
@@ -112,6 +114,15 @@ export class TzKalZuk extends Mob {
       this.world.addMob(healer4);
 
     }
+
+    if (this.currentStats.hitpoint <= 0){
+      this.world.mobs.forEach((mob: Mob) => {
+        if (mob !== this) {
+          this.world.removeMob(mob);
+        }
+      })
+  
+    }
     
   }
 
@@ -170,7 +181,6 @@ export class TzKalZuk extends Mob {
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
-    this.currentStats.hitpoint = 240;
   }
 
   get bonuses(): UnitBonuses{ 

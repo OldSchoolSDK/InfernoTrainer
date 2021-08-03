@@ -1,5 +1,6 @@
 import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
+import { LineOfSight, LineOfSightMask } from "./LineOfSight";
 
 export interface Location {
   x: number;
@@ -19,7 +20,11 @@ export class GameObject {
   }
 
   get collisionType() {
-    return CollisionType.BLOCK_LOS;
+    return CollisionType.BLOCK_MOVEMENT;
+  }
+
+  get lineOfSight(): LineOfSightMask {
+    return LineOfSightMask.FULL_MASK
   }
 
   // Returns true if this mob is on the specified tile.
