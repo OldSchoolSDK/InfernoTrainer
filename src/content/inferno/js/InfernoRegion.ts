@@ -69,10 +69,10 @@ export class InfernoRegion extends Region {
       new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new KodaiWand(),
       new CrystalShield(), new DevoutBoots(), new AncestralRobetop(), new AncestralRobebottom(),
       new RingOfEndurance(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
-      new Shark(), new Shark(), new Karambwan(), new SaradominBrew(),
-      new Shark(), new Karambwan(), new SuperRestore(), new SuperRestore(), 
-      new Karambwan(), new Karambwan(), new SuperRestore(), new SuperRestore(), 
-      new SuperRestore(), new SuperRestore(), new SuperRestore(), new BastionPotion(), 
+      new Shark(), new SaradominBrew(), new SaradominBrew(), new SaradominBrew(),
+      new Shark(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+      new Karambwan(), new Karambwan(), new SaradominBrew(), new SuperRestore(), 
+      new SuperRestore(), new SaradominBrew(), new SuperRestore(), new BastionPotion(), 
     ]
   }
 
