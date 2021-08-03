@@ -53,6 +53,7 @@ export class World {
   isPaused: boolean = true;
 
   viewportController: Viewport;
+  newMobs: Mob[] = [];
 
   _viewport = {
     width: 40,
@@ -249,8 +250,13 @@ export class World {
 
   worldTick () {
     this.tickCounter++;
+    // console.log(this.tickCounter)
+    if (this.newMobs.length){
+      this.mobs.push(...this.newMobs)
+      this.newMobs = [];
+    }
     XpDropController.controller.tick();
-    
+
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
     this.mobs.forEach((mob) => mob.movementStep())
@@ -432,7 +438,11 @@ export class World {
   }
 
   addMob (mob: Mob) {
-    this.mobs.unshift(mob)
+    if (this.tickCounter === 0) {
+      this.mobs.push(mob)
+    }else{
+      this.newMobs.unshift(mob)
+    }
   }
 
   removeMob (mob: Unit) {

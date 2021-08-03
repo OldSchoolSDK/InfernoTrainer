@@ -79,8 +79,6 @@ export class TzKalZuk extends Mob {
       this.attack()
     }
   }
-
-
   damageTaken() {
     if (this.timerPaused === false) {
       if (this.currentStats.hitpoint < 600 && this.hasPaused === false) {
@@ -92,10 +90,8 @@ export class TzKalZuk extends Mob {
         this.setTimer += 175;
         this.timerPaused = false;
         // Spawn Jad
-
         const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3 });
         this.world.addMob(jad)
-        
       }  
     }
 
