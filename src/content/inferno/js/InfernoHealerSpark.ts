@@ -14,6 +14,7 @@ import { Entity } from "../../../sdk/Entity";
 import { Collision, CollisionType } from '../../../sdk/Collision'
 import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
 import { JalMejJak } from './mobs/JalMejJak'
+import { LineOfSightMask } from '../../../sdk/LineOfSight'
 
 class InfernoSparkWeapon extends Weapon{
 
@@ -42,6 +43,10 @@ export class InfernoHealerSpark extends Entity {
 
   get collisionType() {
     return CollisionType.NONE;
+  }
+
+  get lineOfSight() {
+    return LineOfSightMask.NONE;
   }
 
   tick () {

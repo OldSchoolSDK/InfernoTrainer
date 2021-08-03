@@ -13,6 +13,7 @@ import { World } from '../../../sdk/World';
 import { filter, remove } from 'lodash';
 import { Pathing } from '../../../sdk/Pathing';
 import { AttackIndicators, Mob } from '../../../sdk/Mob';
+import { LineOfSightMask } from '../../../sdk/LineOfSight';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -24,6 +25,9 @@ export class ZukShield extends Mob {
 
   movementDirection: boolean = Math.random() < 0.5 ? true : false;
 
+  get lineOfSight() {
+    return LineOfSightMask.NONE;
+  }
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
