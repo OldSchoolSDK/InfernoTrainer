@@ -33,7 +33,6 @@ export class Mob extends Unit {
   hasLOS: boolean;
   weapons: WeaponsMap;
   attackStyle: string;
-  spawnDelay: number = 0;
 
   mobRangeAttackAnimation: any;
 
@@ -168,6 +167,11 @@ export class Mob extends Unit {
 
   
   attackStep () {
+
+    if (this.spawnDelay > 0) {
+      return;
+    }
+    
     if (this.currentAnimationTickLength > 0) {
       if (--this.currentAnimationTickLength === 0) {
         this.currentAnimation = null
