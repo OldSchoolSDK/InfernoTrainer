@@ -345,6 +345,7 @@ export class Unit extends GameObject {
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
+        this.spawnDelay = 0;
         if (projectile.damage < 0) {
           // subtracting a negative gives a positive
           if (this.currentStats.hitpoint < this.stats.hitpoint) {
@@ -357,7 +358,6 @@ export class Unit extends GameObject {
         this.damageTaken();
         if (projectile.from !== this.aggro && this.autoRetaliate) {
           this.aggro = projectile.from;
-          this.spawnDelay = 0;
         }
       }
     })
