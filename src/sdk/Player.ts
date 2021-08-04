@@ -577,11 +577,7 @@ export class Player extends Unit {
       this.eats.redemptioned = true;
     }
   }
-
-  detectDeath (){
-    // Empty for now, to allow unlimited play time.
-  }
-
+  
   attackStep () {
     
     

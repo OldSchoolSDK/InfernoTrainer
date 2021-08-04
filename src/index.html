@@ -54,6 +54,21 @@
         font-size: 12;
       }
 
+      #set_timer {
+        display: inline-block;
+        width: 200px;
+        height: 300px;
+        background: #282828;
+        position: absolute;
+        top: 64px;
+        right: 14px;
+        text-align: center;
+        color: white;
+        font-size: 60px;
+      }
+      #set_timer button {
+        width: 96%
+      }
 
     </style>
 
@@ -84,6 +99,40 @@
     <br />
 
     <canvas id="world" onselectstart="return false" oncontextmenu="return false"></canvas>
+    <div id="set_timer">
+      <div id="set_timer_time">3:30</div>
+      <button id="set_timer_button">start</button>
+    </div>
+    <script>
+      window.timer_mode = 'start';
+      window.timer_time = 210;
+      setInterval(() => {
+        if (window.timer_mode === 'start' || window.timer_mode === 'resume'){
+          return;
+        }
+        window.timer_time--;
+        if (window.timer_time <=0) {
+          window.timer_time = 0;
+        }
+        document.getElementById("set_timer_time").innerText = String(Math.floor(window.timer_time / 60)) + ":" + String(window.timer_time % 60).padStart(2, '0');
+      }, 1000)
+      document.getElementById("set_timer_button").addEventListener('click', () => {
+        if (window.timer_mode === 'start'){
+          console.log('pausing')
+          window.timer_mode = 'pause';
+        }else if (window.timer_mode === 'pause') {
+          window.timer_mode = 'resume';
+        }else if (window.timer_mode === 'resume') {
+          window.timer_mode = 'reset';
+          window.timer_time += 105
+        }else if (window.timer_mode === 'reset') {
+          window.timer_time = 210;
+          window.timer_mode = 'start';
+        }
+        document.getElementById("set_timer_time").innerText = String(Math.floor(window.timer_time / 60)) + ":" + String(window.timer_time % 60).padStart(2, '0');
+        document.getElementById("set_timer_button").innerText = window.timer_mode;
+      })
+    </script>
     
     <br />
     <a href="https://github.com/OldSchoolSDK/Engine" target="_blank">Explore Source on GitHub</a>
