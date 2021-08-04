@@ -18,7 +18,7 @@ export class Blowpipe extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 20 + 35 // simulating dragon darts atm
+        range: 30
       },
       defence: {
         stab: 0,
@@ -29,7 +29,7 @@ export class Blowpipe extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 20,
+        rangedStrength: 20 + 35,  // simulating dragon darts atm
         magicDamage: 0,
         prayer: 0
       },
