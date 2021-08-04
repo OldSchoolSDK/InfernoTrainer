@@ -39,27 +39,27 @@ export class SaradominBrew extends Potion {
   drink(player: Player) {
     const healAmount = Math.floor(player.stats.hitpoint * 0.15) + 2;
     player.currentStats.hitpoint += healAmount;
-    player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint + healAmount)
+    player.currentStats.hitpoint = Math.max(1, Math.min(player.currentStats.hitpoint, player.stats.hitpoint + healAmount))
     
-    const defenceBoost = Math.floor(player.stats.defence * 0.20) + 2
+    const defenceBoost = Math.floor(player.currentStats.defence * 0.20) + 2
     player.currentStats.defence += defenceBoost;
-    player.currentStats.defence = Math.min(player.currentStats.defence, player.stats.defence + defenceBoost)
+    player.currentStats.defence = Math.max(1, Math.min(player.currentStats.defence, player.stats.defence + defenceBoost))
 
-    const attackNerf = Math.floor(player.stats.attack * 0.10) + 2
+    const attackNerf = Math.floor(player.currentStats.attack * 0.10) + 2
     player.currentStats.attack -= attackNerf;
-    player.currentStats.attack = Math.min(player.currentStats.attack, player.stats.attack + attackNerf)
+    player.currentStats.attack = Math.max(1, Math.min(player.currentStats.attack, player.stats.attack + attackNerf))
 
-    const strengthNerf = Math.floor(player.stats.strength * 0.10) + 2
+    const strengthNerf = Math.floor(player.currentStats.strength * 0.10) + 2
     player.currentStats.strength -= strengthNerf;
-    player.currentStats.strength = Math.min(player.currentStats.strength, player.stats.strength + strengthNerf)
+    player.currentStats.strength = Math.max(1, Math.min(player.currentStats.strength, player.stats.strength + strengthNerf))
 
-    const rangeNerf = Math.floor(player.stats.range * 0.10) + 2
+    const rangeNerf = Math.floor(player.currentStats.range * 0.10) + 2
     player.currentStats.range -= rangeNerf;
-    player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangeNerf)
+    player.currentStats.range = Math.max(1, Math.min(player.currentStats.range, player.stats.range + rangeNerf))
 
-    const magicNerf = Math.floor(player.stats.magic * 0.10) + 2
+    const magicNerf = Math.floor(player.currentStats.magic * 0.10) + 2
     player.currentStats.magic -= magicNerf;
-    player.currentStats.magic = Math.min(player.currentStats.magic, player.stats.magic + magicNerf)
+    player.currentStats.magic = Math.max(1, Math.min(player.currentStats.magic, player.stats.magic + magicNerf))
 
   }
 
