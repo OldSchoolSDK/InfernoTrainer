@@ -300,6 +300,9 @@ export class Unit extends GameObject {
 
 
   addProjectile (projectile: Projectile) {
+    if (this.spawnDelay > 0 && this.autoRetaliate){
+      this.aggro = projectile.from;
+    }
     this.spawnDelay = 0;
     this.incomingProjectiles.push(projectile)
   }
