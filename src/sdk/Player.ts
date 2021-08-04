@@ -352,8 +352,7 @@ export class Player extends Unit {
   }
 
   dead () {
-
-    console.log('you died')
+    document.body.style.background = 'red'
   }
 
   attack () {
