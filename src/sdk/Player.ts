@@ -353,6 +353,7 @@ export class Player extends Unit {
 
   dead () {
 
+    console.log('you died')
   }
 
   attack () {
