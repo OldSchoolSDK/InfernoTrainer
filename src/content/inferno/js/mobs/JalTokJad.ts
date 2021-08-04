@@ -118,7 +118,6 @@ export class JalTokJad extends Mob {
   }
 
   damageTaken() {
-    this.currentStats.hitpoint = 10;
     if (this.currentStats.hitpoint < this.stats.hitpoint / 2) {
       if (this.hasProccedHealers === false){
         this.autoRetaliate = false;
