@@ -48,6 +48,7 @@ export class UnitEquipment {
 export interface UnitOptions {
   aggro?: GameObject;
   equipment?: UnitEquipment;
+  spawnDelay?: number;
 }
 
 export interface UnitStats {
@@ -109,6 +110,7 @@ export class Unit extends GameObject {
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
   autoRetaliate: boolean = false;
+  spawnDelay: number = 0;
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -130,7 +132,7 @@ export class Unit extends GameObject {
     this.perceivedLocation = location
     this.location = location
     this.setStats()
-
+    this.spawnDelay = options.spawnDelay || 0
     this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint
 
@@ -355,6 +357,7 @@ export class Unit extends GameObject {
         this.damageTaken();
         if (projectile.from !== this.aggro && this.autoRetaliate) {
           this.aggro = projectile.from;
+          this.spawnDelay = 0;
         }
       }
     })

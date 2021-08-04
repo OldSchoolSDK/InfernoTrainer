@@ -33,6 +33,7 @@ export class Mob extends Unit {
   hasLOS: boolean;
   weapons: WeaponsMap;
   attackStyle: string;
+  spawnDelay: number = 0;
 
   mobRangeAttackAnimation: any;
 
@@ -106,6 +107,10 @@ export class Mob extends Unit {
     }
     this.processIncomingAttacks()
 
+    this.spawnDelay--;
+    if (this.spawnDelay > 0) {
+      return;
+    }
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
 
     this.setHasLOS()
