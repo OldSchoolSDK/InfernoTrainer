@@ -24,7 +24,7 @@ class InfernoSparkWeapon extends Weapon{
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
-    this.damage = 7 + Math.floor(Math.random() * 4);
+    this.damage = 5 + Math.floor(Math.random() * 6);
     to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
   }
 }
