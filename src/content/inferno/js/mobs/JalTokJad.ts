@@ -20,6 +20,7 @@ interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
   stun: number;
   healers: number;
+  isZukWave: boolean;
 }
 
 class JadMagicWeapon extends MagicWeapon {
@@ -71,6 +72,7 @@ export class JalTokJad extends Mob {
   waveCooldown: number;
   hasProccedHealers: boolean = false;
   healers: number;
+  isZukWave: boolean;
 
   constructor (world: World, location: Location, options: JadUnitOptions) {
     super(world, location, options)
@@ -78,6 +80,7 @@ export class JalTokJad extends Mob {
     this.stunned = options.stun;
     this.healers = options.healers;
     this.autoRetaliate = true;
+    this.isZukWave = options.isZukWave;
   }
 
   get displayName () {
@@ -115,7 +118,7 @@ export class JalTokJad extends Mob {
   }
 
   damageTaken() {
-
+    this.currentStats.hitpoint = 10;
     if (this.currentStats.hitpoint < this.stats.hitpoint / 2) {
       if (this.hasProccedHealers === false){
         this.autoRetaliate = false;
@@ -127,8 +130,13 @@ export class JalTokJad extends Mob {
           let yOff = 0;
 
           while (Collision.collidesWithMob(this.world, this.location.x + xOff, this.location.y + yOff, 1, this)){
-            xOff = Math.floor(Math.random() * 11) - 5;
-            yOff = Math.floor(Math.random() * 15) - 5 - this.size;
+            if (this.isZukWave) {
+              xOff = Math.floor(Math.random() * 6);
+              yOff = -Math.floor(Math.random() * 4) - this.size;
+            }else{
+              xOff = Math.floor(Math.random() * 11) - 5;
+              yOff = Math.floor(Math.random() * 15) - 5 - this.size;
+            }
           }
 
           const healer = new YtHurKot(this.world, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
