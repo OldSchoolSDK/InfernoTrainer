@@ -171,7 +171,7 @@ export class Mob extends Unit {
     if (this.spawnDelay > 0) {
       return;
     }
-    
+
     if (this.currentAnimationTickLength > 0) {
       if (--this.currentAnimationTickLength === 0) {
         this.currentAnimation = null
@@ -352,7 +352,6 @@ export class Mob extends Unit {
       )
 
     }
-    this.drawOverTile(tickPercent)
 
     this.world.worldCtx.restore()
 
@@ -360,7 +359,8 @@ export class Mob extends Unit {
       this.world.worldCtx.scale(-1, 1)
     }
 
-    
+    this.drawOverTile(tickPercent)
+
     if (this.aggro) {
 
       if (LineOfSight.playerHasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
