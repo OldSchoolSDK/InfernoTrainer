@@ -103,16 +103,16 @@ export class TzKalZuk extends Mob {
     if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
 
-      const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this });
+      const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.addMob(healer1);
 
-      const healer2 = new JalMejJak(this.world, {x: 20, y: 9}, { aggro: this });
+      const healer2 = new JalMejJak(this.world, {x: 20, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.addMob(healer2);
 
-      const healer3 = new JalMejJak(this.world, {x: 30, y: 9}, { aggro: this });
+      const healer3 = new JalMejJak(this.world, {x: 30, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.addMob(healer3);
 
-      const healer4 = new JalMejJak(this.world, {x: 34, y: 9}, { aggro: this });
+      const healer4 = new JalMejJak(this.world, {x: 34, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.addMob(healer4);
 
     }
