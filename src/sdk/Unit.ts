@@ -300,6 +300,7 @@ export class Unit extends GameObject {
 
 
   addProjectile (projectile: Projectile) {
+    this.spawnDelay = 0;
     this.incomingProjectiles.push(projectile)
   }
 
@@ -345,7 +346,6 @@ export class Unit extends GameObject {
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
-        this.spawnDelay = 0;
         if (projectile.damage < 0) {
           // subtracting a negative gives a positive
           if (this.currentStats.hitpoint < this.stats.hitpoint) {
