@@ -16,8 +16,9 @@ import { find } from 'lodash'
 export class JalZek extends Mob {
   isZukWave: boolean;
 
-  get displayName () {
-    return 'Jal-Zek'
+  
+  mobName(): EntityName { 
+    return EntityName.JAL_ZEK;
   }
 
   get combatLevel () {

@@ -5,12 +5,14 @@ import { Mob } from '../../../../sdk/Mob'
 import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
+import { EntityName } from '../../../../sdk/Entity'
 
 export class JalAkRekKet extends Mob {
-  get displayName () {
-    return 'Jal-AkRek-Ket'
+  
+  mobName(): EntityName { 
+    return EntityName.JAL_AK_REK_KET;
   }
-
+  
   get combatLevel () {
     return 70
   }

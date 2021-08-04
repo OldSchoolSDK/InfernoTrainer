@@ -11,6 +11,7 @@ import { World } from '../../../../sdk/World'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
 import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { EntityName } from '../../../../sdk/Entity'
 
 class HealWeapon extends Weapon {
 
@@ -48,8 +49,8 @@ class AoeWeapon extends Weapon {
 export class JalMejJak extends Mob {
   playerPrayerScan?: string = null;
 
-  get displayName () {
-    return 'Jal-MejJak'
+  mobName(): EntityName { 
+    return EntityName.JAL_MEJ_JAK;
   }
 
   get combatLevel () {

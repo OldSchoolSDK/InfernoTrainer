@@ -14,12 +14,13 @@ import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { UnitBonuses } from '../../../../sdk/Unit'
+import { EntityName } from '../../../../sdk/Entity'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
 
-  get displayName () {
-    return 'Jal-Ak'
+  mobName(): EntityName { 
+    return EntityName.JAL_AK;
   }
 
   get combatLevel () {

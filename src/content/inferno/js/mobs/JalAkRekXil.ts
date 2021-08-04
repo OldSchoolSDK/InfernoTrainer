@@ -1,5 +1,6 @@
 'use strict'
 
+import { EntityName } from '../../../../sdk/Entity'
 import { Mob } from '../../../../sdk/Mob'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
@@ -7,9 +8,10 @@ import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 
 export class JalAkRekXil extends Mob {
-  get displayName () {
-    return 'Jal-AkRek-Xil'
+  mobName(): EntityName { 
+    return EntityName.JAL_AK_REK_XIL;
   }
+  
 
   get combatLevel () {
     return 70

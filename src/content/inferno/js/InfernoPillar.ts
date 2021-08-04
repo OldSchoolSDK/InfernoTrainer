@@ -10,6 +10,7 @@ import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/weapons/Projectile'
 import { Location } from '../../../sdk/GameObject'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
+import { DelayedAction } from '../../../sdk/DelayedAction'
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -184,7 +185,10 @@ export class InfernoPillar extends Entity {
   }
 
   dead () {
-    this.dying = 3
+    this.dying = 2
+    DelayedAction.registerDelayedAction(new DelayedAction(() => {
+      this.world.removeEntity(this);
+    }, 2))
     // TODO: needs to AOE the nibblers around it
   }
 

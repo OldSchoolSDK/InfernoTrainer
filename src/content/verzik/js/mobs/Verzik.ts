@@ -28,10 +28,6 @@ export class Verzik extends Mob{
 
   }
 
-  get displayName(){
-    return "Verzik";
-  }
-
   get combatLevel() {
     return 1520
   }

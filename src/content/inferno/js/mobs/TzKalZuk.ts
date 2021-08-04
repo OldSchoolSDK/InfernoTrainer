@@ -143,11 +143,6 @@ export class TzKalZuk extends Mob {
     this.attackCooldownTicks = this.cooldown
   }
 
-
-  get displayName () {
-    return 'TzKal-Zuk'
-  }
-
   get combatLevel () {
     return 1400
   }

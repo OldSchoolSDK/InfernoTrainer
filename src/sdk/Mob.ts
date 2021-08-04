@@ -261,10 +261,6 @@ export class Mob extends Unit {
     }
   }
 
-  get displayName () {
-    return 'Jal-No-Name'
-  }
-
   get combatLevel () {
     return 99
   }
@@ -276,7 +272,7 @@ export class Mob extends Unit {
   contextActions (x: number, y: number) {
     return [
       {
-        text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.displayName, fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+        text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
           this.world.redClick()
           this.world.playerAttackClick(this)

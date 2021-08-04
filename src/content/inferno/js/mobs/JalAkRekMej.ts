@@ -5,10 +5,12 @@ import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
+import { EntityName } from '../../../../sdk/Entity'
 
 export class JalAkRekMej extends Mob {
-  get displayName () {
-    return 'Jal-AkRek-Mej'
+
+  mobName(): EntityName { 
+    return EntityName.JAL_AK_REK_MEJ;
   }
 
   get combatLevel () {

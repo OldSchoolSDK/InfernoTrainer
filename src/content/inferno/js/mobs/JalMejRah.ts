@@ -1,5 +1,6 @@
 'use strict'
 
+import { EntityName } from '../../../../sdk/Entity'
 import { Mob } from '../../../../sdk/Mob'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
@@ -8,10 +9,11 @@ import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 export class JalMejRah extends Mob {
-  get displayName () {
-    return 'Jal-MejRah'
-  }
 
+  mobName(): EntityName { 
+    return EntityName.JAL_MEJ_RAJ;
+  }
+  
   get combatLevel () {
     return 85
   }

@@ -9,6 +9,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
 import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { EntityName } from '../../../../sdk/Entity'
 
 class HealWeapon extends Weapon {
 
@@ -32,6 +33,9 @@ export class YtHurKot extends Mob {
     this.myJad = this.aggro as Unit;
 
   }
+  mobName(): EntityName { 
+    return EntityName.YT_HUR_KOT;
+  }
 
   attackStep() {
     super.attackStep();
@@ -41,11 +45,6 @@ export class YtHurKot extends Mob {
     }
 
   }
-  
-  get displayName () {
-    return 'Yt-HurKot'
-  }
-
   get combatLevel () {
     return 141
   }

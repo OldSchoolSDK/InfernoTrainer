@@ -14,6 +14,7 @@ import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
+import { EntityName } from '../../../../sdk/Entity'
 
 
 interface JadUnitOptions extends UnitOptions {
@@ -83,10 +84,11 @@ export class JalTokJad extends Mob {
     this.isZukWave = options.isZukWave;
   }
 
-  get displayName () {
-    return 'JalTok-Jad'
-  }
 
+  mobName(): EntityName { 
+    return EntityName.JAL_TOK_JAD;
+  }
+  
   get combatLevel () {
     return 900
   }

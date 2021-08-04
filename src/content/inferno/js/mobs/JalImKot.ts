@@ -8,10 +8,12 @@ import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
+import { EntityName } from '../../../../sdk/Entity'
 
 export class JalImKot extends Mob {
-  get displayName () {
-    return 'Jal-ImKot'
+
+  mobName(): EntityName { 
+    return EntityName.JAL_IM_KOT;
   }
 
   get combatLevel () {

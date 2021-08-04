@@ -13,6 +13,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 import { Location } from '../../../../sdk/GameObject';
+import { EntityName } from '../../../../sdk/Entity'
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
@@ -30,8 +31,8 @@ export class JalNib extends Mob {
     this.autoRetaliate = false;
   }
 
-  get displayName () {
-    return 'Jal-Nib'
+  mobName(): EntityName { 
+    return EntityName.JAL_NIB;
   }
 
   get combatLevel () {
@@ -128,7 +129,7 @@ export class JalNib extends Mob {
     this.attackCooldownTicks--
     this.attackStyle = this.attackStyleForNewAttack()
 
-    if (this.aggro.dying === 0) {
+    if (this.dying === -1 && this.aggro.dying > -1) {
       this.dead() // cheat way for now. pillar should AOE
     }
     if (this.canAttack() === false) {

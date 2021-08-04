@@ -12,6 +12,7 @@ import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
+import { EntityName } from '../../../../sdk/Entity'
 
 
 class JalXilWeapon extends RangedWeapon { 
@@ -23,9 +24,11 @@ class JalXilWeapon extends RangedWeapon {
 }
 
 export class JalXil extends Mob {
-  get displayName () {
-    return 'Jal-Xil'
+
+  mobName(): EntityName { 
+    return EntityName.JAL_XIL;
   }
+  
 
   get combatLevel () {
     return 370

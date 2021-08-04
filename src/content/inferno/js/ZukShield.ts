@@ -10,10 +10,12 @@ import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader';
 import { Location } from '../../../sdk/GameObject'
 import { World } from '../../../sdk/World';
-import { filter, remove } from 'lodash';
+import { filter, find, remove } from 'lodash';
 import { Pathing } from '../../../sdk/Pathing';
 import { AttackIndicators, Mob } from '../../../sdk/Mob';
 import { LineOfSightMask } from '../../../sdk/LineOfSight';
+import { DelayedAction } from '../../../sdk/DelayedAction';
+import { JalXil } from './mobs/JalXil';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -89,7 +91,18 @@ export class ZukShield extends Mob {
 
   dead () {
     this.dying = 3
-    // TODO: needs to AOE the nibblers around it
+    DelayedAction.registerDelayedAction(new DelayedAction(() => {
+      this.world.removeMob(this)
+      const ranger = find(this.world.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_XIL;
+      }) as JalXil;
+      ranger.aggro = this.world.player;
+      const mager = find(this.world.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_ZEK;
+      }) as JalXil;
+      mager.aggro = this.world.player;
+      
+    }, 2))
   }
 
 
