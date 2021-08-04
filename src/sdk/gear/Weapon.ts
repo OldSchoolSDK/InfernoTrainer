@@ -137,7 +137,7 @@ export class Weapon extends Equipment{
   }
   
   _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * this._maxHit(from, to, bonuses))
+    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * (this._maxHit(from, to, bonuses) + 1))
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
