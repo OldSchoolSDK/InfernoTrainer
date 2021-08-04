@@ -22,9 +22,10 @@ class HealWeapon extends Weapon {
 
 class AoeWeapon extends Weapon {
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    const playerLocation = world.player.location;
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       // make splat in 2 random spots and where the player is 
-      const limitedPlayerLocation = { x: Math.min(Math.max(from.location.x - 5, world.player.location.x), from.location.x + 5), y: world.player.location.y };
+      const limitedPlayerLocation = { x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 5), y: playerLocation.y };
       const spark1 = new InfernoHealerSpark(world, limitedPlayerLocation, from);
       world.addEntity(spark1);
       const spark2Location = { x: from.location.x + (Math.floor(Math.random() * 11) - 5), y: 16 + Math.floor(Math.random() * 5) };
