@@ -106,6 +106,9 @@ export class ZukShield extends Mob {
   }
 
 
+  contextActions (x: number, y: number) {
+    return [];
+  }
   mobName(): EntityName { 
     return EntityName.INFERNO_SHIELD;
   }
