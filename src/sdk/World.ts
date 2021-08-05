@@ -89,8 +89,11 @@ export class World {
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
     const widthRestrictors = 227 + 200;
-    this._viewport.width = Math.min(this.region.width - (widthRestrictors / Settings.tileSize), Math.floor(width / Settings.tileSize  - (widthRestrictors / Settings.tileSize) ))
-    this._viewport.height = Math.min(this.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) )))
+    this._viewport.width = Math.ceil(Math.min(
+      this.region.width, 
+      Math.floor(width / Settings.tileSize  - (widthRestrictors / Settings.tileSize)) 
+    ))
+    this._viewport.height = Math.ceil(Math.min(this.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) ))))
 
 
     // create new canvas that is the on screen canvas
