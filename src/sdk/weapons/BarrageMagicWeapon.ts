@@ -1,10 +1,11 @@
 import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
 import { World } from '../World'
-import { Unit } from '../Unit'
+import { Unit, UnitTypes } from '../Unit'
 import { MagicWeapon } from './MagicWeapon'
 import { ProjectileOptions } from './Projectile'
 import { AttackBonuses } from '../gear/Weapon';
+import { XpDrop } from '../XpDrop'
 
 export class BarrageMagicWeapon extends MagicWeapon {
   get name () {
@@ -37,6 +38,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
   }
 
   cast (world: World, from: Unit, to: Unit) {
+    from.grantXp(new XpDrop('magic', 52));
     // calculate AoE magic effects
     if (this.aoe.length) {
       const alreadyCastedOn: Unit[] = [ to ]
@@ -58,7 +60,7 @@ export class BarrageMagicWeapon extends MagicWeapon {
       this.attack(world, from, to, { magicBaseSpellDamage: 30 })
     }
   }
-
+  
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     options.forceSWTile = true;
     super.attack(world, from, to, bonuses, options)    
