@@ -84,7 +84,7 @@ export class SettingsControls extends BaseControls {
   }
 
   get keyBinding () {
-    return BrowserUtils.getQueryVar('settings_key') || '5'
+    return BrowserUtils.getQueryVar('settings_key')
   }
 
   panelClickDown (world: World, x: number, y: number) {
