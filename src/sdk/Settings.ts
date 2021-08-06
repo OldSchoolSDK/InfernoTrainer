@@ -1,7 +1,7 @@
 'use strict'
 
 export class Settings {
-  static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 23;
+  static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 34;
   static framesPerTick = 30;
   static tickMs = 600;
   static playsAudio: boolean;
