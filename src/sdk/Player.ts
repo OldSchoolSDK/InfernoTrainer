@@ -44,6 +44,7 @@ interface PlayerRegenTimers {
 }
 
 class Eating {
+  player: Player;
   foodDelay: number = 0;
   potionDelay: number = 0;
   comboDelay: number = 0;
@@ -102,7 +103,7 @@ class Eating {
     this.currentFood = food || null;
     this.foodDelay = 3;
     if (this.currentFood){
-      this.currentFood.consumeItem();
+      this.currentFood.consumeItem(this.player);
     }
   }
 
@@ -127,7 +128,7 @@ class Eating {
     this.currentComboFood = karambwan || null;
     this.comboDelay = 3;
     if (this.currentComboFood){
-      this.currentComboFood.consumeItem();
+      this.currentComboFood.consumeItem(this.player);
     }
   }
 }
@@ -150,7 +151,7 @@ export class Player extends Unit {
   regenTimers: PlayerRegenTimers;
 
   eats: Eating = new Eating();
-
+  inventory: Item[] = new Array(28).fill(null);
   healedAmountThisTick: number = 0;
 
   constructor (world: World, location: Location, options: UnitOptions) {
@@ -161,10 +162,23 @@ export class Player extends Unit {
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
+    this.eats.player = this;
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
   }
+
+
+  openInventorySlots(): number[] {
+    const openSpots = [];
+    for (let i=0; i<28; i++) {
+      if (!this.inventory[i]) {
+        openSpots.push(i);
+      }
+    }
+    return openSpots;
+  }
+
 
   postAttacksEvent() {
     this.eats.checkRedemption(this);
@@ -279,7 +293,7 @@ export class Player extends Unit {
       this.equipment.cape,
       this.equipment.ammo,
     ]
-    gear = gear.concat(InventoryControls.inventory)
+    gear = gear.concat(this.inventory)
     gear = filter(gear)
 
     const kgs = Math.max(Math.min(64,sumBy(gear, 'weight')), 0)

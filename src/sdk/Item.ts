@@ -31,8 +31,8 @@ export class Item {
     return 0;
   }
 
-  get inventoryPosition(): number {
-    return InventoryControls.inventory.map((item: Item) => {
+  inventoryPosition(player: Player): number {
+    return player.inventory.map((item: Item) => {
       if (!item) {
         return null;
       }
@@ -41,8 +41,8 @@ export class Item {
   }
   
   
-  consumeItem() {
-    InventoryControls.inventory[this.inventoryPosition] = null;
+  consumeItem(player: Player) {
+    player.inventory[this.inventoryPosition(player)] = null;
   }
 
   get inventoryImage (): string {
