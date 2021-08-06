@@ -151,11 +151,11 @@ export class ControlPanelController {
         const tabPosition = this.tabPosition(index, true)
         if (tabPosition.x <= x && x < tabPosition.x + 33) {
           if (tabPosition.y <= y && x < tabPosition.y + 36) {
+            intercepted = true;
             if (this.controls[index] === this.selectedControl) {
               this.selectedControl = null
               return
             }
-            intercepted = true;
             this.selectedControl = this.controls[index]
           }
         }
