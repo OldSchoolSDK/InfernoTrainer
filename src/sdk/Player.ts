@@ -357,9 +357,11 @@ export class Player extends Unit {
 
   attack () {
     if (this.manualSpellCastSelection) {
-      this.manualSpellCastSelection.cast(this.world, this, this.aggro)
+      const target = this.aggro;
+      this.manualSpellCastSelection.cast(this.world, this, target)
       this.manualSpellCastSelection = null
       this.aggro = null;
+      this.destinationLocation = this.location;
     } else {
       // use equipped weapon
       if (this.equipment.weapon){
