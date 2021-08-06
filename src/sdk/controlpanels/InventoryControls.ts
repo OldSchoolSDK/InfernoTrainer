@@ -87,7 +87,7 @@ export class InventoryControls extends BaseControls {
       const thisPosition = this.clickedDownItem.inventoryPosition;
       InventoryControls.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
       InventoryControls.inventory[thisPosition] = theItemWereReplacing;
-    }else{
+    }else if (clickedItem){
       const thisPosition = this.clickedDownItem.inventoryPosition;
       InventoryControls.inventory[clickedItem.inventoryPosition] = this.clickedDownItem;
       InventoryControls.inventory[thisPosition] = null;
