@@ -100,7 +100,8 @@ export class InfernoRegion extends Region {
           feet: new PegasianBoots(),
           gloves: new BarrowsGloves(),
           ring: new RingOfSufferingImbued(), 
-        }
+        },
+        inventory: this.getInventory()
       })
     world.setPlayer(player)
 

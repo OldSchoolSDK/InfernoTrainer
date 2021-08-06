@@ -151,7 +151,7 @@ export class Player extends Unit {
   regenTimers: PlayerRegenTimers;
 
   eats: Eating = new Eating();
-  inventory: Item[] = new Array(28).fill(null);
+  inventory: Item[];
   healedAmountThisTick: number = 0;
 
   constructor (world: World, location: Location, options: UnitOptions) {
@@ -163,6 +163,7 @@ export class Player extends Unit {
     this.clearXpDrops();
     this.autoRetaliate = false;
     this.eats.player = this;
+    this.inventory = options.inventory || new Array(28).fill(null);
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
