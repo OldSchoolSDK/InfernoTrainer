@@ -633,7 +633,7 @@ export class Player extends Unit {
     
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
+      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
         this.attack()
         this.attackCooldownTicks = this.attackSpeed
       }

@@ -19,6 +19,10 @@ export class GameObject {
     return -1;
   }
 
+  isDying () {
+    return (this.dying > 0)
+  }
+
   get collisionType() {
     return CollisionType.BLOCK_MOVEMENT;
   }
