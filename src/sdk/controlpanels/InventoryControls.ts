@@ -48,6 +48,9 @@ export class InventoryControls extends BaseControls {
 
 
   panelClickUp (world: World, x: number, y: number) {
+    if (!this.clickedDownItem) {
+      return;
+    }
 
     const sanitizedInventory = InventoryControls.inventory.map((item: Item, index: number) => {
       if (item) {
@@ -78,7 +81,7 @@ export class InventoryControls extends BaseControls {
       } else {
         clickedItem.selected = true
       }
-    }else if (!isPlaceholder && clickedItem){
+    }else if (!isPlaceholder){
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition;
       const thisPosition = this.clickedDownItem.inventoryPosition;
