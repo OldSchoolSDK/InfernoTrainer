@@ -78,7 +78,7 @@ export class InventoryControls extends BaseControls {
       } else {
         clickedItem.selected = true
       }
-    }else if (!isPlaceholder){
+    }else if (!isPlaceholder && clickedItem){
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition;
       const thisPosition = this.clickedDownItem.inventoryPosition;
