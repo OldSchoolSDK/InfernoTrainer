@@ -359,6 +359,7 @@ export class Player extends Unit {
     if (this.manualSpellCastSelection) {
       this.manualSpellCastSelection.cast(this.world, this, this.aggro)
       this.manualSpellCastSelection = null
+      this.aggro = null;
     } else {
       // use equipped weapon
       if (this.equipment.weapon){

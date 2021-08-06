@@ -24,7 +24,11 @@ export class AncientsSpellbookControls extends BaseControls {
   panelClickDown (world: World, x: number, y: number) {
     if (x >= 21 && x <= 42) {
       if (y >= 229 && y <= 249) {
-        world.player.manualSpellCastSelection = new BarrageMagicWeapon()
+        if (world.player.manualSpellCastSelection){
+          world.player.manualSpellCastSelection = null;
+        }else{
+          world.player.manualSpellCastSelection = new BarrageMagicWeapon()
+        }
       }
     }
   }

@@ -27,7 +27,7 @@ export class GameObject {
     return LineOfSightMask.FULL_MASK
   }
 
-  // Returns true if this mob is on the specified tile.
+  // Returns true if this game object is on the specified tile.
   isOnTile (x: number, y: number) {
     return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
   }
