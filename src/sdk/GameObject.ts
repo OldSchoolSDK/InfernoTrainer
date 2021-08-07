@@ -8,6 +8,7 @@ export interface Location {
 }
 
 export class GameObject {
+  ticksAlive: number = 0;
   location: Location;
   dying: number = -1;
 

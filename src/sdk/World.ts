@@ -262,9 +262,13 @@ export class World {
 
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.entities.forEach((entity) => entity.tick())
-    this.mobs.forEach((mob) => mob.movementStep())
+    this.mobs.forEach((mob) => {
+      mob.ticksAlive++;
+      mob.movementStep()
+    })
     this.mobs.forEach((mob) => mob.attackStep())
     this.player.movementStep()
+    this.player.ticksAlive++;
     this.player.attackStep()
     DelayedAction.tick();
 
