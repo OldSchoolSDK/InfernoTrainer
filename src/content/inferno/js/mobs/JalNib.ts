@@ -13,7 +13,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 import { Location } from '../../../../sdk/GameObject';
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {

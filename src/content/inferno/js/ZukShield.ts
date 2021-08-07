@@ -1,6 +1,7 @@
 
 import { CollisionType } from '../../../sdk/Collision';
-import { Entity, EntityName } from '../../../sdk/Entity'
+import { Entity } from '../../../sdk/Entity'
+import { EntityName } from "../../../sdk/EntityName";
 import { Settings } from '../../../sdk/Settings'
 import { Projectile } from '../../../sdk/weapons/Projectile';
 import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'

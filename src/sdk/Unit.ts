@@ -24,7 +24,7 @@ import { Ring } from './gear/Ring';
 import { Cape } from './gear/Cape';
 import { Ammo } from './gear/Ammo';
 import { SetEffect } from './SetEffect'
-import { EntityName } from './Entity'
+import { EntityName } from "./EntityName"
 import { Item } from './Item'
 export enum UnitTypes {
   MOB = 0,

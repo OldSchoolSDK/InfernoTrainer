@@ -8,7 +8,7 @@ import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 export class JalImKot extends Mob {
 

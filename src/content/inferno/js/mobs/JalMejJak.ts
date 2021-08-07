@@ -11,7 +11,7 @@ import { World } from '../../../../sdk/World'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
 import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 class HealWeapon extends Weapon {
 

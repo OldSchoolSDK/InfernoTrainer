@@ -9,7 +9,8 @@ import { UnitOptions } from '../../../../sdk/Unit'
 import { Location } from '../../../../sdk/GameObject'
 import { ZukShield } from '../ZukShield'
 import { find } from 'lodash'
-import { Entity, EntityName } from '../../../../sdk/Entity'
+import { Entity } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
 import ZukAttackImage from '../../assets/images/zuk_attack.png';

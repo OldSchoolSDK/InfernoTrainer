@@ -390,15 +390,13 @@ export class Player extends Unit {
 
 
     this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
-}
+  }
 
   movementStep () {
 
-  
     this.activatePrayers()
 
     this.pathToAggro()
-
     
     this.moveTorwardsDestination()
   }

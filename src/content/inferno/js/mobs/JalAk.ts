@@ -14,7 +14,7 @@ import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { UnitBonuses } from '../../../../sdk/Unit'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
