@@ -25,7 +25,7 @@ import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
 import { World } from './World';
 import ColorScale from 'color-scales'
-import { PlayerStats } from './Player'
+import { PlayerStats } from "./PlayerStats"
 import { ImageLoader } from './utils/ImageLoader'
 import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
