@@ -32,6 +32,25 @@ export interface PlayerStats extends UnitStats {
   specialAttack: number;
 }
 
+export function SerializePlayerStats(stats: PlayerStats): string {
+  return JSON.stringify(stats)
+}
+
+export function DeserializePlayerStats(serializedStats: string): PlayerStats {
+  const stats = JSON.parse(serializedStats) || {};
+  stats.attack = stats.attack || 99;
+  stats.strength = stats.strength || 99;
+  stats.defence = stats.defence || 99;
+  stats.range = stats.range || 99;
+  stats.magic = stats.magic || 99;
+  stats.hitpoint = stats.hitpoint || 99;
+  stats.agility = stats.agility || 99;
+  stats.prayer = stats.prayer || 99;
+  stats.run = stats.run || 10000;
+  stats.specialAttack = stats.specialAttack || 100;
+  return stats;
+}
+
 class PlayerEffects {
   poisoned: number = 0;
   venomed: number = 0;
@@ -44,6 +63,7 @@ interface PlayerRegenTimers {
 }
 
 class Eating {
+  player: Player;
   foodDelay: number = 0;
   potionDelay: number = 0;
   comboDelay: number = 0;
@@ -102,7 +122,7 @@ class Eating {
     this.currentFood = food || null;
     this.foodDelay = 3;
     if (this.currentFood){
-      this.currentFood.consumeItem();
+      this.currentFood.consumeItem(this.player);
     }
   }
 
@@ -127,7 +147,7 @@ class Eating {
     this.currentComboFood = karambwan || null;
     this.comboDelay = 3;
     if (this.currentComboFood){
-      this.currentComboFood.consumeItem();
+      this.currentComboFood.consumeItem(this.player);
     }
   }
 }
@@ -150,7 +170,7 @@ export class Player extends Unit {
   regenTimers: PlayerRegenTimers;
 
   eats: Eating = new Eating();
-
+  inventory: Item[];
   healedAmountThisTick: number = 0;
 
   constructor (world: World, location: Location, options: UnitOptions) {
@@ -161,10 +181,24 @@ export class Player extends Unit {
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
+    this.eats.player = this;
+    this.inventory = options.inventory || new Array(28).fill(null);
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
   }
+
+
+  openInventorySlots(): number[] {
+    const openSpots = [];
+    for (let i=0; i<28; i++) {
+      if (!this.inventory[i]) {
+        openSpots.push(i);
+      }
+    }
+    return openSpots;
+  }
+
 
   postAttacksEvent() {
     this.eats.checkRedemption(this);
@@ -234,32 +268,10 @@ export class Player extends Unit {
 
   setStats () {
     // non boosted numbers
-    this.stats = {
-      attack: 99,
-      strength: 99,
-      defence: 99,
-      range: 99,
-      magic: 99,
-      hitpoint: 99,
-      prayer: 99,
-      agility: 99,
-      run: 10000,
-      specialAttack: 100
-    }
+    this.stats = Settings.player_stats;
 
     // with boosts
-    this.currentStats = {
-      attack: 99,
-      strength: 99,
-      defence: 99,
-      range: 99,
-      magic: 99,
-      hitpoint: 99,
-      prayer: 99,
-      agility: 99,
-      run: 10000,
-      specialAttack: 100
-    }
+    this.currentStats = JSON.parse(JSON.stringify(Settings.player_stats))
 
   }
 
@@ -279,7 +291,7 @@ export class Player extends Unit {
       this.equipment.cape,
       this.equipment.ammo,
     ]
-    gear = gear.concat(InventoryControls.inventory)
+    gear = gear.concat(this.inventory)
     gear = filter(gear)
 
     const kgs = Math.max(Math.min(64,sumBy(gear, 'weight')), 0)
@@ -618,7 +630,7 @@ export class Player extends Unit {
     
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0) {
+      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
         this.attack()
         this.attackCooldownTicks = this.attackSpeed
       }

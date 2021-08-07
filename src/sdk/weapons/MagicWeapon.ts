@@ -7,6 +7,7 @@ import { ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
 
 export class MagicWeapon extends Weapon {
+
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     super.attack(world,from,to,bonuses, options);
   }
@@ -14,7 +15,7 @@ export class MagicWeapon extends Weapon {
   grantXp(from: Unit) {
     if (from.type === UnitTypes.PLAYER && this.damage > 0) {
       from.grantXp(new XpDrop('hitpoint', this.damage * 1.33));
-      from.grantXp(new XpDrop('magic', this.damage * 4));
+      from.grantXp(new XpDrop('magic', this.damage * 2));
     }
   }
 

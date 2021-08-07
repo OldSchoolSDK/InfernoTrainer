@@ -10,8 +10,8 @@ export class Offhand extends Equipment {
     const currentWeapon = player.equipment.weapon || null;
     const currentOffhand = player.equipment.offhand || null;
 
-    let openInventorySlots = InventoryControls.openInventorySlots()
-    openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
+    let openInventorySlots = player.openInventorySlots()
+    openInventorySlots.unshift(player.inventory.indexOf(this))
 
     let neededInventorySlots = 0;
     if (currentWeapon && currentWeapon.isTwoHander) {
@@ -24,14 +24,14 @@ export class Offhand extends Equipment {
     
     this.assignToPlayer(player);
     if (currentOffhand){
-      InventoryControls.inventory[openInventorySlots.shift()] = currentOffhand;
+      player.inventory[openInventorySlots.shift()] = currentOffhand;
     }else{
-      InventoryControls.inventory[openInventorySlots.shift()] = null; 
-      openInventorySlots = InventoryControls.openInventorySlots()       
+      player.inventory[openInventorySlots.shift()] = null; 
+      openInventorySlots = player.openInventorySlots()       
     }
     
     if (currentWeapon && currentWeapon.isTwoHander) {
-      InventoryControls.inventory[openInventorySlots.shift()] = currentWeapon;
+      player.inventory[openInventorySlots.shift()] = currentWeapon;
       player.equipment.weapon = null;
     }
 

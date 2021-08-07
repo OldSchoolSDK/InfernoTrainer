@@ -29,6 +29,7 @@ export class ImageLoader {
   
   static checkImagesLoaded(timer: NodeJS.Timeout) {
     if (ImageLoader.pendingImages === ImageLoader.completedImages){
+      console.log('done with', ImageLoader.pendingImages)
       ImageLoader.onLoadFns.forEach((onLoadFunction) => onLoadFunction())
       clearInterval(timer)
     }

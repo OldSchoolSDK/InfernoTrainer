@@ -25,6 +25,7 @@ import { Cape } from './gear/Cape';
 import { Ammo } from './gear/Ammo';
 import { SetEffect } from './SetEffect'
 import { EntityName } from './Entity'
+import { Item } from './Item'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -49,6 +50,7 @@ export interface UnitOptions {
   aggro?: GameObject;
   equipment?: UnitEquipment;
   spawnDelay?: number;
+  inventory?: Item[];
 }
 
 export interface UnitStats {
@@ -233,9 +235,6 @@ export class Unit extends GameObject {
     return !this.isDying() && !this.isStunned();
   }
 
-  isDying () {
-    return (this.dying > 0)
-  }
   
   isFrozen() {
     return (this.frozen > 0)

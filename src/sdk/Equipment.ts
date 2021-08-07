@@ -29,10 +29,10 @@ export class Equipment extends Item {
   }
   inventoryLeftClick(player: Player) {
     const currentItem = this.currentEquipment(player) || null; 
-    let openInventorySlots = InventoryControls.openInventorySlots()
-    openInventorySlots.unshift(InventoryControls.inventory.indexOf(this))
+    let openInventorySlots = player.openInventorySlots()
+    openInventorySlots.unshift(player.inventory.indexOf(this))
     this.assignToPlayer(player);
-    InventoryControls.inventory[openInventorySlots.shift()] = currentItem;
+    player.inventory[openInventorySlots.shift()] = currentItem;
     player.equipmentChanged()
   }
 
@@ -57,13 +57,13 @@ export class Equipment extends Item {
   }
 
   unequip(player: Player) {
-    let openInventorySlots = InventoryControls.openInventorySlots()
+    let openInventorySlots = player.openInventorySlots()
     if (openInventorySlots.length === 0) {
       return;
     }
     this.unassignToPlayer(player)
     
-    InventoryControls.inventory[openInventorySlots.shift()] = this;
+    player.inventory[openInventorySlots.shift()] = this;
   }
 
   get type(): EquipmentTypes {

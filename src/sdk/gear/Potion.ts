@@ -27,7 +27,7 @@ export class Potion extends Item {
       player.eats.drinkPotion(this);
     }
     if (this.doses === 0){
-      this.consumeItem();
+      this.consumeItem(player);
     }
     this.updateInventorySprite();
   }

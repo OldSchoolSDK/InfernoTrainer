@@ -16,7 +16,6 @@ export class InventoryControls extends BaseControls {
   clickedDownItem: Item = null;
   clickedDownLocation: Location = null;
   cursorLocation: Location = null;
-  static inventory: Item[] = new Array(28).fill(null);
 
   get panelImageReference () {
     return InventoryPanel
@@ -28,16 +27,6 @@ export class InventoryControls extends BaseControls {
 
   get keyBinding () {
     return Settings.inventory_key
-  }
-
-  static openInventorySlots(): number[] {
-    const openSpots = [];
-    for (let i=0; i<28; i++) {
-      if (!InventoryControls.inventory[i]) {
-        openSpots.push(i);
-      }
-    }
-    return openSpots;
   }
 
 
@@ -52,7 +41,7 @@ export class InventoryControls extends BaseControls {
       return;
     }
 
-    const sanitizedInventory = InventoryControls.inventory.map((item: Item, index: number) => {
+    const sanitizedInventory = world.player.inventory.map((item: Item, index: number) => {
       if (item) {
         return item;
       }
@@ -83,14 +72,14 @@ export class InventoryControls extends BaseControls {
       }
     }else if (!isPlaceholder && clickedItem){
       const theItemWereReplacing = clickedItem;
-      const theItemWereReplacingPosition = clickedItem.inventoryPosition;
-      const thisPosition = this.clickedDownItem.inventoryPosition;
-      InventoryControls.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
-      InventoryControls.inventory[thisPosition] = theItemWereReplacing;
+      const theItemWereReplacingPosition = clickedItem.inventoryPosition(world.player);
+      const thisPosition = this.clickedDownItem.inventoryPosition(world.player);
+      world.player.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
+      world.player.inventory[thisPosition] = theItemWereReplacing;
     }else if (clickedItem){
-      const thisPosition = this.clickedDownItem.inventoryPosition;
-      InventoryControls.inventory[clickedItem.inventoryPosition] = this.clickedDownItem;
-      InventoryControls.inventory[thisPosition] = null;
+      const thisPosition = this.clickedDownItem.inventoryPosition(world.player);
+      world.player.inventory[clickedItem.inventoryPosition(world.player)] = this.clickedDownItem;
+      world.player.inventory[thisPosition] = null;
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
@@ -100,7 +89,7 @@ export class InventoryControls extends BaseControls {
     this.cursorLocation = { x, y }
     this.clickedDownLocation = {x, y};
 
-    const clickedItem = first(filter(InventoryControls.inventory, (inventoryItem: Item, index: number) => {
+    const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
       }
@@ -111,7 +100,7 @@ export class InventoryControls extends BaseControls {
       return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
     })) as Item
 
-    InventoryControls.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
+    world.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 
     if (clickedItem) {
       this.clickedDownItem = clickedItem;
@@ -121,7 +110,7 @@ export class InventoryControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    InventoryControls.inventory.forEach((inventoryItem, index) => {
+    world.player.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
 

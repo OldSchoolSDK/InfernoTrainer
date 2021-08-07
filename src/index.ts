@@ -34,7 +34,6 @@ switch (selectedRegionName) {
 
 
 const controlPanel = new ControlPanelController()
-InventoryControls.inventory = selectedRegion.getInventory()
 
 
 const world = new World('world', selectedRegion, MapController.controller, controlPanel);
