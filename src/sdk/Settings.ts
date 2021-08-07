@@ -1,6 +1,6 @@
 'use strict'
 
-import { Player, PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./Player";
+import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./PlayerStats";
 
 export class Settings {
   static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 34;
