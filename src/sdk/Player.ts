@@ -32,6 +32,25 @@ export interface PlayerStats extends UnitStats {
   specialAttack: number;
 }
 
+export function SerializePlayerStats(stats: PlayerStats): string {
+  return JSON.stringify(stats)
+}
+
+export function DeserializePlayerStats(serializedStats: string): PlayerStats {
+  const stats = JSON.parse(serializedStats) || {};
+  stats.attack = stats.attack || 99;
+  stats.strength = stats.strength || 99;
+  stats.defence = stats.defence || 99;
+  stats.range = stats.range || 99;
+  stats.magic = stats.magic || 99;
+  stats.hitpoint = stats.hitpoint || 99;
+  stats.agility = stats.agility || 99;
+  stats.prayer = stats.prayer || 99;
+  stats.run = stats.run || 10000;
+  stats.specialAttack = stats.specialAttack || 100;
+  return stats;
+}
+
 class PlayerEffects {
   poisoned: number = 0;
   venomed: number = 0;
@@ -249,32 +268,10 @@ export class Player extends Unit {
 
   setStats () {
     // non boosted numbers
-    this.stats = {
-      attack: 99,
-      strength: 99,
-      defence: 99,
-      range: 99,
-      magic: 99,
-      hitpoint: 99,
-      prayer: 99,
-      agility: 99,
-      run: 10000,
-      specialAttack: 100
-    }
+    this.stats = Settings.player_stats;
 
     // with boosts
-    this.currentStats = {
-      attack: 99,
-      strength: 99,
-      defence: 99,
-      range: 99,
-      magic: 99,
-      hitpoint: 99,
-      prayer: 99,
-      agility: 99,
-      run: 10000,
-      specialAttack: 100
-    }
+    this.currentStats = JSON.parse(JSON.stringify(Settings.player_stats))
 
   }
 
