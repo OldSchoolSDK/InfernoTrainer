@@ -10,7 +10,7 @@ import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
 import { TzKalZuk } from './TzKalZuk'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 import { find } from 'lodash'
 
 export class JalZek extends Mob {

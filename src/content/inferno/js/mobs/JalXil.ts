@@ -12,7 +12,7 @@ import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 
 class JalXilWeapon extends RangedWeapon { 

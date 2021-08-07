@@ -1,6 +1,6 @@
 'use strict'
 
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 import { Mob } from '../../../../sdk/Mob'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'

@@ -337,19 +337,19 @@ export class World {
     if (parseInt(this.wave) < 67) {
       viewportX = 11;
       viewportY = 14;
-    }
-
-    if (viewportX < 0) {
-      viewportX = 0
-    }
-    if (viewportY < 0) {
-      viewportY = 0;
-    }
-    if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
-      viewportX = this.region.width - this._viewport.width;
-    }
-    if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
-      viewportY = this.region.height - this._viewport.height;
+    }else{
+      if (viewportX < 0) {
+        viewportX = 0
+      }
+      if (viewportY < 0) {
+        viewportY = 0;
+      }
+      if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
+        viewportX = this.region.width - this._viewport.width;
+      }
+      if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
+        viewportY = this.region.height - this._viewport.height;
+      } 
     }
 
     return {viewportX, viewportY}

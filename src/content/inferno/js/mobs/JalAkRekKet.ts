@@ -5,7 +5,7 @@ import { Mob } from '../../../../sdk/Mob'
 import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 export class JalAkRekKet extends Mob {
   

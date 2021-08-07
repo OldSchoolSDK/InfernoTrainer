@@ -5,7 +5,7 @@ import JalAkRekMejImage from '../../assets/images/Jal-AkRek-Mej.png'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 export class JalAkRekMej extends Mob {
 

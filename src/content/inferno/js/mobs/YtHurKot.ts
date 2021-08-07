@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
 import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 class HealWeapon extends Weapon {
 

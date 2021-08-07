@@ -256,7 +256,9 @@ export class Mob extends Unit {
   playAttackSound () {
     if (Settings.playsAudio) {
       const sound = new Audio(this.sound)
-      sound.volume = 1 / Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y)
+      let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y);
+      attemptedVolume = Math.min(1, Math.max(0, attemptedVolume))
+      sound.volume = attemptedVolume;
       sound.play()
     }
   }

@@ -14,7 +14,7 @@ import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
-import { EntityName } from '../../../../sdk/Entity'
+import { EntityName } from "../../../../sdk/EntityName"
 
 
 interface JadUnitOptions extends UnitOptions {
