@@ -189,7 +189,7 @@ export class Pathing {
     let x, y
     const path = Pathing.constructPath(world, startPoint, endPoint)
     if (path.length === 0) {
-      return startPoint
+      return { x: startPoint.x, y: startPoint.y,  path: [] }
     }
     if (seeking && Collision.collidesWithMob(world, path[0].x, path[0].y, 1, seeking)) {
       path.shift()
@@ -204,6 +204,6 @@ export class Pathing {
       x = path[path.length - speed - 1].x
       y = path[path.length - speed - 1].y
     }
-    return { x, y }
+    return { x, y, path: path.reverse().slice(1, 3) }
   }
 }

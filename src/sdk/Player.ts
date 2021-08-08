@@ -51,6 +51,8 @@ export class Player extends Unit {
   inventory: Item[];
   healedAmountThisTick: number = 0;
 
+  path: any;
+
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
@@ -389,7 +391,11 @@ export class Player extends Unit {
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
 
-    this.location = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro)
+    const path = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro); 
+    this.location = { x: path.x, y: path.y }
+
+    this.path = path.path;
+
   }
 
   movementStep () {
@@ -492,8 +498,9 @@ export class Player extends Unit {
     LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
 
     this.world.worldCtx.save();
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    const perceivedLocation = this.getPerceivedLocation(tickPercent);
+    const perceivedX = perceivedLocation.x;
+    const perceivedY = perceivedLocation.y;
 
     // Perceived location
 
@@ -534,10 +541,31 @@ export class Player extends Unit {
     this.world.worldCtx.restore();
   }
 
-  drawUILayer(tickPercent: number) {
+  getPerceivedLocation(tickPercent: number): Location {
 
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+
+    if (this.path && this.path.length === 2) {
+      if (tickPercent < 0.5) {
+        perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
+        perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
+      }else{
+        perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2)
+        perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2)
+      }
+    }
+    return {
+      x: perceivedX,
+      y: perceivedY
+    }
+  }
+
+  drawUILayer(tickPercent: number) {
+    const perceivedLocation = this.getPerceivedLocation(tickPercent);
+    const perceivedX = perceivedLocation.x;
+    const perceivedY = perceivedLocation.y;
+    
     this.world.worldCtx.save();
 
 
