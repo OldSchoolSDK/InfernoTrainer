@@ -14,6 +14,7 @@ import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
 import { Collision } from './Collision'
+import { Item } from './Item'
 
 class Viewport {
   center: Location;
@@ -240,19 +241,44 @@ export class World {
     }
     
     /* gather options */
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
     let menuOptions: MenuOption[] = [
+    ]
+
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+    mobs.forEach((mob) => {
+      menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
+    })
+
+    const groundItems: Item[] = this.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
+    groundItems.forEach((item: Item) => {
+      menuOptions.push(
+        {
+          text: [
+            { text: 'Take ', fillStyle: 'white' }, { text: item.itemName, fillStyle: '#FF911F' },
+          ],
+          action: () => 
+          {
+            // Verify player is close. Apparently we need to have the player keep track of this item 
+            this.region.removeGroundItem(item, this.player.location.x, this.player.location.y)
+            const slots = this.player.openInventorySlots();
+            if (slots.length) {
+              const slot = slots[0];
+              this.player.inventory[slot] = item;
+            }
+
+          }
+        }
+      )
+    });
+    menuOptions.push(
       {
         text: [{ text: 'Walk Here', fillStyle: 'white' }],
         action: () => {
           this.yellowClick()
           this.playerWalkClick(this.player.destinationLocation.x * Settings.tileSize, this.player.destinationLocation.y * Settings.tileSize)
         }
-      },
-    ]
-    mobs.forEach((mob) => {
-      menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
-    })
+      }
+    )
     this.contextMenu.setMenuOptions(menuOptions)
     this.contextMenu.setActive()
   }
@@ -337,6 +363,7 @@ export class World {
   drawWorld (tickPercent: number) {
     this.worldCtx.save();
     this.region.drawWorldBackground(this.worldCtx)
+    this.region.drawGroundItems(this.worldCtx)
 
     // Draw all things on the map
     this.entities.forEach((entity) => entity.draw(tickPercent))

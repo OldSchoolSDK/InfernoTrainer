@@ -37,7 +37,8 @@ export class Item {
         ],
         action: () => 
         {
-          console.log('drop')
+          world.region.addGroundItem(this, world.player.location.x, world.player.location.y)
+          this.consumeItem(world.player);
         }
       },
       {
