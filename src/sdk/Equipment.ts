@@ -21,6 +21,7 @@ export class Equipment extends Item {
 
   constructor() {
     super()
+    this.defaultAction = 'Equip';
     this.setStats();
   }
 

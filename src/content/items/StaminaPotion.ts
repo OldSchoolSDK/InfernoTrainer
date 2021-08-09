@@ -34,7 +34,7 @@ export class StaminaPotion extends Potion {
     return Vial;
   }
   get itemName(): ItemName {
-    return ItemName.SARADOMIN_BREW
+    return ItemName.STAMINA_POTION
   }
 
   drink(player: Player) { 

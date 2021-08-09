@@ -9,6 +9,7 @@ export class Item {
   inventorySprite: HTMLImageElement;
   selected: boolean;
   _serialNumber: string;
+  defaultAction: string = 'Use';
 
   get serialNumber(): string {
     if (!this._serialNumber) {
@@ -29,16 +30,7 @@ export class Item {
     // use
     // drop
     // examine
-    return [
-      {
-        text: [
-          { text: 'Use ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
-        ],
-        action: () => 
-        {
-          console.log('use')
-        }
-      },
+    let options = [
       {
         text: [
           { text: 'Drop ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
@@ -57,8 +49,23 @@ export class Item {
           console.log('examine')
         }
       },
-
     ]
+
+    if (this.defaultAction) {
+      options.unshift(
+        {
+          text: [
+            { text: this.defaultAction + ' ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+          ],
+          action: () => 
+          {
+            this.inventoryLeftClick(world.player);
+          }
+        }
+      )
+    }
+
+    return options;
   }
 
   get itemName(): ItemName {
