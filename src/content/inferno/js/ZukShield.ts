@@ -107,7 +107,7 @@ export class ZukShield extends Mob {
   }
 
 
-  contextActions (x: number, y: number) {
+  contextActions (world: World, x: number, y: number) {
     return [];
   }
   mobName(): EntityName { 

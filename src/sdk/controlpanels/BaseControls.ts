@@ -22,6 +22,10 @@ export class BaseControls {
   cursorMovedto(world: World, x: number, y: number) {
   }
 
+  panelRightClick (world: World, x: number, y: number) {
+    
+  }
+
   panelClickDown (world: World, x: number, y: number) {
     console.log(x, y)
   }

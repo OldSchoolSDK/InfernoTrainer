@@ -70,13 +70,6 @@ export class ContextMenu {
         },
         ...this.menuOptions,
         {
-          text: [{ text: 'Walk Here', fillStyle: 'white' }],
-          action: () => {
-            world.yellowClick()
-            world.playerWalkClick(this.destinationLocation.x * Settings.tileSize, this.destinationLocation.y * Settings.tileSize)
-          }
-        },
-        {
           text: [{ text: 'Cancel', fillStyle: 'white' }],
           action: () => {
             world.yellowClick()
@@ -105,7 +98,6 @@ export class ContextMenu {
       world.viewportCtx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
 
       for (let i = 0; i < this.linesOfText.length; i++) {
-        this.linesOfText[0].text
         this.drawLineOfText(world.viewportCtx, this.linesOfText[i].text, this.width, i * 20)
       }
     }

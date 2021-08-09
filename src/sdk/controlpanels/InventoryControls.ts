@@ -10,6 +10,7 @@ import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../gear/Weapon'
 import { Location } from '../../sdk/GameObject'
 import { Collision } from '../Collision'
+import { MenuOption } from '../ContextMenu'
 
 export class InventoryControls extends BaseControls {
 
@@ -33,6 +34,33 @@ export class InventoryControls extends BaseControls {
   cursorMovedto(world: World, x: number, y: number) {
 
     this.cursorLocation = { x, y }
+  }
+
+  panelRightClick(world: World, x: number, y: number) {
+
+    let menuOptions: MenuOption[] = []
+    // mobs.forEach((mob) => {
+    //   menuOptions = menuOptions.concat(mob.contextActions(x, y))
+    // })
+
+
+    const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
+      if (!inventoryItem) {
+        return
+      }
+      const x2 = index % 4
+      const y2 = Math.floor(index / 4)
+      const itemX = 20 + x2 * 43
+      const itemY = 17 + (y2 + 1) * 35
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+    })) as Item
+
+    if (clickedItem) {
+      menuOptions = menuOptions.concat(clickedItem.contextActions(world))
+    }
+
+    world.contextMenu.setMenuOptions(menuOptions)
+    world.contextMenu.setActive()
   }
 
 

@@ -137,6 +137,11 @@ export class World {
     //   }
     // }
 
+
+    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
+    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
+
+
     if (e.offsetX > this.viewport.width - this.controlPanel.width) {
       if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
         const intercepted = this.controlPanel.controlPanelClickUp(e);
@@ -162,6 +167,15 @@ export class World {
       y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     } 
 
+    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
+    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
+
+    if (this.contextMenu.isActive && xAlign && yAlign) {
+      this.contextMenu.clicked(this, e.offsetX, e.offsetY)
+      this.contextMenu.setInactive();
+      return;
+    }
+
     if (e.offsetX > this.viewportWidth * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
         const intercepted = this.mapController.clicked(e);
@@ -177,43 +191,47 @@ export class World {
         if (intercepted) {
           return;
         }
-  
       }
     }
-    const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
-    const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
 
-    if (this.contextMenu.isActive && xAlign && yAlign) {
-      this.contextMenu.clicked(this, e.offsetX, e.offsetY)
+
+    if (this.inputDelay) {
+      clearTimeout(this.inputDelay)
+    }
+
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
+    this.player.aggro = null
+    if (mobs.length && mobs[0].canBeAttacked()) {
+      this.redClick()
+      this.playerAttackClick(mobs[0])
     } else {
-      if (this.inputDelay) {
-        clearTimeout(this.inputDelay)
-      }
-
-      const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
-      this.player.aggro = null
-      if (mobs.length && mobs[0].canBeAttacked()) {
-        this.redClick()
-        this.playerAttackClick(mobs[0])
-      } else {
-        this.yellowClick()
-        this.playerWalkClick(x, y)
-      }
+      this.yellowClick()
+      this.playerWalkClick(x, y)
     }
     this.contextMenu.setInactive()
   }
 
   rightClick (e: MouseEvent) {
     
-    const { viewportX, viewportY } = this.getViewport();
 
+    const { viewportX, viewportY } = this.getViewport();
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
-    this.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
 
+    this.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
     if (Settings.rotated === 'south') {
       x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+    }
+
+    if (e.offsetX > this.viewport.width - this.controlPanel.width) {
+      if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
+        const intercepted = this.controlPanel.controlPanelRightClick(e);
+        if (intercepted) {
+          return;
+        }
+  
+      }
     }
 
     this.contextMenu.destinationLocation = {
@@ -223,9 +241,17 @@ export class World {
     
     /* gather options */
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
-    let menuOptions: MenuOption[] = []
+    let menuOptions: MenuOption[] = [
+      {
+        text: [{ text: 'Walk Here', fillStyle: 'white' }],
+        action: () => {
+          this.yellowClick()
+          this.playerWalkClick(this.player.destinationLocation.x * Settings.tileSize, this.player.destinationLocation.y * Settings.tileSize)
+        }
+      },
+    ]
     mobs.forEach((mob) => {
-      menuOptions = menuOptions.concat(mob.contextActions(x, y))
+      menuOptions = menuOptions.concat(mob.contextActions(this, x, y))
     })
     this.contextMenu.setMenuOptions(menuOptions)
     this.contextMenu.setActive()

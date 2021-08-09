@@ -115,6 +115,30 @@ export class ControlPanelController {
 
     }
   }
+  controlPanelRightClick (e: MouseEvent): boolean {
+
+    console.log('a')
+    let intercepted = false;
+
+    const x = e.offsetX - (this.world.viewport.width - this.width);
+    const y = e.offsetY - (this.world.viewport.height - this.height);
+
+    const panelX = this.width - 204
+    const panelY = 0
+    const panelWidth = 204
+    const panelHeight = 275
+    if (panelX < x && x < panelX + panelWidth) {
+      if (panelY < y && y < panelY + panelHeight) {
+        const relativeX = x - panelX
+        const relativeY = y - panelY
+        intercepted = true;
+        console.log('b');
+        this.selectedControl.panelRightClick(this.world, relativeX, relativeY)
+      }
+    }
+
+    return intercepted;
+  }
 
   controlPanelClickUp (e: MouseEvent): boolean {
 

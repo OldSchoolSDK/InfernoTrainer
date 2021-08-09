@@ -271,7 +271,7 @@ export class Mob extends Unit {
     return 'red'
   }
 
-  contextActions (x: number, y: number) {
+  contextActions (world: World, x: number, y: number) {
     return [
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],

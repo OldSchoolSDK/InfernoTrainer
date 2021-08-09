@@ -2,8 +2,10 @@ import { filter } from "lodash";
 import { InventoryControls } from "./controlpanels/InventoryControls";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
+import { World } from "./World";
 
 export class Item {
+  
   inventorySprite: HTMLImageElement;
   selected: boolean;
   _serialNumber: string;
@@ -21,6 +23,42 @@ export class Item {
 
   inventoryLeftClick(player: Player) {
     
+  }
+  
+  contextActions (world: World) {
+    // use
+    // drop
+    // examine
+    return [
+      {
+        text: [
+          { text: 'Use ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+        ],
+        action: () => 
+        {
+          console.log('use')
+        }
+      },
+      {
+        text: [
+          { text: 'Drop ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+        ],
+        action: () => 
+        {
+          console.log('drop')
+        }
+      },
+      {
+        text: [
+          { text: 'Examine ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+        ],
+        action: () => 
+        {
+          console.log('examine')
+        }
+      },
+
+    ]
   }
 
   get itemName(): ItemName {
