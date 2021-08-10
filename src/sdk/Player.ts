@@ -549,7 +549,7 @@ export class Player extends Unit {
     this.world.worldCtx.globalAlpha = 1
 
     // Draw player on true tile
-    this.world.worldCtx.fillStyle = '#fff'
+    this.world.worldCtx.fillStyle = '#ffffff73'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
       this.world.worldCtx.fillStyle = '#00FFFF'

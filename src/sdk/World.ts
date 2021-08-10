@@ -268,7 +268,7 @@ export class World {
         text: [{ text: 'Walk Here', fillStyle: 'white' }],
         action: () => {
           this.yellowClick()
-          this.playerWalkClick(this.player.destinationLocation.x * Settings.tileSize, this.player.destinationLocation.y * Settings.tileSize)
+          this.playerWalkClick(this.contextMenu.destinationLocation.x * Settings.tileSize, this.contextMenu.destinationLocation.y * Settings.tileSize)
         }
       }
     )
