@@ -141,7 +141,7 @@ export class InfernoRegion extends Region {
       
       if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
         // Backwards compatibility layer for runelite plugin
-        world.wave = 'imported';
+        world.wave = 1;
         try {
           JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
           JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
