@@ -201,10 +201,15 @@ export class World {
     }
 
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(this, x, y, this.tickPercent)
-    this.player.aggro = null
+    const groundItems = this.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+
+    this.player.setAggro(null)
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
       this.playerAttackClick(mobs[0])
+    } else if (groundItems.length){
+      this.redClick()
+      this.player.setSeekingItem(groundItems[0])
     } else {
       this.yellowClick()
       this.playerWalkClick(x, y)
@@ -253,20 +258,8 @@ export class World {
     groundItems.forEach((item: Item) => {
       menuOptions.push(
         {
-          text: [
-            { text: 'Take ', fillStyle: 'white' }, { text: item.itemName, fillStyle: '#FF911F' },
-          ],
-          action: () => 
-          {
-            // Verify player is close. Apparently we need to have the player keep track of this item 
-            this.region.removeGroundItem(item, this.player.location.x, this.player.location.y)
-            const slots = this.player.openInventorySlots();
-            if (slots.length) {
-              const slot = slots[0];
-              this.player.inventory[slot] = item;
-            }
-
-          }
+          text: [ { text: 'Take ', fillStyle: 'white' }, { text: item.itemName, fillStyle: '#FF911F' } ],
+          action: () => this.player.setSeekingItem(item)
         }
       )
     });
@@ -286,7 +279,7 @@ export class World {
 
   playerAttackClick (mob: Unit) {
     this.inputDelay = setTimeout(() => {
-      this.player.aggro = mob
+      this.player.setAggro(mob);
     }, Settings.inputDelay)
   }
 

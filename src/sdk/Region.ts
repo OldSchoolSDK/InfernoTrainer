@@ -21,7 +21,7 @@ export class Region{
 
   groundItems: GroundItems = { }
 
-  addGroundItem(item: Item, x: number, y: number) {
+  addGroundItem(world: World, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
       this.groundItems[x] = {};
     }
@@ -29,6 +29,7 @@ export class Region{
       this.groundItems[x][y] = [];
     }
 
+    item.groundLocation = { x:  world.player.location.x, y:  world.player.location.y };
     this.groundItems[x][y].push(item);
   }
 

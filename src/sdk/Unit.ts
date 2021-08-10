@@ -130,7 +130,7 @@ export class Unit extends GameObject {
     super()
 
     this.world = world
-    this.aggro = options.aggro || null
+     this.aggro = options.aggro || null
     this.perceivedLocation = location
     this.location = location
     this.setStats()
@@ -139,6 +139,12 @@ export class Unit extends GameObject {
     this.currentStats.hitpoint = this.stats.hitpoint
 
   }
+
+
+  setAggro(mob: Unit) {
+    this.aggro = mob;
+  }
+
   
   grantXp(xpDrop: XpDrop) { }
   setStats(){ }
@@ -300,7 +306,7 @@ export class Unit extends GameObject {
 
   addProjectile (projectile: Projectile) {
     if (this.spawnDelay > 0 && this.autoRetaliate){
-      this.aggro = projectile.from;
+      this.setAggro(projectile.from);
     }
     this.spawnDelay = 0;
     this.incomingProjectiles.push(projectile)
@@ -359,7 +365,7 @@ export class Unit extends GameObject {
         }
         this.damageTaken();
         if (projectile.from !== this.aggro && this.autoRetaliate) {
-          this.aggro = projectile.from;
+          this.setAggro(projectile.from);
         }
       }
     })

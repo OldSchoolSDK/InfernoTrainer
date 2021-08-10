@@ -1,11 +1,13 @@
 import { filter } from "lodash";
 import { InventoryControls } from "./controlpanels/InventoryControls";
+import { Location } from "./GameObject";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
 import { World } from "./World";
 
 export class Item {
   
+  groundLocation: Location;
   inventorySprite: HTMLImageElement;
   selected: boolean;
   _serialNumber: string;
@@ -37,7 +39,7 @@ export class Item {
         ],
         action: () => 
         {
-          world.region.addGroundItem(this, world.player.location.x, world.player.location.y)
+          world.region.addGroundItem(world, this, world.player.location.x, world.player.location.y)
           this.consumeItem(world.player);
         }
       },

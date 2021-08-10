@@ -51,6 +51,8 @@ export class Player extends Unit {
   inventory: Item[];
   healedAmountThisTick: number = 0;
 
+  seekingItem: Item = null;
+
   path: any;
 
   constructor (world: World, location: Location, options: UnitOptions) {
@@ -205,7 +207,8 @@ export class Player extends Unit {
   }
 
   moveTo (x: number, y: number) {
-    this.aggro = null
+    this.setAggro(null);
+
     this.manualSpellCastSelection = null
 
     const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.world, x, y, 1)
@@ -250,7 +253,7 @@ export class Player extends Unit {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
       this.manualSpellCastSelection = null
-      this.aggro = null;
+      this.setAggro(null);
       this.destinationLocation = this.location;
     } else {
       // use equipped weapon
@@ -283,10 +286,20 @@ export class Player extends Unit {
     }
   }
 
-  pathToAggro () {
+
+  setAggro(mob: Unit) {
+    this.aggro = mob;
+    this.seekingItem = null;
+  }
+
+  setSeekingItem(item: Item) {
+    this.aggro = null;
+    this.seekingItem = item;
+  }
+  determineDestination () {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
-        this.aggro = null
+        this.setAggro(null);
         this.destinationLocation = this.location
         return
       }
@@ -361,6 +374,8 @@ export class Player extends Unit {
       } else {
         this.destinationLocation = this.location
       }
+    }else if (this.seekingItem) {
+      this.destinationLocation = this.seekingItem.groundLocation;
     }
   }
 
@@ -398,11 +413,30 @@ export class Player extends Unit {
 
   }
 
+  takeSeekingItem() {
+    if (this.seekingItem) {
+      if (this.seekingItem.groundLocation.x === this.location.x) {
+        if (this.seekingItem.groundLocation.y === this.location.y) {
+          // Verify player is close. Apparently we need to have the player keep track of this item 
+          this.world.region.removeGroundItem(this.seekingItem, this.location.x, this.location.y)
+          const slots = this.openInventorySlots();
+          if (slots.length) {
+            const slot = slots[0];
+            this.inventory[slot] = this.seekingItem;
+          }
+          this.seekingItem = null;
+        }          
+      }
+    }
+  }
+
   movementStep () {
 
     this.activatePrayers()
 
-    this.pathToAggro()
+    this.takeSeekingItem();
+
+    this.determineDestination()
     
     this.moveTorwardsDestination()
   }
