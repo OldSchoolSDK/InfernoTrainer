@@ -32,7 +32,7 @@ export class ContextMenu {
   setActive () {
     this.isActive = true
   }
-
+d
   setInactive () {
     this.isActive = false
   }
@@ -110,13 +110,16 @@ export class ContextMenu {
 
     ctx.save()
     text.forEach(({ text, fillStyle, font }: { text: string, fillStyle: string, font: string}) => {
+      ctx.font = font || defaultFont
+
+      ctx.fillStyle = 'black'
+      ctx.fillText(text, x+1, y+1)
+
       if (fillStyle === 'white') {
         ctx.fillStyle = inputColor
       } else {
         ctx.fillStyle = fillStyle || defaultFillStyle
       }
-
-      ctx.font = font || defaultFont
       ctx.fillText(text, x, y)
       x += ctx.measureText(text).width
     })
