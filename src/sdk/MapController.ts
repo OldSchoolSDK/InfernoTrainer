@@ -29,6 +29,8 @@ import { PlayerStats } from "./PlayerStats"
 import { ImageLoader } from './utils/ImageLoader'
 import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
+import { MenuOption } from './ContextMenu'
+import { XpDropController } from './XpDropController'
 
 enum MapHover {
   NONE = 0,
@@ -241,7 +243,122 @@ export class MapController {
     mapContext.restore()
   }
 
-  clicked(event: MouseEvent): boolean {
+  rightClick(event: MouseEvent): boolean {
+
+    let menuOptions: MenuOption[] = []
+
+
+    let intercepted = false;
+    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const y = event.offsetY;
+
+    if (x > 4 && x < 20 && y > 31 && y < 48) {
+      intercepted = true;
+      if (Settings.displayXpDrops === true){
+        menuOptions = [
+          {
+            text: [{ text: 'Hide ', fillStyle: 'white' }, { text: 'XP drops', fillStyle: '#FF911F' } ],
+            action: () => {
+              Settings.displayXpDrops = false;
+            }
+          }
+        ]
+      }else{
+        menuOptions = [
+          {
+            text: [{ text: 'Show ', fillStyle: 'white' }, { text: 'XP drops', fillStyle: '#FF911F' } ],
+            action: () => {
+              Settings.displayXpDrops = true;
+            }
+          }
+        ]
+      }
+    }else if (x > 33 && x < 64 && y > 5 && y < 36){
+      intercepted = true;
+      menuOptions = [
+        {
+          text: [{ text: 'Look North', fillStyle: 'white' } ],
+          action: () => {
+            Settings.rotated = 'north';          
+          }
+        },
+        {
+          text: [{ text: 'Look South', fillStyle: 'white' } ],
+          action: () => {
+            Settings.rotated = 'south';
+          }
+        }
+      ]
+    
+    }else if (x > 4 && x < 52 && y > 53 && y < 73){
+      // intercepted = true;
+      // hitpoint
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
+      intercepted = true;
+      // prayer
+      menuOptions = [
+        {
+          text: [{ text: 'Activate Quick-prayers', fillStyle: 'white' } ],
+          action: () => {
+            this.toggleQuickprayers();
+          }
+        }
+      ]
+    
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
+      intercepted = true;
+      // run
+      menuOptions = [
+        {
+          text: [{ text: 'Toggle Run', fillStyle: 'white' } ],
+          action: () => {
+            this.world.player.running = !this.world.player.running;
+          }
+        }
+      ]
+    
+    }else if (x > 38 && x < 79 && y > 148 && y < 175) {
+      if (this.canSpecialAttack()) {
+        intercepted = true;
+        // special attack
+        menuOptions = [
+          {
+            text: [{ text: 'Use ', fillStyle: 'white' }, { text: 'Special Attack', fillStyle: '#FF911F' } ],
+            action: () => {
+              this.toggleSpecialAttack();
+            }
+          }
+        ]
+      }
+    }
+
+    this.world.contextMenu.setMenuOptions(menuOptions)
+    this.world.contextMenu.setActive()
+
+    return intercepted;  
+  
+  }
+
+  canSpecialAttack() {
+    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
+  }
+  toggleSpecialAttack() {
+    if (this.canSpecialAttack()) {
+      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+    }
+  }
+
+  toggleQuickprayers() {
+    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+    if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+      ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+      this.world.player.prayerDrainCounter = 0;
+    }else {
+      ControlPanelController.controls.PRAYER.activateQuickPrayers();
+    }
+  }
+
+  leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
     const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
     const y = event.offsetY;
@@ -263,21 +380,13 @@ export class MapController {
       // this.hovering = MapHover.HITPOINT;
     }else if (x > 4 && x < 53 && y > 90 && y < 113) {
       intercepted = true;
-      const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
-      if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-        ControlPanelController.controls.PRAYER.deactivateAllPrayers();
-        this.world.player.prayerDrainCounter = 0;
-      }else {
-        ControlPanelController.controls.PRAYER.activateQuickPrayers();
-      }
+      this.toggleQuickprayers();
     }else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
       this.world.player.running = !this.world.player.running;
     }else if (x > 38 && x < 79 && y > 148 && y < 175) {
       intercepted = true;
-      if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
-        this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
-      }
+      this.toggleSpecialAttack();
     }
     this.updateOrbsMask(this.currentStats, this.stats);
     return intercepted;

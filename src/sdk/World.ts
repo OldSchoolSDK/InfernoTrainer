@@ -179,7 +179,7 @@ export class World {
 
     if (e.offsetX > this.viewportWidth * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
-        const intercepted = this.mapController.clicked(e);
+        const intercepted = this.mapController.leftClickDown(e);
         if (intercepted) {
           return;
         }
@@ -240,6 +240,17 @@ export class World {
       }
     }
 
+    if (e.offsetX > this.viewportWidth * Settings.tileSize) {
+      if (e.offsetY < this.mapController.height) {
+        const intercepted = this.mapController.rightClick(e);
+        if (intercepted) {
+          return;
+        }
+      }
+    }
+
+
+
     this.contextMenu.destinationLocation = {
       x : Math.floor(x / Settings.tileSize),
       y : Math.floor(y / Settings.tileSize)
@@ -263,6 +274,7 @@ export class World {
         }
       )
     });
+
     menuOptions.push(
       {
         text: [{ text: 'Walk Here', fillStyle: 'white' }],
