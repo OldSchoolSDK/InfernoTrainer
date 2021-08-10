@@ -16,15 +16,6 @@ import { DelayedAction } from './DelayedAction'
 import { Collision } from './Collision'
 import { Item } from './Item'
 
-class Viewport {
-  center: Location;
-  radius: number;
-  constructor(center: Location, radius: number) {
-    this.center = center;
-    this.radius = radius;
-  }
-}
-
 export class World {
   region: Region;
   wave: string;
@@ -53,7 +44,6 @@ export class World {
   tickPercent: number;
   isPaused: boolean = true;
 
-  viewportController: Viewport;
   newMobs: Mob[] = [];
 
   _viewport = {
