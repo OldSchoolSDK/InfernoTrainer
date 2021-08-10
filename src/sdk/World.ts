@@ -4,7 +4,6 @@ import { ClickAnimation } from './ClickAnimation'
 import { Settings } from './Settings'
 import { ContextMenu, MenuOption } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
-import { Pathing } from './Pathing'
 import { XpDropController } from './XpDropController'
 import { Unit } from './Unit'
 import { Player } from './Player'
@@ -15,6 +14,7 @@ import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
 import { Collision } from './Collision'
 import { Item } from './Item'
+import { Viewport } from './Viewport'
 
 export class World {
   region: Region;
@@ -27,10 +27,8 @@ export class World {
   mapController: MapController;
   player?: Player;
   entities: Entity[] = [];
-  viewportWidth: number;
-  viewportHeight: number;
   worldCanvas: OffscreenCanvas;
-  viewport: HTMLCanvasElement;
+  viewport: Viewport = new Viewport();
   contextMenu: ContextMenu = new ContextMenu();
   clickAnimation?: ClickAnimation = null;
 
@@ -46,16 +44,8 @@ export class World {
 
   newMobs: Mob[] = [];
 
-  _viewport = {
-    width: 40,
-    height: 30
-  }
 
   tickCounter: number = 0;
-
-  get viewportCtx() {
-    return this.viewport.getContext('2d');
-  }
 
   get worldCtx() {
     return this.worldCanvas.getContext('2d');
@@ -72,38 +62,19 @@ export class World {
 
     this.worldCanvas = new OffscreenCanvas(this.region.width * Settings.tileSize, this.region.height * Settings.tileSize)
 
-    // convert this to a world map canvas (offscreencanvas)
-    this.viewport = document.getElementById(selector) as HTMLCanvasElement;
-
-
-    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-    const widthRestrictors = 227 + 200;
-    this._viewport.width = Math.ceil(Math.min(
-      this.region.width, 
-      Math.floor(width / Settings.tileSize  - (widthRestrictors / Settings.tileSize)) 
-    ))
-    this._viewport.height = Math.ceil(Math.min(this.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize  - (70 / Settings.tileSize) ))))
-
-
-    // create new canvas that is the on screen canvas
-    this.viewport.width = Settings.tileSize * this._viewport.width + this.mapController.width;
-    this.viewport.height = Settings.tileSize * this._viewport.height
-    this.viewportWidth = this._viewport.width
-    this.viewportHeight = this._viewport.height
+    this.viewport = Viewport.createViewport(this, selector);
 
     this.registerClickActions();
 
   }
 
   registerClickActions() {
-    this.viewport.addEventListener('mousedown', this.leftClickDown.bind(this))
-    this.viewport.addEventListener('mouseup', this.leftClickUp.bind(this))
-    this.viewport.addEventListener('mousemove', (e: MouseEvent) => this.controlPanel.cursorMovedTo(e))
-    this.viewport.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
-    this.viewport.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
-    this.viewport.addEventListener('contextmenu', this.rightClick.bind(this));
+    this.viewport.canvas.addEventListener('mousedown', this.leftClickDown.bind(this))
+    this.viewport.canvas.addEventListener('mouseup', this.leftClickUp.bind(this))
+    this.viewport.canvas.addEventListener('mousemove', (e: MouseEvent) => this.controlPanel.cursorMovedTo(e))
+    this.viewport.canvas.addEventListener('mousemove', (e: MouseEvent) => this.mapController.cursorMovedTo(e))
+    this.viewport.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
+    this.viewport.canvas.addEventListener('contextmenu', this.rightClick.bind(this));
   }
 
   leftClickUp (e: MouseEvent) {
@@ -111,12 +82,12 @@ export class World {
     if (e.button !== 0) {
       return;
     }
-    const { viewportX, viewportY } = this.getViewport();
+    const { viewportX, viewportY } = this.viewport.getViewport(this);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
     if (Settings.rotated === 'south') {
-      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
-      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
 
     // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
@@ -133,8 +104,8 @@ export class World {
     const yAlign = this.contextMenu.location.y < e.offsetY && e.offsetY < this.contextMenu.location.y + this.contextMenu.height
 
 
-    if (e.offsetX > this.viewport.width - this.controlPanel.width) {
-      if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
+    if (e.offsetX > this.viewport.canvas.width - this.controlPanel.width) {
+      if (e.offsetY > this.viewport.width * Settings.tileSize - this.controlPanel.height){
         const intercepted = this.controlPanel.controlPanelClickUp(e);
         if (intercepted) {
           return;
@@ -150,12 +121,12 @@ export class World {
     }
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
-    const { viewportX, viewportY } = this.getViewport();
+    const { viewportX, viewportY } = this.viewport.getViewport(this);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
     if (Settings.rotated === 'south') {
-      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
-      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     } 
 
     const xAlign = this.contextMenu.location.x - (this.contextMenu.width / 2) < e.offsetX && e.offsetX < this.contextMenu.location.x + this.contextMenu.width / 2
@@ -167,7 +138,7 @@ export class World {
       return;
     }
 
-    if (e.offsetX > this.viewportWidth * Settings.tileSize) {
+    if (e.offsetX > this.viewport.width * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
         const intercepted = this.mapController.leftClickDown(e);
         if (intercepted) {
@@ -176,8 +147,8 @@ export class World {
       }
     }
 
-    if (e.offsetX > this.viewport.width - this.controlPanel.width) {
-      if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
+    if (e.offsetX > this.viewport.canvas.width - this.controlPanel.width) {
+      if (e.offsetY > this.viewport.width * Settings.tileSize - this.controlPanel.height){
         const intercepted = this.controlPanel.controlPanelClickDown(e);
         if (intercepted) {
           return;
@@ -206,22 +177,21 @@ export class World {
     }
     this.contextMenu.setInactive()
   }
-
   rightClick (e: MouseEvent) {
     
 
-    const { viewportX, viewportY } = this.getViewport();
+    const { viewportX, viewportY } = this.viewport.getViewport(this);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
 
     this.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
     if (Settings.rotated === 'south') {
-      x = this.viewportWidth * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
-      y = this.viewportHeight * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
 
-    if (e.offsetX > this.viewport.width - this.controlPanel.width) {
-      if (e.offsetY > this.viewportHeight * Settings.tileSize - this.controlPanel.height){
+    if (e.offsetX > this.viewport.canvas.width - this.controlPanel.width) {
+      if (e.offsetY > this.viewport.height * Settings.tileSize - this.controlPanel.height){
         const intercepted = this.controlPanel.controlPanelRightClick(e);
         if (intercepted) {
           return;
@@ -230,7 +200,7 @@ export class World {
       }
     }
 
-    if (e.offsetX > this.viewportWidth * Settings.tileSize) {
+    if (e.offsetX > this.viewport.width * Settings.tileSize) {
       if (e.offsetY < this.mapController.height) {
         const intercepted = this.mapController.rightClick(e);
         if (intercepted) {
@@ -277,7 +247,6 @@ export class World {
     this.contextMenu.setMenuOptions(menuOptions)
     this.contextMenu.setActive()
   }
-
 
   playerAttackClick (mob: Unit) {
     this.inputDelay = setTimeout(() => {
@@ -378,68 +347,39 @@ export class World {
     this.worldCtx.restore();
   }
 
-  getViewport() {
-
-    const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, this.tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, this.tickPercent)
-
-    let viewportX = perceivedX + 0.5 - this._viewport.width / 2;
-    let viewportY = perceivedY + 0.5 - this._viewport.height / 2;
-
-    if (parseInt(this.wave) < 67) {
-      viewportX = 11;
-      viewportY = 14;
-    }else{
-      if (viewportX < 0) {
-        viewportX = 0
-      }
-      if (viewportY < 0) {
-        viewportY = 0;
-      }
-      if (viewportX * Settings.tileSize + this._viewport.width * Settings.tileSize > this.region.width * Settings.tileSize) {
-        viewportX = this.region.width - this._viewport.width;
-      }
-      if (viewportY * Settings.tileSize + this._viewport.height * Settings.tileSize > this.region.height * Settings.tileSize) {
-        viewportY = this.region.height - this._viewport.height;
-      } 
-    }
-
-    return {viewportX, viewportY}
-  }
-
   draw () {
-    this.viewportCtx.globalAlpha = 1
-    this.viewportCtx.fillStyle = '#3B3224'
+    this.viewport.context.globalAlpha = 1
+    this.viewport.context.fillStyle = '#3B3224'
 
-    this.viewportCtx.restore()
-    this.viewportCtx.save()
-    this.viewportCtx.fillStyle = '#3B3224'
+    this.viewport.context.restore()
+    this.viewport.context.save()
+    this.viewport.context.fillStyle = '#3B3224'
 
-    this.viewportCtx.fillRect(0, 0, this.viewport.width, this.viewport.height)
+    this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
 
     if (Settings.rotated === 'south') {
-      this.viewportCtx.translate(-this.mapController.width, 0);
-      this.viewportCtx.rotate(Math.PI)
-      this.viewportCtx.translate(-this.viewport.width, -this.viewport.height)
+      this.viewport.context.translate(-this.mapController.width, 0);
+      this.viewport.context.rotate(Math.PI)
+      this.viewport.context.translate(-this.viewport.canvas.width, -this.viewport.canvas.height)
     }
 
     this.drawWorld(this.tickPercent)
 
-    const { viewportX, viewportY } = this.getViewport();
+    const { viewportX, viewportY } = this.viewport.getViewport(this);
 
-    this.viewportCtx.drawImage(this.worldCanvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
+    this.viewport.context.drawImage(this.worldCanvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
 
-    this.viewportCtx.restore()
-    this.viewportCtx.save();
+    this.viewport.context.restore()
+    this.viewport.context.save();
 
     // draw control panel
-    this.viewportCtx.translate(this.viewport.width - this.controlPanel.width, this.viewport.height - this.controlPanel.height)
+    this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
     this.controlPanel.draw(this)
 
-    this.viewportCtx.restore();
+    this.viewport.context.restore();
 
-    XpDropController.controller.draw(this.viewportCtx, this.viewport.width - 140 - this.mapController.width, 0, this.tickPercent);
-    MapController.controller.draw(this.viewportCtx, this.tickPercent);
+    XpDropController.controller.draw(this.viewport.context, this.viewport.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
+    MapController.controller.draw(this.viewport.context, this.tickPercent);
 
 
     this.contextMenu.draw(this)
@@ -447,36 +387,36 @@ export class World {
       this.clickAnimation.draw(this, this.tickPercent)
     }
 
-    this.viewportCtx.restore()
-    this.viewportCtx.save()
+    this.viewport.context.restore()
+    this.viewport.context.save()
 
     // Performance info
-    this.viewportCtx.textAlign = 'left'
+    this.viewport.context.textAlign = 'left'
 
     if (!process.env.BUILD_DATE) {
-      this.viewportCtx.fillStyle = '#FFFF0066'
-      this.viewportCtx.font = '16px OSRS'
-      this.viewportCtx.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
-      this.viewportCtx.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
-      this.viewportCtx.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
-      this.viewportCtx.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
-      this.viewportCtx.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
-      this.viewportCtx.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
-      this.viewportCtx.fillText(`Wave: ${this.wave}`, 0, 112)  
+      this.viewport.context.fillStyle = '#FFFF0066'
+      this.viewport.context.font = '16px OSRS'
+      this.viewport.context.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
+      this.viewport.context.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
+      this.viewport.context.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
+      this.viewport.context.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
+      this.viewport.context.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
+      this.viewport.context.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
+      this.viewport.context.fillText(`Wave: ${this.wave}`, 0, 112)  
     }
 
     if (this.getReadyTimer) {
-      this.viewportCtx.font = '72px OSRS'
-      this.viewportCtx.textAlign = 'center'
-      this.viewportCtx.fillStyle = '#000'
-      this.viewportCtx.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.width / 2 - 2, this.viewport.height / 2 - 50)
-      this.viewportCtx.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.width / 2 + 2, this.viewport.height / 2 - 50)
-      this.viewportCtx.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.width / 2, this.viewport.height / 2 - 48)
-      this.viewportCtx.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.width / 2, this.viewport.height / 2 - 52)
+      this.viewport.context.font = '72px OSRS'
+      this.viewport.context.textAlign = 'center'
+      this.viewport.context.fillStyle = '#000'
+      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2 - 2, this.viewport.canvas.height / 2 - 50)
+      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2 + 2, this.viewport.canvas.height / 2 - 50)
+      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 48)
+      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 52)
 
-      this.viewportCtx.fillStyle = '#FFFFFF'
-      this.viewportCtx.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.width / 2, this.viewport.height / 2 - 50)
-      this.viewportCtx.textAlign = 'left'
+      this.viewport.context.fillStyle = '#FFFFFF'
+      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
+      this.viewport.context.textAlign = 'left'
     }
   }
 

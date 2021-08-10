@@ -96,7 +96,7 @@ export class MapController {
   }
 
   cursorMovedTo(event: MouseEvent) {
-    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
     const y = event.offsetY;
 
     this.hovering = MapHover.NONE;
@@ -249,7 +249,7 @@ export class MapController {
 
 
     let intercepted = false;
-    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
     const y = event.offsetY;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -360,7 +360,7 @@ export class MapController {
 
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    const x = event.offsetX - this.world.viewportWidth * Settings.tileSize;
+    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
     const y = event.offsetY;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -395,7 +395,7 @@ export class MapController {
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
   
 
-    const offset = this.world.viewport.width - this.width
+    const offset = this.world.viewport.canvas.width - this.width
     
     ctx.font = '16px Stats_11'
     ctx.textAlign = 'center'

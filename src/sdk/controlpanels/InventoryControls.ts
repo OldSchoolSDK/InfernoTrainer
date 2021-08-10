@@ -147,30 +147,30 @@ export class InventoryControls extends BaseControls {
 
       if (inventoryItem !== null) {
         
-        world.viewportCtx.fillStyle = "#ffffff22"
-        world.viewportCtx.fillRect(itemX, itemY, 32, 32)
+        world.viewport.context.fillStyle = "#ffffff22"
+        world.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
         const xOff = (32 - sprite.width)/2;
         const yOff = (32 - sprite.height)/2
         if (inventoryItem === this.clickedDownItem) {
-          world.viewportCtx.globalAlpha = 0.4;
+          world.viewport.context.globalAlpha = 0.4;
           if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {
-            world.viewportCtx.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
+            world.viewport.context.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
           }else{
-            world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+            world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
           }
-          world.viewportCtx.globalAlpha = 1;
+          world.viewport.context.globalAlpha = 1;
 
         }else{
-          world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+          world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
         }
 
         if (inventoryItem.selected) {
-          world.viewportCtx.beginPath()
-          world.viewportCtx.fillStyle = '#D1BB7773'
-          world.viewportCtx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
-          world.viewportCtx.fill()
+          world.viewport.context.beginPath()
+          world.viewport.context.fillStyle = '#D1BB7773'
+          world.viewport.context.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
+          world.viewport.context.fill()
         }
       }
     })

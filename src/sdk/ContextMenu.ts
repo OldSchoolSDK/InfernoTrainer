@@ -42,7 +42,7 @@ d
   }
 
   cursorMovedTo (world: World, x: number, y: number) {
-    const cRect = world.viewport.getBoundingClientRect() // Gets CSS pos, and width/height
+    const cRect = world.viewport.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
     
@@ -76,32 +76,32 @@ d
           }
         }
       ]
-      world.viewportCtx.textAlign = 'left';
+      world.viewport.context.textAlign = 'left';
 
-      world.viewportCtx.font = '17px OSRS'
+      world.viewport.context.font = '17px OSRS'
 
       this.width = 0
       this.linesOfText.forEach((line) => {
-        this.width = Math.max(this.width, this.fillMixedTextWidth(world.viewportCtx, line.text) + 10)
+        this.width = Math.max(this.width, this.fillMixedTextWidth(world.viewport.context, line.text) + 10)
       })
 
       this.height = 22 + (this.linesOfText.length - 1) * 20
 
-      world.viewportCtx.fillStyle = '#5f5445'
-      world.viewportCtx.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
+      world.viewport.context.fillStyle = '#5f5445'
+      world.viewport.context.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
 
-      world.viewportCtx.fillStyle = 'black'
-      world.viewportCtx.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
+      world.viewport.context.fillStyle = 'black'
+      world.viewport.context.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
 
-      world.viewportCtx.lineWidth = 1
-      world.viewportCtx.strokeStyle = 'black'
-      world.viewportCtx.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
+      world.viewport.context.lineWidth = 1
+      world.viewport.context.strokeStyle = 'black'
+      world.viewport.context.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
 
       for (let i = 0; i < this.linesOfText.length; i++) {
-        this.drawLineOfText(world.viewportCtx, this.linesOfText[i].text, this.width, i * 20)
+        this.drawLineOfText(world.viewport.context, this.linesOfText[i].text, this.width, i * 20)
       }
     }
-    world.viewportCtx.restore()
+    world.viewport.context.restore()
   }
 
   fillMixedText (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], x: number, y: number, inputColor: string) {

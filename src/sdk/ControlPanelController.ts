@@ -97,8 +97,8 @@ export class ControlPanelController {
   cursorMovedTo (e: MouseEvent) {
     if (this.selectedControl) {
 
-    const x = e.offsetX - (this.world.viewport.width - this.width);
-    const y = e.offsetY - (this.world.viewport.height - this.height);
+    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
+    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
     const panelX = this.width - 204
     const panelY = 0
@@ -120,8 +120,8 @@ export class ControlPanelController {
     console.log('a')
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.width - this.width);
-    const y = e.offsetY - (this.world.viewport.height - this.height);
+    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
+    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
     const panelX = this.width - 204
     const panelY = 0
@@ -144,8 +144,8 @@ export class ControlPanelController {
 
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.width - this.width);
-    const y = e.offsetY - (this.world.viewport.height - this.height);
+    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
+    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
     const panelX = this.width - 204
     const panelY = 0
@@ -167,8 +167,8 @@ export class ControlPanelController {
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.width - this.width);
-    const y = e.offsetY - (this.world.viewport.height - this.height);
+    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
+    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
     if (y > 275) {
       this.controls.forEach((control: BaseControls, index: number) => {
@@ -207,7 +207,7 @@ export class ControlPanelController {
   }
 
   draw (world: World) {
-    world.viewportCtx.fillStyle = '#000'
+    world.viewport.context.fillStyle = '#000'
 
     if (this.selectedControl && this.selectedControl.draw) {
       this.selectedControl.draw(world, this, this.width - 204, 0)
@@ -217,16 +217,16 @@ export class ControlPanelController {
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index, true)
       if (control.tabImage){
-        world.viewportCtx.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+        world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
       }
       if (control === this.selectedControl) {
         selectedPosition = tabPosition
       }
     })
     if (selectedPosition) {
-      world.viewportCtx.strokeStyle = '#00FF0073'
-      world.viewportCtx.lineWidth = 3
-      world.viewportCtx.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
+      world.viewport.context.strokeStyle = '#00FF0073'
+      world.viewport.context.lineWidth = 3
+      world.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
     }
   }
 }

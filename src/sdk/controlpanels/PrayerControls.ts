@@ -140,10 +140,10 @@ export class PrayerControls extends BaseControls {
         const x2 = index % 5
         const y2 = Math.floor(index / 5)
 
-        world.viewportCtx.beginPath()
-        world.viewportCtx.fillStyle = '#D1BB7773'
-        world.viewportCtx.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
-        world.viewportCtx.fill()
+        world.viewport.context.beginPath()
+        world.viewport.context.fillStyle = '#D1BB7773'
+        world.viewport.context.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.viewport.context.fill()
       }
     })
   }
