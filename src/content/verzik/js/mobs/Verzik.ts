@@ -15,7 +15,7 @@ import VerzikRange8 from "../../assets/images/verzik-range0007.png";
 
 import BatSound from "../../assets/sounds/bat.ogg";
 import { AoeRangedWeapon } from "../../../../sdk/weapons/AoeRangedWeapon";
-import { Location } from "../../../../sdk/GameObject";
+import { Location } from "../../../../sdk/Location";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { World } from "../../../../sdk/World";
 

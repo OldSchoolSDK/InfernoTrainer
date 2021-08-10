@@ -10,7 +10,7 @@ import { JalZek } from './mobs/JalZek'
 import { JalImKot } from './mobs/JalImKot'
 import { JalNib } from './mobs/JalNib'
 import { JalXil } from './mobs/JalXil'
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location"
 
 
 export class InfernoWaves {

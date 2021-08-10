@@ -3,7 +3,7 @@ import { Entity } from '../sdk/Entity'
 
 import { CollisionType } from '../sdk/Collision'
 import { Settings } from '../sdk/Settings';
-import { Location } from '../sdk/GameObject';
+import { Location } from "../sdk/Location";
 import { World } from '../sdk/World';
 import { LineOfSight, LineOfSightMask } from '../sdk/LineOfSight';
 

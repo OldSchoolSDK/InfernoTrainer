@@ -8,7 +8,7 @@ import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { World } from '../../../sdk/World'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/weapons/Projectile'
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location"
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
 import { DelayedAction } from '../../../sdk/DelayedAction'
 

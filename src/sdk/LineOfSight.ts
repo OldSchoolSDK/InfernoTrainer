@@ -3,7 +3,8 @@
 import { Settings } from './Settings'
 import { Pathing } from './Pathing'
 import { World } from './World'
-import { GameObject, Location } from './GameObject'
+import { GameObject } from './GameObject'
+import { Location } from "./Location"
 import { Collision } from './Collision'
 import { Mob } from './Mob'
 import { Unit } from './Unit'

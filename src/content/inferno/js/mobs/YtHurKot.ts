@@ -4,7 +4,7 @@
 import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import HurKotImage from '../../assets/images/Yt-HurKot.png'
-import { Location } from '../../../../sdk/GameObject'
+import { Location } from "../../../../sdk/Location"
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'

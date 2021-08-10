@@ -9,7 +9,7 @@ import { World } from './World'
 import { Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
-import { Location } from './GameObject'
+import { Location } from "./Location"
 import { Mob } from './Mob'
 import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'

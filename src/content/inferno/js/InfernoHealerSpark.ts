@@ -6,7 +6,7 @@ import { Settings } from '../../../sdk/Settings'
 import { World } from '../../../sdk/World'
 import { Unit, UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../sdk/weapons/Projectile'
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location"
 
 
 

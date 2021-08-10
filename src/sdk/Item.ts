@@ -1,6 +1,6 @@
 import { filter } from "lodash";
 import { InventoryControls } from "./controlpanels/InventoryControls";
-import { Location } from "./GameObject";
+import { Location } from "./Location";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
 import { World } from "./World";

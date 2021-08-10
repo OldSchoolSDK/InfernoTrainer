@@ -7,7 +7,7 @@ import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JadImage from '../../assets/images/JalTok-Jad.png'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
-import { Location } from '../../../../sdk/GameObject'
+import { Location } from "../../../../sdk/Location"
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'

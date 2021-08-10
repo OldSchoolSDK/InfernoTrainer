@@ -1,6 +1,7 @@
 'use strict'
 import { sortBy, minBy } from 'lodash'
-import { GameObject, Location } from './GameObject'
+import { GameObject } from './GameObject'
+import { Location } from "./Location"
 import { World } from './World'
 import { Collision } from './Collision'
 

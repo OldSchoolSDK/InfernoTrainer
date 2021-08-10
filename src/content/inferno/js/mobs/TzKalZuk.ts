@@ -6,7 +6,7 @@ import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { World } from '../../../../sdk/World'
 import { UnitOptions } from '../../../../sdk/Unit'
-import { Location } from '../../../../sdk/GameObject'
+import { Location } from "../../../../sdk/Location"
 import { ZukShield } from '../ZukShield'
 import { find } from 'lodash'
 import { Entity } from '../../../../sdk/Entity'

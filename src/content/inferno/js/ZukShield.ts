@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader';
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location";
 import { World } from '../../../sdk/World';
 import { filter, find, remove } from 'lodash';
 import { Pathing } from '../../../sdk/Pathing';

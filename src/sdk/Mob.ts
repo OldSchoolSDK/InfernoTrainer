@@ -8,7 +8,7 @@ import { Pathing } from './Pathing'
 import { Weapon } from './gear/Weapon'
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
-import { Location } from './GameObject'
+import { Location } from "./Location"
 import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
 
