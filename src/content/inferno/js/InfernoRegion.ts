@@ -65,14 +65,14 @@ export class InfernoRegion extends Region {
   }
   
   getInventory () {
-    return [
-      new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new SaradominBrew(),
-      new CrystalShield(), new SuperRestore(), new AncestralRobetop(), new AncestralRobebottom(),
-      new SaradominBrew(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
+    return [ 
+      new Blowpipe(), new ArmadylChestplate(), new TwistedBow(), new JusticiarChestguard(),
+      null, new AncestralRobebottom(), null, new JusticiarLegguards(),
+      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new SuperRestore(), new SaradominBrew(), new SuperRestore(), new BastionPotion(), 
+      new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
     ]
   }
 
@@ -90,12 +90,13 @@ export class InfernoRegion extends Region {
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
       { equipment: { 
-          weapon: new TwistedBow(),
+          weapon: new KodaiWand(),
+          offhand: new CrystalShield(),
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),
           ammo: new HolyBlessing(),
-          chest: new ArmadylChestplate(),
+          chest: new AncestralRobetop(),
           legs: new ArmadylChainskirt(),
           feet: new PegasianBoots(),
           gloves: new BarrowsGloves(),

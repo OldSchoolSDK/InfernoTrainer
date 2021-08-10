@@ -74,7 +74,7 @@ export class InventoryControls extends BaseControls {
         return item;
       }
       return {
-        inventoryPosition: index,
+        inventoryPosition: () => index,
         isPlaceholder: true
       }
     });
