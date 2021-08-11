@@ -30,7 +30,6 @@ import { ImageLoader } from './utils/ImageLoader'
 import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
 import { MenuOption } from './ContextMenu'
-import { XpDropController } from './XpDropController'
 
 enum MapHover {
   NONE = 0,

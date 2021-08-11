@@ -116,8 +116,6 @@ export class ControlPanelController {
     }
   }
   controlPanelRightClick (e: MouseEvent): boolean {
-
-    console.log('a')
     let intercepted = false;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
@@ -132,7 +130,6 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        console.log('b');
         this.selectedControl.panelRightClick(this.world, relativeX, relativeY)
       }
     }

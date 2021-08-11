@@ -2,7 +2,6 @@ import { Item } from "./Item";
 import { UnitBonuses, UnitEquipment } from "./Unit";
 import { SetEffect } from "./SetEffect"
 import { Player } from "./Player";
-import { InventoryControls } from "./controlpanels/InventoryControls";
 
 export enum EquipmentTypes {
   HELMET ='helmet',

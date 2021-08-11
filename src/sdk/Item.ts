@@ -1,5 +1,3 @@
-import { filter } from "lodash";
-import { InventoryControls } from "./controlpanels/InventoryControls";
 import { Location } from "./Location";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
@@ -47,10 +45,7 @@ export class Item {
         text: [
           { text: 'Examine ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
         ],
-        action: () => 
-        {
-          console.log('examine')
-        }
+        action: () => {}
       },
     ]
 

@@ -1,6 +1,6 @@
 import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
-import { LineOfSight, LineOfSightMask } from "./LineOfSight";
+import { LineOfSightMask } from "./LineOfSight";
 import { Location } from "./Location";
 
 export class GameObject {

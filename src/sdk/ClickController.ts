@@ -77,7 +77,6 @@ export class ClickController {
 
   leftClickDown (e: MouseEvent) {
 
-    console.log('casdf')
     if (e.button !== 0) {
       return;
     }
