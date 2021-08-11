@@ -4,7 +4,7 @@ import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./Pla
 
 export class Settings {
   static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 28;
-  static framesPerTick = 30;
+  static fps = 50;
   static tickMs = 600;
   static playsAudio: boolean;
   static inputDelay: number;

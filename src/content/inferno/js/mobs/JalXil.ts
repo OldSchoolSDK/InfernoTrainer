@@ -125,6 +125,6 @@ export class JalXil extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.rotate(Math.sin(-tickPercent * Math.PI))
+    this.world.region.context.rotate(Math.sin(-tickPercent * Math.PI))
   }
 }

@@ -107,7 +107,7 @@ export class JalAk extends Mob {
     return BlobSound
   }
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    this.world.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {

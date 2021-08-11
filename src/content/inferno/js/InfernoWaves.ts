@@ -21,13 +21,6 @@ export class InfernoWaves {
 
   static spawn (world: World, randomPillar: Entity, spawns: Location[], wave: number) {
 
-    if (wave < 1) {
-      wave = 1;
-    }
-    if (wave > InfernoWaves.waves.length) {
-      wave = InfernoWaves.waves.length;
-    }
-
     const mobCounts = InfernoWaves.waves[wave - 1]
     let mobs: Mob[] = []
     let i = 0

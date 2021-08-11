@@ -5,10 +5,16 @@ export class ImageLoader {
   static pendingImages: number = 0;
   static completedImages: number = 0;
   static hasLoaded: boolean = false;
+
+  static imageCache = {};
   
   static createImage (src: string): HTMLImageElement {
     if (!src) {
       return null;
+    }
+
+    if (this.imageCache[src]) {
+      return this.imageCache[src]
     }
     
     ImageLoader.pendingImages++;
@@ -22,6 +28,7 @@ export class ImageLoader {
       img.src = src + "?retry=" + String(Math.random());
       ImageLoader.completedImages++;
     })
+    this.imageCache[src] = img;
     return img;
   }
 

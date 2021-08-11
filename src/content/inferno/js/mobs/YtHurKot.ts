@@ -131,7 +131,7 @@ export class YtHurKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.transform(
+    this.world.region.context.transform(
       1, 
       0, 
       Math.sin(-tickPercent * Math.PI * 2) / 2, 

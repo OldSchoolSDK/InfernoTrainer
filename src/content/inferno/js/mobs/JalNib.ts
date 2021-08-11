@@ -122,7 +122,7 @@ export class JalNib extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.world.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 
   attackIfPossible () {

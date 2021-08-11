@@ -36,7 +36,7 @@ switch (selectedRegionName) {
 const controlPanel = new ControlPanelController()
 
 
-const world = new World('world', selectedRegion, MapController.controller, controlPanel);
+const world = new World(selectedRegion, MapController.controller, controlPanel);
 
 selectedRegion.initialize(world)
 

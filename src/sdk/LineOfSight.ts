@@ -26,13 +26,13 @@ export enum LineOfSightMask {
 
 export class LineOfSight {
   static drawLOS (world: World, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
-    world.worldCtx.globalAlpha = 0.4
-    world.worldCtx.fillStyle = c
+    world.region.context.globalAlpha = 0.4
+    world.region.context.fillStyle = c
 
     for (let x2 = -r; x2 < r + 1; x2++){
       for (let y2 = -r; y2 < r + 1; y2++){
         if (LineOfSight.hasLineOfSight(world, x, y, x + x2, y + y2, s, r, isNPC)) {
-          world.worldCtx.fillRect(
+          world.region.context.fillRect(
             (x + x2) * Settings.tileSize,
             (y + y2) * Settings.tileSize,
             Settings.tileSize,
@@ -41,7 +41,7 @@ export class LineOfSight {
         }      
       }
     }
-    world.worldCtx.globalAlpha = 1
+    world.region.context.globalAlpha = 1
   }
 
   static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {

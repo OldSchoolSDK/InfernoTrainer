@@ -180,9 +180,9 @@ export class ZukShield extends Mob {
   
   drawUnderTile(tickPercent: number) {
 
-    this.world.worldCtx.fillStyle = this.color;
+    this.world.region.context.fillStyle = this.color;
     // Draw mob
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       -(3 * Settings.tileSize) / 2,
       -(3 * Settings.tileSize) / 2,
       3 * Settings.tileSize,
