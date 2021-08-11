@@ -31,7 +31,6 @@ export class World {
   viewport: Viewport = new Viewport();
   contextMenu: ContextMenu = new ContextMenu();
   clickAnimation?: ClickAnimation = null;
-
   drawTime: number;
   frameTime: number;
   tickTime: number;
@@ -41,16 +40,11 @@ export class World {
   ticker: NodeJS.Timeout;
   tickPercent: number;
   isPaused: boolean = true;
-
   newMobs: Mob[] = [];
-
-
   tickCounter: number = 0;
-
   get worldCtx() {
     return this.worldCanvas.getContext('2d');
   }
-
   constructor (selector: string, region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
 
     this.region = region;
@@ -67,7 +61,6 @@ export class World {
     this.registerClickActions();
 
   }
-
   registerClickActions() {
     this.viewport.canvas.addEventListener('mousedown', this.leftClickDown.bind(this))
     this.viewport.canvas.addEventListener('mouseup', this.leftClickUp.bind(this))
@@ -76,7 +69,6 @@ export class World {
     this.viewport.canvas.addEventListener('mousemove', (e) => this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('contextmenu', this.rightClick.bind(this));
   }
-
   leftClickUp (e: MouseEvent) {
 
     if (e.button !== 0) {
@@ -247,25 +239,112 @@ export class World {
     this.contextMenu.setMenuOptions(menuOptions)
     this.contextMenu.setActive()
   }
-
   playerAttackClick (mob: Unit) {
     this.inputDelay = setTimeout(() => {
       this.player.setAggro(mob);
     }, Settings.inputDelay)
   }
-
   playerWalkClick (x: number, y: number) {
     this.inputDelay = setTimeout(() => {
       this.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
     }, Settings.inputDelay)
   }
-
   redClick () {
     this.clickAnimation = new ClickAnimation('red', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y)
   }
-
   yellowClick () {
     this.clickAnimation = new ClickAnimation('yellow', this.contextMenu.cursorPosition.x, this.contextMenu.cursorPosition.y)
+  }
+
+
+
+// function startAnimating(fps) {
+//   fpsInterval = 1000 / fps;
+//   then = window.performance.now();
+//   startTime = then;
+//   console.log(startTime);
+//   animate();
+// }
+
+
+  fpsInterval = 1000 / Settings.fps;
+  then: number;
+  startTime: number;
+  frameCount: number;
+  tickTimer: number = 0;
+  startTicking () {
+    this.isPaused = false;
+    this.then = window.performance.now();
+    this.startTime = this.then;
+    this.tickTimer = 0;
+    this.worldLoop(this.startTime);
+    // this.ticker = setInterval(this.worldLoop.bind(this), )
+  }
+
+
+  worldLoop (newtime: number) {
+    window.requestAnimationFrame(this.worldLoop.bind(this));
+
+    const now = newtime;
+    const elapsed = now - this.then;
+
+    const tickElapsed = now - this.tickTimer;
+
+    if (tickElapsed >= 600 && this.isPaused === false) {
+      this.frameCount = 0;
+      this.tickTimer = now;
+      this.getReadyTimer--;
+      if (this.getReadyTimer <=0){
+        this.worldTick();
+      }
+    }
+
+    // if enough time has elapsed, draw the next frame
+
+    if (elapsed > this.fpsInterval && this.isPaused === false) {
+        this.tickPercent = this.frameCount / (Settings.fps * (Settings.tickMs / 1000));
+
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        this.then = now - (elapsed % this.fpsInterval);
+
+        // draw stuff here
+
+        this.draw();
+
+        this.frameCount ++;
+
+    }
+    
+    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
+    // Everything else is just measuring performance
+    // const t = performance.now()
+    // if (this.frameCounter === 0 && this.getReadyTimer) {
+    //   this.getReadyTimer--;
+    // }
+
+    // if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
+    //   this.timeBetweenTicks = t - this.lastT
+    //   this.lastT = t
+    //   if (this.isPaused === false) {
+    //     this.worldTick()
+    //   }
+    //   this.tickTime = performance.now() - t
+    // }
+    // const t2 = performance.now()
+    // this.tickPercent = this.frameCounter / Settings.fps;
+    // this.draw()
+    // this.drawTime = performance.now() - t2
+    // this.frameCounter++
+    // if (thia
+    // this.frameTime = performance.now() - t
+  }
+
+
+
+  stopTicking() {
+    this.isPaused = true;
+    clearInterval(this.ticker);
   }
 
   worldTick () {
@@ -294,34 +373,6 @@ export class World {
     const deadEntities = this.entities.filter((mob) => mob.dying === 0)
     deadMobs.forEach((mob) => this.removeMob(mob))
     deadEntities.forEach((entity) => this.removeEntity(entity))
-  }
-
-  worldLoop () {
-    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
-    // Everything else is just measuring performance
-    const t = performance.now()
-    if (this.frameCounter === 0 && this.getReadyTimer) {
-      this.getReadyTimer--;
-    }
-
-    if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
-      this.timeBetweenTicks = t - this.lastT
-      this.lastT = t
-      if (this.isPaused === false) {
-        this.worldTick()
-      }
-      this.tickTime = performance.now() - t
-    }
-    const t2 = performance.now()
-    this.tickPercent = this.frameCounter / Settings.framesPerTick;
-    this.draw()
-    this.drawTime = performance.now() - t2
-    this.frameCounter++
-    if (this.frameCounter >= Settings.framesPerTick) {
-      this.fps = this.frameCounter / this.timeBetweenTicks * 1000
-      this.frameCounter = 0
-    }
-    this.frameTime = performance.now() - t
   }
 
   drawWorld (tickPercent: number) {
@@ -397,7 +448,7 @@ export class World {
       this.viewport.context.fillStyle = '#FFFF0066'
       this.viewport.context.font = '16px OSRS'
       this.viewport.context.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
-      this.viewport.context.fillText(`DFR: ${Settings.framesPerTick * (1 / 0.6)}`, 0, 32)
+      this.viewport.context.fillText(`DFR: ${Settings.fps * (1 / 0.6)}`, 0, 32)
       this.viewport.context.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
       this.viewport.context.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
       this.viewport.context.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
@@ -405,7 +456,7 @@ export class World {
       this.viewport.context.fillText(`Wave: ${this.wave}`, 0, 112)  
     }
 
-    if (this.getReadyTimer) {
+    if (this.getReadyTimer > 0) {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
       this.viewport.context.fillStyle = '#000'
@@ -444,13 +495,4 @@ export class World {
     remove(this.mobs, mob)
   }
 
-  startTicking () {
-    this.isPaused = false;
-    this.ticker = setInterval(this.worldLoop.bind(this), Settings.tickMs / Settings.framesPerTick)
-  }
-
-  stopTicking() {
-    this.isPaused = true;
-    clearInterval(this.ticker);
-  }
 }

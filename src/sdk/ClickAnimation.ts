@@ -57,6 +57,6 @@ export class ClickAnimation {
       this.y - 9
     )
 
-    this.ttl -= 1.65 / Settings.framesPerTick
+    this.ttl -= 1.65 / Settings.fps
   }
 }
