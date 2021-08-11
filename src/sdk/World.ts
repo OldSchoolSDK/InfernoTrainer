@@ -19,6 +19,7 @@ import { Viewport } from './Viewport'
 export class World {
   region: Region;
   wave: string;
+  newMobs: Mob[] = [];
   mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
   getReadyTimer: number = 6
@@ -30,18 +31,10 @@ export class World {
   viewport: Viewport = new Viewport();
   contextMenu: ContextMenu = new ContextMenu();
   clickAnimation?: ClickAnimation = null;
-  drawTime: number;
-  frameTime: number;
-  tickTime: number;
-  timeBetweenTicks: number;
-  fps: number;
-  lastT: number;
-  ticker: NodeJS.Timeout;
   tickPercent: number;
   isPaused: boolean = true;
   timeSincePause: number = -1;
   tickTimeSincePause: number = -1;
-  newMobs: Mob[] = [];
   tickCounter: number = 0;
   get worldCtx() {
     return this.worldCanvas.getContext('2d');
@@ -403,19 +396,6 @@ export class World {
 
     // Performance info
     this.viewport.context.textAlign = 'left'
-
-    if (!process.env.BUILD_DATE) {
-      this.viewport.context.fillStyle = '#FFFF0066'
-      this.viewport.context.font = '16px OSRS'
-      this.viewport.context.fillText(`FPS: ${Math.round(this.fps * 100) / 100}`, 0, 16)
-      this.viewport.context.fillText(`DFR: ${Settings.fps * (1 / 0.6)}`, 0, 32)
-      this.viewport.context.fillText(`TBT: ${Math.round(this.timeBetweenTicks)}ms`, 0, 48)
-      this.viewport.context.fillText(`TT: ${Math.round(this.tickTime)}ms`, 0, 64)
-      this.viewport.context.fillText(`FT: ${Math.round(this.frameTime)}ms`, 0, 80)
-      this.viewport.context.fillText(`DT: ${Math.round(this.drawTime)}ms`, 0, 96)
-      this.viewport.context.fillText(`Wave: ${this.wave}`, 0, 112)  
-    }
-
     if (this.getReadyTimer > 0) {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
