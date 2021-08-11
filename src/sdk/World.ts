@@ -102,9 +102,11 @@ export class World {
 
   }
   leftClickDown (e: MouseEvent) {
+
     if (e.button !== 0) {
       return;
     }
+
     
     this.contextMenu.cursorMovedTo(this, e.clientX, e.clientY)
     const { viewportX, viewportY } = this.viewport.getViewport(this);
@@ -134,7 +136,7 @@ export class World {
     }
 
     if (e.offsetX > this.viewport.canvas.width - this.controlPanel.width) {
-      if (e.offsetY > this.viewport.width * Settings.tileSize - this.controlPanel.height){
+      if (e.offsetY > this.viewport.height * Settings.tileSize - this.controlPanel.height){
         const intercepted = this.controlPanel.controlPanelClickDown(e);
         if (intercepted) {
           return;
@@ -143,6 +145,7 @@ export class World {
     }
 
 
+    console.log('5')
     if (this.inputDelay) {
       clearTimeout(this.inputDelay)
     }
