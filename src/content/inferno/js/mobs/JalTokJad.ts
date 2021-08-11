@@ -141,7 +141,7 @@ export class JalTokJad extends Mob {
           }
 
           const healer = new YtHurKot(this.world, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
-          this.world.addMob(healer)
+          this.world.region.addMob(healer)
 
         }
       }  

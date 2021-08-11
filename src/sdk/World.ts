@@ -1,13 +1,9 @@
 'use strict'
-import { remove, times } from 'lodash'
 import { Settings } from './Settings'
 import { ContextMenu, MenuOption } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { XpDropController } from './XpDropController'
-import { Unit } from './Unit'
 import { Player } from './Player'
-import { Entity } from './Entity'
-import { Mob } from './Mob'
 import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
@@ -17,11 +13,6 @@ export class World {
   viewport: Viewport;
   region: Region;
   player?: Player;
-
-  // move to region soon?
-  newMobs: Mob[] = [];
-  mobs: Mob[] = [];
-  entities: Entity[] = [];
 
   controlPanel: ControlPanelController;
   mapController: MapController;
@@ -100,19 +91,20 @@ export class World {
 
   worldTick () {
     this.tickCounter++;
-    if (this.newMobs.length){
-      this.mobs.unshift(...this.newMobs)
-      this.newMobs = [];
+    // TODO: Clean up this since its now region based
+    if (this.region.newMobs.length){
+      this.region.mobs.unshift(...this.region.newMobs)
+      this.region.newMobs = [];
     }
     XpDropController.controller.tick();
 
     this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
-    this.entities.forEach((entity) => entity.tick())
-    this.mobs.forEach((mob) => {
+    this.region.entities.forEach((entity) => entity.tick())
+    this.region.mobs.forEach((mob) => {
       mob.ticksAlive++;
       mob.movementStep()
     })
-    this.mobs.forEach((mob) => mob.attackStep())
+    this.region.mobs.forEach((mob) => mob.attackStep())
     this.player.movementStep()
     this.player.ticksAlive++;
     this.player.attackStep()
@@ -120,10 +112,10 @@ export class World {
 
 
     // Safely remove the mobs from the world. If we do it while iterating we can cause ticks to be stole'd
-    const deadMobs = this.mobs.filter((mob) => mob.dying === 0)
-    const deadEntities = this.entities.filter((mob) => mob.dying === 0)
-    deadMobs.forEach((mob) => this.removeMob(mob))
-    deadEntities.forEach((entity) => this.removeEntity(entity))
+    const deadMobs = this.region.mobs.filter((mob) => mob.dying === 0)
+    const deadEntities = this.region.entities.filter((mob) => mob.dying === 0)
+    deadMobs.forEach((mob) => this.region.removeMob(mob))
+    deadEntities.forEach((entity) => this.region.removeEntity(entity))
   }
 
   drawWorld (tickPercent: number) {
@@ -132,17 +124,17 @@ export class World {
     this.region.drawGroundItems(this.region.context)
 
     // Draw all things on the map
-    this.entities.forEach((entity) => entity.draw(tickPercent))
+    this.region.entities.forEach((entity) => entity.draw(tickPercent))
 
     if (this.getReadyTimer <= 0) {
-      this.mobs.forEach((mob) => mob.draw(tickPercent))
+      this.region.mobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
 
-    this.entities.forEach((entity) => entity.drawUILayer(tickPercent))
+    this.region.entities.forEach((entity) => entity.drawUILayer(tickPercent))
 
     if (this.getReadyTimer <= 0) {
-      this.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
+      this.region.mobs.forEach((mob) => mob.drawUILayer(tickPercent))
     }
     this.player.drawUILayer(tickPercent)
 
@@ -152,11 +144,9 @@ export class World {
   draw () {
     this.viewport.context.globalAlpha = 1
     this.viewport.context.fillStyle = '#3B3224'
-
     this.viewport.context.restore()
     this.viewport.context.save()
     this.viewport.context.fillStyle = '#3B3224'
-
     this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
 
     if (Settings.rotated === 'south') {
@@ -164,26 +154,18 @@ export class World {
       this.viewport.context.rotate(Math.PI)
       this.viewport.context.translate(-this.viewport.canvas.width, -this.viewport.canvas.height)
     }
-
     this.drawWorld(this.tickPercent)
-
     const { viewportX, viewportY } = this.viewport.getViewport(this);
-
     this.viewport.context.drawImage(this.region.canvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
-
     this.viewport.context.restore()
     this.viewport.context.save();
 
     // draw control panel
     this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
     this.controlPanel.draw(this)
-
     this.viewport.context.restore();
-
     XpDropController.controller.draw(this.viewport.context, this.viewport.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.viewport.context, this.tickPercent);
-
-
     this.contextMenu.draw(this)
 
     if (this.viewport.clickController.clickAnimation) {
@@ -212,25 +194,4 @@ export class World {
   setPlayer (player: Player) {
     this.player = player
   }
-
-  addEntity (entity: Entity) {
-    this.entities.push(entity)
-  }
-
-  removeEntity (entity: Entity) {
-    remove(this.entities, entity)
-  }
-
-  addMob (mob: Mob) {
-    if (this.tickCounter === 0) {
-      this.mobs.push(mob)
-    }else{
-      this.newMobs.push(mob)
-    }
-  }
-
-  removeMob (mob: Unit) {
-    remove(this.mobs, mob)
-  }
-
 }

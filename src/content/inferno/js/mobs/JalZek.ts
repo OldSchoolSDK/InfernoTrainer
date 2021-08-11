@@ -37,7 +37,7 @@ export class JalZek extends Mob {
   setStats () {
 
     // Scan for a zuk
-    const zuk = find(this.world.mobs, (mob: Unit) => {
+    const zuk = find(this.world.region.mobs, (mob: Unit) => {
       return mob.mobName() === EntityName.TZ_KAL_ZUK;
     }) as TzKalZuk;
     this.isZukWave = zuk !== null
@@ -173,7 +173,7 @@ export class JalZek extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
-          this.world.addMob(mobToResurrect)
+          this.world.region.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
           this.attackCooldownTicks = this.cooldown
         }

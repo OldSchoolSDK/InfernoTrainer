@@ -1,8 +1,11 @@
 'use strict'
 
 import { remove } from "lodash";
+import { Entity } from "./Entity";
 import { Item } from "./Item"
+import { Mob } from "./Mob";
 import { Settings } from "./Settings";
+import { Unit } from "./Unit";
 import { World } from "./World"
 
 
@@ -19,13 +22,38 @@ export interface GroundItems {
 export class Region{
   canvas: OffscreenCanvas;
 
+  world: World;
 
+  newMobs: Mob[] = [];
+  mobs: Mob[] = [];
+  entities: Entity[] = [];
+  
   mapImage: HTMLImageElement;
 
   groundItems: GroundItems = { }
 
   get context() {
     return this.canvas.getContext('2d');
+  }
+
+  addEntity (entity: Entity) {
+    this.entities.push(entity)
+  }
+
+  removeEntity (entity: Entity) {
+    remove(this.entities, entity)
+  }
+
+  addMob (mob: Mob) {
+    if (this.world.tickCounter === 0) {
+      this.mobs.push(mob)
+    }else{
+      this.newMobs.push(mob)
+    }
+  }
+
+  removeMob (mob: Unit) {
+    remove(this.mobs, mob)
   }
 
   addGroundItem(world: World, item: Item, x: number, y: number) {
@@ -62,6 +90,7 @@ export class Region{
 
   // Spawn entities, NPCs, player and initialize any extra UI controls.
   initialize (world: World) {
+    this.world = world;
   }
 
   drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {

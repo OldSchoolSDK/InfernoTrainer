@@ -93,12 +93,12 @@ export class ZukShield extends Mob {
   dead () {
     this.dying = 3
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
-      this.world.removeMob(this)
-      const ranger = find(this.world.mobs, (mob: Mob) => {
+      this.world.region.removeMob(this)
+      const ranger = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_XIL;
       }) as JalXil;
       ranger.setAggro(this.world.player);
-      const mager = find(this.world.mobs, (mob: Mob) => {
+      const mager = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_ZEK;
       }) as JalXil;
       mager.setAggro(this.world.player);

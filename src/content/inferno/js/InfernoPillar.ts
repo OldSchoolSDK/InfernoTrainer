@@ -187,7 +187,7 @@ export class InfernoPillar extends Entity {
   dead () {
     this.dying = 2
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
-      this.world.removeEntity(this);
+      this.world.region.removeEntity(this);
     }, 2))
     // TODO: needs to AOE the nibblers around it
   }
@@ -201,6 +201,6 @@ export class InfernoPillar extends Entity {
       { x: 11, y: 23 },
       { x: 28, y: 21 },
       { x: 21, y: 37 }
-    ].forEach((position) => world.addEntity(new InfernoPillar(world, position)))
+    ].forEach((position) => world.region.addEntity(new InfernoPillar(world, position)))
   }
 }
