@@ -198,9 +198,9 @@ export class JalTokJad extends Mob {
 
   attackAnimation (tickPercent: number) {
     if (this.attackStyle === 'magic') {
-      this.world.worldCtx.rotate(tickPercent * Math.PI * 2)
+      this.world.region.context.rotate(tickPercent * Math.PI * 2)
     }else{
-      this.world.worldCtx.rotate(Math.sin(-tickPercent * Math.PI))
+      this.world.region.context.rotate(Math.sin(-tickPercent * Math.PI))
     }
   }
 

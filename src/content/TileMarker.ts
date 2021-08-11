@@ -27,11 +27,11 @@ export class TileMarker extends Entity {
     return 1;
   }
   draw () {
-    this.world.worldCtx.lineWidth = 2
+    this.world.region.context.lineWidth = 2
 
-    this.world.worldCtx.strokeStyle = this.color
+    this.world.region.context.strokeStyle = this.color
 
-    this.world.worldCtx.strokeRect(
+    this.world.region.context.strokeRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

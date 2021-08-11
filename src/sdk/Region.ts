@@ -17,9 +17,16 @@ export interface GroundItems {
 
 // Base class for any trainer region.
 export class Region{
+  canvas: OffscreenCanvas;
+
+
   mapImage: HTMLImageElement;
 
   groundItems: GroundItems = { }
+
+  get context() {
+    return this.canvas.getContext('2d');
+  }
 
   addGroundItem(world: World, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {

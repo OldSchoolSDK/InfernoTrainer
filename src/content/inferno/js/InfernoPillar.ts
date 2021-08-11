@@ -91,9 +91,9 @@ export class InfernoPillar extends Entity {
   }
 
   draw () {
-    this.world.worldCtx.fillStyle = '#000073'
+    this.world.region.context.fillStyle = '#000073'
 
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
@@ -106,28 +106,28 @@ export class InfernoPillar extends Entity {
   drawUILayer(tickPercent: number){
 
 
-    this.world.worldCtx.save()
+    this.world.region.context.save()
 
-    this.world.worldCtx.translate(
+    this.world.region.context.translate(
       (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
       ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2)
     )
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.rotate(Math.PI)
+      this.world.region.context.rotate(Math.PI)
     }
 
-    this.world.worldCtx.fillStyle = 'red'
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillStyle = 'red'
+    this.world.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.world.worldCtx.fillStyle = 'green'
+    this.world.region.context.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -160,24 +160,24 @@ export class InfernoPillar extends Entity {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.world.worldCtx.drawImage(
+      this.world.region.context.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.world.worldCtx.fillStyle = '#FFFFFF'
-      this.world.worldCtx.font = '16px Stats_11'
-      this.world.worldCtx.textAlign = 'center'
-      this.world.worldCtx.fillText(
+      this.world.region.context.fillStyle = '#FFFFFF'
+      this.world.region.context.font = '16px Stats_11'
+      this.world.region.context.textAlign = 'center'
+      this.world.region.context.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.world.worldCtx.textAlign = 'left'
+      this.world.region.context.textAlign = 'left'
     })
-    this.world.worldCtx.restore()
+    this.world.region.context.restore()
   }
 
   get size() {

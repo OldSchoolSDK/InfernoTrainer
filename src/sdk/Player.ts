@@ -531,32 +531,32 @@ export class Player extends Unit {
   draw (tickPercent: number) {
     LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
 
-    this.world.worldCtx.save();
+    this.world.region.context.save();
     const perceivedLocation = this.getPerceivedLocation(tickPercent);
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
 
     // Perceived location
 
-    this.world.worldCtx.globalAlpha = 0.7
-    this.world.worldCtx.fillStyle = '#FFFF00'
-    this.world.worldCtx.fillRect(
+    this.world.region.context.globalAlpha = 0.7
+    this.world.region.context.fillStyle = '#FFFF00'
+    this.world.region.context.fillRect(
       perceivedX * Settings.tileSize,
       perceivedY * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.worldCtx.globalAlpha = 1
+    this.world.region.context.globalAlpha = 1
 
     // Draw player on true tile
-    this.world.worldCtx.fillStyle = '#ffffff73'
+    this.world.region.context.fillStyle = '#ffffff73'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      this.world.worldCtx.fillStyle = '#00FFFF'
+      this.world.region.context.fillStyle = '#00FFFF'
     }
-    this.world.worldCtx.strokeStyle = '#FFFFFF73'
-    this.world.worldCtx.lineWidth = 3
-    this.world.worldCtx.fillRect(
+    this.world.region.context.strokeStyle = '#FFFFFF73'
+    this.world.region.context.lineWidth = 3
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -564,15 +564,15 @@ export class Player extends Unit {
     )
 
     // Destination location
-    this.world.worldCtx.strokeStyle = '#FFFFFF73'
-    this.world.worldCtx.lineWidth = 3
-    this.world.worldCtx.strokeRect(
+    this.world.region.context.strokeStyle = '#FFFFFF73'
+    this.world.region.context.lineWidth = 3
+    this.world.region.context.strokeRect(
       this.destinationLocation.x * Settings.tileSize,
       this.destinationLocation.y * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.worldCtx.restore();
+    this.world.region.context.restore();
   }
 
   getPerceivedLocation(tickPercent: number): Location {
@@ -600,21 +600,21 @@ export class Player extends Unit {
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
     
-    this.world.worldCtx.save();
+    this.world.region.context.save();
 
 
-    this.world.worldCtx.translate(
+    this.world.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.rotate(Math.PI)
+      this.world.region.context.rotate(Math.PI)
     }
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
-    this.world.worldCtx.restore();
+    this.world.region.context.restore();
     this.drawIncomingProjectiles(tickPercent);
 
   }

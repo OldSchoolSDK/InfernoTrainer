@@ -276,8 +276,8 @@ export class Mob extends Unit {
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
-          this.world.redClick()
-          this.world.playerAttackClick(this)
+          this.world.viewport.clickController.redClick()
+          this.world.viewport.clickController.playerAttackClick(this)
         }
       }
     ]
@@ -290,21 +290,21 @@ export class Mob extends Unit {
   drawUnderTile(tickPercent: number) {
 
     if (this.dying > -1) {
-      this.world.worldCtx.fillStyle = '#964B0073'
+      this.world.region.context.fillStyle = '#964B0073'
     } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.world.worldCtx.fillStyle = '#00FF0073'
+      this.world.region.context.fillStyle = '#00FF0073'
     } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.world.worldCtx.fillStyle = '#FF000073'
+      this.world.region.context.fillStyle = '#FF000073'
     } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.world.worldCtx.fillStyle = '#FFFF0073'
+      this.world.region.context.fillStyle = '#FFFF0073'
     } else if (this.hasLOS) {
-      this.world.worldCtx.fillStyle = '#FF730073'
+      this.world.region.context.fillStyle = '#FF730073'
     } else {
-      this.world.worldCtx.fillStyle = this.color;
+      this.world.region.context.fillStyle = this.color;
     }
 
     // Draw mob
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -319,8 +319,8 @@ export class Mob extends Unit {
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.worldCtx.save()
-    this.world.worldCtx.translate(
+    this.world.region.context.save()
+    this.world.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
@@ -329,19 +329,19 @@ export class Mob extends Unit {
     let currentImage = this.unitImage
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.rotate(Math.PI)
+      this.world.region.context.rotate(Math.PI)
     }
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.scale(-1, 1)
+      this.world.region.context.scale(-1, 1)
     }
 
-    this.world.worldCtx.save()
+    this.world.region.context.save()
     if (this.shouldShowAttackAnimation()) {
       this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
-      this.world.worldCtx.drawImage(
+      this.world.region.context.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -351,10 +351,10 @@ export class Mob extends Unit {
 
     }
 
-    this.world.worldCtx.restore()
+    this.world.region.context.restore()
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.scale(-1, 1)
+      this.world.region.context.scale(-1, 1)
     }
 
     this.drawOverTile(tickPercent)
@@ -362,9 +362,9 @@ export class Mob extends Unit {
     if (this.aggro) {
 
       if (LineOfSight.playerHasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
-        this.world.worldCtx.strokeStyle = '#00FF0073'
-        this.world.worldCtx.lineWidth = 1
-        this.world.worldCtx.strokeRect(
+        this.world.region.context.strokeStyle = '#00FF0073'
+        this.world.region.context.lineWidth = 1
+        this.world.region.context.strokeRect(
           -(this.size * Settings.tileSize) / 2,
           -(this.size * Settings.tileSize) / 2,
           this.size * Settings.tileSize,
@@ -372,21 +372,21 @@ export class Mob extends Unit {
         )
       }
     }
-    this.world.worldCtx.restore()
+    this.world.region.context.restore()
 
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.worldCtx.save()
-    this.world.worldCtx.translate(
+    this.world.region.context.save()
+    this.world.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.rotate(Math.PI)
+      this.world.region.context.rotate(Math.PI)
     }
     
     this.drawHPBar()
@@ -395,7 +395,7 @@ export class Mob extends Unit {
 
     this.drawOverheadPrayers()
 
-    this.world.worldCtx.restore()
+    this.world.region.context.restore()
 
     this.drawIncomingProjectiles(tickPercent)
 

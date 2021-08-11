@@ -2,9 +2,12 @@
 import { Settings } from './Settings';
 import { Pathing } from './Pathing';
 import { World } from './World';
+import { ClickController } from './ClickController';
 
 export class Viewport {
+  clickController: ClickController;
   canvas: HTMLCanvasElement;
+  world: World;
 
   width: number;
   height: number;
@@ -19,6 +22,8 @@ export class Viewport {
   }
 
   constructor(world: World) {
+    this.world = world;
+    this.clickController = new ClickController();
     this.initializeViewport(world);
   }
 

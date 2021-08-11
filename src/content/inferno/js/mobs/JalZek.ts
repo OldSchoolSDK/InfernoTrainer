@@ -125,7 +125,7 @@ export class JalZek extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.rotate(tickPercent * Math.PI * 2)
+    this.world.region.context.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {

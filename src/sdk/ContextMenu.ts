@@ -65,14 +65,14 @@ d
         {
           text: [{ text: 'Choose Option', fillStyle: '#5f5445' }],
           action: () => {
-            world.yellowClick()
+            world.viewport.clickController.yellowClick()
           }
         },
         ...this.menuOptions,
         {
           text: [{ text: 'Cancel', fillStyle: 'white' }],
           action: () => {
-            world.yellowClick()
+            world.viewport.clickController.yellowClick()
           }
         }
       ]

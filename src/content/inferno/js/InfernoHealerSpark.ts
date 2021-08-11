@@ -60,9 +60,9 @@ export class InfernoHealerSpark extends Entity {
   }
 
   draw () {
-    this.world.worldCtx.fillStyle = '#FF0000'
+    this.world.region.context.fillStyle = '#FF0000'
 
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
