@@ -18,7 +18,6 @@ import { Viewport } from './Viewport'
 
 export class World {
   region: Region;
-  wave: string;
   newMobs: Mob[] = [];
   mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
@@ -28,7 +27,7 @@ export class World {
   player?: Player;
   entities: Entity[] = [];
   worldCanvas: OffscreenCanvas;
-  viewport: Viewport = new Viewport();
+  viewport: Viewport;
   contextMenu: ContextMenu = new ContextMenu();
   clickAnimation?: ClickAnimation = null;
   tickPercent: number;
@@ -39,19 +38,16 @@ export class World {
   get worldCtx() {
     return this.worldCanvas.getContext('2d');
   }
-  constructor (selector: string, region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
+  constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
 
     this.region = region;
     this.mapController = mapController;
     this.controlPanel = controlPanel;
     this.controlPanel.setWorld(this);
     this.mapController.setWorld(this)
-
-
     this.worldCanvas = new OffscreenCanvas(this.region.width * Settings.tileSize, this.region.height * Settings.tileSize)
 
-    this.viewport = Viewport.createViewport(this, selector);
-
+    this.viewport = new Viewport(this);
     this.registerClickActions();
 
   }

@@ -18,26 +18,27 @@ export class Viewport {
     return this.canvas.getContext('2d');
   }
 
-  static createViewport(world: World, selector: string) {
-    const viewport = new Viewport();
+  constructor(world: World) {
+    this.initializeViewport(world);
+  }
 
+  initializeViewport(world: World) {
     // convert this to a world map canvas (offscreencanvas)
-    viewport.canvas = document.getElementById(selector) as HTMLCanvasElement;
+    this.canvas = document.getElementById('world') as HTMLCanvasElement;
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
     const widthRestrictors = 227 + 200;
-    viewport._viewport.width = Math.ceil(Math.min(
+    this._viewport.width = Math.ceil(Math.min(
       world.region.width,
       Math.floor(width / Settings.tileSize - (widthRestrictors / Settings.tileSize))
     ));
-    viewport._viewport.height = Math.ceil(Math.min(world.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize - (70 / Settings.tileSize)))));
+    this._viewport.height = Math.ceil(Math.min(world.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize - (70 / Settings.tileSize)))));
     // create new canvas that is the on screen canvas
-    viewport.canvas.width = Settings.tileSize * viewport._viewport.width + world.mapController.width;
-    viewport.canvas.height = Settings.tileSize * viewport._viewport.height;
-    viewport.width = viewport._viewport.width;
-    viewport.height = viewport._viewport.height;
-    return viewport;
+    this.canvas.width = Settings.tileSize * this._viewport.width + world.mapController.width;
+    this.canvas.height = Settings.tileSize * this._viewport.height;
+    this.width = this._viewport.width;
+    this.height = this._viewport.height;
     
   }
 
@@ -49,22 +50,18 @@ export class Viewport {
     let viewportX = perceivedX + 0.5 - this._viewport.width / 2;
     let viewportY = perceivedY + 0.5 - this._viewport.height / 2;
 
-    if (parseInt(world.wave) < 67) {
-      viewportX = 11;
-      viewportY = 14;
-    } else {
-      if (viewportX < 0) {
-        viewportX = 0;
-      }
-      if (viewportY < 0) {
-        viewportY = 0;
-      }
-      if (viewportX + this._viewport.width > world.region.width) {
-        viewportX = world.region.width - this._viewport.width;
-      }
-      if (viewportY + this._viewport.height > world.region.height) {
-        viewportY = world.region.height - this._viewport.height;
-      }
+
+    if (viewportX < 0) {
+      viewportX = 0;
+    }
+    if (viewportY < 0) {
+      viewportY = 0;
+    }
+    if (viewportX + this._viewport.width > world.region.width) {
+      viewportX = world.region.width - this._viewport.width;
+    }
+    if (viewportY + this._viewport.height > world.region.height) {
+      viewportY = world.region.height - this._viewport.height;
     }
 
     return { viewportX, viewportY };
