@@ -4,7 +4,7 @@ import { Entity } from '../sdk/Entity'
 import { CollisionType } from '../sdk/Collision'
 import { LineOfSightMask } from '../sdk/LineOfSight';
 
-export class MovementBlocker extends Entity {
+export class InvisibleMovementBlocker extends Entity {
 
 
   get lineOfSight() {

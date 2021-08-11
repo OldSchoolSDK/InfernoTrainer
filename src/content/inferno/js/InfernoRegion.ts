@@ -44,7 +44,7 @@ import { SuperRestore } from '../../items/SuperRestore'
 import { Shark } from '../../items/Shark'
 import { Karambwan } from '../../items/Karambwan'
 import { BastionPotion } from '../../items/BastionPotion'
-import { MovementBlocker } from '../../MovementBlocker'
+import { InvisibleMovementBlocker } from '../../MovementBlocker'
 import { Wall } from '../../Wall'
 import { TileMarker } from '../../TileMarker'
 import { ZukShield } from "./ZukShield"
@@ -126,12 +126,12 @@ export class InfernoRegion extends Region {
 
 
     for (let x = 10;x < 41;x++) {
-      world.addEntity(new MovementBlocker(world, { x, y: 13}))
-      world.addEntity(new MovementBlocker(world, { x, y: 44}))
+      world.addEntity(new InvisibleMovementBlocker(world, { x, y: 13}))
+      world.addEntity(new InvisibleMovementBlocker(world, { x, y: 44}))
     }
     for (let y = 14;y < 44;y++) {
-      world.addEntity(new MovementBlocker(world, { x: 10, y}))
-      world.addEntity(new MovementBlocker(world, { x: 40, y}))
+      world.addEntity(new InvisibleMovementBlocker(world, { x: 10, y}))
+      world.addEntity(new InvisibleMovementBlocker(world, { x: 40, y}))
     }
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
