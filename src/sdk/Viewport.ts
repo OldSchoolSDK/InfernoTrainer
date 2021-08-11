@@ -22,9 +22,10 @@ export class Viewport {
   }
 
   constructor(world: World) {
-    this.world = world;
-    this.clickController = new ClickController();
     this.initializeViewport(world);
+    this.world = world;
+    this.clickController = new ClickController(this);
+    this.clickController.registerClickActions(world)
   }
 
   initializeViewport(world: World) {

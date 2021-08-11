@@ -90,6 +90,8 @@ export class InfernoRegion extends Region {
       this.wave = InfernoWaves.waves.length + 3;
     }
 
+    // fun hack to hijack viewport
+    world.viewport.clickController.unload(world);
     world.viewport = new InfernoViewport(world);
 
     // Add player
