@@ -1,5 +1,5 @@
 'use strict'
-import { remove } from 'lodash'
+import { remove, times } from 'lodash'
 import { ClickAnimation } from './ClickAnimation'
 import { Settings } from './Settings'
 import { ContextMenu, MenuOption } from './ContextMenu'
@@ -21,7 +21,6 @@ export class World {
   wave: string;
   mobs: Mob[] = [];
   inputDelay?: NodeJS.Timeout = null;
-  frameCounter: number = 0
   getReadyTimer: number = 6
   controlPanel: ControlPanelController;
   mapController: MapController;
@@ -40,6 +39,8 @@ export class World {
   ticker: NodeJS.Timeout;
   tickPercent: number;
   isPaused: boolean = true;
+  timeSincePause: number = -1;
+  tickTimeSincePause: number = -1;
   newMobs: Mob[] = [];
   tickCounter: number = 0;
   get worldCtx() {
@@ -257,41 +258,40 @@ export class World {
   }
 
 
-
-// function startAnimating(fps) {
-//   fpsInterval = 1000 / fps;
-//   then = window.performance.now();
-//   startTime = then;
-//   console.log(startTime);
-//   animate();
-// }
-
-
   fpsInterval = 1000 / Settings.fps;
   then: number;
   startTime: number;
-  frameCount: number;
+  frameCount: number = 0;
   tickTimer: number = 0;
   startTicking () {
     this.isPaused = false;
-    this.then = window.performance.now();
-    this.startTime = this.then;
-    this.tickTimer = 0;
-    this.worldLoop(this.startTime);
-    // this.ticker = setInterval(this.worldLoop.bind(this), )
+    if (this.timeSincePause === -1) {
+      this.tickTimer = window.performance.now();
+      this.then = window.performance.now();
+    }else{
+      this.then = window.performance.now() - this.timeSincePause;
+
+      this.tickTimer = window.performance.now() - this.tickTimeSincePause;
+
+      this.timeSincePause = -1;
+    }
+    this.worldLoop(window.performance.now());
   }
 
+  stopTicking() {
+    this.timeSincePause = window.performance.now() - this.then;
+    this.tickTimeSincePause = window.performance.now() - this.tickTimer;
+    this.isPaused = true;
+  }
 
-  worldLoop (newtime: number) {
+  worldLoop (now: number) {
     window.requestAnimationFrame(this.worldLoop.bind(this));
 
-    const now = newtime;
     const elapsed = now - this.then;
 
     const tickElapsed = now - this.tickTimer;
 
     if (tickElapsed >= 600 && this.isPaused === false) {
-      this.frameCount = 0;
       this.tickTimer = now;
       this.getReadyTimer--;
       if (this.getReadyTimer <=0){
@@ -299,52 +299,12 @@ export class World {
       }
     }
 
-    // if enough time has elapsed, draw the next frame
-
     if (elapsed > this.fpsInterval && this.isPaused === false) {
-        this.tickPercent = this.frameCount / (Settings.fps * (Settings.tickMs / 1000));
-
-        // Get ready for next frame by setting then=now, but...
-        // Also, adjust for fpsInterval not being multiple of 16.67
-        this.then = now - (elapsed % this.fpsInterval);
-
-        // draw stuff here
-
-        this.draw();
-
-        this.frameCount ++;
-
+      this.tickPercent = (window.performance.now() - this.tickTimer) / Settings.tickMs;
+      this.then = now - (elapsed % this.fpsInterval);
+      this.draw();
+      this.frameCount ++;
     }
-    
-    // Runs a tick every 600 ms (when frameCounter = 0), and draws every loop
-    // Everything else is just measuring performance
-    // const t = performance.now()
-    // if (this.frameCounter === 0 && this.getReadyTimer) {
-    //   this.getReadyTimer--;
-    // }
-
-    // if (this.frameCounter === 0 && this.getReadyTimer <= 0) {
-    //   this.timeBetweenTicks = t - this.lastT
-    //   this.lastT = t
-    //   if (this.isPaused === false) {
-    //     this.worldTick()
-    //   }
-    //   this.tickTime = performance.now() - t
-    // }
-    // const t2 = performance.now()
-    // this.tickPercent = this.frameCounter / Settings.fps;
-    // this.draw()
-    // this.drawTime = performance.now() - t2
-    // this.frameCounter++
-    // if (thia
-    // this.frameTime = performance.now() - t
-  }
-
-
-
-  stopTicking() {
-    this.isPaused = true;
-    clearInterval(this.ticker);
   }
 
   worldTick () {
