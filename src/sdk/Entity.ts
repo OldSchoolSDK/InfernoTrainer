@@ -1,5 +1,6 @@
 'use strict'
-import { GameObject, Location } from './GameObject';
+import { GameObject } from './GameObject';
+import { Location } from "./Location";
 import { World } from './World'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
@@ -34,9 +35,9 @@ export class Entity extends GameObject{
 
   
   draw (tickPercent: number) {
-    this.world.worldCtx.fillStyle = '#000073'
+    this.world.region.context.fillStyle = '#000073'
 
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

@@ -10,7 +10,7 @@ import { JalZek } from './mobs/JalZek'
 import { JalImKot } from './mobs/JalImKot'
 import { JalNib } from './mobs/JalNib'
 import { JalXil } from './mobs/JalXil'
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location"
 
 
 export class InfernoWaves {
@@ -20,13 +20,6 @@ export class InfernoWaves {
   }
 
   static spawn (world: World, randomPillar: Entity, spawns: Location[], wave: number) {
-
-    if (wave < 1) {
-      wave = 1;
-    }
-    if (wave > InfernoWaves.waves.length) {
-      wave = InfernoWaves.waves.length;
-    }
 
     const mobCounts = InfernoWaves.waves[wave - 1]
     let mobs: Mob[] = []

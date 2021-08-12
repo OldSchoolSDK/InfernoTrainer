@@ -22,6 +22,10 @@ export class BaseControls {
   cursorMovedto(world: World, x: number, y: number) {
   }
 
+  panelRightClick (world: World, x: number, y: number) {
+    
+  }
+
   panelClickDown (world: World, x: number, y: number) {
     console.log(x, y)
   }
@@ -31,7 +35,7 @@ export class BaseControls {
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     if (this.panelImage) {
-      world.viewportCtx.drawImage(this.panelImage, x, y)
+      world.viewport.context.drawImage(this.panelImage, x, y)
     }
   }
 }

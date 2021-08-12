@@ -118,7 +118,6 @@
       }, 1000)
       document.getElementById("set_timer_button").addEventListener('click', () => {
         if (window.timer_mode === 'start'){
-          console.log('pausing')
           window.timer_mode = 'pause';
         }else if (window.timer_mode === 'pause') {
           window.timer_mode = 'resume';
@@ -140,7 +139,6 @@
     <br />
     <div id="version" style="width: 600px;"></div>
     <div>Click the Settings button to personalize configuration</div>
-    <div>Google Chrome is suggested. There are known tickrate problems with Firefox.</div>
     <div>Please disable adblockers. We use Google Analytics and New Relic Browser Agent to discover usage and bugs. Ad Blockers reduce our ability to do so. We do not serve ads.</div>
     <div id="build_version" style="display: none;"></div>
 

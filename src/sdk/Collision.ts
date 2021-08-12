@@ -27,15 +27,15 @@ export class Collision {
   }
 
   static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    for (let i = 0; i < world.mobs.length; i++) {
-      if (world.mobs[i] === mobToAvoid) {
+    for (let i = 0; i < world.region.mobs.length; i++) {
+      if (world.region.mobs[i] === mobToAvoid) {
         continue
       }
 
-      const collidedWithSpecificMob = Collision.collidesWithMob(world, x, y, s, world.mobs[i])
+      const collidedWithSpecificMob = Collision.collidesWithMob(world, x, y, s, world.region.mobs[i])
 
-      if (collidedWithSpecificMob && world.mobs[i].consumesSpace) {
-        return world.mobs[i]
+      if (collidedWithSpecificMob && world.region.mobs[i].consumesSpace) {
+        return world.region.mobs[i]
       }
     }
     return null
@@ -51,8 +51,8 @@ export class Collision {
 
 
   static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
-    for (var i = 0; i < world.entities.length; i++) {
-      let entity = world.entities[i];
+    for (var i = 0; i < world.region.entities.length; i++) {
+      let entity = world.region.entities[i];
       if (entity.collisionType != CollisionType.NONE && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return true;
       }
@@ -61,8 +61,8 @@ export class Collision {
   }
 
   static collidesWithAnyLoSBlockingEntities (world: World, x: number, y: number, s: number): LineOfSightMask {
-    for (var i = 0; i < world.entities.length; i++) {
-      let entity = world.entities[i];
+    for (var i = 0; i < world.region.entities.length; i++) {
+      let entity = world.region.entities[i];
       if (Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return entity.lineOfSight
       }
@@ -77,10 +77,10 @@ export class Collision {
 
   static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number): Mob[] {
     const mobs = []
-    for (let i = 0; i < world.mobs.length; i++) {
-      const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.mobs[i])
+    for (let i = 0; i < world.region.mobs.length; i++) {
+      const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.region.mobs[i])
       if (collidedWithSpecificMob) {
-        mobs.push(world.mobs[i])
+        mobs.push(world.region.mobs[i])
       }
     }
     return mobs

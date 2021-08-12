@@ -7,7 +7,7 @@ import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JadImage from '../../assets/images/JalTok-Jad.png'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
-import { Location } from '../../../../sdk/GameObject'
+import { Location } from "../../../../sdk/Location"
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
@@ -141,7 +141,7 @@ export class JalTokJad extends Mob {
           }
 
           const healer = new YtHurKot(this.world, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
-          this.world.addMob(healer)
+          this.world.region.addMob(healer)
 
         }
       }  
@@ -198,9 +198,9 @@ export class JalTokJad extends Mob {
 
   attackAnimation (tickPercent: number) {
     if (this.attackStyle === 'magic') {
-      this.world.worldCtx.rotate(tickPercent * Math.PI * 2)
+      this.world.region.context.rotate(tickPercent * Math.PI * 2)
     }else{
-      this.world.worldCtx.rotate(Math.sin(-tickPercent * Math.PI))
+      this.world.region.context.rotate(Math.sin(-tickPercent * Math.PI))
     }
   }
 

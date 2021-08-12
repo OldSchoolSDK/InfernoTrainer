@@ -4,7 +4,7 @@
 import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import HurKotImage from '../../assets/images/Yt-HurKot.png'
-import { Location } from '../../../../sdk/GameObject'
+import { Location } from "../../../../sdk/Location"
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
@@ -131,7 +131,7 @@ export class YtHurKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.transform(
+    this.world.region.context.transform(
       1, 
       0, 
       Math.sin(-tickPercent * Math.PI * 2) / 2, 

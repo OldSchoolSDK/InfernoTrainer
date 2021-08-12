@@ -107,7 +107,7 @@ export class JalAk extends Mob {
     return BlobSound
   }
   attackAnimation (tickPercent: number) {
-    this.world.worldCtx.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    this.world.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {
@@ -163,12 +163,12 @@ export class JalAk extends Mob {
 
   removedFromWorld () {
     const xil = new JalAkRekXil(this.world, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro })
-    this.world.addMob(xil)
+    this.world.region.addMob(xil)
 
     const ket = new JalAkRekKet(this.world, this.location, { aggro: this.aggro })
-    this.world.addMob(ket)
+    this.world.region.addMob(ket)
 
     const mej = new JalAkRekMej(this.world, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro })
-    this.world.addMob(mej)
+    this.world.region.addMob(mej)
   }
 }

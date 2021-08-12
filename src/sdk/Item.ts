@@ -1,12 +1,15 @@
-import { filter } from "lodash";
-import { InventoryControls } from "./controlpanels/InventoryControls";
+import { Location } from "./Location";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
+import { World } from "./World";
 
 export class Item {
+  
+  groundLocation: Location;
   inventorySprite: HTMLImageElement;
   selected: boolean;
   _serialNumber: string;
+  defaultAction: string = 'Use';
 
   get serialNumber(): string {
     if (!this._serialNumber) {
@@ -21,6 +24,46 @@ export class Item {
 
   inventoryLeftClick(player: Player) {
     
+  }
+  
+  contextActions (world: World) {
+    // use
+    // drop
+    // examine
+    let options = [
+      {
+        text: [
+          { text: 'Drop ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+        ],
+        action: () => 
+        {
+          world.region.addGroundItem(world, this, world.player.location.x, world.player.location.y)
+          this.consumeItem(world.player);
+        }
+      },
+      {
+        text: [
+          { text: 'Examine ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+        ],
+        action: () => {}
+      },
+    ]
+
+    if (this.defaultAction) {
+      options.unshift(
+        {
+          text: [
+            { text: this.defaultAction + ' ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
+          ],
+          action: () => 
+          {
+            this.inventoryLeftClick(world.player);
+          }
+        }
+      )
+    }
+
+    return options;
   }
 
   get itemName(): ItemName {

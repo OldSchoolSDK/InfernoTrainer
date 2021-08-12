@@ -1,11 +1,9 @@
 'use strict'
 
 import { InfernoRegion } from './content/inferno/js/InfernoRegion'
-import { VerzikP3 } from './content/verzik/VerzikP3'
 import { World } from './sdk/World'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
-import { InventoryControls } from './sdk/controlpanels/InventoryControls'
 import { Region } from './sdk/Region'
 import { MapController } from './sdk/MapController'
 import { ImageLoader } from './sdk/utils/ImageLoader'
@@ -22,9 +20,6 @@ const selectedRegionName = Settings.region
 let selectedRegion: Region;
 
 switch (selectedRegionName) {
-  case 'verzikp3':
-    selectedRegion = new VerzikP3()
-    break
   case 'inferno':
   default:
     selectedRegion = new InfernoRegion()
@@ -36,7 +31,7 @@ switch (selectedRegionName) {
 const controlPanel = new ControlPanelController()
 
 
-const world = new World('world', selectedRegion, MapController.controller, controlPanel);
+const world = new World(selectedRegion, MapController.controller, controlPanel);
 
 selectedRegion.initialize(world)
 

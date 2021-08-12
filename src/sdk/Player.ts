@@ -9,7 +9,7 @@ import { World } from './World'
 import { Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
-import { Location } from './GameObject'
+import { Location } from "./Location"
 import { Mob } from './Mob'
 import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
@@ -18,7 +18,6 @@ import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
 import { ItemName } from './ItemName'
-import { InventoryControls } from './controlpanels/InventoryControls'
 import { Item } from './Item'
 import { Collision } from './Collision'
 import { Eating } from './Eating'
@@ -50,6 +49,8 @@ export class Player extends Unit {
   eats: Eating = new Eating();
   inventory: Item[];
   healedAmountThisTick: number = 0;
+
+  seekingItem: Item = null;
 
   path: any;
 
@@ -205,7 +206,8 @@ export class Player extends Unit {
   }
 
   moveTo (x: number, y: number) {
-    this.aggro = null
+    this.setAggro(null);
+
     this.manualSpellCastSelection = null
 
     const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.world, x, y, 1)
@@ -250,7 +252,7 @@ export class Player extends Unit {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
       this.manualSpellCastSelection = null
-      this.aggro = null;
+      this.setAggro(null);
       this.destinationLocation = this.location;
     } else {
       // use equipped weapon
@@ -283,10 +285,20 @@ export class Player extends Unit {
     }
   }
 
-  pathToAggro () {
+
+  setAggro(mob: Unit) {
+    this.aggro = mob;
+    this.seekingItem = null;
+  }
+
+  setSeekingItem(item: Item) {
+    this.aggro = null;
+    this.seekingItem = item;
+  }
+  determineDestination () {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
-        this.aggro = null
+        this.setAggro(null);
         this.destinationLocation = this.location
         return
       }
@@ -361,6 +373,8 @@ export class Player extends Unit {
       } else {
         this.destinationLocation = this.location
       }
+    }else if (this.seekingItem) {
+      this.destinationLocation = this.seekingItem.groundLocation;
     }
   }
 
@@ -398,11 +412,30 @@ export class Player extends Unit {
 
   }
 
+  takeSeekingItem() {
+    if (this.seekingItem) {
+      if (this.seekingItem.groundLocation.x === this.location.x) {
+        if (this.seekingItem.groundLocation.y === this.location.y) {
+          // Verify player is close. Apparently we need to have the player keep track of this item 
+          this.world.region.removeGroundItem(this.seekingItem, this.location.x, this.location.y)
+          const slots = this.openInventorySlots();
+          if (slots.length) {
+            const slot = slots[0];
+            this.inventory[slot] = this.seekingItem;
+          }
+          this.seekingItem = null;
+        }          
+      }
+    }
+  }
+
   movementStep () {
 
     this.activatePrayers()
 
-    this.pathToAggro()
+    this.takeSeekingItem();
+
+    this.determineDestination()
     
     this.moveTorwardsDestination()
   }
@@ -497,32 +530,32 @@ export class Player extends Unit {
   draw (tickPercent: number) {
     LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
 
-    this.world.worldCtx.save();
+    this.world.region.context.save();
     const perceivedLocation = this.getPerceivedLocation(tickPercent);
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
 
     // Perceived location
 
-    this.world.worldCtx.globalAlpha = 0.7
-    this.world.worldCtx.fillStyle = '#FFFF00'
-    this.world.worldCtx.fillRect(
+    this.world.region.context.globalAlpha = 0.7
+    this.world.region.context.fillStyle = '#FFFF00'
+    this.world.region.context.fillRect(
       perceivedX * Settings.tileSize,
       perceivedY * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.worldCtx.globalAlpha = 1
+    this.world.region.context.globalAlpha = 1
 
     // Draw player on true tile
-    this.world.worldCtx.fillStyle = '#fff'
+    this.world.region.context.fillStyle = '#ffffff73'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      this.world.worldCtx.fillStyle = '#00FFFF'
+      this.world.region.context.fillStyle = '#00FFFF'
     }
-    this.world.worldCtx.strokeStyle = '#FFFFFF73'
-    this.world.worldCtx.lineWidth = 3
-    this.world.worldCtx.fillRect(
+    this.world.region.context.strokeStyle = '#FFFFFF73'
+    this.world.region.context.lineWidth = 3
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -530,15 +563,15 @@ export class Player extends Unit {
     )
 
     // Destination location
-    this.world.worldCtx.strokeStyle = '#FFFFFF73'
-    this.world.worldCtx.lineWidth = 3
-    this.world.worldCtx.strokeRect(
+    this.world.region.context.strokeStyle = '#FFFFFF73'
+    this.world.region.context.lineWidth = 3
+    this.world.region.context.strokeRect(
       this.destinationLocation.x * Settings.tileSize,
       this.destinationLocation.y * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.worldCtx.restore();
+    this.world.region.context.restore();
   }
 
   getPerceivedLocation(tickPercent: number): Location {
@@ -566,21 +599,21 @@ export class Player extends Unit {
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
     
-    this.world.worldCtx.save();
+    this.world.region.context.save();
 
 
-    this.world.worldCtx.translate(
+    this.world.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (Settings.rotated === 'south') {
-      this.world.worldCtx.rotate(Math.PI)
+      this.world.region.context.rotate(Math.PI)
     }
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
-    this.world.worldCtx.restore();
+    this.world.region.context.restore();
     this.drawIncomingProjectiles(tickPercent);
 
   }

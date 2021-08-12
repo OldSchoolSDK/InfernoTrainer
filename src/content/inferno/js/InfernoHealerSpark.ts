@@ -6,7 +6,7 @@ import { Settings } from '../../../sdk/Settings'
 import { World } from '../../../sdk/World'
 import { Unit, UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../sdk/weapons/Projectile'
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location"
 
 
 
@@ -60,9 +60,9 @@ export class InfernoHealerSpark extends Entity {
   }
 
   draw () {
-    this.world.worldCtx.fillStyle = '#FF0000'
+    this.world.region.context.fillStyle = '#FF0000'
 
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

@@ -1,6 +1,7 @@
 'use strict'
 import { sortBy, minBy } from 'lodash'
-import { GameObject, Location } from './GameObject'
+import { GameObject } from './GameObject'
+import { Location } from "./Location"
 import { World } from './World'
 import { Collision } from './Collision'
 
@@ -13,9 +14,9 @@ export class Pathing {
 
   static entitiesAtPoint (world: World, x: number, y: number, s: number) {
     const entities = []
-    for (let i = 0; i < world.entities.length; i++) {
-      if (Collision.collisionMath(x, y, s, world.entities[i].location.x, world.entities[i].location.y, world.entities[i].size)) {
-        entities.push(world.entities[i])
+    for (let i = 0; i < world.region.entities.length; i++) {
+      if (Collision.collisionMath(x, y, s, world.region.entities[i].location.x, world.region.entities[i].location.y, world.region.entities[i].size)) {
+        entities.push(world.region.entities[i])
       }
     }
     return entities
@@ -25,11 +26,11 @@ export class Pathing {
   // TODO: Make this more like entitiesAtPoint
   static mobsAtAoeOffset (world: World, mob: GameObject, point: Location) {
     const mobs = []
-    for (let i = 0; i < world.mobs.length; i++) {
-      const collidedWithSpecificMob = world.mobs[i].location.x === point.x + mob.location.x && world.mobs[i].location.y === point.y + mob.location.y
+    for (let i = 0; i < world.region.mobs.length; i++) {
+      const collidedWithSpecificMob = world.region.mobs[i].location.x === point.x + mob.location.x && world.region.mobs[i].location.y === point.y + mob.location.y
 
       if (collidedWithSpecificMob) {
-        mobs.push(world.mobs[i])
+        mobs.push(world.region.mobs[i])
       }
     }
 

@@ -1,11 +1,7 @@
 import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
-import { LineOfSight, LineOfSightMask } from "./LineOfSight";
-
-export interface Location {
-  x: number;
-  y: number;
-}
+import { LineOfSightMask } from "./LineOfSight";
+import { Location } from "./Location";
 
 export class GameObject {
   ticksAlive: number = 0;

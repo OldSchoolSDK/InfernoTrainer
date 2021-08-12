@@ -41,7 +41,7 @@ export class Weapon extends Equipment{
 
   assignToPlayer(player: Player) {
     player.equipment.weapon = this;
-    player.aggro = null;
+    player.setAggro(null);
   }
 
   unassignToPlayer(player: Player) {

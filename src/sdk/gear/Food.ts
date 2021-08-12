@@ -6,6 +6,11 @@ export class Food extends Item {
   healAmount: number = 0;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
+  constructor() {
+    super();
+
+    this.defaultAction = 'Eat';
+  }
 
   eat(player: Player) {
     if (player.currentStats.hitpoint < player.stats.hitpoint) {

@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader';
-import { Location } from '../../../sdk/GameObject'
+import { Location } from "../../../sdk/Location";
 import { World } from '../../../sdk/World';
 import { filter, find, remove } from 'lodash';
 import { Pathing } from '../../../sdk/Pathing';
@@ -93,21 +93,21 @@ export class ZukShield extends Mob {
   dead () {
     this.dying = 3
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
-      this.world.removeMob(this)
-      const ranger = find(this.world.mobs, (mob: Mob) => {
+      this.world.region.removeMob(this)
+      const ranger = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_XIL;
       }) as JalXil;
-      ranger.aggro = this.world.player;
-      const mager = find(this.world.mobs, (mob: Mob) => {
+      ranger.setAggro(this.world.player);
+      const mager = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_ZEK;
       }) as JalXil;
-      mager.aggro = this.world.player;
+      mager.setAggro(this.world.player);
       
     }, 2))
   }
 
 
-  contextActions (x: number, y: number) {
+  contextActions (world: World, x: number, y: number) {
     return [];
   }
   mobName(): EntityName { 
@@ -180,9 +180,9 @@ export class ZukShield extends Mob {
   
   drawUnderTile(tickPercent: number) {
 
-    this.world.worldCtx.fillStyle = this.color;
+    this.world.region.context.fillStyle = this.color;
     // Draw mob
-    this.world.worldCtx.fillRect(
+    this.world.region.context.fillRect(
       -(3 * Settings.tileSize) / 2,
       -(3 * Settings.tileSize) / 2,
       3 * Settings.tileSize,

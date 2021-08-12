@@ -2,6 +2,7 @@
 
 import { shuffle } from 'lodash'
 
+import { InfernoViewport } from './InfernoViewport'
 import { InfernoPillar } from './InfernoPillar'
 import { Player } from '../../../sdk/Player'
 import { InfernoWaves } from './InfernoWaves'
@@ -43,13 +44,14 @@ import { SuperRestore } from '../../items/SuperRestore'
 import { Shark } from '../../items/Shark'
 import { Karambwan } from '../../items/Karambwan'
 import { BastionPotion } from '../../items/BastionPotion'
-import { MovementBlocker } from '../../MovementBlocker'
+import { InvisibleMovementBlocker } from '../../MovementBlocker'
 import { Wall } from '../../Wall'
 import { TileMarker } from '../../TileMarker'
 import { ZukShield } from "./ZukShield"
 
 export class InfernoRegion extends Region {
 
+  wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
     return 'Inferno'
@@ -65,37 +67,47 @@ export class InfernoRegion extends Region {
   }
   
   getInventory () {
-    return [
-      new Blowpipe(), new JusticiarChestguard(), new JusticiarLegguards(), new SaradominBrew(),
-      new CrystalShield(), new SuperRestore(), new AncestralRobetop(), new AncestralRobebottom(),
-      new SaradominBrew(), new StaminaPotion(), new SaradominBrew(), new SaradominBrew(),
+    return [ 
+      new Blowpipe(), new ArmadylChestplate(), new TwistedBow(), new JusticiarChestguard(),
+      null, new AncestralRobebottom(), null, new JusticiarLegguards(),
+      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
       new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new SuperRestore(), new SaradominBrew(), new SuperRestore(), new BastionPotion(), 
+      new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
     ]
   }
 
   initialize (world: World) {
-
-
-    let wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
-    if (isNaN(wave)){
-      wave = 1;
+    super.initialize(world);
+    
+    this.wave = parseInt(BrowserUtils.getQueryVar('wave')) || 62
+    if (isNaN(this.wave)){
+      this.wave = 1;
+    }
+    if (this.wave < 1) {
+      this.wave = 1;
+    }
+    if (this.wave > InfernoWaves.waves.length + 3) {
+      this.wave = InfernoWaves.waves.length + 3;
     }
 
+    // fun hack to hijack viewport
+    world.viewport.clickController.unload(world);
+    world.viewport = new InfernoViewport(world);
 
     // Add player
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
       { equipment: { 
-          weapon: new TwistedBow(),
+          weapon: new KodaiWand(),
+          offhand: new CrystalShield(),
           helmet: new JusticiarFaceguard(),
           necklace: new NecklaceOfAnguish(),
           cape: new AvasAssembler(),
           ammo: new HolyBlessing(),
-          chest: new ArmadylChestplate(),
+          chest: new AncestralRobetop(),
           legs: new ArmadylChainskirt(),
           feet: new PegasianBoots(),
           gloves: new BarrowsGloves(),
@@ -107,27 +119,27 @@ export class InfernoRegion extends Region {
 
 
 
-    if (wave < 67) {
+    if (this.wave < 67) {
       // Add pillars
       InfernoPillar.addPillarsToWorld(world)
     }
 
-    const randomPillar = (shuffle(world.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
+    const randomPillar = (shuffle(world.region.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
 
 
     for (let x = 10;x < 41;x++) {
-      world.addEntity(new MovementBlocker(world, { x, y: 13}))
-      world.addEntity(new MovementBlocker(world, { x, y: 44}))
+      world.region.addEntity(new InvisibleMovementBlocker(world, { x, y: 13}))
+      world.region.addEntity(new InvisibleMovementBlocker(world, { x, y: 44}))
     }
     for (let y = 14;y < 44;y++) {
-      world.addEntity(new MovementBlocker(world, { x: 10, y}))
-      world.addEntity(new MovementBlocker(world, { x: 40, y}))
+      world.region.addEntity(new InvisibleMovementBlocker(world, { x: 10, y}))
+      world.region.addEntity(new InvisibleMovementBlocker(world, { x: 40, y}))
     }
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
 
     // Add mobs
-    if (wave < 67) {
+    if (this.wave < 67) {
       player.location = { x: 28, y: 17}
 
       const bat = BrowserUtils.getQueryVar('bat') || '[]'
@@ -137,19 +149,19 @@ export class InfernoRegion extends Region {
       const mager = BrowserUtils.getQueryVar('mager') || '[]'
       const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
   
-      // world.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
+      // world.region.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
       
       if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
         // Backwards compatibility layer for runelite plugin
-        world.wave = "1";
+        this.wave = 1;
         try {
-          JSON.parse(mager).forEach((spawn: number[]) => world.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-          JSON.parse(ranger).forEach((spawn: number[]) => world.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-          JSON.parse(melee).forEach((spawn: number[]) => world.addMob(new JalImKot(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-          JSON.parse(blob).forEach((spawn: number[]) => world.addMob(new JalAk(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-          JSON.parse(bat).forEach((spawn: number[]) => world.addMob(new JalMejRah(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
+          JSON.parse(mager).forEach((spawn: number[]) => world.region.addMob(new JalZek(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(ranger).forEach((spawn: number[]) => world.region.addMob(new JalXil(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(melee).forEach((spawn: number[]) => world.region.addMob(new JalImKot(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(blob).forEach((spawn: number[]) => world.region.addMob(new JalAk(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+          JSON.parse(bat).forEach((spawn: number[]) => world.region.addMob(new JalMejRah(world, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
   
-          InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.addMob.bind(world))
+          InfernoWaves.spawnNibblers(3, world, randomPillar).forEach(world.region.addMob.bind(world.region))
   
           replayLink.href = `/${window.location.search}`
         } catch(ex){
@@ -161,74 +173,73 @@ export class InfernoRegion extends Region {
         // Native approach
         const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
   
-        InfernoWaves.spawn(world, randomPillar, spawns, wave).forEach(world.addMob.bind(world))
-        world.wave = String(wave)
+        InfernoWaves.spawn(world, randomPillar, spawns, this.wave).forEach(world.region.addMob.bind(world.region))
   
         const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
-        replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
-        waveInput.value = String(wave);
+        replayLink.href = `/?wave=${this.wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
+        waveInput.value = String(this.wave);
       }
-    }else if (wave === 67){ 
+    }else if (this.wave === 67){ 
  
       player.location = { x: 18, y: 25}
       const jad = new JalTokJad(world, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1, healers: 5, isZukWave: false });
-      world.addMob(jad)
-    }else if (wave === 68){ 
+      world.region.addMob(jad)
+    }else if (this.wave === 68){ 
       player.location = { x: 25, y: 27}
 
       const jad1 = new JalTokJad(world, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false });
-      world.addMob(jad1)
+      world.region.addMob(jad1)
 
       const jad2 = new JalTokJad(world, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7, healers: 3, isZukWave: false });
-      world.addMob(jad2)
+      world.region.addMob(jad2)
 
       const jad3 = new JalTokJad(world, { x: 23, y: 35}, { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false });
-      world.addMob(jad3)
-    }else if (wave === 69){
+      world.region.addMob(jad3)
+    }else if (this.wave === 69){
       player.location = { x: 25, y: 15}
 
       // spawn zuk
       const shield = new ZukShield(world, { x: 23, y: 13}, {});
-      world.addMob(shield)
+      world.region.addMob(shield)
 
-      world.addMob(new TzKalZuk(world, { x: 22, y: 8}, { aggro: player }))
+      world.region.addMob(new TzKalZuk(world, { x: 22, y: 8}, { aggro: player }))
 
-      world.addEntity(new Wall(world, {x: 21, y: 8}));
-      world.addEntity(new Wall(world, {x: 21, y: 7}));
-      world.addEntity(new Wall(world, {x: 21, y: 6}));
-      world.addEntity(new Wall(world, {x: 21, y: 5}));
-      world.addEntity(new Wall(world, {x: 21, y: 4}));
-      world.addEntity(new Wall(world, {x: 21, y: 3}));
-      world.addEntity(new Wall(world, {x: 21, y: 2}));
-      world.addEntity(new Wall(world, {x: 21, y: 1}));
-      world.addEntity(new Wall(world, {x: 21, y: 0}));
-      world.addEntity(new Wall(world, {x: 29, y: 8}));
-      world.addEntity(new Wall(world, {x: 29, y: 7}));
-      world.addEntity(new Wall(world, {x: 29, y: 6}));
-      world.addEntity(new Wall(world, {x: 29, y: 5}));
-      world.addEntity(new Wall(world, {x: 29, y: 4}));
-      world.addEntity(new Wall(world, {x: 29, y: 3}));
-      world.addEntity(new Wall(world, {x: 29, y: 2}));
-      world.addEntity(new Wall(world, {x: 29, y: 1}));
-      world.addEntity(new Wall(world, {x: 29, y: 0}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 8}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 7}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 6}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 5}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 4}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 3}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 2}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 1}));
+      world.region.addEntity(new Wall(world, {x: 21, y: 0}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 8}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 7}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 6}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 5}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 4}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 3}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 2}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 1}));
+      world.region.addEntity(new Wall(world, {x: 29, y: 0}));
 
-      world.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00'));
 
-      world.addEntity(new TileMarker(world, {x: 16, y: 14}, '#FF0000'));
-      world.addEntity(new TileMarker(world, {x: 17, y: 14}, '#FF0000'));
-      world.addEntity(new TileMarker(world, {x: 18, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 16, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 17, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 18, y: 14}, '#FF0000'));
 
-      world.addEntity(new TileMarker(world, {x: 20, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 20, y: 14}, '#00FF00'));
       
-      world.addEntity(new TileMarker(world, {x: 30, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 30, y: 14}, '#00FF00'));
 
 
-      world.addEntity(new TileMarker(world, {x: 32, y: 14}, '#FF0000'));
-      world.addEntity(new TileMarker(world, {x: 33, y: 14}, '#FF0000'));
-      world.addEntity(new TileMarker(world, {x: 34, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 32, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 33, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 34, y: 14}, '#FF0000'));
 
 
-      world.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00'));
 
     }
 
@@ -238,7 +249,7 @@ export class InfernoRegion extends Region {
     // UI controls
 
     document.getElementById('playWaveNum').addEventListener('click', () => {
-      window.location.href = `/?wave=${waveInput.value || wave}`
+      window.location.href = `/?wave=${waveInput.value || this.wave}`
     })
 
 

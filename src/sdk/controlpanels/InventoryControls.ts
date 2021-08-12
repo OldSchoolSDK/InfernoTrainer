@@ -8,8 +8,9 @@ import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Weapon } from '../gear/Weapon'
-import { Location } from '../../sdk/GameObject'
+import { Location } from "../../sdk/Location"
 import { Collision } from '../Collision'
+import { MenuOption } from '../ContextMenu'
 
 export class InventoryControls extends BaseControls {
 
@@ -35,6 +36,33 @@ export class InventoryControls extends BaseControls {
     this.cursorLocation = { x, y }
   }
 
+  panelRightClick(world: World, x: number, y: number) {
+
+    let menuOptions: MenuOption[] = []
+    // mobs.forEach((mob) => {
+    //   menuOptions = menuOptions.concat(mob.contextActions(x, y))
+    // })
+
+
+    const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
+      if (!inventoryItem) {
+        return
+      }
+      const x2 = index % 4
+      const y2 = Math.floor(index / 4)
+      const itemX = 20 + x2 * 43
+      const itemY = 17 + (y2 + 1) * 35
+      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+    })) as Item
+
+    if (clickedItem) {
+      menuOptions = menuOptions.concat(clickedItem.contextActions(world))
+    }
+
+    world.contextMenu.setMenuOptions(menuOptions)
+    world.contextMenu.setActive()
+  }
+
 
   panelClickUp (world: World, x: number, y: number) {
     if (!this.clickedDownItem) {
@@ -46,7 +74,7 @@ export class InventoryControls extends BaseControls {
         return item;
       }
       return {
-        inventoryPosition: index,
+        inventoryPosition: () => index,
         isPlaceholder: true
       }
     });
@@ -119,30 +147,30 @@ export class InventoryControls extends BaseControls {
 
       if (inventoryItem !== null) {
         
-        world.viewportCtx.fillStyle = "#ffffff22"
-        world.viewportCtx.fillRect(itemX, itemY, 32, 32)
+        world.viewport.context.fillStyle = "#ffffff22"
+        world.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
         const xOff = (32 - sprite.width)/2;
         const yOff = (32 - sprite.height)/2
         if (inventoryItem === this.clickedDownItem) {
-          world.viewportCtx.globalAlpha = 0.4;
+          world.viewport.context.globalAlpha = 0.4;
           if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {
-            world.viewportCtx.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
+            world.viewport.context.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
           }else{
-            world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+            world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
           }
-          world.viewportCtx.globalAlpha = 1;
+          world.viewport.context.globalAlpha = 1;
 
         }else{
-          world.viewportCtx.drawImage(sprite, itemX + xOff, itemY + yOff)
+          world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
         }
 
         if (inventoryItem.selected) {
-          world.viewportCtx.beginPath()
-          world.viewportCtx.fillStyle = '#D1BB7773'
-          world.viewportCtx.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
-          world.viewportCtx.fill()
+          world.viewport.context.beginPath()
+          world.viewport.context.fillStyle = '#D1BB7773'
+          world.viewport.context.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
+          world.viewport.context.fill()
         }
       }
     })

@@ -8,6 +8,11 @@ export class Potion extends Item {
   vial: HTMLImageElement = ImageLoader.createImage(Vial)
   doses: number = 4;
 
+
+  constructor() {
+    super();
+    this.defaultAction = 'Drink';
+  }
   drink(player: Player) {
 
   }
