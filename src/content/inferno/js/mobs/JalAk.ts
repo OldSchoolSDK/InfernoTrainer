@@ -1,6 +1,5 @@
 'use strict'
 
-import { find } from 'lodash'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { AttackIndicators, Mob } from '../../../../sdk/Mob'
@@ -12,7 +11,6 @@ import { JalAkRekKet } from './JalAkRekKet'
 import { JalAkRekMej } from './JalAkRekMej'
 import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
 
@@ -145,7 +143,7 @@ export class JalAk extends Mob {
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = find(this.world.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
+      const overhead = this.world.player.prayerController.overhead()
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       

@@ -98,7 +98,6 @@ export class World {
     }
     XpDropController.controller.tick();
 
-    this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
     this.region.entities.forEach((entity) => entity.tick())
     this.region.mobs.forEach((mob) => {
       mob.ticksAlive++;

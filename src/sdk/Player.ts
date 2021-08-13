@@ -13,7 +13,6 @@ import { Location } from "./Location"
 import { Mob } from './Mob'
 import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
-import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
@@ -29,6 +28,7 @@ class PlayerEffects {
   venomed: number = 0;
   stamina: number = 0;
 }
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -277,7 +277,7 @@ export class Player extends Unit {
 
   activatePrayers () {
     this.lastOverhead = this.overhead
-    this.overhead = find(this.world.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
+    this.overhead = this.prayerController.overhead();
     if (this.lastOverhead && !this.overhead) {
       this.lastOverhead.playOffSound()
     } else if (this.lastOverhead !== this.overhead) {
@@ -461,27 +461,20 @@ export class Player extends Unit {
   }
 
   drainPrayer() {
-    const prayerDrainThisTick = ControlPanelController.controls.PRAYER.getCurrentActivePrayers().reduce((a, b) => a + b.drainRate(), 0)
+    const prayerDrainThisTick = this.prayerController.drainRate()
     this.prayerDrainCounter += prayerDrainThisTick;
     while (this.prayerDrainCounter > this.prayerDrainResistance) {
       this.currentStats.prayer--;
       this.prayerDrainCounter -= this.prayerDrainResistance;
     }
     if (this.currentStats.prayer <= 0){
-      ControlPanelController.controls.PRAYER.getCurrentActivePrayers().forEach((prayer) => prayer.deactivate())
+      this.prayerController.activePrayers().forEach((prayer) => prayer.deactivate())
       this.currentStats.prayer = 0;
     }
   }
 
   damageTaken() {
-    const hasRedemptionActive = filter(ControlPanelController.controls.PRAYER.getCurrentActivePrayers().map((prayer) => {
-      if (prayer.name === 'Redemption') {
-        return prayer;
-      }
-      return null;
-    })).length > 0
-
-    if (hasRedemptionActive && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
+    if (this.prayerController.matchName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
       this.eats.redemptioned = true;
     }
   }

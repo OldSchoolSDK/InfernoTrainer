@@ -23,24 +23,25 @@ export class MeleeWeapon extends Weapon {
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
     if (from.type !== UnitTypes.MOB) {
-      const offensiveAttack = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveAttack')
+
+      const offensiveAttack = from.prayerController.matchFeature('offensiveAttack');
       if (offensiveAttack) {
         bonuses.effectivePrayers.attack = offensiveAttack
       }
 
-      const offensiveStrength = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveStrength')
+      const offensiveStrength = from.prayerController.matchFeature('offensiveStrength');
       if (offensiveStrength) {
         bonuses.effectivePrayers.strength = offensiveStrength
       }
 
-      const defence = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'defence')
+      const defence = from.prayerController.matchFeature('defence');
       if (defence) {
         bonuses.effectivePrayers.defence = defence
       }
     }
 
     if (to.type !== UnitTypes.MOB) {
-      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [PrayerGroups.OVERHEADS]).length) as BasePrayer
+      const overhead = to.prayerController.overhead();
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }

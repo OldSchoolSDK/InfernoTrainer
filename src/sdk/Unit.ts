@@ -4,7 +4,7 @@ import MissSplat from '../assets/images/hitsplats/miss.png'
 import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { clamp, remove, filter } from 'lodash'
+import { remove, filter } from 'lodash'
 import { World } from './World'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './weapons/Projectile'
@@ -27,6 +27,7 @@ import { Ammo } from './gear/Ammo';
 import { SetEffect } from './SetEffect'
 import { EntityName } from "./EntityName"
 import { Item } from './Item'
+import { PrayerController } from './PrayerController'
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -93,7 +94,7 @@ export interface UnitTargetBonuses {
 export class Unit extends GameObject {
 
   world: World;
-  prayers: BasePrayer[] = [];
+  prayerController: PrayerController = new PrayerController();
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
   perceivedLocation: Location;
@@ -317,10 +318,6 @@ export class Unit extends GameObject {
     this.location = location
   }
 
-  setPrayers (prayers: BasePrayer[]) {
-    this.prayers = prayers
-  }
-
   attackAnimation (tickPercent: number) {
     // override pls
   }
@@ -460,9 +457,9 @@ export class Unit extends GameObject {
 
   drawOverheadPrayers () {
 
-    const overheads = this.prayers.filter(prayer => prayer.isOverhead())
-    if (overheads.length) {
-      const overheadImg = overheads[0].overheadImage();
+    const overhead = this.prayerController.overhead()
+    if (overhead) {
+      const overheadImg = overhead.overheadImage();
       if (overheadImg){
         this.world.region.context.drawImage(
           overheadImg,

@@ -1,5 +1,3 @@
-import { find, intersection } from 'lodash'
-import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
@@ -31,17 +29,18 @@ export class MagicWeapon extends Weapon {
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
     if (from.type !== UnitTypes.MOB) {
-      const offensiveMagic = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveMagic')
+
+      const offensiveMagic = from.prayerController.matchFeature('offensiveMagic');
       if (offensiveMagic) {
         bonuses.effectivePrayers.magic = offensiveMagic
       }
-      const defence = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'defence')
+      const defence = from.prayerController.matchFeature('defence');
       if (defence) {
         bonuses.effectivePrayers.defence = defence
       }
     }
     if (to.type !== UnitTypes.MOB) {
-      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [PrayerGroups.OVERHEADS]).length) as BasePrayer
+      const overhead = to.prayerController.overhead()
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }
