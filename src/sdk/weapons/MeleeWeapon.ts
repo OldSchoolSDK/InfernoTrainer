@@ -1,6 +1,4 @@
-import { find, intersection } from 'lodash'
 import { Weapon, AttackBonuses } from '../gear/Weapon'
-import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { World } from '../World'

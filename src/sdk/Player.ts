@@ -276,6 +276,7 @@ export class Player extends Unit {
   }
 
   activatePrayers () {
+    
     this.lastOverhead = this.overhead
     this.overhead = this.prayerController.overhead();
     if (this.lastOverhead && !this.overhead) {

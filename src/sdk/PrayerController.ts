@@ -52,6 +52,10 @@ export class PrayerController {
     return find(this.activePrayers(), (prayer: BasePrayer) => intersection(prayer.groups, [PrayerGroups.OVERHEADS]).length) as BasePrayer
   }
 
+  tick() {
+    this.prayers.forEach((prayer) => prayer.tick())
+  }
+
   prayers: BasePrayer[] = [
     new ThickSkin(),
     new BurstOfStrength(),

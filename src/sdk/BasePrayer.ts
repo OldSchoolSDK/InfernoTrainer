@@ -16,6 +16,7 @@ export enum PrayerGroups {
 
 export class BasePrayer {
 
+  nextActiveState: number = -1;
   isActive: boolean;
   cachedImage: HTMLImageElement;
 
@@ -40,16 +41,28 @@ export class BasePrayer {
     return []
   }
 
+  tick() {
+    if (this.nextActiveState === 1){
+      this.isActive = true;
+    }else if (this.nextActiveState === 0){
+      this.isActive = false;
+    }
+  }
+
   activate () {
-    this.isActive = true;
+    this.nextActiveState = 1;
   }
 
   toggle() {
-    this.isActive = !this.isActive;
+    if (this.nextActiveState === 0) {
+      this.nextActiveState = 1;
+    }else{
+      this.nextActiveState = 0;
+    }
   }
 
   deactivate () {
-    this.isActive = false
+    this.nextActiveState = 0
   }
 
   isOverhead () {

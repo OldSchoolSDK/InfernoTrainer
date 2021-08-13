@@ -20,7 +20,7 @@ export class InfernoPillar extends Entity {
   stats: UnitStats;
   currentStats: UnitStats;
   bonuses: UnitBonuses;
-  prayers: PrayerController = new PrayerController();
+  prayerController: PrayerController = new PrayerController();
 
   constructor (world: World, point: Location) {
     super(world, point)
