@@ -97,7 +97,8 @@ export class World {
     }
     XpDropController.controller.tick();
 
-    this.player.prayerController.tick()
+    this.player.pretick();
+    
     this.region.entities.forEach((entity) => entity.tick())
 
     if (this.getReadyTimer <=0){

@@ -51,17 +51,11 @@ export class PrayerControls extends BaseControls {
     const clickedPrayer = world.player.prayerController.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
     if (clickedPrayer && world.player.currentStats.prayer > 0) {
 
-      world.player.prayerController.activePrayers().forEach((prayer) => {
-        if (intersection(prayer.groups, clickedPrayer.groups).length && prayer !== clickedPrayer) {
-          prayer.deactivate()
-        }
-      })
       clickedPrayer.toggle()
 
       if (this.hasQuickPrayersActivated && world.player.prayerController.activePrayers().length === 0) {
         ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
-      }
-      
+      }      
     }
   }
 
@@ -69,7 +63,7 @@ export class PrayerControls extends BaseControls {
     super.draw(world, ctrl, x, y)
 
     world.player.prayerController.prayers.forEach((prayer, index) => {
-      if (prayer.isActive) {
+      if (prayer.isActive || prayer.isLit) {
         const x2 = index % 5
         const y2 = Math.floor(index / 5)
 

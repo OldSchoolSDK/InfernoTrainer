@@ -20,7 +20,7 @@ export class MeleeWeapon extends Weapon {
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
-    if (from.type !== UnitTypes.MOB) {
+    if (from.type !== UnitTypes.MOB && from.prayerController) {
 
       const offensiveAttack = from.prayerController.matchFeature('offensiveAttack');
       if (offensiveAttack) {
@@ -38,7 +38,7 @@ export class MeleeWeapon extends Weapon {
       }
     }
 
-    if (to.type !== UnitTypes.MOB) {
+    if (to.type !== UnitTypes.MOB && to.prayerController) {
       const overhead = to.prayerController.overhead();
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead

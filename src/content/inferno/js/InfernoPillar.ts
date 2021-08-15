@@ -11,7 +11,6 @@ import { Projectile } from '../../../sdk/weapons/Projectile'
 import { Location } from "../../../sdk/Location"
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
 import { DelayedAction } from '../../../sdk/DelayedAction'
-import { PrayerController } from '../../../sdk/PrayerController'
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -20,7 +19,6 @@ export class InfernoPillar extends Entity {
   stats: UnitStats;
   currentStats: UnitStats;
   bonuses: UnitBonuses;
-  prayerController: PrayerController = new PrayerController();
 
   constructor (world: World, point: Location) {
     super(world, point)

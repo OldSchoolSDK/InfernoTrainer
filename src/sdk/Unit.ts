@@ -94,7 +94,7 @@ export interface UnitTargetBonuses {
 export class Unit extends GameObject {
 
   world: World;
-  prayerController: PrayerController = new PrayerController();
+  prayerController: PrayerController;
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
   perceivedLocation: Location;
@@ -457,6 +457,10 @@ export class Unit extends GameObject {
 
   drawOverheadPrayers () {
 
+    if (!this.prayerController) {
+      return;
+    }
+    
     const overhead = this.prayerController.overhead()
     if (overhead) {
       const overheadImg = overhead.overheadImage();

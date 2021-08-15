@@ -1,6 +1,8 @@
 'use strict'
 
+import { intersection } from "lodash";
 import { ImageLoader } from "./utils/ImageLoader";
+import { World } from "./World";
 
 export enum PrayerGroups {
   OVERHEADS = 'overheads',
@@ -16,12 +18,23 @@ export enum PrayerGroups {
 
 export class BasePrayer {
 
-  nextActiveState: number = -1;
-  isActive: boolean;
+  lastActivated: number = 0;
+  isActive: boolean = false;
+  isLit: boolean = false;
   cachedImage: HTMLImageElement;
 
   constructor () {
     this.deactivate()
+  }
+
+  tick() {
+    if (this.isLit && !this.isActive) {
+      this.isActive = true;
+      this.isLit = true;
+    }else if (!this.isLit && this.isActive){
+      this.isActive = false;
+      this.isLit = false;
+    }
   }
 
   feature (): string {
@@ -40,29 +53,21 @@ export class BasePrayer {
   get groups (): PrayerGroups[] {
     return []
   }
-
-  tick() {
-    if (this.nextActiveState === 1){
-      this.isActive = true;
-    }else if (this.nextActiveState === 0){
-      this.isActive = false;
-    }
-  }
-
+  
   activate () {
-    this.nextActiveState = 1;
+    this.lastActivated = Date.now();
+    this.isLit = true;
   }
 
   toggle() {
-    if (this.nextActiveState === 0) {
-      this.nextActiveState = 1;
-    }else{
-      this.nextActiveState = 0;
+    this.isLit = !this.isLit;
+    if (this.isLit){
+      this.lastActivated = Date.now();
     }
   }
 
   deactivate () {
-    this.nextActiveState = 0
+    this.isLit = false;
   }
 
   isOverhead () {
