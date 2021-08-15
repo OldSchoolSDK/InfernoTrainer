@@ -45,9 +45,8 @@ export class PrayerController {
     this.prayers.forEach((prayer) => prayer.tick());
 
     // Deactivate any incompatible prayers
-    const activePrayers = world.player.prayerController.activePrayers();
     const conflictingPrayers = {};
-    activePrayers.forEach((activePrayer) => {
+    world.player.prayerController.prayers.forEach((activePrayer) => {
       activePrayer.groups.forEach((group) => {
         if (!conflictingPrayers[group]){
           conflictingPrayers[group] = [];

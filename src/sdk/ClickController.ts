@@ -81,11 +81,6 @@ export class ClickController {
       return;
     }
 
-
-    if (this.inputDelay) {
-      clearTimeout(this.inputDelay)
-    }
-
     const world = this.viewport.world;
 
     world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY)
