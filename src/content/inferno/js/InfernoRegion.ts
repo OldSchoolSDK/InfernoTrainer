@@ -70,7 +70,6 @@ export class InfernoRegion extends Region {
 
 
     const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
-
     const loadoutType = this.initializeAndGetLoadoutType();
     const loadout = new InfernoLoadout(this.wave, loadoutType, onTaskCheckbox.checked);
     

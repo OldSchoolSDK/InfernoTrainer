@@ -34,7 +34,9 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    const widthRestrictors = 227 + 200;
+
+    // todo: refactor how viewport works to not need this width restrictor anymore.
+    const widthRestrictors = 227 + 200; // 227 = control panel width, 200 = side menu
     this._viewport.width = Math.ceil(
       Math.min(
         world.region.width,
