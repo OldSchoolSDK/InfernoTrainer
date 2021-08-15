@@ -216,6 +216,9 @@ export class ClickController {
   }
 
   sendToServer(fn: () => void) {
+    if (this.inputDelay) {
+      clearTimeout(this.inputDelay);
+    }
     this.inputDelay = setTimeout(fn, Settings.inputDelay);
   }
 
