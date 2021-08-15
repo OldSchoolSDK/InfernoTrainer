@@ -9,7 +9,7 @@ export class MysticLore extends BasePrayer {
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
   drainRate(): number {

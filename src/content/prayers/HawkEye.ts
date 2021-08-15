@@ -9,7 +9,7 @@ export class HawkEye extends BasePrayer {
   }
 
   get groups () {
-    return [PrayerGroups.RANGE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
   drainRate(): number {

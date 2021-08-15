@@ -9,7 +9,7 @@ export class IncredibleReflexes extends BasePrayer {
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.ATTACK]
+    return [PrayerGroups.ACCURACY]
   }
 
   drainRate(): number {
