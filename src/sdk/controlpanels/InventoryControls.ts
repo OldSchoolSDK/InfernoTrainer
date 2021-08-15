@@ -151,8 +151,8 @@ export class InventoryControls extends BaseControls {
         world.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
-        const xOff = (32 - sprite.width)/2;
-        const yOff = (32 - sprite.height)/2
+        const xOff = Math.floor((32 - sprite.width) / 2);
+        const yOff = Math.floor((32 - sprite.height) / 2)
         if (inventoryItem === this.clickedDownItem) {
           world.viewport.context.globalAlpha = 0.4;
           if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {

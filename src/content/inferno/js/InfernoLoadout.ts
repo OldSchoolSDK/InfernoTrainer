@@ -9,7 +9,7 @@ import { AvasAssembler } from '../../equipment/AvasAssembler';
 import { HolyBlessing } from '../../equipment/HolyBlessing';
 import { BarrowsGloves } from '../../equipment/BarrowsGloves';
 import { RingOfSufferingImbued } from '../../equipment/RingOfSufferingImbued';
-import { RingOfEndurance } from '../../equipment/RingOfEndurance';
+import { SlayerHelmet } from '../../equipment/SlayerHelmet';
 import { CrystalShield } from '../../equipment/CrystalShield';
 import { JusticiarChestguard } from '../../equipment/JusticiarChestguard'
 import { JusticiarLegguards } from '../../equipment/JusticiarLegguards'
@@ -100,7 +100,7 @@ export class InfernoLoadout {
     }
 
     if (this.onTask) {
-      // set slayer helm
+      loadout.equipment.helmet = new SlayerHelmet();
     }
 
     return loadout;

@@ -54,6 +54,17 @@ export class InfernoRegion extends Region {
     return loadoutSelector.value;
   }
 
+  initializeAndGetOnTask() {
+    const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
+    onTaskCheckbox.checked = Settings.onTask;
+    onTaskCheckbox.addEventListener('change', (e: InputEvent) => {
+      Settings.onTask = onTaskCheckbox.checked;
+      Settings.persistToStorage();
+    })
+    return onTaskCheckbox.checked;
+
+  }
+
   initialize (world: World) {
     super.initialize(world);
     
@@ -69,9 +80,9 @@ export class InfernoRegion extends Region {
     }
 
 
-    const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
     const loadoutType = this.initializeAndGetLoadoutType();
-    const loadout = new InfernoLoadout(this.wave, loadoutType, onTaskCheckbox.checked);
+    const onTask = this.initializeAndGetOnTask();
+    const loadout = new InfernoLoadout(this.wave, loadoutType, onTask);
     
     // fun hack to hijack viewport
     world.viewport.clickController.unload(world);

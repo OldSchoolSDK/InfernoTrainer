@@ -6,7 +6,7 @@ import { minBy, range, filter, find, map, min, uniq, sumBy, times } from 'lodash
 import { Unit, UnitTypes, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
-import { Weapon } from './gear/Weapon'
+import { AttackBonuses, Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from "./Location"
@@ -262,7 +262,12 @@ export class Player extends Unit {
           }
           this.useSpecialAttack  = false;
         }else{
-          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */)
+          const bonuses: AttackBonuses = { };
+          if (this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
+            bonuses.gearMultiplier = 7/6;
+          }
+
+          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
         }
       }else{
         console.log('TODO: Implement punching')
