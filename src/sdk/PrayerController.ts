@@ -42,6 +42,7 @@ export class PrayerController {
 
 
   tick(world: World) {
+    // "transfer" prayers from client to "server" 
     this.prayers.forEach((prayer) => prayer.tick());
 
     // Deactivate any incompatible prayers
@@ -56,7 +57,7 @@ export class PrayerController {
     })
 
     for (let feature in conflictingPrayers) {
-      conflictingPrayers[feature].sort((p1, p2) => p2.lastActivated - p1.lastActivated);
+      conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
       conflictingPrayers[feature].shift();
       conflictingPrayers[feature].forEach((prayer: BasePrayer) => {
         prayer.isLit = false;
