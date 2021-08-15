@@ -3,7 +3,7 @@
 import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./PlayerStats";
 
 export class Settings {
-  static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 28;
+  static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
   static fps = 50;
   static tickMs = 600;
   static playsAudio: boolean;
