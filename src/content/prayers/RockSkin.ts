@@ -13,7 +13,7 @@ export class RockSkin extends BasePrayer {
   }
 
   drainRate(): number {
-    return 3;
+    return 6;
   }
 
   isOverhead () {
