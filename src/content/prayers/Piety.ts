@@ -9,7 +9,7 @@ export class Piety extends BasePrayer {
   }
 
   get groups () {
-    return [PrayerGroups.ATTACK, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
   drainRate(): number {

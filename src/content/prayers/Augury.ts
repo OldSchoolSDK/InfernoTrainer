@@ -9,7 +9,7 @@ export class Augury extends BasePrayer {
   }
 
   get groups () {
-    return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
   isOverhead () {

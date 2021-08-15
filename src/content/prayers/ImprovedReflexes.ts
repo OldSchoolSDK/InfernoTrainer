@@ -9,7 +9,7 @@ export class ImprovedReflexes extends BasePrayer {
   }
 
   get groups () {
-    return [PrayerGroups.ATTACK]
+    return [PrayerGroups.ACCURACY]
   }
 
   drainRate(): number {

@@ -20,18 +20,20 @@ export class RangedWeapon extends Weapon {
 
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
-    if (from.type !== UnitTypes.MOB) {
-      const offensiveRange = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'offensiveRange')
+    
+    if (from.type !== UnitTypes.MOB && from.prayerController) {
+
+      const offensiveRange = from.prayerController.matchFeature('offensiveRange');
       if (offensiveRange) {
         bonuses.effectivePrayers.range = offensiveRange
       }
-      const defence = find(from.prayers, (prayer: BasePrayer) => prayer.feature() === 'defence')
+      const defence = from.prayerController.matchFeature('defence');
       if (defence) {
         bonuses.effectivePrayers.defence = defence
       }
     }
-    if (to.type !== UnitTypes.MOB) {
-      const overhead = find(to.prayers, (prayer: BasePrayer) => intersection(prayer.groups, [PrayerGroups.OVERHEADS]).length) as BasePrayer
+    if (to.type !== UnitTypes.MOB && to.prayerController) {
+      const overhead = to.prayerController.overhead()
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead
       }

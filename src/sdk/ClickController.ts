@@ -81,6 +81,11 @@ export class ClickController {
       return;
     }
 
+
+    if (this.inputDelay) {
+      clearTimeout(this.inputDelay)
+    }
+
     const world = this.viewport.world;
 
     world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY)
@@ -119,23 +124,20 @@ export class ClickController {
       }
     }
 
-    if (this.inputDelay) {
-      clearTimeout(this.inputDelay)
-    }
-
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
     const groundItems = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
 
     world.player.setAggro(null)
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
-      this.playerAttackClick(mobs[0])
+      this.sendToServer(() => this.playerAttackClick(mobs[0]))
     } else if (groundItems.length){
       this.redClick()
-      world.player.setSeekingItem(groundItems[0])
+
+      this.sendToServer(() => world.player.setSeekingItem(groundItems[0]));
     } else {
       this.yellowClick()
-      this.playerWalkClick(x, y)
+      this.sendToServer(() => this.playerWalkClick(x, y));
     }
     world.contextMenu.setInactive()
   }
@@ -192,7 +194,7 @@ export class ClickController {
       menuOptions.push(
         {
           text: [ { text: 'Take ', fillStyle: 'white' }, { text: item.itemName, fillStyle: '#FF911F' } ],
-          action: () => world.player.setSeekingItem(item)
+          action: () => this.sendToServer(() => world.player.setSeekingItem(item))
         }
       )
     });
@@ -202,22 +204,26 @@ export class ClickController {
         text: [{ text: 'Walk Here', fillStyle: 'white' }],
         action: () => {
           this.yellowClick()
-          this.playerWalkClick(world.contextMenu.destinationLocation.x * Settings.tileSize, world.contextMenu.destinationLocation.y * Settings.tileSize)
+          const x = world.contextMenu.destinationLocation.x;
+          const y = world.contextMenu.destinationLocation.y;
+          this.sendToServer(() => this.playerWalkClick(x * Settings.tileSize, y * Settings.tileSize))
+          
         }
       }
     )
     world.contextMenu.setMenuOptions(menuOptions)
     world.contextMenu.setActive()
   }
+
+  sendToServer(fn: () => void) {
+    this.inputDelay = setTimeout(fn, Settings.inputDelay);
+  }
+
   playerAttackClick (mob: Unit) {
-    this.inputDelay = setTimeout(() => {    
-      this.viewport.world.player.setAggro(mob);
-    }, Settings.inputDelay)
+    this.viewport.world.player.setAggro(mob);
   }
   playerWalkClick (x: number, y: number) {
-    this.inputDelay = setTimeout(() => {
-      this.viewport.world.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
-    }, Settings.inputDelay)
+    this.viewport.world.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
   }
   redClick () {
     const world = this.viewport.world;

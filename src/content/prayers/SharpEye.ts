@@ -9,7 +9,7 @@ export class SharpEye extends BasePrayer {
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.RANGE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
   drainRate(): number {
