@@ -44,6 +44,7 @@ export enum ItemName {
   SARADOMIN_D_HIDE_CHAPS = "Saradomin chaps",
   SCYTHE_OF_VITUR = 'Scythe of Vitur',
   SHARK = 'Shark',
+  SLAYER_HELMET_I = 'Slayer helm (i)',
   STAMINA_POTION = 'Stamina Potion',
   SUPER_RESTORE = 'Super Restore',
   TOXIC_BLOWPIPE = 'Toxic Blowpipe',
