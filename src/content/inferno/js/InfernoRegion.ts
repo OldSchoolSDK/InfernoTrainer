@@ -34,7 +34,7 @@ export class InfernoRegion extends Region {
   getName () {
     return 'Inferno'
   }
-  
+
   get width (): number {
     return 51
   }
@@ -68,8 +68,11 @@ export class InfernoRegion extends Region {
       this.wave = InfernoWaves.waves.length + 3;
     }
 
+
+    const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
+
     const loadoutType = this.initializeAndGetLoadoutType();
-    const loadout = new InfernoLoadout(this.wave, loadoutType);
+    const loadout = new InfernoLoadout(this.wave, loadoutType, onTaskCheckbox.checked);
     
     // fun hack to hijack viewport
     world.viewport.clickController.unload(world);
@@ -79,7 +82,8 @@ export class InfernoRegion extends Region {
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
-      loadout.getLoadout())
+      loadout.getLoadout()
+    )
     world.setPlayer(player)
 
 

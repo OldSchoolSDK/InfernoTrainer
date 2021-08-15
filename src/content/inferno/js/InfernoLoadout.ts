@@ -1,4 +1,4 @@
-import { UnitOptions } from "../../../sdk/Unit";
+import { UnitEquipment, UnitOptions } from "../../../sdk/Unit";
 
 import { JusticiarFaceguard } from '../../equipment/JusticiarFaceguard';
 import { NecklaceOfAnguish } from '../../equipment/NecklaceOfAnguish';
@@ -27,34 +27,83 @@ import { Blowpipe } from '../../weapons/Blowpipe'
 
 export class InfernoLoadout {
 
-  constructor(wave: number, loadoutType: string) {
+  wave: number;
+  loadoutType: string;
+  onTask: boolean;
+
+  constructor(wave: number, loadoutType: string, onTask: boolean) {
+    this.wave = wave;
+    this.loadoutType = loadoutType;
+    this.onTask = onTask;
+  }
+
+  loadoutMaxTbow() {
+
+  }
+
+  loadoutMaxFbow() {
+
+  }
+
+  loadoutBudgetFbow() {
+
+  }
+
+  loadoutRcb() {
+
+  }
+
+  loadoutZerker() {
+
+  }
+
+  loadoutPure() {
 
   }
 
   getLoadout(): UnitOptions {
-    return { equipment: { 
-      weapon: new KodaiWand(),
-      offhand: new CrystalShield(),
-      helmet: new JusticiarFaceguard(),
-      necklace: new NecklaceOfAnguish(),
-      cape: new AvasAssembler(),
-      ammo: new HolyBlessing(),
-      chest: new AncestralRobetop(),
-      legs: new ArmadylChainskirt(),
-      feet: new PegasianBoots(),
-      gloves: new BarrowsGloves(),
-      ring: new RingOfSufferingImbued(), 
-    },
-    inventory: [ 
-      new Blowpipe(), new ArmadylChestplate(), new TwistedBow(), new JusticiarChestguard(),
-      null, new AncestralRobebottom(), null, new JusticiarLegguards(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
-    ]
-  }
+    const kodai = new KodaiWand();
+    const mainBow = new TwistedBow();
+    const shield = new CrystalShield();
+    const loadout: UnitOptions = { 
+      equipment: { 
+        weapon: kodai,
+        offhand: shield,
+        helmet: new JusticiarFaceguard(),
+        necklace: new NecklaceOfAnguish(),
+        cape: new AvasAssembler(),
+        ammo: new HolyBlessing(),
+        chest: new AncestralRobetop(),
+        legs: new ArmadylChainskirt(),
+        feet: new PegasianBoots(),
+        gloves: new BarrowsGloves(),
+        ring: new RingOfSufferingImbued(), 
+      },
+      inventory: [ 
+        new Blowpipe(), new ArmadylChestplate(), mainBow, new JusticiarChestguard(),
+        null, new AncestralRobebottom(), null, new JusticiarLegguards(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+      ]
+    }
+
+    if (this.wave > 66) {
+      loadout.equipment.weapon = mainBow;
+      loadout.equipment.offhand = null;
+      loadout.inventory[loadout.inventory.indexOf(mainBow)] = kodai;
+      if (shield) {
+        loadout.inventory[loadout.inventory.indexOf(null)] = shield;
+      }
+    }
+
+    if (this.onTask) {
+      // set slayer helm
+    }
+
+    return loadout;
   }
   
 }
