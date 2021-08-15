@@ -31,7 +31,12 @@
         margin: 0;
       }
 
-      button, input, a {
+      hr {
+        border-top: 1px solid #FFFF00;
+        border-bottom: 0;
+      }
+
+      button, input, a, select {
         border: 1px #FFFF00 solid;
         background-color: black;
         padding: 15px 0;
@@ -45,6 +50,18 @@
         color: #FFFF00;
         width: 100%;
       }
+      select {
+        text-align: center;
+        text-align-last: center;
+        /* webkit*/
+      }
+
+
+
+      input[type="checkbox"] {
+        width: 30px;
+      }
+
 
       .stats-font-11 {
         font-family: 'Stats 11'; 
@@ -108,18 +125,37 @@
       <button id="playWaveNum">Play Wave Number</button>
       <a id="replayLink">Replay Wave</a>
       <button id="pauseResumeLink">Pause / Resume Wave</button>
+
+      <select name="loadouts" id="loadouts">
+        <option value="max_tbow">Max Tbow</option>
+        <option value="max_fbow">Max Fbow</option>
+        <option value="budget_fbow">Budget Fbow</option>
+        <option value="rcb">RCB</option>
+        <option value="zerker">Zerker</option>
+        <option value="pure">Pure</option>
+      </select>
+      <div style="width: 100%; text-align: center; padding-top: 10px;">
+        <input type="checkbox" id="onTask" name="onTask">
+        <label for="onTask">On Task?</label>
+  
+      </div>
+
+      <br />
+      <hr>
+      <br />
       
       <a href="https://github.com/OldSchoolSDK/Engine" target="_blank">Explore Source on GitHub</a>
       <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank">Join Our Discord</a>
         
       <br />
-      <br />
-      <div>Click the Settings button to personalize configuratio.</div>
-      <br />
-      <div>Please disable adblockers.</div>
-      <br />
-      <div>We serve no ads.</div>
-
+      <ul>
+        <li>
+          Click the Settings button to personalize configuration.
+        </li>
+        <li>
+          Please disable adblockers.
+        </li>
+      </ul>
     </div>
     <script>
       window.timer_mode = 'start set timer';
