@@ -80,10 +80,6 @@ export class Region{
     return 0
   }
 
-  getInventory (): Item[]{
-    return []
-  }
-
   mapImagePath (): string {
     return ''
   }

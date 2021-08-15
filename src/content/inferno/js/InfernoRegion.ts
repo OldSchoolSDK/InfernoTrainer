@@ -1,11 +1,13 @@
 'use strict'
 
 import { shuffle } from 'lodash'
-
 import { InfernoViewport } from './InfernoViewport'
 import { InfernoPillar } from './InfernoPillar'
 import { Player } from '../../../sdk/Player'
 import { InfernoWaves } from './InfernoWaves'
+import { InfernoLoadout } from './InfernoLoadout';
+import InfernoMapImage from '../assets/images/map.png'
+
 import { JalZek } from './mobs/JalZek'
 import { JalXil } from './mobs/JalXil'
 import { JalImKot } from './mobs/JalImKot'
@@ -13,41 +15,17 @@ import { JalAk } from './mobs/JalAk'
 import { TzKalZuk } from './mobs/TzKalZuk'
 import { JalMejRah } from './mobs/JalMejRah'
 import { JalTokJad } from './mobs/JalTokJad'
+import { ZukShield } from "./ZukShield"
+
 import { BrowserUtils } from '../../../sdk/utils/BrowserUtils'
-import { TwistedBow } from '../../weapons/TwistedBow'
-import { Blowpipe } from '../../weapons/Blowpipe'
 import { Region } from '../../../sdk/Region'
 import { World } from '../../../sdk/World'
 import { Settings } from '../../../sdk/Settings'
-import InfernoMapImage from '../assets/images/map.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
-import { JusticiarFaceguard } from '../../equipment/JusticiarFaceguard';
-import { NecklaceOfAnguish } from '../../equipment/NecklaceOfAnguish';
-import { ArmadylChestplate } from '../../equipment/ArmadylChestplate';
-import { ArmadylChainskirt } from '../../equipment/ArmadylChainskirt';
-import { PegasianBoots } from '../../equipment/PegasianBoots';
-import { AvasAssembler } from '../../equipment/AvasAssembler';
-import { HolyBlessing } from '../../equipment/HolyBlessing';
-import { BarrowsGloves } from '../../equipment/BarrowsGloves';
-import { RingOfSufferingImbued } from '../../equipment/RingOfSufferingImbued';
-import { RingOfEndurance } from '../../equipment/RingOfEndurance';
-import { CrystalShield } from '../../equipment/CrystalShield';
-import { JusticiarChestguard } from '../../equipment/JusticiarChestguard'
-import { JusticiarLegguards } from '../../equipment/JusticiarLegguards'
-import { KodaiWand } from '../../weapons/KodaiWand'
-import { DevoutBoots } from '../../equipment/DevoutBoots'
-import { AncestralRobetop } from '../../equipment/AncestralRobetop'
-import { AncestralRobebottom } from '../../equipment/AncestralRobebottom'
-import { StaminaPotion } from '../../items/StaminaPotion'
-import { SaradominBrew } from '../../items/SaradominBrew'
-import { SuperRestore } from '../../items/SuperRestore'
-import { Shark } from '../../items/Shark'
-import { Karambwan } from '../../items/Karambwan'
-import { BastionPotion } from '../../items/BastionPotion'
+
 import { InvisibleMovementBlocker } from '../../MovementBlocker'
 import { Wall } from '../../Wall'
 import { TileMarker } from '../../TileMarker'
-import { ZukShield } from "./ZukShield"
 
 export class InfernoRegion extends Region {
 
@@ -56,8 +34,7 @@ export class InfernoRegion extends Region {
   getName () {
     return 'Inferno'
   }
-
-
+  
   get width (): number {
     return 51
   }
@@ -65,17 +42,16 @@ export class InfernoRegion extends Region {
   get height (): number {
     return 57
   }
-  
-  getInventory () {
-    return [ 
-      new Blowpipe(), new ArmadylChestplate(), new TwistedBow(), new JusticiarChestguard(),
-      null, new AncestralRobebottom(), null, new JusticiarLegguards(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-      new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
-    ]
+
+  initializeAndGetLoadoutType() { 
+    const loadoutSelector = document.getElementById("loadouts") as HTMLInputElement;
+    loadoutSelector.value = Settings.loadout;
+    loadoutSelector.addEventListener('change', (e: InputEvent) => {
+      Settings.loadout = loadoutSelector.value;
+      Settings.persistToStorage();
+    })
+
+    return loadoutSelector.value;
   }
 
   initialize (world: World) {
@@ -92,6 +68,9 @@ export class InfernoRegion extends Region {
       this.wave = InfernoWaves.waves.length + 3;
     }
 
+    const loadoutType = this.initializeAndGetLoadoutType();
+    const loadout = new InfernoLoadout(this.wave, loadoutType);
+    
     // fun hack to hijack viewport
     world.viewport.clickController.unload(world);
     world.viewport = new InfernoViewport(world);
@@ -100,21 +79,7 @@ export class InfernoRegion extends Region {
     const player = new Player(
       world,
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
-      { equipment: { 
-          weapon: new KodaiWand(),
-          offhand: new CrystalShield(),
-          helmet: new JusticiarFaceguard(),
-          necklace: new NecklaceOfAnguish(),
-          cape: new AvasAssembler(),
-          ammo: new HolyBlessing(),
-          chest: new AncestralRobetop(),
-          legs: new ArmadylChainskirt(),
-          feet: new PegasianBoots(),
-          gloves: new BarrowsGloves(),
-          ring: new RingOfSufferingImbued(), 
-        },
-        inventory: this.getInventory()
-      })
+      loadout.getLoadout())
     world.setPlayer(player)
 
 
