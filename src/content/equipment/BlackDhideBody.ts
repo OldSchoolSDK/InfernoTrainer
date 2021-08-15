@@ -1,21 +1,24 @@
-import { Feet } from "../../sdk/gear/Feet";
+
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Devout_boots.png';
+import InventImage from "../../assets/images/equipment/Black_d'hide_body.png";
+import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
-export class DevoutBoots extends Feet{
+export class BlackDhideBody extends Chest{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   get inventoryImage () {
     return InventImage
   }
   get itemName(): ItemName {
-    return ItemName.HOLY_BLESSING
+    return ItemName.BLACK_D_HIDE_BODY
   }
+
   get weight(): number {
-    return 0.5;
+    return 6.803;
   }
-  
+
+
   constructor() {
     super();
     this.bonuses = {
@@ -23,21 +26,21 @@ export class DevoutBoots extends Feet{
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 0,
-        range: 0
+        magic: -15,
+        range: 30
       },
       defence: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: 0,
-        range: 0
+        stab: 55,
+        slash: 47,
+        crush: 60,
+        magic: 50,
+        range: 55
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
         magicDamage: 0,
-        prayer: 5
+        prayer: 0
       },
       targetSpecific: {
         undead: 0,

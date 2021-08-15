@@ -1,20 +1,20 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Ancestral_robe_bottom.png';
-import { Legs } from "../../sdk/gear/Legs";
+import InventImage from '../../assets/images/equipment/Guthix_robe_top.png';
+import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
-export class GuthixRobetop extends Legs{
+export class GuthixRobetop extends Chest{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   get inventoryImage () {
     return InventImage
   }
   get itemName(): ItemName {
-    return ItemName.ANCESTRAL_ROBEBOTTOM
+    return ItemName.GUTHIX_ROBE_TOP
   }
 
   get weight(): number {
-    return 1.814;
+    return 1.8;
   }
 
   constructor() {
@@ -24,21 +24,21 @@ export class GuthixRobetop extends Legs{
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 26,
-        range: -7
+        magic: 4,
+        range: 0
       },
       defence: {
-        stab: 27,
-        slash: 24,
-        crush: 30,
-        magic: 20,
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 4,
         range: 0
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
-        magicDamage: 0.02,
-        prayer: 0
+        magicDamage: 0,
+        prayer: 6
       },
       targetSpecific: {
         undead: 0,

@@ -1,19 +1,19 @@
-import { Feet } from "../../sdk/gear/Feet";
+import { Necklace } from "../../sdk/gear/Necklace";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Devout_boots.png';
+import InventImage from '../../assets/images/equipment/Occult_necklace.png';
 import { ItemName } from "../../sdk/ItemName";
 
-export class DevoutBoots extends Feet{
+export class OccultNecklace extends Necklace{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   get inventoryImage () {
     return InventImage
   }
   get itemName(): ItemName {
-    return ItemName.HOLY_BLESSING
+    return ItemName.OCCULT_NECKLACE
   }
   get weight(): number {
-    return 0.5;
+    return 0.005;
   }
   
   constructor() {
@@ -23,7 +23,7 @@ export class DevoutBoots extends Feet{
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: 0,
+        magic: 12,
         range: 0
       },
       defence: {
@@ -35,9 +35,9 @@ export class DevoutBoots extends Feet{
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 0,
-        magicDamage: 0,
-        prayer: 5
+        rangedStrength: 5,
+        magicDamage: 0.1,
+        prayer: 0
       },
       targetSpecific: {
         undead: 0,
