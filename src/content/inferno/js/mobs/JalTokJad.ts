@@ -8,10 +8,9 @@ import JadImage from '../../assets/images/JalTok-Jad.png'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
 import { Location } from "../../../../sdk/Location"
-import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
+import { AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
-import { BasePrayer } from '../../../../sdk/BasePrayer'
 import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
@@ -29,13 +28,10 @@ class JadMagicWeapon extends MagicWeapon {
   attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
-      const overheads = world.player.prayers.filter(prayer => prayer.isOverhead())
+      const overhead = world.player.prayerController.matchFeature('magic')
       from.attackFeedback = AttackIndicators.HIT
-      if (overheads.length > 0){
-        const overhead: BasePrayer = overheads[0];
-        if (overhead.feature() === 'magic') {
-          from.attackFeedback = AttackIndicators.BLOCKED
-        }
+      if (overhead){
+        from.attackFeedback = AttackIndicators.BLOCKED
       }
 
       super.attack(world, from, to, bonuses);
@@ -51,13 +47,10 @@ class JadRangeWeapon extends RangedWeapon {
   attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
-      const overheads = world.player.prayers.filter(prayer => prayer.isOverhead())
+      const overhead = world.player.prayerController.matchFeature('range')
       from.attackFeedback = AttackIndicators.HIT
-      if (overheads.length > 0){
-        const overhead: BasePrayer = overheads[0];
-        if (overhead.feature() === 'range') {
-          from.attackFeedback = AttackIndicators.BLOCKED
-        }
+      if (overhead){
+        from.attackFeedback = AttackIndicators.BLOCKED
       }
       
       super.attack(world, from, to, bonuses);
@@ -220,36 +213,6 @@ export class JalTokJad extends Mob {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE
   }
-
-  // attackIfPossible () {
-  //   this.attackCooldownTicks--
-  //   this.attackFeedback = AttackIndicators.NONE
-
-  //   this.hadLOS = this.hasLOS
-  //   this.setHasLOS()
-
-  //   if (this.canAttack() === false) {
-  //     return;
-  //   }
-    
-  //   // Scan when appropriate
-  //   if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
-  //     // we JUST gained LoS, or we are properly queued up for the next scan
-  //     const overhead = find(this.world.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
-  //     this.playerPrayerScan = overhead ? overhead.feature() : 'none'
-  //     this.attackFeedback = AttackIndicators.SCAN
-      
-  //     this.attackCooldownTicks = this.cooldown
-  //     return
-  //   }
-
-    // Perform attack. Blobs can hit through LoS if they got a scan.
-  //   if (this.playerPrayerScan && this.attackCooldownTicks <= 0) {
-  //     this.attack()
-  //     this.attackCooldownTicks = this.cooldown
-  //     this.playerPrayerScan = null
-  //   }
-  // }
 
   removedFromWorld () {
   }

@@ -28,12 +28,13 @@
         font-weight: normal;
         font-style: normal;
         color: #ffff00;
+        margin: 0;
       }
 
       button, input, a {
         border: 1px #FFFF00 solid;
         background-color: black;
-        padding: 15px 32px;
+        padding: 15px 0;
         text-align: center;
         text-decoration: none;
         display: inline-block;
@@ -41,7 +42,8 @@
         margin: 4px 2px;
         cursor: pointer;
         font-family: 'OSRS';
-        color: #FFFF00
+        color: #FFFF00;
+        width: 100%;
       }
 
       .stats-font-11 {
@@ -54,14 +56,18 @@
         font-size: 12;
       }
 
-      #set_timer {
+      #right_panel {
         display: inline-block;
         width: 200px;
-        height: 300px;
-        background: #282828;
-        position: absolute;
-        top: 64px;
+        top: 0;
         right: 14px;
+        position: absolute;
+      }
+
+      #set_timer {
+        width: 203px;
+        height: 202px;
+        background: #282828;
         text-align: center;
         color: white;
         font-size: 60px;
@@ -91,23 +97,35 @@
       </script>
   </head>
   <body>
-    <input id="waveinput" type="text" placeholder="Wave #"/>
-    <button id="playWaveNum">Play Wave Number</button>
-    <a id="replayLink">Replay / Save This Exact Wave Spawn</a>
-    <button id="pauseResumeLink">Pause / Resume</button>
-    <span>&nbsp;All waves (1-69) are working now.</span>
-    <br />
-
     <canvas id="world" onselectstart="return false" oncontextmenu="return false"></canvas>
-    <div id="set_timer">
-      <div id="set_timer_time">3:30</div>
-      <button id="set_timer_button">start</button>
+    <div id="right_panel">
+      <div id="set_timer">
+        <div id="set_timer_time">3:30</div>
+        <button id="set_timer_button">start set timer</button>
+      </div>
+  
+      <input id="waveinput" type="text" placeholder="Wave #"/>
+      <button id="playWaveNum">Play Wave Number</button>
+      <a id="replayLink">Replay Wave</a>
+      <button id="pauseResumeLink">Pause / Resume Wave</button>
+      
+      <a href="https://github.com/OldSchoolSDK/Engine" target="_blank">Explore Source on GitHub</a>
+      <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank">Join Our Discord</a>
+        
+      <br />
+      <br />
+      <div>Click the Settings button to personalize configuratio.</div>
+      <br />
+      <div>Please disable adblockers.</div>
+      <br />
+      <div>We serve no ads.</div>
+
     </div>
     <script>
-      window.timer_mode = 'start';
+      window.timer_mode = 'start set timer';
       window.timer_time = 210;
       setInterval(() => {
-        if (window.timer_mode === 'start' || window.timer_mode === 'resume'){
+        if (window.timer_mode === 'start set timer' || window.timer_mode === 'resume'){
           return;
         }
         window.timer_time--;
@@ -117,7 +135,7 @@
         document.getElementById("set_timer_time").innerText = String(Math.floor(window.timer_time / 60)) + ":" + String(window.timer_time % 60).padStart(2, '0');
       }, 1000)
       document.getElementById("set_timer_button").addEventListener('click', () => {
-        if (window.timer_mode === 'start'){
+        if (window.timer_mode === 'start set timer'){
           window.timer_mode = 'pause';
         }else if (window.timer_mode === 'pause') {
           window.timer_mode = 'resume';
@@ -126,21 +144,13 @@
           window.timer_time += 105
         }else if (window.timer_mode === 'reset') {
           window.timer_time = 210;
-          window.timer_mode = 'start';
+          window.timer_mode = 'start set timer';
         }
         document.getElementById("set_timer_time").innerText = String(Math.floor(window.timer_time / 60)) + ":" + String(window.timer_time % 60).padStart(2, '0');
         document.getElementById("set_timer_button").innerText = window.timer_mode;
       })
     </script>
     
-    <br />
-    <a href="https://github.com/OldSchoolSDK/Engine" target="_blank">Explore Source on GitHub</a>
-    <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank">Join Our Discord</a>
-    <br />
-    <div id="version" style="width: 600px;"></div>
-    <div>Click the Settings button to personalize configuration</div>
-    <div>Please disable adblockers. We use Google Analytics and New Relic Browser Agent to discover usage and bugs. Ad Blockers reduce our ability to do so. We do not serve ads.</div>
-    <div id="build_version" style="display: none;"></div>
 
     <!-- OffscreenCanvas polyfill -->
     <script>

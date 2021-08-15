@@ -1,13 +1,14 @@
 'use strict'
 
+import { intersection } from "lodash";
 import { ImageLoader } from "./utils/ImageLoader";
+import { World } from "./World";
 
 export enum PrayerGroups {
   OVERHEADS = 'overheads',
   DEFENCE = 'defence',
   STRENGTH ='strength',
-  ATTACK = 'attack',
-  MAGIC = 'magic',
+  ACCURACY = 'accuracy',
   RANGE = 'range',
   HEARTS = 'hearts',
   PROTECTITEM = 'protectitem',
@@ -16,11 +17,23 @@ export enum PrayerGroups {
 
 export class BasePrayer {
 
-  isActive: boolean;
+  lastActivated: number = 0;
+  isActive: boolean = false;
+  isLit: boolean = false;
   cachedImage: HTMLImageElement;
 
   constructor () {
     this.deactivate()
+  }
+
+  tick() {
+    if (this.isLit && !this.isActive) {
+      this.isActive = true;
+      this.isLit = true;
+    }else if (!this.isLit && this.isActive){
+      this.isActive = false;
+      this.isLit = false;
+    }
   }
 
   feature (): string {
@@ -39,17 +52,21 @@ export class BasePrayer {
   get groups (): PrayerGroups[] {
     return []
   }
-
+  
   activate () {
-    this.isActive = true;
+    this.lastActivated = Date.now();
+    this.isLit = true;
   }
 
   toggle() {
-    this.isActive = !this.isActive;
+    this.isLit = !this.isLit;
+    if (this.isLit){
+      this.lastActivated = Date.now();
+    }
   }
 
   deactivate () {
-    this.isActive = false
+    this.isLit = false;
   }
 
   isOverhead () {

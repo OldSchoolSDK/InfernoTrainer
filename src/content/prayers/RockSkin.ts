@@ -12,6 +12,10 @@ export class RockSkin extends BasePrayer {
     return [PrayerGroups.DEFENCE]
   }
 
+  drainRate(): number {
+    return 6;
+  }
+
   isOverhead () {
     return false
   }

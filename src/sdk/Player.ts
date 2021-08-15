@@ -13,7 +13,6 @@ import { Location } from "./Location"
 import { Mob } from './Mob'
 import { ImageLoader } from './utils/ImageLoader'
 import { MapController } from './MapController'
-import { ControlPanelController } from './ControlPanelController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
@@ -23,12 +22,14 @@ import { Collision } from './Collision'
 import { Eating } from './Eating'
 import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
+import { PrayerController } from './PrayerController'
 
 class PlayerEffects {
   poisoned: number = 0;
   venomed: number = 0;
   stamina: number = 0;
 }
+
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -40,7 +41,6 @@ export class Player extends Unit {
   xpDrops: XpDropAggregator;
   overhead: BasePrayer;
   running = true;
-  prayerDrainCounter: number = 0;
   cachedBonuses: UnitBonuses = null;
   useSpecialAttack: boolean = false;
   effects = new PlayerEffects();
@@ -48,7 +48,6 @@ export class Player extends Unit {
 
   eats: Eating = new Eating();
   inventory: Item[];
-  healedAmountThisTick: number = 0;
 
   seekingItem: Item = null;
 
@@ -63,6 +62,8 @@ export class Player extends Unit {
     this.autoRetaliate = false;
     this.eats.player = this;
     this.inventory = options.inventory || new Array(28).fill(null);
+
+    this.prayerController = new PrayerController(this);
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
 
@@ -82,10 +83,6 @@ export class Player extends Unit {
 
   postAttacksEvent() {
     this.eats.checkRedemption(this);
-  }
-
-  eatFood(amount: number) {
-    this.healedAmountThisTick +=amount;
   }
 
   equipmentChanged() {
@@ -276,8 +273,9 @@ export class Player extends Unit {
   }
 
   activatePrayers () {
+    
     this.lastOverhead = this.overhead
-    this.overhead = find(this.world.player.prayers, (prayer: BasePrayer) => prayer.isOverhead() && prayer.isActive)
+    this.overhead = this.prayerController.overhead();
     if (this.lastOverhead && !this.overhead) {
       this.lastOverhead.playOffSound()
     } else if (this.lastOverhead !== this.overhead) {
@@ -460,37 +458,19 @@ export class Player extends Unit {
     return 4;
   }
 
-  drainPrayer() {
-    const prayerDrainThisTick = ControlPanelController.controls.PRAYER.getCurrentActivePrayers().reduce((a, b) => a + b.drainRate(), 0)
-    this.prayerDrainCounter += prayerDrainThisTick;
-    while (this.prayerDrainCounter > this.prayerDrainResistance) {
-      this.currentStats.prayer--;
-      this.prayerDrainCounter -= this.prayerDrainResistance;
-    }
-    if (this.currentStats.prayer <= 0){
-      ControlPanelController.controls.PRAYER.getCurrentActivePrayers().forEach((prayer) => prayer.deactivate())
-      this.currentStats.prayer = 0;
-    }
-  }
 
   damageTaken() {
-    const hasRedemptionActive = filter(ControlPanelController.controls.PRAYER.getCurrentActivePrayers().map((prayer) => {
-      if (prayer.name === 'Redemption') {
-        return prayer;
-      }
-      return null;
-    })).length > 0
-
-    if (hasRedemptionActive && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
+    if (this.prayerController.matchName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
       this.eats.redemptioned = true;
     }
   }
   
+  pretick() {
+    this.prayerController.tick(this.world);
+  }
+
   attackStep () {
     
-    this.drainPrayer();
-
-
     this.clearXpDrops();
 
     this.attackIfPossible()

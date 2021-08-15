@@ -9,7 +9,7 @@ export class MysticMight extends BasePrayer {
   }
 
   get groups () {
-    return [PrayerGroups.MAGIC, PrayerGroups.DEFENCE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
   drainRate(): number {

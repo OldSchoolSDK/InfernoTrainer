@@ -76,9 +76,8 @@ export class World {
     if (tickElapsed >= 600 && this.isPaused === false) {
       this.tickTimer = now;
       this.getReadyTimer--;
-      if (this.getReadyTimer <=0){
-        this.worldTick();
-      }
+      this.worldTick();
+
     }
 
     if (elapsed > this.fpsInterval && this.isPaused === false) {
@@ -98,13 +97,19 @@ export class World {
     }
     XpDropController.controller.tick();
 
-    this.player.setPrayers(ControlPanelController.controls.PRAYER.getCurrentActivePrayers())
+    this.player.pretick();
+    
     this.region.entities.forEach((entity) => entity.tick())
-    this.region.mobs.forEach((mob) => {
-      mob.ticksAlive++;
-      mob.movementStep()
-    })
-    this.region.mobs.forEach((mob) => mob.attackStep())
+
+    if (this.getReadyTimer <=0){
+      this.region.mobs.forEach((mob) => {
+        mob.ticksAlive++;
+        mob.movementStep()
+      })
+      this.region.mobs.forEach((mob) => mob.attackStep())
+
+    }
+
     this.player.movementStep()
     this.player.ticksAlive++;
     this.player.attackStep()

@@ -9,7 +9,7 @@ export class Rigour extends BasePrayer {
   }
 
   get groups (): PrayerGroups[] {
-    return [PrayerGroups.RANGE, PrayerGroups.DEFENCE]
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
   drainRate(): number {
