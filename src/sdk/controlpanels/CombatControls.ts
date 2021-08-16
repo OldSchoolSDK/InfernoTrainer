@@ -47,6 +47,10 @@ export class CombatControls extends BaseControls {
       }
     });
 
+    if (x > 28 && x < 175 && y > 160 && y < 200) {
+      world.player.autoRetaliate = !world.player.autoRetaliate;
+    }
+
   }
 
 
@@ -65,25 +69,43 @@ export class CombatControls extends BaseControls {
       x + 35 - Math.floor(attackStyleImage.width / 2),
       y + 5
     )
+
+
     world.viewport.context.font = '16px Stats_11'
     world.viewport.context.textAlign = 'center'
 
     world.viewport.context.fillStyle = '#000'
     world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35 + 1, y + 40 + 1)
 
-    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillStyle = '#FF9700'
     world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35, y + 40)
 
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
+
+    
     
     const weapon = world.player.equipment.weapon;
 
     if (!weapon){
       return;
     }
+
+
+    world.viewport.context.font = '21px Stats_11'
+    world.viewport.context.textAlign = 'center'
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100 + 1, y + 30 + 1)
+
+    world.viewport.context.fillStyle = '#FF9700'
+    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100, y + 30)
+
+
+
+
 
     const attackStyleOffsets = [
       { x: 25, y: 45},
@@ -108,8 +130,14 @@ export class CombatControls extends BaseControls {
     )
 
 
-    // const attackStyles = world.player.weapon.attackStyles();
+    world.viewport.context.font = '19px Stats_11'
+    world.viewport.context.textAlign = 'center'
 
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText("Auto Retaliate", x + 115 + 1, y + 182 + 1)
+
+    world.viewport.context.fillStyle = '#FF9700'
+    world.viewport.context.fillText("Auto Retaliate", x + 115, y + 182)
 
 
   }
