@@ -12,6 +12,9 @@ export class HawkEye extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
+  levelRequirement(): number {
+    return 26;
+  }
   drainRate(): number {
     return 6;
   }

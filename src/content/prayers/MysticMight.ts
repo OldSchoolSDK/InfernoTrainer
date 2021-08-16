@@ -12,6 +12,9 @@ export class MysticMight extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
+  levelRequirement(): number {
+    return 45;
+  }
   drainRate(): number {
     return 12;
   }

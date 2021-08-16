@@ -13,6 +13,9 @@ export class Redemption extends BasePrayer {
     return [PrayerGroups.OVERHEADS]
   }
 
+  levelRequirement(): number {
+    return 49;
+  }
   drainRate(): number {
     return 6;
   }

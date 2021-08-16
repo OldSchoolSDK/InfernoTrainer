@@ -13,6 +13,9 @@ export class ThickSkin extends BasePrayer {
   }
 
 
+  levelRequirement(): number {
+    return 1;
+  }
   drainRate(): number {
     return 3;
   }

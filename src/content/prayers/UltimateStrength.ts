@@ -12,6 +12,9 @@ export class UltimateStrength extends BasePrayer {
     return [PrayerGroups.STRENGTH]
   }
 
+  levelRequirement(): number {
+    return 31;
+  }
   drainRate(): number {
     return 12;
   }

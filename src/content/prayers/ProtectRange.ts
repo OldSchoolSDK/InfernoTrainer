@@ -16,6 +16,9 @@ export class ProtectRange extends BasePrayer {
     return [PrayerGroups.OVERHEADS]
   }
 
+  levelRequirement(): number {
+    return 34;
+  }
   drainRate(): number {
     return 12;
   }

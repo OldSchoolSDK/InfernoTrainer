@@ -12,6 +12,9 @@ export class RockSkin extends BasePrayer {
     return [PrayerGroups.DEFENCE]
   }
 
+  levelRequirement(): number {
+    return 10;
+  }
   drainRate(): number {
     return 6;
   }

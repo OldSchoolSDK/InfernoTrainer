@@ -16,6 +16,9 @@ export class ProtectMelee extends BasePrayer {
     return [PrayerGroups.OVERHEADS]
   }
 
+  levelRequirement(): number {
+    return 43;
+  }
   drainRate(): number {
     return 12;
   }

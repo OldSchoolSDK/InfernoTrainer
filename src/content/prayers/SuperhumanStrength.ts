@@ -12,6 +12,9 @@ export class SuperhumanStrength extends BasePrayer {
     return [PrayerGroups.STRENGTH]
   }
 
+  levelRequirement(): number {
+    return 13;
+  }
   drainRate(): number {
     return 6;
   }

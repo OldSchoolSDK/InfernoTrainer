@@ -11,6 +11,9 @@ export class EagleEye extends BasePrayer {
   get groups () {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
+  levelRequirement(): number {
+    return 44;
+  }
 
   drainRate(): number {
     return 12;

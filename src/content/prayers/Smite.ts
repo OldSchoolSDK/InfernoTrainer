@@ -12,6 +12,9 @@ export class Smite extends BasePrayer {
     return [PrayerGroups.OVERHEADS] 
   }
 
+  levelRequirement(): number {
+    return 100;
+  }
   drainRate(): number {
     return 18;
   }

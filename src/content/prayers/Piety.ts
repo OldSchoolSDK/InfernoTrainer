@@ -12,6 +12,10 @@ export class Piety extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
+  levelRequirement(): number {
+    return 70;
+  }
+  
   drainRate(): number {
     return 24;
   }

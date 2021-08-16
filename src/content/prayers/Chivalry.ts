@@ -13,6 +13,9 @@ export class Chivalry extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
   
+  levelRequirement(): number {
+    return 60;
+  }
   drainRate(): number {
     return 24;
   }
