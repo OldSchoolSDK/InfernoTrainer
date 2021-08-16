@@ -313,7 +313,7 @@ export class Unit extends GameObject {
 
 
   addProjectile (projectile: Projectile) {
-    if (this.spawnDelay > 0 && this.autoRetaliate){
+    if (this.spawnDelay > 0 && this.autoRetaliate && !this.aggro){
       this.setAggro(projectile.from);
     }
     this.spawnDelay = 0;
@@ -368,7 +368,7 @@ export class Unit extends GameObject {
           this.currentStats.hitpoint -= projectile.damage
         }
         this.damageTaken();
-        if (projectile.from !== this.aggro && this.autoRetaliate) {
+        if (this.autoRetaliate && !this.aggro) {
           this.setAggro(projectile.from);
         }
       }

@@ -12,7 +12,7 @@ import AutoRetaliateButtonImage from '../../assets/images/attackstyles/interface
 import { AttackStyle, AttackStylesController } from '../AttackStylesController'
 import { Weapon } from '../gear/Weapon'
 import { Location } from '../../sdk/Location'
-import { find, startCase, toLower } from 'lodash'
+import { startCase, toLower } from 'lodash'
 
 export class CombatControls extends BaseControls {
   selectedCombatStyleButtonImage: HTMLImageElement = ImageLoader.createImage(SelectedCombatStyleButtonImage)
@@ -116,12 +116,19 @@ export class CombatControls extends BaseControls {
 
     const attackStyles = weapon.attackStyles();
 
-    attackStyles.forEach((style: AttackStyle, index: number) => {
-      const offsets = attackStyleOffsets[index];
+    const imageMap = AttackStylesController.attackStyleImageMap[weapon.attackStyleCategory()];
+    if (imageMap){
 
-      const attackStyleImage = AttackStylesController.attackStyleImageMap[weapon.attackStyleCategory()][weapon.attackStyles()[index]]
-      this.drawAttackStyleButton(world, weapon, weapon.attackStyles()[index], attackStyleImage, x + offsets.x, y + offsets.y)      
-    })
+      attackStyles.forEach((style: AttackStyle, index: number) => {
+        const offsets = attackStyleOffsets[index];
+  
+        const attackStyleImage = imageMap[weapon.attackStyles()[index]]
+        if (attackStyleImage){
+          this.drawAttackStyleButton(world, weapon, weapon.attackStyles()[index], attackStyleImage, x + offsets.x, y + offsets.y)      
+        }
+      })
+  
+    }
 
     world.viewport.context.drawImage(      
       world.player.autoRetaliate ? this.selectedAutoRetailButtonImage : this.autoRetailButtonImage,

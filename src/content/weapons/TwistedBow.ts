@@ -5,6 +5,7 @@ import { Unit, UnitBonuses } from '../../sdk/Unit'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 
 export class TwistedBow extends RangedWeapon {
   constructor() {
@@ -37,6 +38,33 @@ export class TwistedBow extends RangedWeapon {
     }
   }
 
+
+
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.RAPID,
+      AttackStyle.LONGRANGE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.BOW;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.RAPID;
+  }
+
+  get attackSpeed () {
+    if (this.attackStyle() === AttackStyle.LONGRANGE){
+      return 6;
+    }
+    return 5
+  }
+  
+  
+
   get weight(): number {
     return 1.814
   }
@@ -51,10 +79,6 @@ export class TwistedBow extends RangedWeapon {
 
   get attackRange () {
     return 10
-  }
-
-  get attackSpeed () {
-    return 5
   }
 
   get inventoryImage () {

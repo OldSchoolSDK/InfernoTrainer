@@ -3,6 +3,7 @@
 import InventoryImage from '../../assets/images/equipment/Ancient_staff.png'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { ItemName } from "../../sdk/ItemName";
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
 
 export class AncientStaff extends MeleeWeapon {
 
@@ -36,6 +37,25 @@ export class AncientStaff extends MeleeWeapon {
       }
     }
   }
+
+
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.AGGRESSIVECRUSH,
+      AttackStyle.DEFENSIVE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.STAFF;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.AGGRESSIVECRUSH;
+  }
+
+  
   
   get itemName(): ItemName {
     return ItemName.ANCIENT_STAFF
