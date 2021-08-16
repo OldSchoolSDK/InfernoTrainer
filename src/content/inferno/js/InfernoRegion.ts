@@ -94,6 +94,7 @@ export class InfernoRegion extends Region {
       { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 },
       loadout.getLoadout()
     )
+    loadout.setStats(player);
     world.setPlayer(player)
 
 

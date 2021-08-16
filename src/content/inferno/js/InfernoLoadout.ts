@@ -50,6 +50,7 @@ import { Item } from "../../../sdk/Item";
 import { filter, indexOf, map } from "lodash";
 import { Chest } from "../../../sdk/gear/Chest";
 import { Legs } from "../../../sdk/gear/Legs";
+import { Player } from "../../../sdk/Player";
 
 export class InfernoLoadout {
 
@@ -193,6 +194,24 @@ export class InfernoLoadout {
     }), (index: number) => index !== -1)[0] || -1;
   }
 
+  setStats(player: Player) {
+    switch (this.loadoutType) {
+      case "zerker": 
+        player.stats.prayer = 52;
+        player.currentStats.prayer = 52;
+        player.stats.defence = 45;
+        player.currentStats.defence = 45;
+        break;
+      case "pure": 
+        player.stats.prayer = 52;
+        player.currentStats.prayer = 52;
+        player.stats.defence = 1;
+        player.currentStats.defence = 1;
+        break;
+    }
+
+  }
+
   getLoadout(): UnitOptions {
 
     let loadout: UnitOptions;
@@ -233,7 +252,6 @@ export class InfernoLoadout {
       // Swap out chest
       const mageChest = loadout.equipment.chest;
       const rangeChest = this.findAnyItemWithName(loadout.inventory, [ItemName.ARMADYL_CHESTPLATE, ItemName.SARADOMIN_D_HIDE_BODY, ItemName.CRYSTAL_BODY])
-      console.log('range', rangeChest, mageChest)
       if (rangeChest !== -1){
         loadout.equipment.chest = loadout.inventory[rangeChest] as Chest;
         loadout.inventory[rangeChest] = mageChest;
