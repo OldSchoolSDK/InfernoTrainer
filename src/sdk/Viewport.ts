@@ -34,12 +34,22 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    const widthRestrictors = 227 + 200;
-    this._viewport.width = Math.ceil(Math.min(
-      world.region.width,
-      Math.floor(width / Settings.tileSize - (widthRestrictors / Settings.tileSize))
-    ));
-    this._viewport.height = Math.ceil(Math.min(world.region.height, Math.max(Math.floor(700 / Settings.tileSize), Math.floor(height / Settings.tileSize - (70 / Settings.tileSize)))));
+
+    // todo: refactor how viewport works to not need this width restrictor anymore.
+    const widthRestrictors = 227 + 200; // 227 = control panel width, 200 = side menu
+    this._viewport.width = Math.ceil(
+      Math.min(
+        world.region.width,
+        Math.floor(width / Settings.tileSize - (widthRestrictors / Settings.tileSize))
+      )
+    );
+    this._viewport.height = Math.ceil(
+      Math.min(
+        world.region.height,
+        Math.floor(height / Settings.tileSize)
+      )
+    );
+
     // create new canvas that is the on screen canvas
     this.canvas.width = Settings.tileSize * this._viewport.width + world.mapController.width;
     this.canvas.height = Settings.tileSize * this._viewport.height;

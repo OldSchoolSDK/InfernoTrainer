@@ -84,6 +84,8 @@ export interface UnitOtherBonuses {
   rangedStrength: number;
   magicDamage: number;
   prayer: number
+  crystalAccuracy?: number;
+  crystalDamage?: number;
 }
 
 export interface UnitTargetBonuses {
@@ -176,7 +178,9 @@ export class Unit extends GameObject {
         meleeStrength: firstBonuses.other.meleeStrength + secondBonuses.other.meleeStrength,
         rangedStrength: firstBonuses.other.rangedStrength + secondBonuses.other.rangedStrength,
         magicDamage: firstBonuses.other.magicDamage + secondBonuses.other.magicDamage,
-        prayer: firstBonuses.other.prayer + secondBonuses.other.prayer
+        prayer: firstBonuses.other.prayer + secondBonuses.other.prayer,
+        crystalAccuracy: (firstBonuses.other.crystalAccuracy || 0) + (secondBonuses.other.crystalAccuracy || 0),
+        crystalDamage: (firstBonuses.other.crystalDamage || 0) + (secondBonuses.other.crystalDamage || 0)
       },
       targetSpecific: {
         undead: firstBonuses.targetSpecific.undead + secondBonuses.targetSpecific.undead,
@@ -205,7 +209,9 @@ export class Unit extends GameObject {
         meleeStrength: 0,
         rangedStrength: 0,
         magicDamage: 1,
-        prayer: 0
+        prayer: 0,
+        crystalAccuracy: 1,
+        crystalDamage: 1,
       },
       targetSpecific: {
         undead: 0,

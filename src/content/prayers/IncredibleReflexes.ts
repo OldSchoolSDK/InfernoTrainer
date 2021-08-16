@@ -12,6 +12,9 @@ export class IncredibleReflexes extends BasePrayer {
     return [PrayerGroups.ACCURACY]
   }
 
+  levelRequirement(): number {
+    return 34;
+  }
   drainRate(): number {
     return 12;
   }

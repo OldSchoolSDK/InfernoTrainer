@@ -11,6 +11,9 @@ export class MysticWill extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
+  levelRequirement(): number {
+    return 9;
+  }
   drainRate(): number {
     return 3;
   }

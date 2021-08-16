@@ -1,6 +1,7 @@
 'use strict'
 
 import { intersection } from "lodash";
+import { Player } from "./Player";
 import { ImageLoader } from "./utils/ImageLoader";
 import { World } from "./World";
 
@@ -24,6 +25,10 @@ export class BasePrayer {
 
   constructor () {
     this.deactivate()
+  }
+
+  levelRequirement(): number {
+    return 99;
   }
 
   tick() {
@@ -53,12 +58,19 @@ export class BasePrayer {
     return []
   }
   
-  activate () {
+  activate (player: Player) {
+    if (player.stats.prayer < this.levelRequirement()){
+      return;
+    }
     this.lastActivated = Date.now();
     this.isLit = true;
   }
 
-  toggle() {
+  toggle(player: Player) {
+
+    if (player.stats.prayer < this.levelRequirement()){
+      return;
+    }
     this.isLit = !this.isLit;
     if (this.isLit){
       this.lastActivated = Date.now();

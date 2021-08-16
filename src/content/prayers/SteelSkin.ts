@@ -12,6 +12,9 @@ export class SteelSkin extends BasePrayer {
     return [PrayerGroups.DEFENCE]
   }
   
+  levelRequirement(): number {
+    return 28;
+  }
   drainRate(): number {
     return 12;
   }

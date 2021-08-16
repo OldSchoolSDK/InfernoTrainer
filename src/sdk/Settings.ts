@@ -17,6 +17,9 @@ export class Settings {
   static equipment_key: string;
   static prayer_key: string;
 
+
+  static loadout: string;
+  static onTask: boolean;
   static player_stats: PlayerStats;
   static is_keybinding = false;
 
@@ -34,7 +37,8 @@ export class Settings {
     window.localStorage.setItem('equipment_key', Settings.equipment_key)
     window.localStorage.setItem('prayer_key', Settings.prayer_key)
     window.localStorage.setItem('stats', SerializePlayerStats(Settings.player_stats))
-
+    window.localStorage.setItem('loadout', Settings.loadout)
+    window.localStorage.setItem('onTask', String(Settings.onTask))
   }
 
   static readFromStorage () {
@@ -43,6 +47,8 @@ export class Settings {
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
     Settings.rotated = window.localStorage.getItem('rotated') || 'south'
+    Settings.loadout = window.localStorage.getItem('loadout') || 'max_tbow';
+    Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
 
     Settings.region = 'inferno'
     Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true

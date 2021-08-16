@@ -16,7 +16,6 @@ export class DevoutBoots extends Feet{
     return 0.5;
   }
   
-  
   constructor() {
     super();
     this.bonuses = {

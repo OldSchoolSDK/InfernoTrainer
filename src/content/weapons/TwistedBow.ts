@@ -26,7 +26,7 @@ export class TwistedBow extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 20 + 60, // simulating dragon arrows
+        rangedStrength: 20,
         magicDamage: 0,
         prayer: 0
       },

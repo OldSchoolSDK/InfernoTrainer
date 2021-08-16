@@ -12,6 +12,9 @@ export class SharpEye extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
 
+  levelRequirement(): number {
+    return 8;
+  }
   drainRate(): number {
     return 3;
   }

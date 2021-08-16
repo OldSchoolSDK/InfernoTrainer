@@ -1,7 +1,7 @@
 
 import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
-import { intersection } from 'lodash'
+import { intersection, words } from 'lodash'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
 import { World } from '../World'
@@ -35,10 +35,10 @@ export class PrayerControls extends BaseControls {
     world.player.prayerController.activePrayers().forEach((prayer) => {
       prayer.deactivate();
       if (prayer.name === 'Protect from Magic'){
-        prayer.activate();
+        prayer.activate(world.player);
       }
       if (prayer.name === 'Rigour'){
-        prayer.activate();
+        prayer.activate(world.player);
       }
     });
 
@@ -51,7 +51,7 @@ export class PrayerControls extends BaseControls {
     const clickedPrayer = world.player.prayerController.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
     if (clickedPrayer && world.player.currentStats.prayer > 0) {
 
-      clickedPrayer.toggle()
+      clickedPrayer.toggle(world.player)
 
       if (this.hasQuickPrayersActivated && world.player.prayerController.activePrayers().length === 0) {
         ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
@@ -63,12 +63,18 @@ export class PrayerControls extends BaseControls {
     super.draw(world, ctrl, x, y)
 
     world.player.prayerController.prayers.forEach((prayer, index) => {
-      if (prayer.isActive || prayer.isLit) {
-        const x2 = index % 5
-        const y2 = Math.floor(index / 5)
+      const x2 = index % 5
+      const y2 = Math.floor(index / 5)
 
+      if (prayer.isActive || prayer.isLit) {
         world.viewport.context.beginPath()
         world.viewport.context.fillStyle = '#D1BB7773'
+        world.viewport.context.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.viewport.context.fill()
+      }
+      if (world.player.stats.prayer < prayer.levelRequirement()) {
+        world.viewport.context.beginPath()
+        world.viewport.context.fillStyle = '#00000073'
         world.viewport.context.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
         world.viewport.context.fill()
       }

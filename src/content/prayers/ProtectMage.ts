@@ -14,6 +14,9 @@ export class ProtectMage extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.OVERHEADS]
   }
+  levelRequirement(): number {
+    return 37;
+  }
 
   drainRate(): number {
     return 12;

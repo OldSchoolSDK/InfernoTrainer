@@ -12,6 +12,9 @@ export class Augury extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
+  levelRequirement(): number {
+    return 77;
+  }
   isOverhead () {
     return false
   }

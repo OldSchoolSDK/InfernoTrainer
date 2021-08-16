@@ -12,6 +12,9 @@ export class Rigour extends BasePrayer {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
   }
 
+  levelRequirement(): number {
+    return 74;
+  }
   drainRate(): number {
     return 24;
   }
