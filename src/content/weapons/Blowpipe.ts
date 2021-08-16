@@ -6,8 +6,6 @@ import { ItemName } from "../../sdk/ItemName";
 import { World } from '../../sdk/World';
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
-import { SetEffect, SetEffectTypes } from '../../sdk/SetEffect';
-import { find } from 'lodash';
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -39,6 +37,7 @@ export class Blowpipe extends RangedWeapon {
       }
     }
   }
+
 
   get weight(): number {
     return 0.5

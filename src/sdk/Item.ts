@@ -71,7 +71,6 @@ export class Item {
   }
 
   get weight(): number {
-    console.log(this.itemName)
     return 0;
   }
 

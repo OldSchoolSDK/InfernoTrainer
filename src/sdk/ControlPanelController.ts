@@ -24,6 +24,7 @@ interface TabPosition{
 
 export class ControlPanelController {
   static controls = Object.freeze({
+    COMBAT: new CombatControls(),
     INVENTORY: new InventoryControls(),
     PRAYER: new PrayerControls(),
     EQUIPMENT: new EquipmentControls(),
@@ -47,7 +48,7 @@ export class ControlPanelController {
 
 
     this.controls = [
-      new CombatControls(),
+      ControlPanelController.controls.COMBAT,
       ControlPanelController.controls.STATS,
       new QuestsControls(),
       ControlPanelController.controls.INVENTORY,

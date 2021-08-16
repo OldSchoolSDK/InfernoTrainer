@@ -12,6 +12,7 @@ import { Projectile, ProjectileOptions } from "../weapons/Projectile";
 import { find } from "lodash";
 import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
+import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -38,6 +39,24 @@ export class Weapon extends Equipment{
   damage: number;
   selected: boolean = false;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+
+
+
+  attackStyles() {
+    return []
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return null;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.RAPID;
+  }
+  
+  attackStyle() {
+    return AttackStylesController.controller.getAttackStyleForType(this.attackStyleCategory(), this);
+  }
 
   assignToPlayer(player: Player) {
     player.equipment.weapon = this;
@@ -101,6 +120,10 @@ export class Weapon extends Equipment{
 
   }
 
+  rollDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
+    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
+  }
+
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
@@ -109,10 +132,12 @@ export class Weapon extends Equipment{
     bonuses.gearMultiplier = bonuses.gearMultiplier || 1
     bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0
 
-    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
-    if (this.isBlockable(from, to, bonuses)) {
-      this.damage = 0
+    this.rollDamage(from, to, bonuses);
+
+    if (this.damage === -1) {
+      return;
     }
+
     if (to.setEffects) {
       find(to.setEffects, (effect: typeof SetEffect) => {
         if (effect.effectName() === SetEffectTypes.JUSTICIAR){
@@ -125,8 +150,13 @@ export class Weapon extends Equipment{
       })
     }
 
+    // Protection prayers
+    if (this.isBlockable(from, to, bonuses)) {
+      this.damage = 0
+    }
+    
     // sanitize damage output
-    this.damage = Math.floor(Math.max(Math.min(to.currentStats.hitpoint, this.damage), 0));
+    this.damage = Math.floor(Math.max(Math.min(to.currentStats.hitpoint, this.damage, 100), 0));
 
     if (to.equipment.ring && to.equipment.ring.itemName === ItemName.RING_OF_SUFFERING_I && this.damage > 0){
       from.addProjectile(new Projectile(this, Math.floor(this.damage * 0.1) + 1, to, from, 'recoil', {reduceDelay: 15, hidden: true}))
@@ -137,7 +167,11 @@ export class Weapon extends Equipment{
   }
   
   _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : Math.floor(Math.random() * (this._maxHit(from, to, bonuses) + 1))
+    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : this._calculateHitDamage(from, to, bonuses);
+  }
+
+  _calculateHitDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
+    return Math.floor(Math.random() * (this._maxHit(from, to, bonuses) + 1))
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
