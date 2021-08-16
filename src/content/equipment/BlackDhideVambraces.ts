@@ -3,7 +3,7 @@ import InventImage from "../../assets/images/equipment/Black_d'hide_vambraces.pn
 import { Gloves } from "../../sdk/gear/Gloves";
 import { ItemName } from "../../sdk/ItemName";
 
-export class BarrowsGloves extends Gloves{
+export class BlackDhideVambraces extends Gloves{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   get inventoryImage () {

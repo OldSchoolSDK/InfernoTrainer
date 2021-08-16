@@ -1,5 +1,5 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Saradomin_body.png';
+import InventImage from "../../assets/images/equipment/Saradomin_d'hide_body.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
