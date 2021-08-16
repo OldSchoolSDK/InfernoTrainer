@@ -1,12 +1,12 @@
 'use strict'
 
-import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
-import { Unit, UnitBonuses } from '../../sdk/Unit'
+import InventImage from '../../assets/images/equipment/Bow_of_faerdhinen.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
+import { Unit } from '../../sdk/Unit'
 
-export class TwistedBow extends RangedWeapon {
+export class BowOfFaerdhinen extends RangedWeapon {
   constructor() {
     super();
     this.bonuses = {
@@ -15,7 +15,7 @@ export class TwistedBow extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 70
+        range: 128
       },
       defence: {
         stab: 0,
@@ -26,7 +26,7 @@ export class TwistedBow extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 20,
+        rangedStrength: 106, // TODO: This will stack with dragon arrows if both equipped 
         magicDamage: 0,
         prayer: 0
       },
@@ -39,7 +39,7 @@ export class TwistedBow extends RangedWeapon {
 
 
   get itemName(): ItemName {
-    return ItemName.TWISTED_BOW
+    return ItemName.BOWFA
   }
 
   get isTwoHander(): boolean {
@@ -55,18 +55,14 @@ export class TwistedBow extends RangedWeapon {
   }
 
   get inventoryImage () {
-    return TbowInventImage
+    return InventImage
   }
 
   _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    const magic = Math.min(Math.max(to.currentStats.magic, to.bonuses.attack.magic), 250)
-    const multiplier = (140 + ((10 * 3 * magic / 10 - 10) / 100) - (Math.pow(3 * magic / 10 - 100, 2) / 100)) / 100
-    return Math.min(1.40, Math.max(0, multiplier))
+    return from.bonuses.other.crystalAccuracy || 1;
   }
 
   _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    const magic = Math.min(Math.max(to.currentStats.magic, to.bonuses.attack.magic), 250)
-    const multiplier = (250 + ((10 * 3 * magic / 10 - 14) / 100) - (Math.pow(3 * magic / 10 - 140, 2) / 100)) / 100
-    return Math.min(2.50, Math.max(0, multiplier))
+    return from.bonuses.other.crystalDamage || 1;
   }
 }

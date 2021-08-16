@@ -1,4 +1,4 @@
-import { UnitEquipment, UnitOptions } from "../../../sdk/Unit";
+import { Unit, UnitEquipment, UnitOptions } from "../../../sdk/Unit";
 
 import { JusticiarFaceguard } from '../../equipment/JusticiarFaceguard';
 import { NecklaceOfAnguish } from '../../equipment/NecklaceOfAnguish';
@@ -7,14 +7,19 @@ import { ArmadylChainskirt } from '../../equipment/ArmadylChainskirt';
 import { PegasianBoots } from '../../equipment/PegasianBoots';
 import { AvasAssembler } from '../../equipment/AvasAssembler';
 import { HolyBlessing } from '../../equipment/HolyBlessing';
+import { OccultNecklace } from '../../equipment/OccultNecklace';
 import { BarrowsGloves } from '../../equipment/BarrowsGloves';
 import { RingOfSufferingImbued } from '../../equipment/RingOfSufferingImbued';
 import { SlayerHelmet } from '../../equipment/SlayerHelmet';
+import { CrystalHelm } from '../../equipment/CrystalHelm';
+import { CrystalBody } from '../../equipment/CrystalBody';
+import { CrystalLegs } from '../../equipment/CrystalLegs';
 import { CrystalShield } from '../../equipment/CrystalShield';
+import { BowOfFaerdhinen } from '../../weapons/BowOfFaerdhinen';
 import { JusticiarChestguard } from '../../equipment/JusticiarChestguard'
 import { JusticiarLegguards } from '../../equipment/JusticiarLegguards'
 import { KodaiWand } from '../../weapons/KodaiWand'
-import { DevoutBoots } from '../../equipment/DevoutBoots'
+import { DragonArrows } from '../../equipment/DragonArrows'
 import { AncestralRobetop } from '../../equipment/AncestralRobetop'
 import { AncestralRobebottom } from '../../equipment/AncestralRobebottom'
 import { StaminaPotion } from '../../items/StaminaPotion'
@@ -24,6 +29,14 @@ import { BastionPotion } from '../../items/BastionPotion'
 
 import { TwistedBow } from '../../weapons/TwistedBow'
 import { Blowpipe } from '../../weapons/Blowpipe'
+import { Weapon } from "../../../sdk/gear/Weapon";
+import { Offhand } from "../../../sdk/gear/Offhand";
+import { Necklace } from "../../../sdk/gear/Necklace";
+import { ItemName } from "../../../sdk/ItemName";
+import { Item } from "../../../sdk/Item";
+import { filter, indexOf, map } from "lodash";
+import { Chest } from "../../../sdk/gear/Chest";
+import { Legs } from "../../../sdk/gear/Legs";
 
 export class InfernoLoadout {
 
@@ -37,12 +50,60 @@ export class InfernoLoadout {
     this.onTask = onTask;
   }
 
-  loadoutMaxTbow() {
 
+  loadoutMaxTbow() {
+    return { 
+      equipment: { 
+        weapon: new KodaiWand(),
+        offhand: new CrystalShield(),
+        helmet: new JusticiarFaceguard(),
+        necklace: new OccultNecklace(),
+        cape: new AvasAssembler(),
+        ammo: new DragonArrows(),
+        chest: new AncestralRobetop(),
+        legs: new AncestralRobebottom(),
+        feet: new PegasianBoots(),
+        gloves: new BarrowsGloves(),
+        ring: new RingOfSufferingImbued(), 
+      },
+      inventory: [ 
+        new Blowpipe(), new ArmadylChestplate(), new TwistedBow(), new JusticiarChestguard(),
+        new NecklaceOfAnguish(), new ArmadylChainskirt(), null, new JusticiarLegguards(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+      ]
+    };
   }
 
   loadoutMaxFbow() {
 
+    return { 
+      equipment: { 
+        weapon: new KodaiWand(),
+        offhand: new CrystalShield(),
+        helmet: new CrystalHelm(),
+        necklace: new OccultNecklace(),
+        cape: new AvasAssembler(),
+        ammo: new HolyBlessing(),
+        chest: new AncestralRobetop(),
+        legs: new AncestralRobebottom(),
+        feet: new PegasianBoots(),
+        gloves: new BarrowsGloves(),
+        ring: new RingOfSufferingImbued(), 
+      },
+      inventory: [ 
+        new Blowpipe(), new CrystalBody(), new BowOfFaerdhinen(), new JusticiarChestguard(),
+        new NecklaceOfAnguish(), new CrystalLegs(), null, new JusticiarLegguards(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+      ]
+    };
   }
 
   loadoutBudgetFbow() {
@@ -61,42 +122,63 @@ export class InfernoLoadout {
 
   }
 
+  findItemByName(list: Item[], name: ItemName) {
+    return indexOf(map(list, 'itemName'), name)
+  }
+
+  findAnyItemWithName(list: Item[], names: ItemName[]) {
+    return filter(names.map((name: ItemName) => {
+      return this.findItemByName(list, name);
+    }), (index: number) => index !== -1)[0];
+  }
+
   getLoadout(): UnitOptions {
-    const kodai = new KodaiWand();
-    const mainBow = new TwistedBow();
-    const shield = new CrystalShield();
-    const loadout: UnitOptions = { 
-      equipment: { 
-        weapon: kodai,
-        offhand: shield,
-        helmet: new JusticiarFaceguard(),
-        necklace: new NecklaceOfAnguish(),
-        cape: new AvasAssembler(),
-        ammo: new HolyBlessing(),
-        chest: new AncestralRobetop(),
-        legs: new ArmadylChainskirt(),
-        feet: new PegasianBoots(),
-        gloves: new BarrowsGloves(),
-        ring: new RingOfSufferingImbued(), 
-      },
-      inventory: [ 
-        new Blowpipe(), new ArmadylChestplate(), mainBow, new JusticiarChestguard(),
-        null, new AncestralRobebottom(), null, new JusticiarLegguards(),
-        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
-        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
-      ]
+
+    let loadout: UnitOptions;
+    switch (this.loadoutType) {
+      case "max_tbow":
+        loadout = this.loadoutMaxTbow();
+        break;
+      case "max_fbow":
+        loadout = this.loadoutMaxFbow();
+        break;
     }
 
+
     if (this.wave > 66) {
-      loadout.equipment.weapon = mainBow;
-      loadout.equipment.offhand = null;
-      loadout.inventory[loadout.inventory.indexOf(mainBow)] = kodai;
-      if (shield) {
-        loadout.inventory[loadout.inventory.indexOf(null)] = shield;
+
+      // switch necklace to range dps necklace
+      loadout.inventory[this.findItemByName(loadout.inventory, ItemName.NECKLACE_OF_ANGUISH)] = new OccultNecklace();
+      loadout.equipment.necklace = new NecklaceOfAnguish();
+
+
+      // Swap out staff with zuk/jad dps weapon
+      const staff = loadout.equipment.weapon;
+      const bow = this.findAnyItemWithName(loadout.inventory, [ItemName.TWISTED_BOW, ItemName.BOWFA])
+      loadout.equipment.weapon = loadout.inventory[bow] as Weapon;
+      loadout.inventory[bow] = staff;
+      if (loadout.equipment.offhand && loadout.equipment.weapon.isTwoHander) {
+        loadout.inventory[loadout.inventory.indexOf(null)] = loadout.equipment.offhand;
+        loadout.equipment.offhand = null;
       }
+
+
+      // Swap out chest
+      const mageChest = loadout.equipment.chest;
+      const rangeChest = this.findAnyItemWithName(loadout.inventory, [ItemName.ARMADYL_CHESTPLATE, ItemName.SARADOMIN_D_HIDE_BODY, ItemName.CRYSTAL_BODY])
+      if (rangeChest !== -1){
+        loadout.equipment.chest = loadout.inventory[rangeChest] as Chest;
+        loadout.inventory[rangeChest] = mageChest;
+      }
+
+      // Swap out body
+      const mageLegs = loadout.equipment.legs;
+      const rangeLegs = this.findAnyItemWithName(loadout.inventory, [ItemName.ARMADYL_CHAINSKIRT, ItemName.SARADOMIN_D_HIDE_CHAPS, ItemName.CRYSTAL_LEGS])
+      if (rangeChest !== -1){
+        loadout.equipment.legs = loadout.inventory[rangeLegs] as Legs;
+        loadout.inventory[rangeLegs] = mageLegs;
+      }
+
     }
 
     if (this.onTask) {
@@ -106,4 +188,8 @@ export class InfernoLoadout {
     return loadout;
   }
   
+}
+
+function pluck(): import("lodash").List<unknown> {
+  throw new Error("Function not implemented.");
 }
