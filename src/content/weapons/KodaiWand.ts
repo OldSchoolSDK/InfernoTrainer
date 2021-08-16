@@ -37,6 +37,10 @@ export class KodaiWand extends MeleeWeapon {
     }
   }
   
+  get weight(): number {
+    return 0.198
+  }
+  
   get itemName(): ItemName {
     return ItemName.KODAI_WAND
   }

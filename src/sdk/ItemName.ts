@@ -1,5 +1,7 @@
 
 export enum ItemName {
+  AHRIMS_ROBETOP = 'Ahrim\'s robetop',
+  AHRIMS_ROBESKIRT = 'Ahrim\'s robeskirt',
   ANCESTRAL_ROBEBOTTOM = 'Ancestral Robe bottom',
   ANCESTRAL_ROBETOP = 'Ancestral Robe top',
   ANCIENT_STAFF = 'Ancient staff',
@@ -19,6 +21,7 @@ export enum ItemName {
   CRYSTAL_SHIELD = 'Crystal Shield',
   DAGON_HAI_ROBE_TOP = "Dagon'hai robe top",
   DEVOUT_BOOTS = 'Devout Boots',
+  DIAMOND_BOLTS_E = 'Diamond bolts (e)',
   DRAGON_ARROWS = 'Dragon arrow',
   GUTHIX_ROBE_TOP = 'Guthix robe top',
   HOLY_BLESSING = 'Holy Blessing',
@@ -35,6 +38,7 @@ export enum ItemName {
   RING_OF_ENDURANCE = 'Ring of Endurance',
   RING_OF_SUFFERING_I = 'Ring of Suffering (i)',
   ROBIN_HOOD_HAT = 'Robin hood hat',
+  RUBY_BOLTS_E = 'Ruby bolts (e)',
   RUNE_CROSSBOW = 'Rune Crossbow',
   RUNE_KITESHIELD = 'Rune kiteshield',
   SARADOMIN_BREW = 'Saradomin Brew',

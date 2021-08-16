@@ -1,12 +1,12 @@
 'use strict'
 
-import InventImage from '../../assets/images/equipment/Bow_of_faerdhinen.png'
+import InventImage from '../../assets/images/equipment/Rune_crossbow.png'
+import { Unit, UnitBonuses } from '../../sdk/Unit'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
-import { Unit } from '../../sdk/Unit'
 
-export class BowOfFaerdhinen extends RangedWeapon {
+export class RuneCrossbow extends RangedWeapon {
   constructor() {
     super();
     this.bonuses = {
@@ -15,7 +15,7 @@ export class BowOfFaerdhinen extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 128
+        range: 90
       },
       defence: {
         stab: 0,
@@ -26,7 +26,7 @@ export class BowOfFaerdhinen extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 106, // TODO: This will stack with dragon arrows if both equipped 
+        rangedStrength: 20,
         magicDamage: 0,
         prayer: 0
       },
@@ -37,21 +37,21 @@ export class BowOfFaerdhinen extends RangedWeapon {
     }
   }
 
-
   get weight(): number {
-    return 1.5
+    return 6;
   }
+  
 
   get itemName(): ItemName {
-    return ItemName.BOWFA
+    return ItemName.RUNE_CROSSBOW
   }
 
   get isTwoHander(): boolean {
-    return true;
+    return false;
   }
 
   get attackRange () {
-    return 10
+    return 9
   }
 
   get attackSpeed () {
@@ -60,13 +60,5 @@ export class BowOfFaerdhinen extends RangedWeapon {
 
   get inventoryImage () {
     return InventImage
-  }
-
-  _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return from.bonuses.other.crystalAccuracy || 1;
-  }
-
-  _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return from.bonuses.other.crystalDamage || 1;
   }
 }

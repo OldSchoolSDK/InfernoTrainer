@@ -40,6 +40,9 @@ export class Blowpipe extends RangedWeapon {
     }
   }
 
+  get weight(): number {
+    return 0.5
+  }
 
   specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     

@@ -37,6 +37,9 @@ export class TwistedBow extends RangedWeapon {
     }
   }
 
+  get weight(): number {
+    return 1.814
+  }
 
   get itemName(): ItemName {
     return ItemName.TWISTED_BOW
