@@ -12,6 +12,9 @@ export class Retribution extends BasePrayer {
     return [PrayerGroups.OVERHEADS] // TODO: Incorrect
   }
   
+  levelRequirement(): number {
+    return 100;
+  }
   drainRate(): number {
     return 3;
   }

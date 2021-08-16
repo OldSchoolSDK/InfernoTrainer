@@ -11,6 +11,9 @@ export class BurstOfStrength extends BasePrayer {
   get groups () {
     return [PrayerGroups.STRENGTH]
   }
+  levelRequirement(): number {
+    return 4;
+  }
   
   drainRate(): number {
     return 3;

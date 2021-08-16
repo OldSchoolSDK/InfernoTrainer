@@ -195,6 +195,11 @@ export class InfernoLoadout {
   }
 
   setStats(player: Player) {
+
+    player.stats.prayer = 99;
+    player.currentStats.prayer = 99;
+    player.stats.defence = 99;
+    player.currentStats.defence = 99;
     switch (this.loadoutType) {
       case "zerker": 
         player.stats.prayer = 52;

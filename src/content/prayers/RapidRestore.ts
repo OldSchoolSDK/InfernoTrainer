@@ -13,6 +13,9 @@ export class RapidRestore extends BasePrayer {
   }
 
   
+  levelRequirement(): number {
+    return 100;
+  }
   drainRate(): number {
     return 1;
   }

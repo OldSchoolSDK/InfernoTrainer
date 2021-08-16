@@ -11,6 +11,9 @@ export class MysticLore extends BasePrayer {
   get groups (): PrayerGroups[] {
     return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
   }
+  levelRequirement(): number {
+    return 27;
+  }
 
   drainRate(): number {
     return 6;

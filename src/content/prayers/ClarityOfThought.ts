@@ -12,6 +12,9 @@ export class ClarityOfThought extends BasePrayer {
     return [PrayerGroups.ACCURACY]
   }
 
+  levelRequirement(): number {
+    return 7;
+  }
   drainRate(): number {
     return 3;
   }

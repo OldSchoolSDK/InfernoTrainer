@@ -12,6 +12,9 @@ export class Preserve extends BasePrayer {
     return [PrayerGroups.PRESERVE] // TODO: Incorrect
   }
   
+  levelRequirement(): number {
+    return 100;
+  }
   drainRate(): number {
     return 2;
   }
