@@ -272,7 +272,7 @@ export class InfernoLoadout {
 
     }
 
-    if (this.onTask) {
+    if (this.onTask && this.loadoutType !== 'pure') {
       loadout.equipment.helmet = new SlayerHelmet();
     }
 
