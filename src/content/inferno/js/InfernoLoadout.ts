@@ -145,8 +145,8 @@ export class InfernoLoadout {
         ring: new RingOfSufferingImbued(), 
       },
       inventory: [ 
-        new Blowpipe(), new TwistedBow(), null, new JusticiarChestguard(),
-        new NecklaceOfAnguish(), new SaradominBody(), null, new JusticiarLegguards(),
+        new Blowpipe(), new TwistedBow(), null, null,
+        new NecklaceOfAnguish(), new SaradominBody(), null, null,
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
