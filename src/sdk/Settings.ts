@@ -23,6 +23,9 @@ export class Settings {
   static player_stats: PlayerStats;
   static is_keybinding = false;
 
+  static displayPlayerLoS = false;
+  static displayMobLoS = false;
+
   static persistToStorage () {
     // window.localStorage.setItem('tileSize', Settings.tileSize);
     // window.localStorage.setItem('framesPerTick', Settings.framesPerTick);
@@ -39,6 +42,8 @@ export class Settings {
     window.localStorage.setItem('stats', SerializePlayerStats(Settings.player_stats))
     window.localStorage.setItem('loadout', Settings.loadout)
     window.localStorage.setItem('onTask', String(Settings.onTask))
+    window.localStorage.setItem('displayPlayerLoS', String(Settings.displayPlayerLoS))
+    window.localStorage.setItem('displayMobLoS', String(Settings.displayMobLoS))
   }
 
   static readFromStorage () {
@@ -49,6 +54,8 @@ export class Settings {
     Settings.rotated = window.localStorage.getItem('rotated') || 'south'
     Settings.loadout = window.localStorage.getItem('loadout') || 'max_tbow';
     Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
+    Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
+    Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
 
     Settings.region = 'inferno'
     Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true

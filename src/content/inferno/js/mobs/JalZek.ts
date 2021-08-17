@@ -12,6 +12,7 @@ import { Collision } from '../../../../sdk/Collision'
 import { TzKalZuk } from './TzKalZuk'
 import { EntityName } from "../../../../sdk/EntityName"
 import { find } from 'lodash'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 
 export class JalZek extends Mob {
   isZukWave: boolean;
@@ -21,6 +22,11 @@ export class JalZek extends Mob {
     return EntityName.JAL_ZEK;
   }
 
+
+  shouldChangeAggro(projectile: Projectile) {
+    return this.aggro != projectile.from && this.autoRetaliate
+  }
+  
   get combatLevel () {
     return 490
   }

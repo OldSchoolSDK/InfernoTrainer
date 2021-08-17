@@ -110,6 +110,10 @@ export class JalXil extends Mob {
     return RangerSound
   }
 
+  shouldChangeAggro(projectile: Projectile) {
+    return this.aggro != projectile.from && this.autoRetaliate
+  }
+
   attackStyleForNewAttack () {
     return 'range'
   }

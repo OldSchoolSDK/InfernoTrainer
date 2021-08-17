@@ -520,7 +520,9 @@ export class Player extends Unit {
 
   
   draw (tickPercent: number) {
-    LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
+    if (Settings.displayPlayerLoS){
+      LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
+    }
 
     this.world.region.context.save();
     const perceivedLocation = this.getPerceivedLocation(tickPercent);

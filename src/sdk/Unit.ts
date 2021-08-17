@@ -368,13 +368,17 @@ export class Unit extends GameObject {
           this.currentStats.hitpoint -= projectile.damage
         }
         this.damageTaken();
-        if (projectile.from !== this.aggro && this.autoRetaliate) {
+        if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
         }
       }
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
     this.postAttacksEvent();
+  }
+
+  shouldChangeAggro(projectile: Projectile) {
+    return !this.aggro && this.autoRetaliate
   }
 
   postAttacksEvent() {
