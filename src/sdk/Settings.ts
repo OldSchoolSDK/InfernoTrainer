@@ -16,6 +16,7 @@ export class Settings {
   static spellbook_key: string;
   static equipment_key: string;
   static prayer_key: string;
+  static combat_key: string;
 
 
   static loadout: string;
@@ -39,6 +40,7 @@ export class Settings {
     window.localStorage.setItem('spellbook_key', Settings.spellbook_key)
     window.localStorage.setItem('equipment_key', Settings.equipment_key)
     window.localStorage.setItem('prayer_key', Settings.prayer_key)
+    window.localStorage.setItem('combat_key', Settings.combat_key)
     window.localStorage.setItem('stats', SerializePlayerStats(Settings.player_stats))
     window.localStorage.setItem('loadout', Settings.loadout)
     window.localStorage.setItem('onTask', String(Settings.onTask))
@@ -64,6 +66,7 @@ export class Settings {
     Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || 'F2'
     Settings.equipment_key = window.localStorage.getItem('equipment_key') || 'F1'
     Settings.prayer_key = window.localStorage.getItem('prayer_key') || 'F3'
+    Settings.combat_key = window.localStorage.getItem('combat_key') || 'F5'
     Settings.player_stats = DeserializePlayerStats(window.localStorage.getItem('stats'))
 
   }
