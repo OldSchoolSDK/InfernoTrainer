@@ -89,6 +89,11 @@ export class JalTokJad extends Mob {
   get combatLevelColor () {
     return 'red'
   }
+  
+  shouldChangeAggro(projectile: Projectile) {
+    return this.aggro != projectile.from && this.autoRetaliate
+  }
+  
   setStats () {
 
     this.weapons = {
