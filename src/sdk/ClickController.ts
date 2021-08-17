@@ -1,3 +1,9 @@
+import { InfernoRegion } from '../content/inferno/js/InfernoRegion';
+import { JalAk } from '../content/inferno/js/mobs/JalAk';
+import { JalImKot } from '../content/inferno/js/mobs/JalImKot';
+import { JalMejRah } from '../content/inferno/js/mobs/JalMejRah';
+import { JalXil } from '../content/inferno/js/mobs/JalXil';
+import { JalZek } from '../content/inferno/js/mobs/JalZek';
 import { ClickAnimation } from './ClickAnimation';
 import { Collision } from './Collision';
 import { MenuOption } from './ContextMenu';
@@ -206,6 +212,72 @@ export class ClickController {
         }
       }
     )
+
+    const region = world.region as InfernoRegion;
+    if (region.wave === 0){
+
+      menuOptions.push(
+        {
+          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
+          action: () => {
+            this.yellowClick()
+            const x = world.contextMenu.destinationLocation.x;
+            const y = world.contextMenu.destinationLocation.y;
+            world.region.addMob(new JalMejRah(world, { x, y }, { aggro: world.player }))
+
+          }
+        }
+      )
+
+      menuOptions.push(
+        {
+          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
+          action: () => {
+            this.yellowClick()
+            const x = world.contextMenu.destinationLocation.x;
+            const y = world.contextMenu.destinationLocation.y;
+            world.region.addMob(new JalAk(world, { x, y }, { aggro: world.player }))
+
+          }
+        }
+      )
+      menuOptions.push(
+        {
+          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
+          action: () => {
+            this.yellowClick()
+            const x = world.contextMenu.destinationLocation.x;
+            const y = world.contextMenu.destinationLocation.y;
+            world.region.addMob(new JalImKot(world, { x, y }, { aggro: world.player }))
+
+          }
+        }
+      )
+      menuOptions.push(
+        {
+          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
+          action: () => {
+            this.yellowClick()
+            const x = world.contextMenu.destinationLocation.x;
+            const y = world.contextMenu.destinationLocation.y;
+            world.region.addMob(new JalXil(world, { x, y }, { aggro: world.player }))
+
+          }
+        }
+      )
+      menuOptions.push(
+        {
+          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
+          action: () => {
+            this.yellowClick()
+            const x = world.contextMenu.destinationLocation.x;
+            const y = world.contextMenu.destinationLocation.y;
+            world.region.addMob(new JalZek(world, { x, y }, { aggro: world.player }))
+
+          }
+        }
+      )
+    }
     world.contextMenu.setMenuOptions(menuOptions)
     world.contextMenu.setActive()
   }
