@@ -8,7 +8,7 @@ import { Location } from "../../../../sdk/Location"
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
-import { ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
 
 class HealWeapon extends Weapon {
@@ -45,6 +45,11 @@ export class YtHurKot extends Mob {
     }
 
   }
+
+  shouldChangeAggro(projectile: Projectile) {
+    return this.aggro != projectile.from && this.autoRetaliate
+  }
+  
   get combatLevel () {
     return 141
   }
