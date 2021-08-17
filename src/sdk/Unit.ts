@@ -368,7 +368,7 @@ export class Unit extends GameObject {
           this.currentStats.hitpoint -= projectile.damage
         }
         this.damageTaken();
-        if (this.autoRetaliate && !this.aggro) {
+        if (projectile.from !== this.aggro && this.autoRetaliate) {
           this.setAggro(projectile.from);
         }
       }
