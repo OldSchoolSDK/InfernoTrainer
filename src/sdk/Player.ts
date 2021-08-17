@@ -23,13 +23,13 @@ import { Eating } from './Eating'
 import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
+import { AttackStylesController } from './AttackStylesController'
 
 class PlayerEffects {
   poisoned: number = 0;
   venomed: number = 0;
   stamina: number = 0;
 }
-
 
 export class Player extends Unit {
   weapon?: Weapon;
@@ -69,6 +69,26 @@ export class Player extends Unit {
 
   }
 
+
+  get attackRange () {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackRange
+    }
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackRange
+    }
+    return 1;
+  }
+
+  get attackSpeed () {
+    if (this.manualSpellCastSelection) {
+      return this.manualSpellCastSelection.attackSpeed
+    }
+    if (this.equipment.weapon){
+      return this.equipment.weapon.attackSpeed
+    }
+    return 5;
+  }
 
   openInventorySlots(): number[] {
     const openSpots = [];
@@ -449,25 +469,6 @@ export class Player extends Unit {
     this.moveTorwardsDestination()
   }
 
-  get attackRange () {
-    if (this.manualSpellCastSelection) {
-      return this.manualSpellCastSelection.attackRange
-    }
-    if (this.equipment.weapon){
-      return this.equipment.weapon.attackRange
-    }
-    return 1;
-  }
-
-  get attackSpeed () {
-    if (this.manualSpellCastSelection) {
-      return this.manualSpellCastSelection.attackSpeed
-    }
-    if (this.equipment.weapon){
-      return this.equipment.weapon.attackSpeed
-    }
-    return 4;
-  }
 
 
   damageTaken() {

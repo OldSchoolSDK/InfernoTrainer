@@ -6,6 +6,7 @@ import { Unit } from '../../sdk/Unit'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 
 export class ScytheOfVitur extends MeleeWeapon {
 
@@ -40,6 +41,25 @@ export class ScytheOfVitur extends MeleeWeapon {
   }
 
 
+
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.AGGRESSIVESLASH,
+      AttackStyle.AGGRESSIVECRUSH,
+      AttackStyle.DEFENSIVE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.SCYTHE;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.AGGRESSIVESLASH;
+  }
+
+  
   get isTwoHander(): boolean {
     return true;
   }

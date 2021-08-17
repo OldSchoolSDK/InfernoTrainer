@@ -24,6 +24,7 @@ interface TabPosition{
 
 export class ControlPanelController {
   static controls = Object.freeze({
+    COMBAT: new CombatControls(),
     INVENTORY: new InventoryControls(),
     PRAYER: new PrayerControls(),
     EQUIPMENT: new EquipmentControls(),
@@ -47,7 +48,7 @@ export class ControlPanelController {
 
 
     this.controls = [
-      new CombatControls(),
+      ControlPanelController.controls.COMBAT,
       ControlPanelController.controls.STATS,
       new QuestsControls(),
       ControlPanelController.controls.INVENTORY,
@@ -217,7 +218,7 @@ export class ControlPanelController {
         world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
       }
 
-      if ([1,3,4,5,6, 11].indexOf(index) === -1){
+      if ([0, 1,3,4,5,6, 11].indexOf(index) === -1){
         world.viewport.context.fillStyle = '#00000099'
         world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33, 36)
   

@@ -6,8 +6,7 @@ import { ItemName } from "../../sdk/ItemName";
 import { World } from '../../sdk/World';
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
-import { SetEffect, SetEffectTypes } from '../../sdk/SetEffect';
-import { find } from 'lodash';
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -40,6 +39,41 @@ export class Blowpipe extends RangedWeapon {
     }
   }
 
+
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.RAPID,
+      AttackStyle.LONGRANGE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.THROWN;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.RAPID;
+  }
+
+  get attackRange () {
+    if (this.attackStyle() === AttackStyle.LONGRANGE){
+      return 7;
+    }
+    return 5
+  }
+
+  get attackSpeed () {
+    if (this.attackStyle() === AttackStyle.LONGRANGE){
+      return 3;
+    }
+    return 2
+  }
+  
+  
+  get weight(): number {
+    return 0.5
+  }
 
   specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     
@@ -75,15 +109,6 @@ export class Blowpipe extends RangedWeapon {
   hasSpecialAttack(): boolean {
     return true;
   }
-
-  get attackRange () {
-    return 5
-  }
-
-  get attackSpeed () {
-    return 2
-  }
-
   get inventoryImage () {
     return BPInventImage
   }

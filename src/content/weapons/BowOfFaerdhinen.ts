@@ -5,6 +5,7 @@ import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
 import { Unit } from '../../sdk/Unit'
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 
 export class BowOfFaerdhinen extends RangedWeapon {
   constructor() {
@@ -38,6 +39,33 @@ export class BowOfFaerdhinen extends RangedWeapon {
   }
 
 
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.RAPID,
+      AttackStyle.LONGRANGE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.BOW;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.RAPID;
+  }
+
+  get attackSpeed () {
+    if (this.attackStyle() === AttackStyle.LONGRANGE){
+      return 5;
+    }
+    return 4
+  }
+  
+  get weight(): number {
+    return 1.5
+  }
+
   get itemName(): ItemName {
     return ItemName.BOWFA
   }
@@ -48,10 +76,6 @@ export class BowOfFaerdhinen extends RangedWeapon {
 
   get attackRange () {
     return 10
-  }
-
-  get attackSpeed () {
-    return 5
   }
 
   get inventoryImage () {

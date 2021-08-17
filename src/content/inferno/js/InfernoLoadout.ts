@@ -26,10 +26,16 @@ import { GuthixRobetop } from '../../equipment/GuthixRobeTop'
 import { RangerBoots } from '../../equipment/RangerBoots'
 import { RuneKiteshield } from '../../equipment/RuneKiteshield'
 import { DagonhaiRobeTop } from '../../equipment/DagonhaiRobeTop'
+import { AncientStaff } from '../../weapons/AncientStaff'
+import { AhrimsRobeskirt } from '../../equipment/AhrimsRobeskirt'
+import { AhrimsRobetop } from '../../equipment/AhrimsRobetop'
 import { SaradominBody } from '../../equipment/SaradominBody'
 import { SaradominChaps } from '../../equipment/SaradominChaps'
 import { SaradominCoif } from '../../equipment/SaradominCoif'
+import { DiamondBoltsE } from '../../equipment/DiamontBoltsE'
+import { RubyBoltsE } from '../../equipment/RubyBoltsE'
 import { SaradominDhideBoots } from '../../equipment/SaradominDhideBoots'
+import { RuneCrossbow } from '../../equipment/RuneCrossbow'
 import { MagesBook } from '../../equipment/MagesBook'
 import { BlackDhideChaps } from '../../equipment/BlackDhideChaps'
 import { BlackDhideVambraces } from '../../equipment/BlackDhideVambraces'
@@ -124,9 +130,32 @@ export class InfernoLoadout {
 
   // }
 
-  // loadoutRcb() {
-
-  // }
+  loadoutRcb() {
+    return { 
+      equipment: { 
+        weapon: new AncientStaff(),
+        offhand: new CrystalShield(),
+        helmet: new SaradominCoif(),
+        necklace: new OccultNecklace(),
+        cape: new AvasAssembler(),
+        ammo: new RubyBoltsE(),
+        chest: new AhrimsRobetop(),
+        legs: new AhrimsRobeskirt(),
+        feet: new PegasianBoots(),
+        gloves: new BarrowsGloves(),
+        ring: new RingOfSufferingImbued(), 
+      },
+      inventory: [ 
+        new Blowpipe(), new RuneCrossbow(), new DiamondBoltsE(), new JusticiarFaceguard(),
+        new NecklaceOfAnguish(), new SaradominBody(), new SaradominChaps(), new JusticiarChestguard(),
+        null, new SaradominBrew(), new SuperRestore(), new JusticiarLegguards(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
+        new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+      ]
+    };
+  }
 
   loadoutZerker() {
 
@@ -227,12 +256,15 @@ export class InfernoLoadout {
       case "max_fbow":
         loadout = this.loadoutMaxFbow();
         break;
-        case "zerker": 
-          loadout = this.loadoutZerker();
-          break;
-        case "pure": 
-          loadout = this.loadoutPure();
-          break;
+      case "zerker": 
+        loadout = this.loadoutZerker();
+        break;
+      case "pure": 
+        loadout = this.loadoutPure();
+        break;
+      case "rcb": 
+        loadout = this.loadoutRcb();
+        break;
     }
 
 
@@ -245,7 +277,7 @@ export class InfernoLoadout {
 
       // Swap out staff with zuk/jad dps weapon
       const staff = loadout.equipment.weapon;
-      const bow = this.findAnyItemWithName(loadout.inventory, [ItemName.TWISTED_BOW, ItemName.BOWFA])
+      const bow = this.findAnyItemWithName(loadout.inventory, [ItemName.TWISTED_BOW, ItemName.BOWFA, ItemName.RUNE_CROSSBOW])
       loadout.equipment.weapon = loadout.inventory[bow] as Weapon;
       loadout.inventory[bow] = staff;
       if (loadout.equipment.offhand && loadout.equipment.weapon.isTwoHander) {

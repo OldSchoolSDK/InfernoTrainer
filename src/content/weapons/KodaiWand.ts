@@ -3,6 +3,7 @@
 import BPInventImage from '../../assets/images/equipment/Kodai_wand.png'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { ItemName } from "../../sdk/ItemName";
+import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
 
 export class KodaiWand extends MeleeWeapon {
 
@@ -35,6 +36,27 @@ export class KodaiWand extends MeleeWeapon {
         slayer: 0
       }
     }
+  }
+  
+
+  attackStyles() {
+    return [
+      AttackStyle.ACCURATE,
+      AttackStyle.AGGRESSIVECRUSH,
+      AttackStyle.DEFENSIVE,
+    ]
+  }
+
+  attackStyleCategory(): AttackStyleTypes {
+    return AttackStyleTypes.STAFF;
+  }
+
+  defaultStyle(): AttackStyle {
+    return AttackStyle.AGGRESSIVECRUSH;
+  }
+
+  get weight(): number {
+    return 0.198
   }
   
   get itemName(): ItemName {
