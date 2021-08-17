@@ -95,9 +95,9 @@ export class SettingsControls extends BaseControls {
     } else if (x > 90 && x < 105 && y > 51 && y < 67) {
       Settings.inputDelay -= 20
     } else if (x > 20 && x < 60 && y > 100 && y < 140) {
-      // Settings.region = 'inferno'
+      Settings.displayPlayerLoS = !Settings.displayPlayerLoS;
     } else if (x > 80 && x < 120 && y > 100 && y < 140) {
-      // Settings.region = 'verzikp3'
+      Settings.displayMobLoS = !Settings.displayMobLoS;
     } else if (x > 140 && x < 180 && y > 100 && y < 140) {
       // Settings.region = 'xarpusp2'
     } else if (x > 20 && x < 60 && y > 170 && y < 210) {
@@ -131,11 +131,11 @@ export class SettingsControls extends BaseControls {
     world.viewport.context.drawImage(this.greenDownImage, x + 90, y + 51)
     world.viewport.context.fillText('Lag', x + 97, y + 81)
 
-    // world.viewport.context.drawImage(Settings.region === 'inferno' ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
-    // world.viewport.context.drawImage(this.infernoImage, x + 22, y + 102, 36, 36)
+    world.viewport.context.drawImage(Settings.displayPlayerLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 20, y + 100)
+    world.viewport.context.fillText('P LoS', x + 40, y + 125)
 
-    // world.viewport.context.drawImage(Settings.region === 'verzikp3' ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
-    // world.viewport.context.drawImage(this.verzikImage, x + 82, y + 102, 36, 36)
+    world.viewport.context.drawImage(Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
+    world.viewport.context.fillText('M LoS', x + 100, y + 125)
 
     // world.viewport.context.drawImage(Settings.region === 'xarpusp2' ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
     // world.viewport.context.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
