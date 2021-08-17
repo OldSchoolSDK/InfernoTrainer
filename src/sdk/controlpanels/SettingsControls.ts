@@ -19,6 +19,7 @@ import InventoryTab from '../../assets/images/controlTabs/inventory.png'
 import SpellbookTab from '../../assets/images/controlTabs/spellbook.png'
 import PrayerTab from '../../assets/images/controlTabs/prayer.png'
 import EquipmentTab from '../../assets/images/controlTabs/equipment.png'
+import CombatTab from '../../assets/images/controlTabs/style.png'
 
 
 
@@ -50,6 +51,7 @@ export class SettingsControls extends BaseControls {
   spellbookImage: HTMLImageElement = ImageLoader.createImage(SpellbookTab)
   prayerImage: HTMLImageElement = ImageLoader.createImage(PrayerTab)
   equipmentImage: HTMLImageElement = ImageLoader.createImage(EquipmentTab)
+  combatImage: HTMLImageElement = ImageLoader.createImage(CombatTab)
   bindingKey?: string;
 
   constructor () {
@@ -71,6 +73,8 @@ export class SettingsControls extends BaseControls {
           Settings.prayer_key = key
         }else if (this.bindingKey === 'equipment'){
           Settings.equipment_key = key
+        }else if (this.bindingKey === 'combat'){
+          Settings.combat_key = key
         }
         this.bindingKey = null;
         setTimeout(() => {
@@ -112,6 +116,9 @@ export class SettingsControls extends BaseControls {
     } else if (x > 20 && x < 60 && y > 220 && y < 260) {
       Settings.is_keybinding = true;
       this.bindingKey = 'equipment'
+    } else if (x > 80 && x < 120 && y > 220 && y < 260) {
+      Settings.is_keybinding = true;
+      this.bindingKey = 'combat'
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay)
@@ -157,11 +164,15 @@ export class SettingsControls extends BaseControls {
     world.viewport.context.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22, y + 220)
     world.viewport.context.drawImage(this.equipmentImage, x + 25, y + 222)
     world.viewport.context.fillText(Settings.equipment_key, x + 25 + 30, y + 222 + 30)
+
+    world.viewport.context.drawImage(this.bindingKey === 'combat' ? this.activeButtonImage : this.inactiveButtonImage, x + 82, y + 220)
+    world.viewport.context.drawImage(this.combatImage, x + 85, y + 222)
+    world.viewport.context.fillText(Settings.combat_key, x + 85 + 30, y + 222 + 30)
   
     if (this.bindingKey === null){
-      world.viewport.context.fillText('Key Bindings', x + 125, y + 212 + 30)
+      world.viewport.context.fillText('Key Bindings', x + 100, y + 133 + 30)
     }else{
-      world.viewport.context.fillText('Press Key To Bind', x + 135, y + 212 + 30)
+      world.viewport.context.fillText('Press Key To Bind', x + 100, y + 133 + 30)
     }
   }
 }

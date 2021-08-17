@@ -13,6 +13,7 @@ import { AttackStyle, AttackStylesController } from '../AttackStylesController'
 import { Weapon } from '../gear/Weapon'
 import { Location } from '../../sdk/Location'
 import { startCase, toLower } from 'lodash'
+import { Settings } from '../Settings'
 
 export class CombatControls extends BaseControls {
   selectedCombatStyleButtonImage: HTMLImageElement = ImageLoader.createImage(SelectedCombatStyleButtonImage)
@@ -28,6 +29,10 @@ export class CombatControls extends BaseControls {
     return CombatTab
   }
 
+
+  get keyBinding () {
+    return Settings.combat_key
+  }
 
 
   panelClickDown (world: World, x: number, y: number) {
