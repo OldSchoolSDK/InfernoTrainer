@@ -8,6 +8,7 @@ import { InfernoWaves } from './InfernoWaves'
 import { InfernoLoadout } from './InfernoLoadout';
 import InfernoMapImage from '../assets/images/map.png'
 
+import { Location } from '../../../sdk/Location'
 import { JalZek } from './mobs/JalZek'
 import { JalXil } from './mobs/JalXil'
 import { JalImKot } from './mobs/JalImKot'
@@ -185,6 +186,14 @@ export class InfernoRegion extends Region {
         console.log('failed to import wave from inferno stats');
         
       }
+  }
+
+  if (Settings.tile_markers) {
+    Settings.tile_markers.map((location: Location) => {
+      return new TileMarker(world, location, "#FF0000")
+    }).forEach((tileMarker: TileMarker) => {
+      world.region.addEntity(tileMarker);
+    })
   }
 
     // Add mobs

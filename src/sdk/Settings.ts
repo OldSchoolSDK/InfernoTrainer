@@ -1,7 +1,7 @@
 'use strict'
 
 import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./PlayerStats";
-
+import { Location } from './Location';
 export class Settings {
   static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
   static fps = 50;
@@ -17,6 +17,7 @@ export class Settings {
   static equipment_key: string;
   static prayer_key: string;
   static combat_key: string;
+  static tile_markers: Location[];
 
 
   static loadout: string;
@@ -46,6 +47,7 @@ export class Settings {
     window.localStorage.setItem('onTask', String(Settings.onTask))
     window.localStorage.setItem('displayPlayerLoS', String(Settings.displayPlayerLoS))
     window.localStorage.setItem('displayMobLoS', String(Settings.displayMobLoS))
+    window.localStorage.setItem('tile_markers', JSON.stringify(Settings.tile_markers))
   }
 
   static readFromStorage () {
@@ -68,6 +70,6 @@ export class Settings {
     Settings.prayer_key = window.localStorage.getItem('prayer_key') || 'F3'
     Settings.combat_key = window.localStorage.getItem('combat_key') || 'F5'
     Settings.player_stats = DeserializePlayerStats(window.localStorage.getItem('stats'))
-
+    Settings.tile_markers = JSON.parse(window.localStorage.getItem('tile_markers'))
   }
 }

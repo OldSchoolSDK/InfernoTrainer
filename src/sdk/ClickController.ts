@@ -1,17 +1,23 @@
+import { filter } from 'lodash';
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion';
 import { JalAk } from '../content/inferno/js/mobs/JalAk';
 import { JalImKot } from '../content/inferno/js/mobs/JalImKot';
 import { JalMejRah } from '../content/inferno/js/mobs/JalMejRah';
 import { JalXil } from '../content/inferno/js/mobs/JalXil';
 import { JalZek } from '../content/inferno/js/mobs/JalZek';
+import { TileMarker } from '../content/TileMarker';
 import { ClickAnimation } from './ClickAnimation';
 import { Collision } from './Collision';
 import { MenuOption } from './ContextMenu';
+import { Entity } from './Entity';
+import { EntityName } from './EntityName';
 import { Item } from './Item';
+import { Pathing } from './Pathing';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
 import { Viewport } from './Viewport';
 import { World } from './World';
+import { Location } from './Location';
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -210,7 +216,34 @@ export class ClickController {
           this.sendToServer(() => this.playerWalkClick(x * Settings.tileSize, y * Settings.tileSize))
           
         }
-      }
+      },
+      {
+        text: [{ text: 'Mark / Unmark Tile', fillStyle: 'white' }],
+        action: () => {
+          this.yellowClick()
+          const x = world.contextMenu.destinationLocation.x;
+          const y = world.contextMenu.destinationLocation.y;
+          
+          let removed = false;
+          const entitiesAtPoint = Pathing.entitiesAtPoint(world, x, y, 1);
+          entitiesAtPoint.forEach((entity: Entity) => {
+            if (entity.entityName() === EntityName.TILE_MARKER) {
+              world.region.removeEntity(entity);
+              removed = true;
+            }
+          });
+          
+
+          if (!removed) {
+            world.region.addEntity(new TileMarker(world, { x, y }, "#FF0000"))
+          }
+
+          Settings.tile_markers = filter(world.region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER).map((entity: Entity) => entity.location)
+
+          Settings.persistToStorage();
+          
+        }
+      },
     )
 
     const region = world.region as InfernoRegion;

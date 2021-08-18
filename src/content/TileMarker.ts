@@ -6,6 +6,7 @@ import { Settings } from '../sdk/Settings';
 import { Location } from "../sdk/Location";
 import { World } from '../sdk/World';
 import { LineOfSight, LineOfSightMask } from '../sdk/LineOfSight';
+import { EntityName } from '../sdk/EntityName';
 
 export class TileMarker extends Entity {
   color: string = '#00FF00'
@@ -15,6 +16,11 @@ export class TileMarker extends Entity {
     this.color = color;
   }
 
+  entityName(): EntityName {
+    return EntityName.TILE_MARKER;
+  }
+
+  
   get collisionType() {
     return CollisionType.NONE;
   }

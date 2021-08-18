@@ -1,6 +1,7 @@
 'use strict';
 
 export enum EntityName {
+  TILE_MARKER = 'Tile Marker',
   INFERNO_SHIELD = 'Inferno Shield',
   TZ_KAL_ZUK = 'TzKal-Zuk',
   JAL_XIL = 'Jal-Xil',
