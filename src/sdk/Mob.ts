@@ -11,7 +11,6 @@ import { World } from './World'
 import { Location } from "./Location"
 import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
-import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -315,8 +314,7 @@ export class Mob extends Unit {
 
   
   draw (tickPercent: number) {
-    const infernoRegion = this.world.region as InfernoRegion;
-    if (Settings.displayMobLoS && infernoRegion.wave !== 69){
+    if (Settings.displayMobLoS){
       LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
     }
 

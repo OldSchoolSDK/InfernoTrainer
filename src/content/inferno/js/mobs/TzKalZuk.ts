@@ -217,7 +217,7 @@ export class TzKalZuk extends Mob {
   }
 
   get attackRange () {
-    return 1000
+    return 0
   }
 
   get size () {
