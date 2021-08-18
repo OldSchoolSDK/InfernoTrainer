@@ -139,7 +139,12 @@ export class JalMejJak extends Mob {
   // shouldShowAttackAnimation () {
   //   return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null
   // }
-
+  
+  shouldChangeAggro(projectile: Projectile) {
+    return this.aggro != projectile.from && this.autoRetaliate
+  }
+  
+  
   attackStyleForNewAttack () {
     
     return this.aggro === this.world.player ? 'aoe' : 'heal';
