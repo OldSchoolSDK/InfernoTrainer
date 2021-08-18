@@ -118,7 +118,7 @@ export class JalMejJak extends Mob {
   }
 
   get attackRange () {
-    return 10
+    return 0
   }
 
   get size () {
