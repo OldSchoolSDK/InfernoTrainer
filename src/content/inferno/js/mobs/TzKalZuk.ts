@@ -59,6 +59,26 @@ export class TzKalZuk extends Mob {
   }
   
 
+  contextActions (world: World, x: number, y: number) {
+    return super.contextActions(world, x, y).concat([
+      {
+        text: [{ text: 'Spawn Healers ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+        action: () => {
+          this.world.viewport.clickController.redClick()
+          this.setTimer = 400;
+
+          this.currentStats.hitpoint = 239;
+          this.damageTaken();
+          this.timerPaused = false;
+          this.hasPaused = true;
+
+          
+        }
+      }
+    ]);
+  }
+
+
   mobName(): EntityName {
     return EntityName.TZ_KAL_ZUK;
   }
