@@ -11,6 +11,7 @@ export class Settings {
   static rotated: string;
   static region: string;
   static displayXpDrops: boolean
+  static lockPOV: boolean
 
   static inventory_key: string;
   static spellbook_key: string;
@@ -48,6 +49,7 @@ export class Settings {
     window.localStorage.setItem('displayPlayerLoS', String(Settings.displayPlayerLoS))
     window.localStorage.setItem('displayMobLoS', String(Settings.displayMobLoS))
     window.localStorage.setItem('tile_markers', JSON.stringify(Settings.tile_markers))
+    window.localStorage.setItem('lockPOV', JSON.stringify(Settings.lockPOV))
   }
 
   static readFromStorage () {
@@ -60,6 +62,7 @@ export class Settings {
     Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
     Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
     Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
+    Settings.lockPOV = window.localStorage.getItem('lockPOV') !== 'false' || false;
 
     Settings.region = 'inferno'
     Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true
