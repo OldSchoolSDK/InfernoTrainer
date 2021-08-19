@@ -1,5 +1,7 @@
 
 export enum ItemName {
+  BLOOD_BARRAGE = 'Blood Barrage',
+  ICE_BARRAGE = 'Ice Barrage',
   AHRIMS_ROBETOP = 'Ahrim\'s robetop',
   AHRIMS_ROBESKIRT = 'Ahrim\'s robeskirt',
   ANCESTRAL_ROBEBOTTOM = 'Ancestral Robe bottom',

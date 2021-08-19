@@ -7,11 +7,7 @@ import { ProjectileOptions } from './Projectile'
 import { AttackBonuses } from '../gear/Weapon';
 import { XpDrop } from '../XpDrop'
 
-export class BarrageMagicWeapon extends MagicWeapon {
-  get name () {
-    return 'Ice Barrage'
-  }
-
+export class BarrageSpell extends MagicWeapon {
   get aoe () {
     return [
       { x: 0, y: 0 }, // always freeze middles first
@@ -63,9 +59,6 @@ export class BarrageMagicWeapon extends MagicWeapon {
   
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     options.forceSWTile = true;
-    super.attack(world, from, to, bonuses, options)    
-    if (this.damage > 0) {
-      to.frozen = 32
-    }
+    super.attack(world, from, to, bonuses, options)
   }
 }

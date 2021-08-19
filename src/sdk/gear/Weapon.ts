@@ -37,7 +37,9 @@ export interface AttackBonuses {
 
 export class Weapon extends Equipment{
   damage: number;
+  lastHitHit: boolean = false;
   selected: boolean = false;
+  totalDamage: number = 0;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
 
@@ -158,6 +160,8 @@ export class Weapon extends Equipment{
     // sanitize damage output
     this.damage = Math.floor(Math.max(Math.min(to.currentStats.hitpoint, this.damage, 100), 0));
 
+    this.totalDamage += this.damage;
+
     if (to.equipment.ring && to.equipment.ring.itemName === ItemName.RING_OF_SUFFERING_I && this.damage > 0){
       from.addProjectile(new Projectile(this, Math.floor(this.damage * 0.1) + 1, to, from, 'recoil', {reduceDelay: 15, hidden: true}))
     }
@@ -167,10 +171,12 @@ export class Weapon extends Equipment{
   }
   
   _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
+    this.lastHitHit = false;
     return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : this._calculateHitDamage(from, to, bonuses);
   }
 
   _calculateHitDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
+    this.lastHitHit = true;
     return Math.floor(Math.random() * (this._maxHit(from, to, bonuses) + 1))
   }
 
