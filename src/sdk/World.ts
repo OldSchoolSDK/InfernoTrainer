@@ -218,7 +218,7 @@ export class World {
       }
       if (finalScore !== -1) {
 
-        const finalScoreText = `Final Score: ${region.score}`;
+        const finalScoreText = `Final Score: ${finalScore}`;
         this.viewport.context.font = '24px OSRS'
         this.viewport.context.textAlign = 'left'
         this.viewport.context.fillStyle = '#000'

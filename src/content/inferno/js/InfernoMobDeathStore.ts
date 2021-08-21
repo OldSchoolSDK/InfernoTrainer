@@ -14,7 +14,7 @@ export class InfernoMobDeathStore {
       region.score += mob.stats.hitpoint;
       DelayedAction.registerDelayedAction(new DelayedAction(() => {
         InfernoWaves.spawnEnduranceMode(world, 1, true).forEach((mob: Mob) => world.region.addMob(mob))
-      }, 6));
+      }, 8));
       return;
     }
     if (!mob.hasResurrected) {

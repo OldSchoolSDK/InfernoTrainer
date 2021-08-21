@@ -56,7 +56,7 @@ export class InfernoWaves {
       if (check) {
         do{
           randomSpawn = randomSpawns[Math.floor(Math.random() * randomSpawns.length)];
-        } while(Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
+        } while(Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4) || Collision.collidesWithAnyEntities(world, randomSpawn.x, randomSpawn.y, 4));
       }else{
         randomSpawn = randomSpawns[j++]
 
