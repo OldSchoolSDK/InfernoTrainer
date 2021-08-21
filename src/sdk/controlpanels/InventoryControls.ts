@@ -148,7 +148,7 @@ export class InventoryControls extends BaseControls {
       if (inventoryItem !== null) {
         
         world.viewport.context.fillStyle = "#ffffff22"
-        world.viewport.context.fillRect(itemX, itemY, 32, 32)
+        // world.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
         const xOff = Math.floor((32 - sprite.width) / 2);
