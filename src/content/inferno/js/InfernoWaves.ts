@@ -57,7 +57,7 @@ export class InfernoWaves {
       if (check) {
         do{
           randomSpawn = randomSpawns[j++]
-        } while(j < 9 && Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
+        } while(j < randomSpawns.length && Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
       }else{
         randomSpawn = randomSpawns[j++]
       }

@@ -1,5 +1,5 @@
 'use strict'
-import { map } from 'lodash'
+import { every, map } from 'lodash'
 
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
@@ -145,11 +145,49 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      const both = Pathing.canTileBePathedTo(this.world, dx, dy, this.size, this.consumesSpace as Mob)
-      const xSpace = Pathing.canTileBePathedTo(this.world, dx, this.location.y, this.size, this.consumesSpace as Mob)
-      const ySpace = Pathing.canTileBePathedTo(this.world, this.location.x, dy, this.size, this.consumesSpace as Mob)
-      const cornerFilter = this.size > 1 ? (xSpace || ySpace) : (xSpace && ySpace)
-      if (both && cornerFilter) {
+      const xOff = dx - this.location.x;
+      const yOff = this.location.y - dy;
+
+      const xTiles = [];
+      if (xOff === -1) {
+        for (let i=0;i<this.size;i++){
+          xTiles.push({
+            x: this.location.x - 1,
+            y: this.location.y - i - yOff
+          })  
+        }
+
+      }else if (xOff === 1){
+        for (let i=0;i<this.size;i++){
+          xTiles.push({
+            x: this.location.x + this.size,
+            y: this.location.y - i - yOff
+          })  
+        }
+      }
+      
+      const yTiles = [];
+      if (yOff === -1) {
+        for (let i=0;i<this.size;i++){
+          yTiles.push({
+            x: this.location.x + i + xOff,
+            y: this.location.y + 1
+          })  
+        }
+      }else if (yOff === 1){
+        for (let i=0;i<this.size;i++){
+          yTiles.push({
+            x: this.location.x + i + xOff,
+            y: this.location.y - this.size
+          })  
+        }
+      }
+
+      const xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      const ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      const both = xSpace && ySpace;
+
+      if (both) {
         this.location.x = dx
         this.location.y = dy
       } else if (xSpace) {
@@ -375,8 +413,9 @@ export class Mob extends Unit {
         )
       }
     }
-    this.world.region.context.restore()
 
+
+    this.world.region.context.restore()
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
