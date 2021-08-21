@@ -185,15 +185,9 @@ export class World {
     if (this.getReadyTimer > 0) {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
-      this.viewport.context.fillStyle = '#000'
-      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2 - 2, this.viewport.canvas.height / 2 - 50)
-      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2 + 2, this.viewport.canvas.height / 2 - 50)
-      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 48)
-      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 52)
+      this.drawVPText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
 
-      this.viewport.context.fillStyle = '#FFFFFF'
-      this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
-      this.viewport.context.textAlign = 'left'
+
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
@@ -201,38 +195,51 @@ export class World {
     if (region.wave > 69) {
 
 
-      const scoreText = `Score: ${region.score}`;
       this.viewport.context.font = '24px OSRS'
       this.viewport.context.textAlign = 'left'
-      this.viewport.context.fillStyle = '#000'
-      this.viewport.context.fillText(scoreText, 6 - 2, this.viewport.canvas.height - 24)
-      this.viewport.context.fillText(scoreText, 6 + 2, this.viewport.canvas.height - 24)
-      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 22)
-      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 26)
 
-      this.viewport.context.fillStyle = '#FFFFFF'
-      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 24)
+      this.drawVPText(`Mode: ${this.modeName(region.wave)}`, 6, this.viewport.canvas.height - 50)
+      this.drawVPText(`Score: ${region.score}`, 6, this.viewport.canvas.height - 24)
+
 
       if (finalScore === -1 && document.body.style.background === 'red') {
         finalScore = region.score;
       }
       if (finalScore !== -1) {
 
-        const finalScoreText = `Final Score: ${finalScore}`;
         this.viewport.context.font = '24px OSRS'
         this.viewport.context.textAlign = 'left'
-        this.viewport.context.fillStyle = '#000'
-        this.viewport.context.fillText(finalScoreText, 6 - 2, this.viewport.canvas.height - 2)
-        this.viewport.context.fillText(finalScoreText, 6 + 2, this.viewport.canvas.height - 2)
-        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 0)
-        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 4)
-  
-        this.viewport.context.fillStyle = '#FFFFFF'
-        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 2)
+        this.drawVPText(`Final Score: ${finalScore}`, 6, this.viewport.canvas.height)
       }
         
     }
 
+  }
+
+
+  modeName(wave: number): string {
+    switch (wave){
+      case 70:
+        return 'Easy';
+      case 71:
+        return 'Hard';
+      case 72:
+        return 'Hell';
+      case 73:
+        return 'WTF';
+    }
+    return String(wave);
+  }
+
+  drawVPText(text: string, x: number, y: number) {
+
+    this.viewport.context.fillStyle = '#000'
+    this.viewport.context.fillText(text, x - 2, y - 2)
+    this.viewport.context.fillText(text, x + 2, y - 2)
+    this.viewport.context.fillText(text, x, y)
+    this.viewport.context.fillText(text, x, y - 4)
+    this.viewport.context.fillStyle = '#FFFFFF'
+    this.viewport.context.fillText(text, x, y - 2)
   }
 
   setPlayer (player: Player) {
