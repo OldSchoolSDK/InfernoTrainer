@@ -191,7 +191,6 @@ export class World {
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
-    let finalScore = -1;
     if (region.wave > 69) {
 
 
@@ -202,14 +201,13 @@ export class World {
       this.drawVPText(`Score: ${region.score}`, 6, this.viewport.canvas.height - 24)
 
 
-      if (finalScore === -1 && document.body.style.background === 'red') {
-        finalScore = region.score;
+      if (region.finalScore === -1 && document.body.style.background === 'red') {
+        region.finalScore = region.score;
       }
-      if (finalScore !== -1) {
-
+      if (region.finalScore !== -1) {
         this.viewport.context.font = '24px OSRS'
         this.viewport.context.textAlign = 'left'
-        this.drawVPText(`Final Score: ${finalScore}`, 6, this.viewport.canvas.height)
+        this.drawVPText(`Final Score: ${region.finalScore}`, 6, this.viewport.canvas.height)
       }
         
     }

@@ -33,6 +33,7 @@ import { EntityName } from '../../../sdk/EntityName'
 export class InfernoRegion extends Region {
 
   score: number = 0;
+  finalScore: number = -1;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
