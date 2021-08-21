@@ -200,6 +200,17 @@ export class InfernoRegion extends Region {
     if (this.wave === 0) {
       world.getReadyTimer = 0;
       player.location = { x: 28, y: 17}
+
+      
+      InfernoWaves.getRandomSpawns().forEach((spawn: Location) => {
+        [2,3,4].forEach((size: number) => {
+          const tileMarker = new TileMarker(world, spawn, "#FF730073")
+          tileMarker.saveable = false;
+          tileMarker.setTileMarkerSize(size)
+          world.region.addEntity(tileMarker);
+        })
+      });
+      
       importSpawn();
     }else if (this.wave < 67) {
       player.location = { x: 28, y: 17}

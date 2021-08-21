@@ -11,6 +11,8 @@ import { EntityName } from '../sdk/EntityName';
 export class TileMarker extends Entity {
   color: string = '#00FF00'
 
+  _size: number = 1;
+  saveable: boolean = true;; 
   constructor (world: World, location: Location, color: string) {
     super(world, location);
     this.color = color;
@@ -29,9 +31,14 @@ export class TileMarker extends Entity {
     return LineOfSightMask.NONE;
   }
 
-  get size() {
-    return 1;
+  setTileMarkerSize(size: number) {
+    this._size = size;
   }
+
+  get size() {
+    return this._size;
+  }
+
   draw () {
     this.world.region.context.lineWidth = 2
 

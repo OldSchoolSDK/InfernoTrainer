@@ -226,8 +226,8 @@ export class ClickController {
           
           let removed = false;
           const entitiesAtPoint = Pathing.entitiesAtPoint(world, x, y, 1);
-          entitiesAtPoint.forEach((entity: Entity) => {
-            if (entity.entityName() === EntityName.TILE_MARKER) {
+          entitiesAtPoint.forEach((entity: TileMarker) => {
+            if (entity.entityName() === EntityName.TILE_MARKER && entity.saveable) {
               world.region.removeEntity(entity);
               removed = true;
             }
@@ -238,7 +238,7 @@ export class ClickController {
             world.region.addEntity(new TileMarker(world, { x, y }, "#FF0000"))
           }
 
-          Settings.tile_markers = filter(world.region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER).map((entity: Entity) => entity.location)
+          Settings.tile_markers = filter(filter(world.region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER), (tileMarker: TileMarker) => tileMarker.saveable).map((entity: Entity) => entity.location)
 
           Settings.persistToStorage();
           

@@ -61,8 +61,23 @@ export class TzKalZuk extends Mob {
 
   contextActions (world: World, x: number, y: number) {
     return super.contextActions(world, x, y).concat([
+
       {
-        text: [{ text: 'Spawn Healers ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: ` Jad`, fillStyle: 'yellow' }],
+        action: () => {
+          this.world.viewport.clickController.redClick()
+          this.setTimer = 400;
+
+          this.currentStats.hitpoint = 479;
+          this.timerPaused = true;
+          this.hasPaused = false;
+          this.damageTaken();
+
+          
+        }
+      },
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' },  { text: ` Healers`, fillStyle: 'yellow' }],
         action: () => {
           this.world.viewport.clickController.redClick()
           this.setTimer = 400;
