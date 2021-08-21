@@ -204,9 +204,7 @@ export class InfernoRegion extends Region {
       
       InfernoWaves.getRandomSpawns().forEach((spawn: Location) => {
         [2,3,4].forEach((size: number) => {
-          const tileMarker = new TileMarker(world, spawn, "#FF730073")
-          tileMarker.saveable = false;
-          tileMarker.setTileMarkerSize(size)
+          const tileMarker = new TileMarker(world, spawn, "#FF730073", size, false)
           world.region.addEntity(tileMarker);
         })
       });
@@ -277,23 +275,23 @@ export class InfernoRegion extends Region {
       world.region.addEntity(new Wall(world, {x: 29, y: 1}));
       world.region.addEntity(new Wall(world, {x: 29, y: 0}));
 
-      world.region.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 14, y: 14}, '#00FF00', 1, false));
 
-      world.region.addEntity(new TileMarker(world, {x: 16, y: 14}, '#FF0000'));
-      world.region.addEntity(new TileMarker(world, {x: 17, y: 14}, '#FF0000'));
-      world.region.addEntity(new TileMarker(world, {x: 18, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 16, y: 14}, '#FF0000', 1, false));
+      world.region.addEntity(new TileMarker(world, {x: 17, y: 14}, '#FF0000', 1, false));
+      world.region.addEntity(new TileMarker(world, {x: 18, y: 14}, '#FF0000', 1, false));
 
-      world.region.addEntity(new TileMarker(world, {x: 20, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 20, y: 14}, '#00FF00', 1, false));
       
-      world.region.addEntity(new TileMarker(world, {x: 30, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 30, y: 14}, '#00FF00', 1, false));
 
 
-      world.region.addEntity(new TileMarker(world, {x: 32, y: 14}, '#FF0000'));
-      world.region.addEntity(new TileMarker(world, {x: 33, y: 14}, '#FF0000'));
-      world.region.addEntity(new TileMarker(world, {x: 34, y: 14}, '#FF0000'));
+      world.region.addEntity(new TileMarker(world, {x: 32, y: 14}, '#FF0000', 1, false));
+      world.region.addEntity(new TileMarker(world, {x: 33, y: 14}, '#FF0000', 1, false));
+      world.region.addEntity(new TileMarker(world, {x: 34, y: 14}, '#FF0000', 1, false));
 
 
-      world.region.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00'));
+      world.region.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00', 1, false));
 
     }
 
