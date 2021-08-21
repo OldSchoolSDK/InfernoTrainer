@@ -1,5 +1,5 @@
 'use strict'
-import { every, map } from 'lodash'
+import { every, LoDashImplicitNumberArrayWrapper, map } from 'lodash'
 
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
@@ -33,6 +33,8 @@ export class Mob extends Unit {
   hasLOS: boolean;
   weapons: WeaponsMap;
   attackStyle: string;
+
+  tcc: Location[];
 
   mobRangeAttackAnimation: any;
 
@@ -148,56 +150,75 @@ export class Mob extends Unit {
       const xOff = dx - this.location.x;
       const yOff = this.location.y - dy;
 
-      const xTiles = [];
-      if (xOff === -1) {
-        for (let i=0;i<this.size;i++){
-          xTiles.push({
-            x: this.location.x - 1,
-            y: this.location.y - i - yOff
-          })  
-        }
-
-      }else if (xOff === 1){
-        for (let i=0;i<this.size;i++){
-          xTiles.push({
-            x: this.location.x + this.size,
-            y: this.location.y - i - yOff
-          })  
-        }
-      }
-      
-      const yTiles = [];
-      if (yOff === -1) {
-        for (let i=0;i<this.size;i++){
-          yTiles.push({
-            x: this.location.x + i + xOff,
-            y: this.location.y + 1
-          })  
-        }
-      }else if (yOff === 1){
-        for (let i=0;i<this.size;i++){
-          yTiles.push({
-            x: this.location.x + i + xOff,
-            y: this.location.y - this.size
-          })  
-        }
-      }
-
-      const xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
-      const ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      let xTiles = this.getXMovementTiles(xOff, yOff);
+      let yTiles = this.getYMovementTiles(xOff, yOff);
+      let xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
       const both = xSpace && ySpace;
+
+      if (!both) {
+        xTiles = this.getXMovementTiles(xOff, 0);
+        yTiles = this.getYMovementTiles(0, yOff);
+        xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+        ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      }
+
+      this.tcc = xTiles.concat(yTiles);
 
       if (both) {
         this.location.x = dx
         this.location.y = dy
-      } else if (xSpace) {
+      } else if (xSpace && xTiles.length) {
         this.location.x = dx
-      } else if (ySpace) {
+      } else if (ySpace && yTiles.length) {
         this.location.y = dy
       }
     }
   }
 
+  getXMovementTiles(xOff: number, yOff: number) {
+
+    const xTiles = [];
+    if (xOff === -1) {
+      for (let i=0;i<this.size;i++){
+        xTiles.push({
+          x: this.location.x - 1,
+          y: this.location.y - i - yOff
+        })  
+      }
+
+    }else if (xOff === 1){
+      for (let i=0;i<this.size;i++){
+        xTiles.push({
+          x: this.location.x + this.size,
+          y: this.location.y - i - yOff
+        })  
+      }
+    }
+    return xTiles
+  }
+
+  getYMovementTiles(xOff: number, yOff: number) {
+
+    const yTiles = [];
+    if (yOff === -1) {
+      for (let i=0;i<this.size;i++){
+        yTiles.push({
+          x: this.location.x + i + xOff,
+          y: this.location.y + 1
+        })  
+      }
+    }else if (yOff === 1){
+      for (let i=0;i<this.size;i++){
+        yTiles.push({
+          x: this.location.x + i + xOff,
+          y: this.location.y - this.size
+        })  
+      }
+    }
+
+    return yTiles;
+  }
   // todo: Rename this possibly? it returns the attack style if it's possible
   canMeleeIfClose () {
     return ''
@@ -416,6 +437,19 @@ export class Mob extends Unit {
 
 
     this.world.region.context.restore()
+
+    // if (!this.tcc) {
+    //   return;
+    // }
+    // this.tcc.forEach((location: Location) => {
+    //   this.world.region.context.fillStyle = '#00FF0073'
+    //   this.world.region.context.fillRect(
+    //     location.x * Settings.tileSize, location.y * Settings.tileSize,
+    //     Settings.tileSize,
+    //     Settings.tileSize
+    //   )
+
+    // })
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
