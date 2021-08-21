@@ -34,8 +34,6 @@ export class Mob extends Unit {
   weapons: WeaponsMap;
   attackStyle: string;
 
-  tcc: Location[];
-
   mobRangeAttackAnimation: any;
 
   get type () {
@@ -158,19 +156,19 @@ export class Mob extends Unit {
 
       if (!both) {
         xTiles = this.getXMovementTiles(xOff, 0);
-        yTiles = this.getYMovementTiles(0, yOff);
         xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
-        ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+        if (!xSpace) {
+          ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+          yTiles = this.getYMovementTiles(0, yOff);
+        }
       }
-
-      this.tcc = xTiles.concat(yTiles);
 
       if (both) {
         this.location.x = dx
         this.location.y = dy
-      } else if (xSpace && xTiles.length) {
+      } else if (xSpace) {
         this.location.x = dx
-      } else if (ySpace && yTiles.length) {
+      } else if (ySpace) {
         this.location.y = dy
       }
     }
