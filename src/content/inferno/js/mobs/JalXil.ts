@@ -40,7 +40,7 @@ export class JalXil extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this.world, this)
   }
 
   setStats () {

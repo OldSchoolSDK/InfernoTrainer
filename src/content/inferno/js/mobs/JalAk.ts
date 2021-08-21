@@ -13,6 +13,7 @@ import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
+import { InfernoRegion } from '../InfernoRegion'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -31,7 +32,8 @@ export class JalAk extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this.world, this)
+    const region = this.world.region as InfernoRegion;
   }
 
   setStats () {

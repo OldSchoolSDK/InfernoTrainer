@@ -1,10 +1,22 @@
 import { shuffle, remove } from 'lodash'
+import { DelayedAction } from '../../../sdk/DelayedAction';
 import { Mob } from '../../../sdk/Mob';
+import { World } from '../../../sdk/World';
+import { InfernoRegion } from './InfernoRegion';
+import { InfernoWaves } from './InfernoWaves';
 
 export class InfernoMobDeathStore {
   static mobDeathStore = new InfernoMobDeathStore();
   static deadMobs: Mob[] = [];
-  static npcDied (mob: Mob) {
+  static npcDied (world: World, mob: Mob) {
+    const region = world.region as InfernoRegion;
+    if (region.wave > 69){
+      region.score += mob.stats.hitpoint;
+      DelayedAction.registerDelayedAction(new DelayedAction(() => {
+        InfernoWaves.spawnEnduranceMode(world, 1, true).forEach((mob: Mob) => world.region.addMob(mob))
+      }, 6));
+      return;
+    }
     if (!mob.hasResurrected) {
       InfernoMobDeathStore.deadMobs.push(mob)
     }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { filter, find, shuffle } from 'lodash'
+import { filter, find, random, shuffle } from 'lodash'
 import { InfernoViewport } from './InfernoViewport'
 import { InfernoPillar } from './InfernoPillar'
 import { Player } from '../../../sdk/Player'
@@ -32,6 +32,7 @@ import { EntityName } from '../../../sdk/EntityName'
 
 export class InfernoRegion extends Region {
 
+  score: number = 0;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
@@ -78,8 +79,8 @@ export class InfernoRegion extends Region {
     if (this.wave < 0) {
       this.wave = 0;
     }
-    if (this.wave > InfernoWaves.waves.length + 3) {
-      this.wave = InfernoWaves.waves.length + 3;
+    if (this.wave > InfernoWaves.waves.length + 5) {
+      this.wave = InfernoWaves.waves.length + 5;
     }
 
 
@@ -102,7 +103,7 @@ export class InfernoRegion extends Region {
 
 
 
-    if (this.wave < 67) {
+    if (this.wave < 67 || this.wave >=70) {
       // Add pillars
       InfernoPillar.addPillarsToWorld(world)
     }
@@ -293,8 +294,12 @@ export class InfernoRegion extends Region {
 
       world.region.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00', 1, false));
 
-    }
+    }else if (this.wave === 70){
+      InfernoWaves.spawnEnduranceMode(world, 3).forEach((mob: Mob) => world.region.addMob(mob))
+    }else if (this.wave === 71){
+      InfernoWaves.spawnEnduranceMode(world, 5).forEach((mob: Mob) => world.region.addMob(mob))
 
+    }
     player.perceivedLocation = player.location
     player.destinationLocation = player.location
     /// /////////////////////////////////////////////////////////

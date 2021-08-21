@@ -11,6 +11,7 @@ import { JalImKot } from './mobs/JalImKot'
 import { JalNib } from './mobs/JalNib'
 import { JalXil } from './mobs/JalXil'
 import { Location } from "../../../sdk/Location"
+import { Collision } from '../../../sdk/Collision'
 
 
 export class InfernoWaves {
@@ -31,6 +32,38 @@ export class InfernoWaves {
     Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(world, spawns[i++], { aggro: world.player })))
 
     mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], world, randomPillar))
+    return mobs
+  }
+
+  static spawnEnduranceMode (world: World, concurrentSpawns: number, check: boolean = false) {
+    let j = 0;
+
+    let mobs: Mob[] = []
+    const randomSpawns = InfernoWaves.getRandomSpawns();
+    for (let i=0;i<concurrentSpawns;i++) {
+      const mobTypes: typeof Mob[] = [
+        JalZek,
+        JalXil,
+        JalImKot,
+        JalAk,
+        JalMejRah
+      ];
+
+      const randomType = mobTypes[Math.floor(Math.random() * 5)]
+
+
+      let randomSpawn;
+      if (check) {
+        do{
+          randomSpawn = randomSpawns[Math.floor(Math.random() * randomSpawns.length)];
+        } while(Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
+      }else{
+        randomSpawn = randomSpawns[j++]
+
+      }
+      mobs.push(new randomType(world, randomSpawn, { aggro: world.player }));
+    }
+
     return mobs
   }
 

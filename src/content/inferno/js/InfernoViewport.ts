@@ -12,7 +12,7 @@ export class InfernoViewport extends Viewport {
 
   getViewport(world: World) {
     const infernoRegion = world.region as InfernoRegion;
-    if (infernoRegion.wave < 67 && Settings.lockPOV === true) {
+    if ((infernoRegion.wave < 67 || infernoRegion.wave >=70) && Settings.lockPOV === true) {
       return { viewportX: 11, viewportY: 14 };
     }
     return super.getViewport(world);

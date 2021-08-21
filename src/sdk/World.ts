@@ -8,6 +8,7 @@ import { Region } from './Region'
 import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
 import { Viewport } from './Viewport'
+import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 
 export class World {
   viewport: Viewport;
@@ -194,6 +195,44 @@ export class World {
       this.viewport.context.fillText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
       this.viewport.context.textAlign = 'left'
     }
+
+    const region = this.region as InfernoRegion; // HACK HACK
+    let finalScore = -1;
+    if (region.wave > 69) {
+
+
+      const scoreText = `Score: ${region.score}`;
+      this.viewport.context.font = '24px OSRS'
+      this.viewport.context.textAlign = 'left'
+      this.viewport.context.fillStyle = '#000'
+      this.viewport.context.fillText(scoreText, 6 - 2, this.viewport.canvas.height - 24)
+      this.viewport.context.fillText(scoreText, 6 + 2, this.viewport.canvas.height - 24)
+      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 22)
+      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 26)
+
+      this.viewport.context.fillStyle = '#FFFFFF'
+      this.viewport.context.fillText(scoreText, 6, this.viewport.canvas.height - 24)
+
+      if (finalScore === -1 && document.body.style.background === 'red') {
+        finalScore = region.score;
+      }
+      if (finalScore !== -1) {
+
+        const finalScoreText = `Final Score: ${region.score}`;
+        this.viewport.context.font = '24px OSRS'
+        this.viewport.context.textAlign = 'left'
+        this.viewport.context.fillStyle = '#000'
+        this.viewport.context.fillText(finalScoreText, 6 - 2, this.viewport.canvas.height - 2)
+        this.viewport.context.fillText(finalScoreText, 6 + 2, this.viewport.canvas.height - 2)
+        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 0)
+        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 4)
+  
+        this.viewport.context.fillStyle = '#FFFFFF'
+        this.viewport.context.fillText(finalScoreText, 6, this.viewport.canvas.height - 2)
+      }
+        
+    }
+
   }
 
   setPlayer (player: Player) {

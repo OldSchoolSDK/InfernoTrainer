@@ -5,17 +5,15 @@ import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob, AttackIndicators } from '../../../../sdk/Mob'
 import MagerImage from '../../assets/images/mager.png'
 import MagerSound from '../../assets/sounds/mager.ogg'
-import { Pathing } from '../../../../sdk/Pathing'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
-import { TzKalZuk } from './TzKalZuk'
 import { EntityName } from "../../../../sdk/EntityName"
-import { find } from 'lodash'
 import { Projectile } from '../../../../sdk/weapons/Projectile'
+import { InfernoRegion } from '../InfernoRegion'
 
 export class JalZek extends Mob {
-  isZukWave: boolean;
+  shouldRespawnMobs: boolean;
 
   
   mobName(): EntityName { 
@@ -37,16 +35,13 @@ export class JalZek extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this.world, this)
   }
 
   setStats () {
 
-    // Scan for a zuk
-    const zuk = find(this.world.region.mobs, (mob: Unit) => {
-      return mob.mobName() === EntityName.TZ_KAL_ZUK;
-    }) as TzKalZuk;
-    this.isZukWave = zuk !== null
+    const region = this.world.region as InfernoRegion;
+    this.shouldRespawnMobs = (region.wave >= 69);
 
     this.stunned = 1
 
@@ -166,7 +161,7 @@ export class JalZek extends Mob {
     const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
-      if (Math.random() < 0.1 && !this.isZukWave) {
+      if (Math.random() < 0.1 && !this.shouldRespawnMobs) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect()
         if (!mobToResurrect) {
           this.attack()

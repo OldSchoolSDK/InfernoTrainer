@@ -26,7 +26,7 @@ export class JalImKot extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this)
+    InfernoMobDeathStore.npcDied(this.world, this)
   }
 
   setStats () {
