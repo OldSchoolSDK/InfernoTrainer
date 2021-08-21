@@ -105,15 +105,16 @@ export class Pathing {
     ]
 
     // The order of possible directions in this array determines if the player moves first straight or diagonaly
+    // https://oldschool.runescape.wiki/w/Pathfinding#Determining_the_target_tile
     const directions = [
-      { x: -1, y: 0 },
-      { x: 0, y: -1 },
-      { x: 0, y: 1 },
-      { x: 1, y: 0 },
-      { x: 1, y: 1 },
-      { x: -1, y: 1 },
-      { x: -1, y: -1 },
-      { x: 1, y: -1 }
+      { x: -1, y: 0 }, // west
+      { x: 1, y: 0 }, // east
+      { x: 0, y: -1 }, // south
+      { x: 0, y: 1 }, // north
+      { x: -1, y: 1 }, // sw
+      { x: 1, y: 1 }, // se
+      { x: -1, y: -1 }, // nw 
+      { x: 1, y: -1 } // ne
     ]
     
     let bestBackupTile = {x: -1, y: -1};
