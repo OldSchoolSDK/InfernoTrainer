@@ -22,7 +22,13 @@ export class InfernoMobDeathStore {
     }
   }
 
-  static selectMobToResurect () {
+  static selectMobToResurect (world: World) {
+
+    const region = world.region as InfernoRegion;
+    if (region.wave > 69){
+      return null;
+    }
+    
     if (InfernoMobDeathStore.deadMobs.length) {
       const mobToResurrect = shuffle(InfernoMobDeathStore.deadMobs)[0]
       mobToResurrect.hasResurrected = true

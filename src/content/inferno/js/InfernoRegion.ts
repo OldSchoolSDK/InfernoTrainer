@@ -79,8 +79,8 @@ export class InfernoRegion extends Region {
     if (this.wave < 0) {
       this.wave = 0;
     }
-    if (this.wave > InfernoWaves.waves.length + 5) {
-      this.wave = InfernoWaves.waves.length + 5;
+    if (this.wave > InfernoWaves.waves.length + 7) {
+      this.wave = InfernoWaves.waves.length + 7;
     }
 
 
@@ -298,7 +298,10 @@ export class InfernoRegion extends Region {
       InfernoWaves.spawnEnduranceMode(world, 3).forEach((mob: Mob) => world.region.addMob(mob))
     }else if (this.wave === 71){
       InfernoWaves.spawnEnduranceMode(world, 5).forEach((mob: Mob) => world.region.addMob(mob))
-
+    }else if (this.wave === 72){
+      InfernoWaves.spawnEnduranceMode(world, 7).forEach((mob: Mob) => world.region.addMob(mob))
+    }else if (this.wave === 73){
+      InfernoWaves.spawnEnduranceMode(world, 9).forEach((mob: Mob) => world.region.addMob(mob))
     }
     player.perceivedLocation = player.location
     player.destinationLocation = player.location

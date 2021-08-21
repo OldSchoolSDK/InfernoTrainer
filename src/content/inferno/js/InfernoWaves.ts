@@ -52,16 +52,18 @@ export class InfernoWaves {
       const randomType = mobTypes[Math.floor(Math.random() * 5)]
 
 
-      let randomSpawn;
+      let attempts = 0;
+      let randomSpawn = null;
       if (check) {
         do{
-          randomSpawn = randomSpawns[Math.floor(Math.random() * randomSpawns.length)];
-        } while(Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4) || Collision.collidesWithAnyEntities(world, randomSpawn.x, randomSpawn.y, 4));
+          randomSpawn = randomSpawns[j++]
+        } while(j < 9 && Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
       }else{
         randomSpawn = randomSpawns[j++]
-
       }
-      mobs.push(new randomType(world, randomSpawn, { aggro: world.player }));
+      if (randomSpawn){
+        mobs.push(new randomType(world, randomSpawn, { aggro: world.player }));
+      }
     }
 
     return mobs
