@@ -296,12 +296,16 @@ export class InfernoRegion extends Region {
       world.region.addEntity(new TileMarker(world, {x: 36, y: 14}, '#00FF00', 1, false));
 
     }else if (this.wave === 70){
+      player.location = { x: 28, y: 17}
       InfernoWaves.spawnEnduranceMode(world, 3).forEach((mob: Mob) => world.region.addMob(mob))
     }else if (this.wave === 71){
+      player.location = { x: 28, y: 17}
       InfernoWaves.spawnEnduranceMode(world, 5).forEach((mob: Mob) => world.region.addMob(mob))
     }else if (this.wave === 72){
+      player.location = { x: 28, y: 17}
       InfernoWaves.spawnEnduranceMode(world, 7).forEach((mob: Mob) => world.region.addMob(mob))
     }else if (this.wave === 73){
+      player.location = { x: 28, y: 17}
       InfernoWaves.spawnEnduranceMode(world, 9).forEach((mob: Mob) => world.region.addMob(mob))
     }
     player.perceivedLocation = player.location
