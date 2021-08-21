@@ -12,6 +12,7 @@ export class Settings {
   static region: string;
   static displayXpDrops: boolean
   static lockPOV: boolean
+  static displayFeedback: boolean
 
   static inventory_key: string;
   static spellbook_key: string;
@@ -48,6 +49,7 @@ export class Settings {
     window.localStorage.setItem('onTask', String(Settings.onTask))
     window.localStorage.setItem('displayPlayerLoS', String(Settings.displayPlayerLoS))
     window.localStorage.setItem('displayMobLoS', String(Settings.displayMobLoS))
+    window.localStorage.setItem('displayFeedback', String(Settings.displayFeedback))
     window.localStorage.setItem('tile_markers', JSON.stringify(Settings.tile_markers))
     window.localStorage.setItem('lockPOV', JSON.stringify(Settings.lockPOV))
   }
@@ -63,9 +65,10 @@ export class Settings {
     Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
     Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
     Settings.lockPOV = window.localStorage.getItem('lockPOV') !== 'false' || false;
+    Settings.displayFeedback = !(window.localStorage.getItem('displayFeedback') === 'false' || false);
 
     Settings.region = 'inferno'
-    Settings.displayXpDrops = window.localStorage.getItem('displayXpDrops') === 'true' || true
+    Settings.displayXpDrops = !(window.localStorage.getItem('displayXpDrops') === 'false' || false)
 
     Settings.inventory_key = window.localStorage.getItem('inventory_key') || 'F4'
     Settings.spellbook_key = window.localStorage.getItem('spellbook_key') || 'F2'

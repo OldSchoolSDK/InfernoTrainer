@@ -365,6 +365,8 @@ export class MapController {
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
+      Settings.persistToStorage();
+
     }else if (x > 33 && x < 64 && y > 5 && y < 36){
       intercepted = true;
       

@@ -105,6 +105,10 @@ export class SettingsControls extends BaseControls {
     } else if (x > 140 && x < 180 && y > 100 && y < 140) {
       // Settings.region = 'xarpusp2'
       Settings.lockPOV = !Settings.lockPOV;
+
+    } else if (x > 140 && x < 180 && y > 50 && y < 90) {
+      Settings.displayFeedback = !Settings.displayFeedback;
+
     } else if (x > 20 && x < 60 && y > 170 && y < 210) {
       Settings.is_keybinding = true;
       this.bindingKey = 'inventory'
@@ -147,6 +151,10 @@ export class SettingsControls extends BaseControls {
 
     world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
     world.viewport.context.fillText('VP Lock', x + 160, y + 125)
+
+
+    world.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 50)
+    world.viewport.context.fillText('Pray Ind.', x + 160, y + 75)
     // world.viewport.context.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
     // world.viewport.context.fillText('Reload to change region', x + 100, y + 160)
 

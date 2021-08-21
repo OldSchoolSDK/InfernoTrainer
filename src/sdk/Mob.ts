@@ -288,21 +288,22 @@ export class Mob extends Unit {
   }
 
   drawUnderTile(tickPercent: number) {
-
-    if (this.dying > -1) {
-      this.world.region.context.fillStyle = '#964B0073'
-    } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-      this.world.region.context.fillStyle = '#00FF0073'
-    } else if (this.attackFeedback === AttackIndicators.HIT) {
-      this.world.region.context.fillStyle = '#FF000073'
-    } else if (this.attackFeedback === AttackIndicators.SCAN) {
-      this.world.region.context.fillStyle = '#FFFF0073'
-    } else if (this.hasLOS) {
-      this.world.region.context.fillStyle = '#FF730073'
-    } else {
-      this.world.region.context.fillStyle = this.color;
+    this.world.region.context.fillStyle = '#00000000';
+    if (Settings.displayFeedback){
+      if (this.dying > -1) {
+        this.world.region.context.fillStyle = '#964B0073'
+      } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
+        this.world.region.context.fillStyle = '#00FF0073'
+      } else if (this.attackFeedback === AttackIndicators.HIT) {
+        this.world.region.context.fillStyle = '#FF000073'
+      } else if (this.attackFeedback === AttackIndicators.SCAN) {
+        this.world.region.context.fillStyle = '#FFFF0073'
+      } else if (this.hasLOS) {
+        this.world.region.context.fillStyle = '#FF730073'
+      } else {
+        this.world.region.context.fillStyle = this.color;
+      }  
     }
-
     // Draw mob
     this.world.region.context.fillRect(
       -(this.size * Settings.tileSize) / 2,
