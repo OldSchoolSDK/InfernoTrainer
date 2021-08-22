@@ -11,6 +11,7 @@ import { World } from './World'
 import { Location } from "./Location"
 import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
+import { EntityName } from './EntityName'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -23,8 +24,10 @@ export interface WeaponsMap {
   [key: string]: Weapon
 }
 
-export class Mob extends Unit {
 
+export class Mob extends Unit {
+  static mobIdTracker = 0;
+  mobId: number = Mob.mobIdTracker++;
   hasResurrected: boolean = false;
   attackFeedback: AttackIndicators;
   stats: UnitStats;
@@ -34,6 +37,7 @@ export class Mob extends Unit {
   weapons: WeaponsMap;
   attackStyle: string;
 
+  tcc: Location[];
   mobRangeAttackAnimation: any;
 
   get type () {
@@ -154,12 +158,15 @@ export class Mob extends Unit {
       let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
       const both = xSpace && ySpace;
 
+      if (this.mobId === 4){ 
+        this.tcc = xTiles.concat(yTiles);
+      }
       if (!both) {
         xTiles = this.getXMovementTiles(xOff, 0);
         xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
         if (!xSpace) {
-          ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
           yTiles = this.getYMovementTiles(0, yOff);
+          ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
         }
       }
 
@@ -437,6 +444,12 @@ export class Mob extends Unit {
     this.world.region.context.restore()
 
     // if (!this.tcc) {
+    //   return;
+    // }
+    // if (this.mobName() !== EntityName.JAL_MEJ_RAJ) {
+    //   return;
+    // }
+    // if (this.mobId !== 4) {
     //   return;
     // }
     // this.tcc.forEach((location: Location) => {
