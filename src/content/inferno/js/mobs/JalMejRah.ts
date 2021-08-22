@@ -1,13 +1,24 @@
 'use strict'
 
 import { EntityName } from "../../../../sdk/EntityName"
+import { AttackBonuses } from "../../../../sdk/gear/Weapon"
 import { Mob } from '../../../../sdk/Mob'
-import { UnitBonuses } from '../../../../sdk/Unit'
+import { Player } from "../../../../sdk/Player"
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { ProjectileOptions } from "../../../../sdk/weapons/Projectile"
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
+import { World } from "../../../../sdk/World"
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
+class JalMejRahWeapon extends RangedWeapon {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+    super.attack(world, from, to, bonuses, options);
+    const player = to as Player;
+    player.currentStats.run -= 300;
+  }
+}
 export class JalMejRah extends Mob {
 
   mobName(): EntityName { 
@@ -31,7 +42,7 @@ export class JalMejRah extends Mob {
     this.stunned = 1
 
     this.weapons = {
-      range: new RangedWeapon()
+      range: new JalMejRahWeapon()
     }
 
     // non boosted numbers
