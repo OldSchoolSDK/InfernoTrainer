@@ -1,5 +1,5 @@
 'use strict'
-import { shuffle } from 'lodash'
+import { random, shuffle } from 'lodash'
 import { Entity } from '../../../sdk/Entity'
 import { Mob } from '../../../sdk/Mob'
 import { World } from '../../../sdk/World'
@@ -39,7 +39,20 @@ export class InfernoWaves {
     let j = 0;
 
     let mobs: Mob[] = []
-    const randomSpawns = InfernoWaves.getRandomSpawns();
+    let randomSpawns = [
+      { x: 12, y: 19 },
+      { x: 33, y: 19 },
+      { x: 14, y: 25 },
+      { x: 34, y: 26 },
+      { x: 27, y: 31 },
+      { x: 16, y: 37 },
+      { x: 34, y: 39 },
+      { x: 12, y: 42 },
+      { x: 26, y: 42 }
+    ];
+
+    randomSpawns = shuffle(randomSpawns);
+    
     for (let i=0;i<concurrentSpawns;i++) {
       const mobTypes: typeof Mob[] = [
         JalZek,
@@ -51,8 +64,6 @@ export class InfernoWaves {
 
       const randomType = mobTypes[Math.floor(Math.random() * 5)]
 
-
-      let attempts = 0;
       let randomSpawn = null;
       if (check) {
         do{
@@ -90,15 +101,15 @@ export class InfernoWaves {
   }
 
   static spawns = [
-    { x: 1 + 11, y: 5 + 14 },
-    { x: 22 + 11, y: 5 + 14 },
-    { x: 3 + 11, y: 11 + 14 },
-    { x: 23 + 11, y: 12 + 14 },
-    { x: 16 + 11, y: 17 + 14 },
-    { x: 5 + 11, y: 23 + 14 },
-    { x: 23 + 11, y: 25 + 14 },
-    { x: 1 + 11, y: 28 + 14 },
-    { x: 15 + 11, y: 28 + 14 }
+    { x: 12, y: 19 },
+    { x: 33, y: 19 },
+    { x: 14, y: 25 },
+    { x: 34, y: 26 },
+    { x: 27, y: 31 },
+    { x: 16, y: 37 },
+    { x: 34, y: 39 },
+    { x: 12, y: 42 },
+    { x: 26, y: 42 }
   ];
 
   // cba to convert this to any other format

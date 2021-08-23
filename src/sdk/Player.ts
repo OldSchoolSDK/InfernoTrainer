@@ -520,6 +520,18 @@ export class Player extends Unit {
 
   
   draw (tickPercent: number) {
+
+    // this.world.region.context.fillStyle = '#FFFF00'
+    // this.world.region.context.fillRect(
+    //   26 * Settings.tileSize,
+    //   24 * Settings.tileSize,
+    //   6 * Settings.tileSize,
+    //   12 * Settings.tileSize
+    // // 26 - 32 x
+    // // 24 - 36 y
+
+
+    // )
     if (Settings.displayPlayerLoS){
       LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
     }

@@ -130,8 +130,8 @@ export class JalZek extends Mob {
   }
 
   respawnLocation (mobToResurrect: Mob) {
-    for (let x = 15 + 11; x < 21 + 11; x++) {
-      for (let y = 10 + 14; y < 22 + 14; y++) {
+    for (let x = 15 + 11; x < 22 + 11; x++) {
+      for (let y = 10 + 14; y < 23 + 14; y++) {
         if (!Collision.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
           if (!Collision.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
             return { x, y }
