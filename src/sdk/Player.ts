@@ -121,9 +121,9 @@ export class Player extends Unit {
     ]
 
     // hack hack because blowpipe was getting dragon arrows added
-    if (this.equipment.weapon.itemName === ItemName.TWISTED_BOW && this.equipment.ammo.itemName === ItemName.DRAGON_ARROWS) {
+    if (this.equipment.weapon && this.equipment.weapon.itemName === ItemName.TWISTED_BOW && this.equipment.ammo && this.equipment.ammo.itemName === ItemName.DRAGON_ARROWS) {
       gear.push(this.equipment.ammo)
-    }else if (this.equipment.ammo.itemName !== ItemName.DRAGON_ARROWS){
+    }else if (this.equipment.ammo && this.equipment.ammo.itemName !== ItemName.DRAGON_ARROWS){
       gear.push(this.equipment.ammo)
     }
 

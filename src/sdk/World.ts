@@ -231,6 +231,8 @@ export class World {
 
   drawVPText(text: string, x: number, y: number) {
 
+    x = Math.floor(x);
+    y = Math.floor(y);
     this.viewport.context.fillStyle = '#000'
     this.viewport.context.fillText(text, x - 2, y - 2)
     this.viewport.context.fillText(text, x + 2, y - 2)
