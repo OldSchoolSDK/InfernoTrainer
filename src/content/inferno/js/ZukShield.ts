@@ -97,11 +97,15 @@ export class ZukShield extends Mob {
       const ranger = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_XIL;
       }) as JalXil;
-      ranger.setAggro(this.world.player);
+      if (ranger) {
+        ranger.setAggro(this.world.player);
+      }
       const mager = find(this.world.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_ZEK;
       }) as JalXil;
-      mager.setAggro(this.world.player);
+      if (mager) {
+        mager.setAggro(this.world.player);
+      }
       
     }, 2))
   }
