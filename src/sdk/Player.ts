@@ -289,7 +289,7 @@ export class Player extends Unit {
           this.useSpecialAttack  = false;
         }else{
           const bonuses: AttackBonuses = { };
-          if (this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
+          if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
             bonuses.gearMultiplier = 7/6;
           }
 

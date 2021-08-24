@@ -197,6 +197,14 @@ export class Pathing {
       path.shift()
     }
 
+    if (path.length === 0) {
+      return {
+        x: startPoint.x,
+        y: startPoint.y,
+        path: []
+      }
+    }
+
     if (path.length <= speed) {
       // Step to the destination
       x = path[0].x

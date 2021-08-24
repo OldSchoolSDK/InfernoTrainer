@@ -140,6 +140,10 @@ export class ControlPanelController {
 
   controlPanelClickUp (e: MouseEvent): boolean {
 
+    if (!this.selectedControl) {
+      return false;
+    }
+    
     let intercepted = false;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
