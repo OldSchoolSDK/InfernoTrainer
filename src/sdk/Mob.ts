@@ -158,9 +158,9 @@ export class Mob extends Unit {
       let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
       const both = xSpace && ySpace;
 
-      if (this.mobId === 4){ 
-        this.tcc = xTiles.concat(yTiles);
-      }
+      // if (this.mobName() === EntityName.JAL_AK_REK_MEJ){ 
+      //   this.tcc = xTiles.concat(yTiles);
+      // }
       if (!both) {
         xTiles = this.getXMovementTiles(xOff, 0);
         xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
@@ -185,6 +185,13 @@ export class Mob extends Unit {
 
     const xTiles = [];
     if (xOff === -1) {
+      if (this.size === 1) {
+        xTiles.push({
+          x: this.location.x - 1,
+          y: this.location.y
+        })
+      }
+
       for (let i=0;i<this.size;i++){
         xTiles.push({
           x: this.location.x - 1,
@@ -193,6 +200,14 @@ export class Mob extends Unit {
       }
 
     }else if (xOff === 1){
+
+      if (this.size === 1) {
+        xTiles.push({
+          x: this.location.x + 1,
+          y: this.location.y
+        })
+      }
+
       for (let i=0;i<this.size;i++){
         xTiles.push({
           x: this.location.x + this.size,
@@ -207,6 +222,13 @@ export class Mob extends Unit {
 
     const yTiles = [];
     if (yOff === -1) {
+
+      if (this.size === 1) {
+        yTiles.push({
+          x: this.location.x,
+          y: this.location.y + 1
+        })
+      }
       for (let i=0;i<this.size;i++){
         yTiles.push({
           x: this.location.x + i + xOff,
@@ -214,6 +236,13 @@ export class Mob extends Unit {
         })  
       }
     }else if (yOff === 1){
+
+      if (this.size === 1) {
+        yTiles.push({
+          x: this.location.x,
+          y: this.location.y - 1
+        })
+      }
       for (let i=0;i<this.size;i++){
         yTiles.push({
           x: this.location.x + i + xOff,

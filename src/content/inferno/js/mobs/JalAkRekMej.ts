@@ -6,6 +6,8 @@ import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
+import { World } from '../../../../sdk/World'
+import { Location } from '../../../../sdk/Location'
 
 export class JalAkRekMej extends Mob {
 
