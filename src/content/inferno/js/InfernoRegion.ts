@@ -200,7 +200,7 @@ export class InfernoRegion extends Region {
 
     // Add mobs
     if (this.wave === 0) {
-      world.getReadyTimer = 0;
+      // world.getReadyTimer = 0;
       player.location = { x: 28, y: 17}
 
       
