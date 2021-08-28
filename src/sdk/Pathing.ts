@@ -109,8 +109,8 @@ export class Pathing {
     const directions = [
       { x: -1, y: 0 }, // west
       { x: 1, y: 0 }, // east
-      { x: 0, y: -1 }, // south
-      { x: 0, y: 1 }, // north
+      { x: 0, y: 1 }, // south
+      { x: 0, y: -1 }, // north
       { x: -1, y: 1 }, // sw
       { x: 1, y: 1 }, // se
       { x: -1, y: -1 }, // nw 
