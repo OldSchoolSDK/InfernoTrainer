@@ -158,16 +158,17 @@ export class Mob extends Unit {
       let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
       const both = xSpace && ySpace;
 
-      // if (this.mobName() === EntityName.JAL_AK_REK_MEJ){ 
-      //   this.tcc = xTiles.concat(yTiles);
+      // if (this.mobName() === EntityName.JAL_AK){ 
+      //   this.tcc =  xTiles; //xTiles.concat(yTiles);
       // }
+
       if (!both) {
         xTiles = this.getXMovementTiles(xOff, 0);
         xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
         if (!xSpace) {
           yTiles = this.getYMovementTiles(0, yOff);
           ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
-        }
+        }        
       }
 
       if (both) {
@@ -183,35 +184,25 @@ export class Mob extends Unit {
 
   getXMovementTiles(xOff: number, yOff: number) {
 
+    const start = (yOff === -1) ? -1 : 0;
+    const end = (yOff === 1) ? this.size + 1 : this.size;
     const xTiles = [];
     if (xOff === -1) {
-      if (this.size === 1) {
-        xTiles.push({
-          x: this.location.x - 1,
-          y: this.location.y
-        })
-      }
 
-      for (let i=0;i<this.size;i++){
+      for (let i=start;i<end;i++){
         xTiles.push({
           x: this.location.x - 1,
-          y: this.location.y - i - yOff
+          y: this.location.y - i
         })  
       }
 
     }else if (xOff === 1){
 
-      if (this.size === 1) {
-        xTiles.push({
-          x: this.location.x + 1,
-          y: this.location.y
-        })
-      }
 
-      for (let i=0;i<this.size;i++){
+      for (let i=start;i<end;i++){
         xTiles.push({
           x: this.location.x + this.size,
-          y: this.location.y - i - yOff
+          y: this.location.y - i
         })  
       }
     }
@@ -220,32 +211,25 @@ export class Mob extends Unit {
 
   getYMovementTiles(xOff: number, yOff: number) {
 
+    const start = (xOff === -1) ? -1 : 0;
+    const end = (xOff === 1) ? this.size + 1 : this.size;
+
     const yTiles = [];
     if (yOff === -1) {
-
-      if (this.size === 1) {
+      
+      // south
+      for (let i=start;i<end;i++){
         yTiles.push({
-          x: this.location.x,
-          y: this.location.y + 1
-        })
-      }
-      for (let i=0;i<this.size;i++){
-        yTiles.push({
-          x: this.location.x + i + xOff,
+          x: this.location.x + i,
           y: this.location.y + 1
         })  
       }
     }else if (yOff === 1){
 
-      if (this.size === 1) {
+      // north
+      for (let i=start;i<end;i++){
         yTiles.push({
-          x: this.location.x,
-          y: this.location.y - 1
-        })
-      }
-      for (let i=0;i<this.size;i++){
-        yTiles.push({
-          x: this.location.x + i + xOff,
+          x: this.location.x + i,
           y: this.location.y - this.size
         })  
       }
@@ -472,24 +456,24 @@ export class Mob extends Unit {
 
     this.world.region.context.restore()
 
-    // if (!this.tcc) {
-    //   return;
-    // }
-    // if (this.mobName() !== EntityName.JAL_MEJ_RAJ) {
+    if (!this.tcc) {
+      return;
+    }
+    // if (this.mobName() !== EntityName.JAL_AK) {
     //   return;
     // }
     // if (this.mobId !== 4) {
     //   return;
     // }
-    // this.tcc.forEach((location: Location) => {
-    //   this.world.region.context.fillStyle = '#00FF0073'
-    //   this.world.region.context.fillRect(
-    //     location.x * Settings.tileSize, location.y * Settings.tileSize,
-    //     Settings.tileSize,
-    //     Settings.tileSize
-    //   )
+    this.tcc.forEach((location: Location) => {
+      this.world.region.context.fillStyle = '#00FF0073'
+      this.world.region.context.fillRect(
+        location.x * Settings.tileSize, location.y * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
 
-    // })
+    })
   }
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
