@@ -9,6 +9,7 @@ import { MapController } from './MapController'
 import { DelayedAction } from './DelayedAction'
 import { Viewport } from './Viewport'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
+import MetronomeSound from '../assets/sounds/bonk.ogg'
 
 export class World {
   viewport: Viewport;
@@ -91,6 +92,11 @@ export class World {
 
   worldTick () {
     this.tickCounter++;
+
+    if (Settings.metronome) {
+      new Audio(MetronomeSound).play();
+    }
+    
     // TODO: Clean up this since its now region based
     if (this.region.newMobs.length){
       this.region.mobs.unshift(...this.region.newMobs)

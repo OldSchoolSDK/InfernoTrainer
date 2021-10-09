@@ -102,13 +102,12 @@ export class SettingsControls extends BaseControls {
       Settings.displayPlayerLoS = !Settings.displayPlayerLoS;
     } else if (x > 80 && x < 120 && y > 100 && y < 140) {
       Settings.displayMobLoS = !Settings.displayMobLoS;
-    } else if (x > 140 && x < 180 && y > 100 && y < 140) {
-      // Settings.region = 'xarpusp2'
+    } else if (x > 140 && x < 180 && y > 120 && y < 160) {
       Settings.lockPOV = !Settings.lockPOV;
-
-    } else if (x > 140 && x < 180 && y > 50 && y < 90) {
+    } else if (x > 140 && x < 180 && y > 70 && y < 110) {
       Settings.displayFeedback = !Settings.displayFeedback;
-
+    } else if (x > 140 && x < 180 && y > 20 && y < 60) {
+      Settings.metronome = !Settings.metronome;
     } else if (x > 20 && x < 60 && y > 170 && y < 210) {
       Settings.is_keybinding = true;
       this.bindingKey = 'inventory'
@@ -149,12 +148,18 @@ export class SettingsControls extends BaseControls {
     world.viewport.context.drawImage(Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 80, y + 100)
     world.viewport.context.fillText('M LoS', x + 100, y + 125)
 
-    world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 100)
-    world.viewport.context.fillText('VP Lock', x + 160, y + 125)
+    world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 120)
+    world.viewport.context.fillText('VP Lock', x + 160, y + 145)
 
 
-    world.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 50)
-    world.viewport.context.fillText('Pray Ind.', x + 160, y + 75)
+    world.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 70)
+    world.viewport.context.fillText('Pray Ind.', x + 160, y + 95)
+
+
+    world.viewport.context.drawImage(Settings.metronome ? this.activeButtonImage : this.inactiveButtonImage, x + 140, y + 20)
+    world.viewport.context.fillText('Metronome', x + 160, y + 45)
+
+
     // world.viewport.context.drawImage(this.xarpusImage, x + 142, y + 102, 36, 36)
     // world.viewport.context.fillText('Reload to change region', x + 100, y + 160)
 
