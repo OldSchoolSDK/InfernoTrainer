@@ -5,6 +5,14 @@ import { Location } from "./Location"
 import { World } from './World'
 import { Collision } from './Collision'
 
+interface PathingCache {
+  [key: string]: boolean;
+}
+
+interface CacheStats {
+  [key: string]: number;
+}
+
 interface PathingNode {
   x: number;
   y: number;
@@ -64,7 +72,18 @@ export class Pathing {
     return minBy(corners, (point: Location) => Pathing.dist(x, y, point.x, point.y))
   }
 
+
+  static tileCache: PathingCache = {};
+  static purgeTileCache() {
+    Pathing.tileCache = {};
+  }
+
+
   static canTileBePathedTo (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+    const cache = Pathing.tileCache[`${world.serialNumber}-${x}-${y}-${s}-${mobToAvoid ? mobToAvoid.serialNumber : 0}`];
+    if (cache !== undefined){
+      return cache;
+    }
     // if (y - (s - 1) < 0 || x + (s - 1) > 28) {
     //   return false
     // }
@@ -78,7 +97,7 @@ export class Pathing {
       // Player can walk under mobs
       collision = collision || Collision.collidesWithAnyMobs(world, x, y, s, mobToAvoid) !== null
     }
-
+    Pathing.tileCache[`${world.serialNumber}-${x}-${y}-${s}-${mobToAvoid ? mobToAvoid.serialNumber : 0}`] = !collision;
     return !collision
   }
 

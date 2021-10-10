@@ -10,6 +10,7 @@ import { DelayedAction } from './DelayedAction'
 import { Viewport } from './Viewport'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import MetronomeSound from '../assets/sounds/bonk.ogg'
+import { Pathing } from './Pathing'
 
 export class World {
   viewport: Viewport;
@@ -28,6 +29,15 @@ export class World {
   
   deltaTimeSincePause: number = -1;
   deltaTimeSinceLastTick: number = -1;
+
+  _serialNumber: string;
+
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
 
   constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
 
@@ -91,6 +101,7 @@ export class World {
   }
 
   worldTick () {
+    Pathing.purgeTileCache();
     this.tickCounter++;
 
     if (Settings.metronome) {
@@ -128,6 +139,7 @@ export class World {
     const deadEntities = this.region.entities.filter((mob) => mob.dying === 0)
     deadMobs.forEach((mob) => this.region.removeMob(mob))
     deadEntities.forEach((entity) => this.region.removeEntity(entity))
+
   }
 
   drawWorld (tickPercent: number) {

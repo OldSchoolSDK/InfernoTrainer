@@ -8,6 +8,15 @@ export class GameObject {
   location: Location;
   dying: number = -1;
 
+  _serialNumber: string;
+
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
+  
   get size () {
     return 1;
   }

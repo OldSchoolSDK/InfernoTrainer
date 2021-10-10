@@ -8,8 +8,8 @@ export class Item {
   groundLocation: Location;
   inventorySprite: HTMLImageElement;
   selected: boolean;
-  _serialNumber: string;
   defaultAction: string = 'Use';
+  _serialNumber: string;
 
   get serialNumber(): string {
     if (!this._serialNumber) {
