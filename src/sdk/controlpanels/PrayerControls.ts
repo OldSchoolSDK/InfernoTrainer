@@ -32,7 +32,7 @@ export class PrayerControls extends BaseControls {
   activateQuickPrayers(world: World){
     this.hasQuickPrayersActivated = true;
     
-    world.player.prayerController.activePrayers().forEach((prayer) => {
+    world.player.prayerController.prayers.forEach((prayer) => {
       prayer.deactivate();
       if (prayer.name === 'Protect from Magic'){
         prayer.activate(world.player);
