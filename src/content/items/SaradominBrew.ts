@@ -42,8 +42,9 @@ export class SaradominBrew extends Potion {
     player.currentStats.hitpoint = Math.max(1, Math.min(player.currentStats.hitpoint, player.stats.hitpoint + healAmount))
     
     const defenceBoost = Math.floor(player.currentStats.defence * 0.20) + 2
+    const maxDefenceBoost = Math.floor(player.stats.defence * 0.20) + 2
     player.currentStats.defence += defenceBoost;
-    player.currentStats.defence = Math.max(1, Math.min(player.currentStats.defence, player.stats.defence + defenceBoost))
+    player.currentStats.defence = Math.max(1, Math.min(player.currentStats.defence, player.stats.defence + maxDefenceBoost))
 
     const attackNerf = Math.floor(player.currentStats.attack * 0.10) + 2
     player.currentStats.attack -= attackNerf;
