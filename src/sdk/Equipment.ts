@@ -34,6 +34,7 @@ export class Equipment extends Item {
     this.assignToPlayer(player);
     player.inventory[openInventorySlots.shift()] = currentItem;
     player.equipmentChanged()
+    player.setAggro(null);
   }
 
   get equipmentSetEffect(): typeof SetEffect{
