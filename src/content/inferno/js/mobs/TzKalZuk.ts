@@ -70,7 +70,7 @@ export class TzKalZuk extends Mob {
 
           this.currentStats.hitpoint = 479;
           this.timerPaused = true;
-          this.hasPaused = false;
+          this.hasPaused = true;
           this.damageTaken();
 
           
