@@ -163,6 +163,7 @@ export class Player extends Unit {
       }
     });
     this.setEffects = completeSetEffects;
+    this.setAggro(null);
   }
 
   get bonuses(): UnitBonuses {
