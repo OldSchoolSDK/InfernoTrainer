@@ -176,7 +176,7 @@ export class JalZek extends Mob {
           mobToResurrect.perceivedLocation = mobToResurrect.location
           this.world.region.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
-          this.attackCooldownTicks = this.cooldown
+          this.attackCooldownTicks = 8
         }
       } else {
         this.attack()
