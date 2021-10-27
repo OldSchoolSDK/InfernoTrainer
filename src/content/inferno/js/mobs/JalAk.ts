@@ -162,13 +162,13 @@ export class JalAk extends Mob {
   }
 
   removedFromWorld () {
-    const xil = new JalAkRekXil(this.world, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro, spawnDelay: 3 })
+    const xil = new JalAkRekXil(this.world, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro })
     this.world.region.addMob(xil)
 
-    const ket = new JalAkRekKet(this.world, this.location, { aggro: this.aggro, spawnDelay: 3 })
+    const ket = new JalAkRekKet(this.world, this.location, { aggro: this.aggro })
     this.world.region.addMob(ket)
 
-    const mej = new JalAkRekMej(this.world, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro, spawnDelay: 3 })
+    const mej = new JalAkRekMej(this.world, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro })
     this.world.region.addMob(mej)
   }
 }
