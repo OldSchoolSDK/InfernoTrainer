@@ -52,6 +52,7 @@ export interface UnitOptions {
   aggro?: GameObject;
   equipment?: UnitEquipment;
   spawnDelay?: number;
+  cooldown?: number;
   inventory?: Item[];
 }
 
@@ -141,6 +142,10 @@ export class Unit extends GameObject {
     this.spawnDelay = options.spawnDelay || 0
     this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint
+
+    if (options.cooldown) { 
+      this.attackCooldownTicks = options.cooldown;
+    }
 
   }
 
