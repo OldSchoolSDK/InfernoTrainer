@@ -371,6 +371,7 @@ export class Unit extends GameObject {
         }else{
           this.currentStats.hitpoint -= projectile.damage
         }
+        this.spawnDelay = 0;
         this.damageTaken();
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
