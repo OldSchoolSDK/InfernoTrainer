@@ -109,9 +109,9 @@ export class TzKalZuk extends Mob {
       if (this.setTimer === 0) {
         this.setTimer = 350;
   
-        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 5})
+        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 10})
         this.world.region.addMob(mager);
-        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 5})
+        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 10})
         this.world.region.addMob(ranger);
       }  
     }
