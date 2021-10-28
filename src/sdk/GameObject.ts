@@ -45,7 +45,7 @@ export class GameObject {
   // Returns the closest tile on this mob to the specified point.
   getClosestTileTo (x: number, y: number) {
     // We simply clamp the target point to our own boundary box.
-    return [clamp(x, this.location.x, this.location.x + this.size), clamp(y, this.location.y, this.location.y - this.size)]
+    return [clamp(this.location.x, x, this.location.x + this.size), clamp(this.location.y, y, this.location.y - this.size)]
   }
 
   constructor(){
