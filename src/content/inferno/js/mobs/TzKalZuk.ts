@@ -19,7 +19,6 @@ import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
-import { Settings } from '../../../../sdk/Settings'
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
 
@@ -109,9 +108,9 @@ export class TzKalZuk extends Mob {
       if (this.setTimer === 0) {
         this.setTimer = 350;
   
-        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 10})
+        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 7})
         this.world.region.addMob(mager);
-        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 10})
+        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 9})
         this.world.region.addMob(ranger);
       }  
     }
