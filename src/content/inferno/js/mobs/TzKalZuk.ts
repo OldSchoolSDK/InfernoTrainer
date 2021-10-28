@@ -165,7 +165,6 @@ export class TzKalZuk extends Mob {
 
   attack () {
     let shieldOrPlayer: Unit = this.shield;
-    const shieldLocation = this.shield.location;
 
     if (this.world.player.location.x < this.shield.location.x || this.world.player.location.x >= this.shield.location.x + 5) {
       shieldOrPlayer = this.world.player;

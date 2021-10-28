@@ -237,6 +237,10 @@ export class Unit extends GameObject {
     return 0
   }
 
+  get flinchDelay () {
+    return Math.floor(this.cooldown / 2);
+  }
+  
   get attackRange () {
     return 0
   }
@@ -379,8 +383,8 @@ export class Unit extends GameObject {
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
-          if (this.attackCooldownTicks < Math.floor(this.cooldown / 2) + 1){
-            this.attackCooldownTicks = Math.floor(this.cooldown / 2) + 1;
+          if (this.attackCooldownTicks < this.flinchDelay + 1){
+            this.attackCooldownTicks = this.flinchDelay + 1;
           }
         }
       }
