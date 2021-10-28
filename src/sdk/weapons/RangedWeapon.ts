@@ -18,6 +18,10 @@ export class RangedWeapon extends Weapon {
     }
   }
 
+  calculateHitDelay(distance: number) {
+    return Math.floor((3 + distance) / 6) + 1;
+  }
+
   _calculatePrayerEffects (from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {}
     

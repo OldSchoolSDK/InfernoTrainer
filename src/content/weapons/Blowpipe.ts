@@ -40,6 +40,11 @@ export class Blowpipe extends RangedWeapon {
   }
 
 
+  calculateHitDelay(distance: number) {
+    return Math.floor(distance / 6) + 1;
+  }
+
+
   attackStyles() {
     return [
       AttackStyle.ACCURATE,

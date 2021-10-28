@@ -67,7 +67,7 @@ export class Projectile {
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
     }
     
-    this.remainingDelay = Math.floor(1 + (3 + this.distance) / 6) + 1;
+    this.remainingDelay = weapon.calculateHitDelay(this.distance);
     if (this.options.reduceDelay) { 
       this.remainingDelay -= this.options.reduceDelay;
       if (this.remainingDelay < 1) {
