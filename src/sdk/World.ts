@@ -159,6 +159,7 @@ export class World {
 
     if (this.getReadyTimer <= 0) {
       this.region.mobs.forEach((mob) => mob.draw(tickPercent))
+      this.region.newMobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
 
