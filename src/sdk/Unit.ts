@@ -379,7 +379,7 @@ export class Unit extends GameObject {
 
           if (this.attackCooldownTicks < Math.floor(this.cooldown / 2)){
             console.log('proccing')
-            this.attackCooldownTicks = Math.floor(this.cooldown / 2);
+            this.attackCooldownTicks = Math.floor(this.cooldown / 2) + 1;
           }
         }
       }
