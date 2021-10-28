@@ -126,6 +126,13 @@ export class World {
       })
       this.region.mobs.forEach((mob) => mob.attackStep())
 
+
+      this.region.newMobs.forEach((mob) => {
+        mob.ticksAlive++;
+        mob.movementStep()
+      })
+      this.region.newMobs.forEach((mob) => mob.attackStep())
+
     }
 
     this.player.movementStep()
