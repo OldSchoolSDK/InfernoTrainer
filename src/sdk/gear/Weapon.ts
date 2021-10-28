@@ -128,7 +128,7 @@ export class Weapon extends Equipment{
 
 
   calculateHitDelay(distance: number) {
-    return 1;
+    return 999;
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {

@@ -70,6 +70,10 @@ export class Player extends Unit {
   }
 
 
+  get isPlayer(): boolean {
+    return true;
+  }
+  
   get attackRange () {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange

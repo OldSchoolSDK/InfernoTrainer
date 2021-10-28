@@ -68,6 +68,9 @@ export class Projectile {
     }
     
     this.remainingDelay = weapon.calculateHitDelay(this.distance);
+    if (from.isPlayer) {
+      this.remainingDelay++;
+    }
     if (this.options.reduceDelay) { 
       this.remainingDelay -= this.options.reduceDelay;
       if (this.remainingDelay < 1) {

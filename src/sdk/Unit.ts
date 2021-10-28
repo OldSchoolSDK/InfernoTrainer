@@ -127,6 +127,10 @@ export class Unit extends GameObject {
     return UnitTypes.MOB;
   }
 
+  get isPlayer(): boolean {
+    return false;
+  }
+
   mobName(): EntityName { 
     return null;
   }
