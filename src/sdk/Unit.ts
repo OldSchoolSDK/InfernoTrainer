@@ -539,8 +539,10 @@ export class Unit extends GameObject {
       }
       this.world.region.context.restore();
 
-      this.world.region.context.strokeRect(projectile.closestTile.x, projectile.closestTile.y, Settings.tileSize, Settings.tileSize);
-      
+      if (projectile.closestTile){
+        this.world.region.context.strokeRect(projectile.closestTile.x, projectile.closestTile.y, Settings.tileSize, Settings.tileSize);
+      }
+
     });
   }
 
