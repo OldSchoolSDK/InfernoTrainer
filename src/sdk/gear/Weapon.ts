@@ -127,6 +127,10 @@ export class Weapon extends Equipment{
   }
 
 
+  calculateHitDelay(distance: number) {
+    return 999;
+  }
+
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0

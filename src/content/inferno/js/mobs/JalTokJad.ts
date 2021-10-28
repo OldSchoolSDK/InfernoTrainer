@@ -173,6 +173,10 @@ export class JalTokJad extends Mob {
   get cooldown () {
     return this.waveCooldown
   }
+  
+  get flinchDelay () {
+    return 2;
+  }
 
   get attackRange () {
     return 15

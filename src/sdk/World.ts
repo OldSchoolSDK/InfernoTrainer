@@ -126,6 +126,13 @@ export class World {
       })
       this.region.mobs.forEach((mob) => mob.attackStep())
 
+
+      this.region.newMobs.forEach((mob) => {
+        mob.ticksAlive++;
+        mob.movementStep()
+      })
+      this.region.newMobs.forEach((mob) => mob.attackStep())
+
     }
 
     this.player.movementStep()
@@ -152,6 +159,7 @@ export class World {
 
     if (this.getReadyTimer <= 0) {
       this.region.mobs.forEach((mob) => mob.draw(tickPercent))
+      this.region.newMobs.forEach((mob) => mob.draw(tickPercent))
     }
     this.player.draw(tickPercent)
 

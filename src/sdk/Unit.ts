@@ -127,6 +127,10 @@ export class Unit extends GameObject {
     return UnitTypes.MOB;
   }
 
+  get isPlayer(): boolean {
+    return false;
+  }
+
   mobName(): EntityName { 
     return null;
   }
@@ -233,6 +237,10 @@ export class Unit extends GameObject {
     return 0
   }
 
+  get flinchDelay () {
+    return Math.floor(this.cooldown / 2);
+  }
+  
   get attackRange () {
     return 0
   }
@@ -374,6 +382,10 @@ export class Unit extends GameObject {
         this.damageTaken();
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
+
+          if (this.attackCooldownTicks < this.flinchDelay + 1){
+            this.attackCooldownTicks = this.flinchDelay + 1;
+          }
         }
       }
     })
@@ -534,6 +546,12 @@ export class Unit extends GameObject {
         this.world.region.context.fill()
       }
       this.world.region.context.restore();
+
+      // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
+      //   this.world.region.context.strokeStyle = 'red';
+      //   this.world.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
+      // }
+
     });
   }
 

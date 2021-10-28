@@ -360,8 +360,8 @@ export class Mob extends Unit {
     ]
   }
 
+
   drawOverTile(tickPercent: number) {
-    
   }
 
   drawUnderTile(tickPercent: number) {
@@ -498,6 +498,7 @@ export class Mob extends Unit {
     this.world.region.context.restore()
 
     this.drawIncomingProjectiles(tickPercent)
+
 
 
   }
