@@ -375,7 +375,7 @@ export class Unit extends GameObject {
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
-          if (this.attackCooldownTicks <= 0) {
+          if (this.attackCooldownTicks < Math.floor(this.cooldown / 2)){
             this.attackCooldownTicks = Math.floor(this.cooldown / 2);
           }
         }
