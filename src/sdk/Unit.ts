@@ -539,9 +539,10 @@ export class Unit extends GameObject {
       }
       this.world.region.context.restore();
 
-      if (projectile.closestTile){
-        this.world.region.context.strokeRect(projectile.closestTile.x, projectile.closestTile.y, Settings.tileSize, Settings.tileSize);
-      }
+      // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
+      //   this.world.region.context.strokeStyle = 'red';
+      //   this.world.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
+      // }
 
     });
   }

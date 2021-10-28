@@ -29,8 +29,6 @@ export class Projectile {
   offsetY: number;
   image: HTMLImageElement;
 
-  closestTile: Location;
-
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */
@@ -65,9 +63,7 @@ export class Projectile {
       // Things like ice barrage calculate distance to SW tile only
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [this.to.location.x, this.to.location.y])
     } else {
-      let closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);
-      this.closestTile = { x: closestTile[0], y: closestTile[1] };
-      
+      let closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);      
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
     }
     
