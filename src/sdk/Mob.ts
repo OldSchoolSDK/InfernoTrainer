@@ -362,16 +362,6 @@ export class Mob extends Unit {
 
 
   drawOverTile(tickPercent: number) {
-    // Draw mob
-
-    this.world.region.context.fillStyle = '#FFFF00'
-    this.world.region.context.font = '16px OSRS'
-
-    this.world.region.context.fillText(
-      String(this.attackCooldownTicks),
-      0,
-      0
-    )
   }
 
   drawUnderTile(tickPercent: number) {
