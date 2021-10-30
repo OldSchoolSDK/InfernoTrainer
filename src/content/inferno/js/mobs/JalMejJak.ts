@@ -14,6 +14,9 @@ import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectil
 import { EntityName } from "../../../../sdk/EntityName"
 
 class HealWeapon extends Weapon {
+  calculateHitDelay(distance: number) {
+    return 3;
+  }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions) {
     this.damage = -Math.floor(Math.random() * 25);

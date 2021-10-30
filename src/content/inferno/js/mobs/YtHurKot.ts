@@ -13,6 +13,9 @@ import { EntityName } from "../../../../sdk/EntityName"
 
 class HealWeapon extends Weapon {
 
+  calculateHitDelay(distance: number) {
+    return 3;
+  }
   static isMeleeAttackStyle (style: string) {
     return true;
   }
