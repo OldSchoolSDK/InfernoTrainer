@@ -26,7 +26,7 @@ class HealWeapon extends Weapon {
 
 class AoeWeapon extends Weapon {
   calculateHitDelay(distance: number) {
-    return 0;
+    return 1;
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
