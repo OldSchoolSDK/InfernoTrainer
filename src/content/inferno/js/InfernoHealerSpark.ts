@@ -17,6 +17,9 @@ import { JalMejJak } from './mobs/JalMejJak'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
 
 class InfernoSparkWeapon extends Weapon{
+  calculateHitDelay(distance: number) {
+    return 1;
+  }
 
   static isMeleeAttackStyle (style: string) {
     // fun way to make the attack instantaneous
