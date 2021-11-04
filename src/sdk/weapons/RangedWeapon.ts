@@ -1,5 +1,3 @@
-import { find, intersection } from 'lodash'
-import { BasePrayer, PrayerGroups } from '../BasePrayer'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile, ProjectileOptions } from './Projectile'
@@ -87,7 +85,9 @@ export class RangedWeapon extends Weapon {
       }
     }
     const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier
-    return Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses))
+    const max = Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses))
+    console.log('max hit is', max);
+    return max;
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
