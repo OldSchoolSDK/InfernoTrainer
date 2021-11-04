@@ -18,7 +18,7 @@ import { LineOfSightMask } from '../../../sdk/LineOfSight'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {
-    return 0;
+    return 1;
   }
 
   static isMeleeAttackStyle (style: string) {
