@@ -87,15 +87,6 @@ export class RangedWeapon extends Weapon {
     }
     const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier
     const max = Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses))
-
-    if (this.itemName == ItemName.TOXIC_BLOWPIPE) {
-      console.log('max hit is', max);
-      if (max > 33) {
-        console.log('over max', max)
-      }
-      
-    }
-
     return max;
   }
 

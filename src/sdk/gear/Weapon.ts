@@ -14,6 +14,7 @@ import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Item } from "../Item";
+import { Ammo } from "./Ammo";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -48,6 +49,11 @@ export class Weapon extends Equipment{
   attackStyles() {
     return []
   }
+  
+  compatibleAmmo(): ItemName[] {
+    return [];
+  }
+
 
   attackStyleCategory(): AttackStyleTypes {
     return null;

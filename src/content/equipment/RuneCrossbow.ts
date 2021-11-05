@@ -41,6 +41,10 @@ export class RuneCrossbow extends RangedWeapon {
     }
   }
 
+  compatibleAmmo(): ItemName[] {
+    return [ItemName.RUBY_BOLTS_E, ItemName.DIAMOND_BOLTS_E];
+  }
+  
   attackStyles() {
     return [
       AttackStyle.ACCURATE,

@@ -124,14 +124,11 @@ export class Player extends Unit {
       this.equipment.cape,
     ]
 
-    // hack hack because blowpipe was getting dragon arrows added
-    if (!this.equipment.weapon && this.equipment.weapon.itemName !== ItemName.TOXIC_BLOWPIPE) {
-      if (this.equipment.weapon && this.equipment.weapon.itemName === ItemName.TWISTED_BOW && this.equipment.ammo && this.equipment.ammo.itemName === ItemName.DRAGON_ARROWS) {
+    if (this.equipment.weapon 
+      && this.equipment.ammo 
+      && this.equipment.weapon.compatibleAmmo().includes(this.equipment.ammo.itemName)){
         gear.push(this.equipment.ammo)
-      }else if (this.equipment.ammo && this.equipment.ammo.itemName !== ItemName.DRAGON_ARROWS){
-        gear.push(this.equipment.ammo)
-      }  
-    }
+      }
 
     // updated gear bonuses
     this.cachedBonuses = Unit.emptyBonuses();

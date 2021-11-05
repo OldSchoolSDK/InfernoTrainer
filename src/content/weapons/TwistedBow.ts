@@ -6,6 +6,8 @@ import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
+import { Ammo } from '../../sdk/gear/Ammo'
+import { DragonArrows } from '../equipment/DragonArrows'
 
 export class TwistedBow extends RangedWeapon {
   constructor() {
@@ -38,6 +40,11 @@ export class TwistedBow extends RangedWeapon {
     }
   }
 
+
+
+  compatibleAmmo(): ItemName[] {
+    return [ItemName.DRAGON_ARROWS];
+  }
 
 
   attackStyles() {
