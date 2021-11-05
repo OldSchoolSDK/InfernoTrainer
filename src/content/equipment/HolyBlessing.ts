@@ -1,6 +1,6 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Holy_blessing.png';
-import { Ammo } from "../../sdk/gear/Ammo";
+import { Ammo, AmmoType } from "../../sdk/gear/Ammo";
 
 export class HolyBlessing extends Ammo{
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
@@ -12,6 +12,10 @@ export class HolyBlessing extends Ammo{
     return 0.51;
   }
   
+  ammoType(): AmmoType {
+    return AmmoType.BLESSING;
+  }
+
   
   constructor() {
     super();

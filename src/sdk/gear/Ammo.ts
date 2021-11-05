@@ -1,8 +1,17 @@
 import { Equipment } from "../Equipment";
 import { Player } from "../Player";
-import { UnitEquipment } from "../Unit";
+
+export enum AmmoType {
+  BLESSING = 0,
+  AMMO = 1, // Temporary, can be broken down later. Only made this enum for the blessing distinction.
+}
 
 export class Ammo extends Equipment {
+
+  ammoType(): AmmoType {
+    return AmmoType.AMMO;
+  }
+
   assignToPlayer(player: Player) {
     player.equipment.ammo = this;
   }

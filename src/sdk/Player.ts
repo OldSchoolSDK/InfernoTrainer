@@ -24,6 +24,7 @@ import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
 import { AttackStylesController } from './AttackStylesController'
+import { AmmoType } from './gear/Ammo'
 
 class PlayerEffects {
   poisoned: number = 0;
@@ -124,11 +125,11 @@ export class Player extends Unit {
       this.equipment.cape,
     ]
 
-    if (this.equipment.weapon 
-      && this.equipment.ammo 
-      && this.equipment.weapon.compatibleAmmo().includes(this.equipment.ammo.itemName)){
-        gear.push(this.equipment.ammo)
-      }
+    if (this.equipment.weapon && this.equipment.ammo && this.equipment.weapon.compatibleAmmo().includes(this.equipment.ammo.itemName)){
+      gear.push(this.equipment.ammo);
+    }else if (this.equipment.ammo && this.equipment.ammo.ammoType() == AmmoType.BLESSING){
+      gear.push(this.equipment.ammo);
+    }
 
     // updated gear bonuses
     this.cachedBonuses = Unit.emptyBonuses();
