@@ -90,6 +90,9 @@ export class RangedWeapon extends Weapon {
 
     if (this.itemName == ItemName.TOXIC_BLOWPIPE) {
       console.log('max hit is', max);
+      if (max > 33) {
+        console.log('over max', max)
+      }
       
     }
 
