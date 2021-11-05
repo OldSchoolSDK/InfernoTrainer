@@ -2,6 +2,7 @@ import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile, ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
+import { ItemName } from '../ItemName'
 
 export class RangedWeapon extends Weapon {
 
@@ -86,7 +87,12 @@ export class RangedWeapon extends Weapon {
     }
     const rangedStrength = Math.floor((Math.floor(from.currentStats.range) * prayerMultiplier) + (bonuses.isAccurate ? 3 : 0) + 8) * bonuses.voidMultiplier
     const max = Math.floor(Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64) / 640) * bonuses.gearMultiplier)) * this._damageMultiplier(from, to, bonuses))
-    console.log('max hit is', max);
+
+    if (this.itemName == ItemName.TOXIC_BLOWPIPE) {
+      console.log('max hit is', max);
+      
+    }
+
     return max;
   }
 

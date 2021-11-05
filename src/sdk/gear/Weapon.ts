@@ -13,6 +13,7 @@ import { find } from "lodash";
 import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
+import { Item } from "../Item";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
