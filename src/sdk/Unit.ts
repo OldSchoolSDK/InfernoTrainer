@@ -370,6 +370,13 @@ export class Unit extends GameObject {
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
+
+        // Some attacks can be nullified if they land after the attackers death.
+        if (projectile.options && projectile.options.cancelOnDeath === true && 
+            projectile.from && projectile.from.isDying() === true) {
+          return;
+        }
+
         if (projectile.damage < 0) {
           // subtracting a negative gives a positive
           if (this.currentStats.hitpoint < this.stats.hitpoint) {

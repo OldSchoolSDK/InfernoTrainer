@@ -12,6 +12,7 @@ export interface ProjectileOptions {
   forceSWTile?: boolean;
   hidden?: boolean;
   reduceDelay?: number;
+  cancelOnDeath?: boolean;
 }
 
 export class Projectile {
