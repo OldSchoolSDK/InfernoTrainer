@@ -58,7 +58,6 @@ class JadRangeWeapon extends RangedWeapon {
     }, 2));
     return true;
   }
-  
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
   }
@@ -182,7 +181,7 @@ export class JalTokJad extends Mob {
   }
 
   get attackRange () {
-    return 15
+    return 25
   }
 
   get size () {

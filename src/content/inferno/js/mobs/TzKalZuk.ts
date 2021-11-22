@@ -19,6 +19,7 @@ import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
+import { JalImKot } from './JalImKot'
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
 
@@ -112,6 +113,8 @@ export class TzKalZuk extends Mob {
         this.world.region.addMob(mager);
         const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 9})
         this.world.region.addMob(ranger);
+        const meleer = new JalImKot(this.world, { x: 25, y: 30}, {aggro: this.world.player, spawnDelay: 3})
+        this.world.region.addMob(meleer);
       }  
     }
 
@@ -127,11 +130,19 @@ export class TzKalZuk extends Mob {
       }
     }else{
       if (this.currentStats.hitpoint < 480) {
-        this.setTimer += 175;
+        this.setTimer += 175 * 6;
         this.timerPaused = false;
         // Spawn Jad
-        const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
+        const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 9, stun: 1, healers: 6, isZukWave: true, spawnDelay: 7 });
         this.world.region.addMob(jad)
+
+
+        const jad2 = new JalTokJad(this.world, { x: 16, y: 25}, { aggro: this.shield, attackSpeed: 9, stun: 1, healers: 6, isZukWave: true, spawnDelay: 10 });
+        this.world.region.addMob(jad2)
+
+
+        const jad3 = new JalTokJad(this.world, { x: 32, y: 25}, { aggro: this.shield, attackSpeed: 9, stun: 1, healers: 6, isZukWave: true, spawnDelay: 13 });
+        this.world.region.addMob(jad3)
       }  
     }
 
@@ -141,11 +152,17 @@ export class TzKalZuk extends Mob {
       const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.region.addMob(healer1);
 
+      const healer12 = new JalMejJak(this.world, {x: 18, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.world.region.addMob(healer12);
+
       const healer2 = new JalMejJak(this.world, {x: 20, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.region.addMob(healer2);
 
       const healer3 = new JalMejJak(this.world, {x: 30, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.region.addMob(healer3);
+
+      const healer34 = new JalMejJak(this.world, {x: 32, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.world.region.addMob(healer34);
 
       const healer4 = new JalMejJak(this.world, {x: 34, y: 9}, { aggro: this, spawnDelay: 2 });
       this.world.region.addMob(healer4);
@@ -190,7 +207,7 @@ export class TzKalZuk extends Mob {
   }
 
   magicMaxHit () {
-    return 251
+    return 1000
   }
   
   setStats () {
@@ -207,7 +224,7 @@ export class TzKalZuk extends Mob {
       defence: 260,
       range: 400,
       magic: 150,
-      hitpoint: 1200
+      hitpoint: 2400
     }
 
     // with boosts
@@ -228,7 +245,7 @@ export class TzKalZuk extends Mob {
         slash: 0,
         crush: 0,
         magic: 350,
-        range: 100
+        range: 150
       },
       other: {
         meleeStrength: 200,
@@ -240,9 +257,9 @@ export class TzKalZuk extends Mob {
   }
   get cooldown () {
     if (this.enraged) {
-      return 7;
+      return 3;
     }
-    return 10
+    return 5
   }
 
   attackStyleForNewAttack () {
