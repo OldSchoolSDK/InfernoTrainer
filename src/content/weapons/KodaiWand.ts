@@ -14,7 +14,7 @@ import { BloodBarrageSpell } from '../../sdk/weapons/BloodBarrageSpell';
 
 export class KodaiWand extends MeleeWeapon {
 
-  autocastSpell: BarrageSpell = new BloodBarrageSpell();
+  autocastSpell: BarrageSpell = new IceBarrageSpell();
 
   constructor() {
     super();
