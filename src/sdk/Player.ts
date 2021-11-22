@@ -323,7 +323,11 @@ export class Player extends Unit {
 
 
   setAggro(mob: Unit) {
-    this.autocastDelay = 1;
+    
+    if (mob !== this.aggro) { // do spam clicks constantly reset autocast delay? idk
+      this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever
+    }
+
     this.aggro = mob;
     this.seekingItem = null;
   }
