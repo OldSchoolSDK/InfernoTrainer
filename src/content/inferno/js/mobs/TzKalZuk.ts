@@ -137,7 +137,7 @@ export class TzKalZuk extends Mob {
         this.world.region.addMob(jad)
 
 
-        const jad2 = new JalTokJad(this.world, { x: 16, y: 25}, { aggro: this.shield, attackSpeed: 9, stun: 1, healers: 6, isZukWave: true, spawnDelay: 10 });
+        const jad2 = new JalTokJad(this.world, { x: 15, y: 25}, { aggro: this.shield, attackSpeed: 9, stun: 1, healers: 6, isZukWave: true, spawnDelay: 10 });
         this.world.region.addMob(jad2)
 
 
