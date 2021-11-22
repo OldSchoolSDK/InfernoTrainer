@@ -11,10 +11,11 @@ export class IceBarrageSpell extends BarrageSpell {
     return ItemName.ICE_BARRAGE
   }
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     super.attack(world, from, to, bonuses, options)    
     if (this.lastHitHit) {
       to.frozen = 32
     }
+    return true;
   }
 }

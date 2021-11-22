@@ -57,8 +57,8 @@ export class BarrageSpell extends MagicWeapon {
     }
   }
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     options.forceSWTile = true;
-    super.attack(world, from, to, bonuses, options)
+    return super.attack(world, from, to, bonuses, options)
   }
 }

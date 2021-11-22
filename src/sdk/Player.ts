@@ -47,6 +47,8 @@ export class Player extends Unit {
   effects = new PlayerEffects();
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
+  autocastDelay: number = 1;
+
   eats: Eating = new Eating();
   inventory: Item[];
 
@@ -273,7 +275,7 @@ export class Player extends Unit {
     document.body.style.background = 'red'
   }
 
-  attack () {
+  attack (): boolean {
     if (this.manualSpellCastSelection) {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
@@ -289,20 +291,22 @@ export class Player extends Unit {
             this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
             this.regenTimer.specUsed();
           }
-          this.useSpecialAttack  = false;
+          this.useSpecialAttack = false;
         }else{
           const bonuses: AttackBonuses = { };
           if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
             bonuses.gearMultiplier = 7/6;
           }
 
-          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
+          return this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
         }
       }else{
-        console.log('TODO: Implement punching')
+        return false;
       }
     }
 
+
+    return true;
     // this.playAttackSound();
   }
 
@@ -319,6 +323,7 @@ export class Player extends Unit {
 
 
   setAggro(mob: Unit) {
+    this.autocastDelay = 1;
     this.aggro = mob;
     this.seekingItem = null;
   }
@@ -515,8 +520,9 @@ export class Player extends Unit {
     if (this.aggro) {
       this.setHasLOS()
       if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
-        this.attack()
-        this.attackCooldownTicks = this.attackSpeed
+        if (this.attack()) {
+          this.attackCooldownTicks = this.attackSpeed
+        }
       }
     }
   }

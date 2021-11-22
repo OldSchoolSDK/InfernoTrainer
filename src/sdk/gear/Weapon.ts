@@ -138,7 +138,8 @@ export class Weapon extends Equipment{
     return 999;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  // Return value: If the attack was performed or not. If the attack was not performed, do not reset timers.
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
@@ -179,6 +180,7 @@ export class Weapon extends Equipment{
 
     this.grantXp(from);
     this.registerProjectile(from, to, bonuses)
+    return true;
   }
   
   _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
