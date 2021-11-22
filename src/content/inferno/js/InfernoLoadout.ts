@@ -93,7 +93,7 @@ export class InfernoLoadout {
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(),
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
         new SaradominBrew(), new SaradominBrew(), new SuperRestore(), new SuperRestore(), 
-        new BastionPotion(), new StaminaPotion(), new SuperRestore(), new SuperRestore(), 
+        new BastionPotion(), new StaminaPotion(), new BastionPotion(), new StaminaPotion(), 
       ]
     };
   }
