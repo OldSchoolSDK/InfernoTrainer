@@ -10,7 +10,7 @@ export class InfernoMobDeathStore {
   static deadMobs: Mob[] = [];
   static npcDied (world: World, mob: Mob) {
     const region = world.region as InfernoRegion;
-    if (region.wave > 69){
+    if (region.wave > 69 && region.wave < 74){
       region.score += mob.stats.hitpoint;
       DelayedAction.registerDelayedAction(new DelayedAction(() => {
         InfernoWaves.spawnEnduranceMode(world, 1, true).forEach((mob: Mob) => world.region.addMob(mob))
