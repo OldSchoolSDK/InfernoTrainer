@@ -224,7 +224,7 @@ export class World {
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
-    if (region.wave > 69) {
+    if (region.wave > 69 && region.wave < 74) {
 
 
       this.viewport.context.font = '24px OSRS'
