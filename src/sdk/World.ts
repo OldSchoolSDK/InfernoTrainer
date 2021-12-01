@@ -120,19 +120,26 @@ export class World {
     this.region.entities.forEach((entity) => entity.tick())
 
     if (this.getReadyTimer <=0){
-      this.region.mobs.forEach((mob) => {
-        mob.ticksAlive++;
-        mob.movementStep()
-      })
-      this.region.mobs.forEach((mob) => mob.attackStep())
 
+      // hack hack hack
+      const infernoRegion = this.region as InfernoRegion;
 
-      this.region.newMobs.forEach((mob) => {
-        mob.ticksAlive++;
-        mob.movementStep()
-      })
-      this.region.newMobs.forEach((mob) => mob.attackStep())
+      if (infernoRegion.wave !== 0){
 
+        this.region.mobs.forEach((mob) => {
+          mob.ticksAlive++;
+          mob.movementStep()
+        })
+        this.region.mobs.forEach((mob) => mob.attackStep())
+  
+  
+        this.region.newMobs.forEach((mob) => {
+          mob.ticksAlive++;
+          mob.movementStep()
+        })
+        this.region.newMobs.forEach((mob) => mob.attackStep())
+  
+      }
     }
 
     this.player.movementStep()

@@ -158,7 +158,7 @@ export class InfernoRegion extends Region {
         return [mob.location.x - 11, mob.location.y - 14]
       });
 
-      const url = `/?wave=0&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`
+      const url = `/?wave=100&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`
       window.location.href = url;
 
     })
