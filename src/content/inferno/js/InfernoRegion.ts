@@ -80,8 +80,8 @@ export class InfernoRegion extends Region {
     if (this.wave < 0) {
       this.wave = 0;
     }
-    if (this.wave > InfernoWaves.waves.length + 7) {
-      this.wave = InfernoWaves.waves.length + 7;
+    if (this.wave > InfernoWaves.waves.length + 8) {
+      this.wave = InfernoWaves.waves.length + 8;
     }
 
 
@@ -158,7 +158,7 @@ export class InfernoRegion extends Region {
         return [mob.location.x - 11, mob.location.y - 14]
       });
 
-      const url = `/?wave=100&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`
+      const url = `/?wave=74&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`
       window.location.href = url;
 
     })
@@ -307,6 +307,10 @@ export class InfernoRegion extends Region {
     }else if (this.wave === 73){
       player.location = { x: 28, y: 17}
       InfernoWaves.spawnEnduranceMode(world, 9).forEach((mob: Mob) => world.region.addMob(mob))
+    }else if (this.wave === 74){
+      player.location = { x: 28, y: 17}
+
+      importSpawn();
     }
     player.perceivedLocation = player.location
     player.destinationLocation = player.location
