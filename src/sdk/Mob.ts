@@ -12,6 +12,7 @@ import { Location } from "./Location"
 import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
 import { EntityName } from './EntityName'
+import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -349,7 +350,7 @@ export class Mob extends Unit {
   }
 
   contextActions (world: World, x: number, y: number) {
-    return [
+    const actions = [
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
@@ -357,7 +358,23 @@ export class Mob extends Unit {
           this.world.viewport.clickController.sendToServer(() => this.world.viewport.clickController.playerAttackClick(this))
         }
       }
-    ]
+    ];
+
+    // hack hack hack
+
+    const infernoRegion = world.region as InfernoRegion;
+    if (infernoRegion.wave === 0) {
+      actions.push(
+        {
+          text: [{ text: 'Remove ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+          action: () => {
+            this.world.region.removeMob(this);
+          }
+        }
+      );
+    }
+
+    return actions;
   }
 
 
