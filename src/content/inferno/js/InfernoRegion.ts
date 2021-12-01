@@ -123,8 +123,46 @@ export class InfernoRegion extends Region {
     const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
     const exportWaveInput: HTMLButtonElement = document.getElementById('exportCustomWave') as HTMLButtonElement;
+    const editWaveInput: HTMLButtonElement = document.getElementById('editWave') as HTMLButtonElement;
 
 
+    editWaveInput.addEventListener('click', () => {
+
+
+      const magers = filter(world.region.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_ZEK;
+      }).map((mob: Mob) => {
+        return [mob.location.x - 11, mob.location.y - 14]
+      });
+      
+      const rangers = filter(world.region.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_XIL;
+      }).map((mob: Mob) => {
+        return [mob.location.x - 11, mob.location.y - 14]
+      });
+      
+      const meleers = filter(world.region.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_IM_KOT;
+      }).map((mob: Mob) => {
+        return [mob.location.x - 11, mob.location.y - 14]
+      });
+      
+      const blobs = filter(world.region.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_AK;
+      }).map((mob: Mob) => {
+        return [mob.location.x - 11, mob.location.y - 14]
+      });
+      
+      const bats = filter(world.region.mobs, (mob: Mob) => {
+        return mob.mobName() === EntityName.JAL_MEJ_RAJ;
+      }).map((mob: Mob) => {
+        return [mob.location.x - 11, mob.location.y - 14]
+      });
+
+      const url = `/?wave=0&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`
+      window.location.href = url;
+
+    })
     exportWaveInput.addEventListener('click', () => {
 
 
