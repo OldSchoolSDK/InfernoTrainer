@@ -18,9 +18,10 @@ class HealWeapon extends Weapon {
     return 3;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
     this.damage = -Math.floor(Math.random() * 25);
     this.registerProjectile(from, to, bonuses, options)
+    return true;
   }
 }
 
@@ -29,7 +30,7 @@ class AoeWeapon extends Weapon {
     return 1;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
     const playerLocation = world.player.location;
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       // make splat in 2 random spots and where the player is 
@@ -45,6 +46,7 @@ class AoeWeapon extends Weapon {
       world.region.addEntity(spark3);
       
     }, 4))
+    return true;
   }
 
   

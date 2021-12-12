@@ -13,10 +13,11 @@ import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 class JalMejRahWeapon extends RangedWeapon {
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     super.attack(world, from, to, bonuses, options);
     const player = to as Player;
     player.currentStats.run -= 300;
+    return true;
   }
 }
 export class JalMejRah extends Mob {

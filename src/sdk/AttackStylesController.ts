@@ -64,6 +64,7 @@ export enum AttackStyle {
   AGGRESSIVESLASH = 'Aggr (Slash)',
   DEFENSIVE = 'DEFENSIVE',
   CONTROLLED = 'CONTROLLED',
+  AUTOCAST = 'AUTOCAST',
 }
 
 interface AttackStyleStorage {
@@ -97,6 +98,7 @@ export class AttackStylesController {
       [AttackStyle.ACCURATE] : ImageLoader.createImage(StaffAccurateImage),
       [AttackStyle.AGGRESSIVECRUSH] : ImageLoader.createImage(StaffAggressiveImage),
       [AttackStyle.DEFENSIVE] : ImageLoader.createImage(StaffDefensiveImage),
+      [AttackStyle.AUTOCAST] : ImageLoader.createImage(StaffDefensiveImage),
     },
     [AttackStyleTypes.THROWN] : {
       [AttackStyle.ACCURATE] : ImageLoader.createImage(ThrownAccurateImage),
