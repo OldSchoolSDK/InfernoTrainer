@@ -25,7 +25,7 @@ interface JadUnitOptions extends UnitOptions {
 
 class JadMagicWeapon extends MagicWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('magic')
@@ -36,6 +36,7 @@ class JadMagicWeapon extends MagicWeapon {
 
       super.attack(world, from, to, bonuses);
     }, 3));
+    return true;
   }
   
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
@@ -44,7 +45,7 @@ class JadMagicWeapon extends MagicWeapon {
 }
 class JadRangeWeapon extends RangedWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('range')
@@ -55,7 +56,9 @@ class JadRangeWeapon extends RangedWeapon {
       
       super.attack(world, from, to, bonuses);
     }, 2));
+    return true;
   }
+  
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
   }

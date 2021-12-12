@@ -82,7 +82,7 @@ export class ScytheOfVitur extends MeleeWeapon {
 
   // Scythe attacks in a 1x3 arc in front of the player.
   // TODO: Refactor/change method so that it can actually hit multiple targets.
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
     // As there is no concept of player direction yet, we dynamically calculate this based on the relative location of
     // the attacker.
     // Find the closest tile on the npc to us.
@@ -115,5 +115,6 @@ export class ScytheOfVitur extends MeleeWeapon {
         super.attack(world, from, to, extraHitBonuses)
       }
     })
+    return true;
   }
 }

@@ -4,8 +4,17 @@ import BPInventImage from '../../assets/images/equipment/Kodai_wand.png'
 import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { ItemName } from "../../sdk/ItemName";
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
+import { BarrageSpell } from '../../sdk/weapons/BarrageSpell';
+import { IceBarrageSpell } from '../../sdk/weapons/IceBarrageSpell';
+import { AttackBonuses } from '../../sdk/gear/Weapon';
+import { Unit } from '../../sdk/Unit';
+import { World } from '../../sdk/World';
+import { Player } from '../../sdk/Player';
+import { BloodBarrageSpell } from '../../sdk/weapons/BloodBarrageSpell';
 
 export class KodaiWand extends MeleeWeapon {
+
+  autocastSpell: BarrageSpell = new BloodBarrageSpell();
 
   constructor() {
     super();
@@ -37,6 +46,28 @@ export class KodaiWand extends MeleeWeapon {
       }
     }
   }
+
+
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+
+    if (this.attackStyle() === AttackStyle.AUTOCAST){
+
+      if (from.isPlayer) {
+        const player: Player = from as Player;
+        if (player.autocastDelay === 0) {
+          this.autocastSpell.cast(world, from, to);
+          return true;
+        }
+        if (player.autocastDelay > 0) {
+          player.autocastDelay--;
+        }
+        return false;
+      }
+    }
+
+    return super.attack(world, from, to, bonuses);
+  }
+  
   
 
   attackStyles() {
@@ -44,6 +75,7 @@ export class KodaiWand extends MeleeWeapon {
       AttackStyle.ACCURATE,
       AttackStyle.AGGRESSIVECRUSH,
       AttackStyle.DEFENSIVE,
+      AttackStyle.AUTOCAST
     ]
   }
 
@@ -52,7 +84,7 @@ export class KodaiWand extends MeleeWeapon {
   }
 
   defaultStyle(): AttackStyle {
-    return AttackStyle.AGGRESSIVECRUSH;
+    return AttackStyle.AUTOCAST;
   }
 
   get weight(): number {
@@ -72,11 +104,17 @@ export class KodaiWand extends MeleeWeapon {
   }
 
   get attackRange () {
-    // TODO: Override with spell selection
+
+    if (this.attackStyle() === AttackStyle.AUTOCAST){
+      return 10;
+    }
     return 1
   }
 
   get attackSpeed () {
+    if (this.attackStyle() === AttackStyle.AUTOCAST){
+      return 5;
+    }
     return 4
   }
 

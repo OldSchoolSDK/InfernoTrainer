@@ -12,7 +12,7 @@ export class BloodBarrageSpell extends BarrageSpell {
   }
 
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     const startDamage = this.totalDamage;
     super.attack(world, from, to, bonuses, options)
     const attackDamage = this.totalDamage - startDamage;
@@ -20,5 +20,6 @@ export class BloodBarrageSpell extends BarrageSpell {
       from.currentStats.hitpoint += Math.floor(attackDamage * 0.25);
       from.currentStats.hitpoint = Math.max(Math.min(from.stats.hitpoint, from.currentStats.hitpoint), 0);
     }
+    return true;
   }
 }
