@@ -38,7 +38,7 @@ export class BarrageSpell extends MagicWeapon {
     // calculate AoE magic effects
     if (this.aoe.length) {
       const alreadyCastedOn: Unit[] = [ to ]
-      this.attack(world, from, to, { magicBaseSpellDamage: 30 })
+      this.attack(world, from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
       this.aoe.forEach((point) => {
         Pathing.mobsAtAoeOffset(world, to, point)
           .forEach((mob: Mob) => {
@@ -49,11 +49,11 @@ export class BarrageSpell extends MagicWeapon {
               return
             }
             alreadyCastedOn.push(mob)
-            this.attack(world, from, mob, { magicBaseSpellDamage: 30 }, {hidden: true})
+            this.attack(world, from, mob, { magicBaseSpellDamage: 30, attackStyle: 'magic' }, {hidden: true})
           })
       })
     } else {
-      this.attack(world, from, to, { magicBaseSpellDamage: 30 })
+      this.attack(world, from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
     }
   }
   
