@@ -40,7 +40,7 @@ class JadMagicWeapon extends MagicWeapon {
   }
   
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
+    to.addProjectile(new Projectile(this, this.damage, from, to, 'magic', { reduceDelay: 2 }))
   }
 }
 class JadRangeWeapon extends RangedWeapon {

@@ -548,7 +548,21 @@ export class Unit extends GameObject {
         );
       }else{
         this.world.region.context.beginPath()
+
         this.world.region.context.fillStyle = '#D1BB7773'
+        if (projectile.attackStyle === 'slash' || projectile.attackStyle === 'crush' || projectile.attackStyle === 'stab') {
+          this.world.region.context.fillStyle = '#FF000073';
+        }else if (projectile.attackStyle === 'range') {
+          this.world.region.context.fillStyle = '#00FF0073';
+
+        }else if (projectile.attackStyle === 'magic') {
+          this.world.region.context.fillStyle = '#0000FF73';
+        }else if (projectile.attackStyle === 'heal') {
+          this.world.region.context.fillStyle = '#9813aa73';
+        }else{
+          console.log('[WARN] This style is not accounted for in custom coloring: ', projectile.attackStyle);
+
+        }
         this.world.region.context.arc(0, 0, 5, 0, 2 * Math.PI)
         this.world.region.context.fill()
       }
