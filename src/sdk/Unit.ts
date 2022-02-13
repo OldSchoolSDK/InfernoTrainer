@@ -557,6 +557,8 @@ export class Unit extends GameObject {
 
         }else if (projectile.attackStyle === 'magic') {
           this.world.region.context.fillStyle = '#0000FF73';
+        }else if (projectile.attackStyle === 'heal') {
+          this.world.region.context.fillStyle = '#9813aa73';
         }else{
           console.log('[WARN] This style is not accounted for in custom coloring: ', projectile.attackStyle);
 
