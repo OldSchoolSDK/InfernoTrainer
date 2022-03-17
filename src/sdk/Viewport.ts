@@ -39,7 +39,7 @@ export class Viewport {
     
 
     // todo: refactor how viewport works to not need this width restrictor anymore.
-    const widthRestrictors = 227 + 200; // 227 = control panel width, 200 = side menu
+    const widthRestrictors = 227 + (Settings.menuVisible ? 200 : 0); // 227 = control panel width, 200 = side menu, when opened
     this._viewport.width = Math.ceil(
       Math.min(
         world.region.width,

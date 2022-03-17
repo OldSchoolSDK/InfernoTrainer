@@ -123,6 +123,8 @@ export class SettingsControls extends BaseControls {
     } else if (x > 80 && x < 120 && y > 220 && y < 260) {
       Settings.is_keybinding = true;
       this.bindingKey = 'combat'
+    } else if (x > 140 && x < 180 && y > 220 && y < 260) {
+      Settings.menuVisible = !Settings.menuVisible;
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay)
@@ -184,6 +186,14 @@ export class SettingsControls extends BaseControls {
     world.viewport.context.drawImage(this.combatImage, x + 85, y + 222)
     world.viewport.context.fillText(Settings.combat_key, x + 85 + 30, y + 222 + 30)
   
+
+
+
+    world.viewport.context.drawImage(Settings.menuVisible ? this.activeButtonImage : this.inactiveButtonImage, x + 142, y + 220)
+    world.viewport.context.fillText('Menu', x + 163, y + 241)
+
+
+
     if (this.bindingKey === null){
       world.viewport.context.fillText('Key Bindings', x + 100, y + 133 + 30)
     }else{
