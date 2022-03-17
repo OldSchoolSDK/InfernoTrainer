@@ -53,6 +53,11 @@ export class Viewport {
       )
     );
 
+    if (Settings.menuVisible === false) {
+      this._viewport.width = Math.ceil((width - widthRestrictors) / Settings.tileSize);
+      this._viewport.height = Math.ceil(height / Settings.tileSize);
+    }
+
     // create new canvas that is the on screen canvas
     this.canvas.width = Settings.tileSize * this._viewport.width + world.mapController.width;
     this.canvas.height = Settings.tileSize * this._viewport.height;
