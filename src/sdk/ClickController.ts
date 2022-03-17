@@ -174,7 +174,7 @@ export class ClickController {
       }
     }
 
-    if (e.offsetX > this.viewport.width * Settings.tileSize) {
+    if (e.offsetX > this.viewport.canvas.width - world.mapController.width) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.rightClick(e);
         if (intercepted) {
