@@ -4,6 +4,7 @@ import { Pathing } from './Pathing';
 import { World } from './World';
 import { ClickController } from './ClickController';
 
+
 export class Viewport {
   clickController: ClickController;
   canvas: HTMLCanvasElement;
@@ -22,6 +23,7 @@ export class Viewport {
   }
 
   constructor(world: World) {
+    window.addEventListener('resize', () => this.initializeViewport(world));
     this.initializeViewport(world);
     this.world = world;
     this.clickController = new ClickController(this);
@@ -34,6 +36,7 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
+    
 
     // todo: refactor how viewport works to not need this width restrictor anymore.
     const widthRestrictors = 227 + 200; // 227 = control panel width, 200 = side menu
