@@ -36,10 +36,10 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    
 
+    Settings.tileSize = width / world.region.width;
     // todo: refactor how viewport works to not need this width restrictor anymore.
-    const widthRestrictors = 227 + (Settings.menuVisible ? 200 : 0); // 227 = control panel width, 200 = side menu, when opened
+    const widthRestrictors =  (Settings.menuVisible ? 200 : 0); // 227 = control panel width, 200 = side menu, when opened
     this._viewport.width = Math.ceil(
       Math.min(
         world.region.width,
@@ -54,12 +54,12 @@ export class Viewport {
     );
 
     if (Settings.menuVisible === false) {
-      this._viewport.width = Math.ceil((width - widthRestrictors) / Settings.tileSize);
-      this._viewport.height = Math.ceil(height / Settings.tileSize);
+      this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);
+      this._viewport.height = (height / Settings.tileSize);
     }
 
     // create new canvas that is the on screen canvas
-    this.canvas.width = Settings.tileSize * this._viewport.width + world.mapController.width;
+    this.canvas.width = Settings.tileSize * this._viewport.width;// + world.mapController.width;
     this.canvas.height = Settings.tileSize * this._viewport.height;
     this.width = this._viewport.width;
     this.height = this._viewport.height;
