@@ -32,6 +32,8 @@ export class World {
 
   _serialNumber: string;
 
+  lastMenuVisible: boolean;
+
   get serialNumber(): string {
     if (!this._serialNumber) {
       this._serialNumber = String(Math.random())
@@ -49,6 +51,7 @@ export class World {
     this.region.canvas = new OffscreenCanvas(this.region.width * Settings.tileSize, this.region.height * Settings.tileSize)
 
     this.viewport = new Viewport(this);
+    
 
   }
 
@@ -81,6 +84,7 @@ export class World {
   worldLoop (now: number) {
     window.requestAnimationFrame(this.worldLoop.bind(this));
 
+
     const elapsed = now - this.then;
 
     const tickElapsed = now - this.tickTimer;
@@ -98,6 +102,16 @@ export class World {
       this.draw();
       this.frameCount ++;
     }
+
+    if (Settings.menuVisible !== this.lastMenuVisible) {
+      if (Settings.menuVisible) {
+        document.getElementById('right_panel').classList.remove('hidden');
+      }else{
+        document.getElementById('right_panel').classList.add('hidden');
+      }
+      this.viewport.initializeViewport(this);
+    }
+    this.lastMenuVisible = Settings.menuVisible;
   }
 
   worldTick () {
