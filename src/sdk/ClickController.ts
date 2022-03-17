@@ -113,7 +113,8 @@ export class ClickController {
       return;
     }
 
-    if (e.offsetX > this.viewport.width * Settings.tileSize) {
+    
+    if (e.offsetX > this.viewport.canvas.width - world.mapController.width) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.leftClickDown(e);
         if (intercepted) {
@@ -123,7 +124,7 @@ export class ClickController {
     }
 
     if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
+      if (e.offsetY > this.viewport.canvas.height - world.controlPanel.height){
         const intercepted = world.controlPanel.controlPanelClickDown(e);
         if (intercepted) {
           return;
