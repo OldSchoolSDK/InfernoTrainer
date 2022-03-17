@@ -49,7 +49,6 @@ export class World {
     this.controlPanel.setWorld(this);
     this.mapController.setWorld(this)
     this.viewport = new Viewport(this);
-    this.region.canvas = new OffscreenCanvas(this.region.width * Settings.tileSize, this.region.height * Settings.tileSize)
 
     
 

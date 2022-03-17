@@ -39,31 +39,34 @@ export class Viewport {
 
     Settings.tileSize = width / world.region.width;
     // todo: refactor how viewport works to not need this width restrictor anymore.
-    const widthRestrictors =  (Settings.menuVisible ? 200 : 0); // 227 = control panel width, 200 = side menu, when opened
-    this._viewport.width = Math.ceil(
-      Math.min(
-        world.region.width,
-        Math.floor(width / Settings.tileSize - (widthRestrictors / Settings.tileSize))
-      )
-    );
-    this._viewport.height = Math.ceil(
-      Math.min(
-        world.region.height,
-        Math.floor(height / Settings.tileSize)
-      )
-    );
+    const widthRestrictors =  (Settings.menuVisible ? 222 : 0); // 227 = control panel width, 200 = side menu, when opened
+    // this._viewport.width = Math.ceil(
+    //   Math.min(
+    //     world.region.width,
+    //     Math.floor(width / Settings.tileSize - (widthRestrictors / Settings.tileSize))
+    //   )
+    // );
+    // this._viewport.height = Math.ceil(
+    //   Math.min(
+    //     world.region.height,
+    //     Math.floor(height / Settings.tileSize)
+    //   )
+    // );
 
-    if (Settings.menuVisible === false) {
-      this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);
-      this._viewport.height = (height / Settings.tileSize);
-    }
+    // if (Settings.menuVisible === false) {
+    //   this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);
+    //   this._viewport.height = (height / Settings.tileSize);
+    // }
 
+    this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);
+    this._viewport.height = (height / Settings.tileSize);
     // create new canvas that is the on screen canvas
     this.canvas.width = Settings.tileSize * this._viewport.width;// + world.mapController.width;
     this.canvas.height = Settings.tileSize * this._viewport.height;
     this.width = this._viewport.width;
     this.height = this._viewport.height;
-    
+    world.region.canvas = new OffscreenCanvas(world.region.width * Settings.tileSize, world.region.height * Settings.tileSize)
+
   }
 
   getViewport(world: World) {
