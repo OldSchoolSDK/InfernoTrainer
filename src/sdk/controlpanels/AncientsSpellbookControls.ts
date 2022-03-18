@@ -34,7 +34,7 @@ export class AncientsSpellbookControls extends BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    world.viewport.context.drawImage(this.panelImage, x, y)
+    super.draw(world, ctrl, x, y);
     world.viewport.context.fillStyle = '#D1BB7773'
 
     if (world.player.manualSpellCastSelection) {

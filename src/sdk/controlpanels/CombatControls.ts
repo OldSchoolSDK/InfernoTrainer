@@ -61,35 +61,42 @@ export class CombatControls extends BaseControls {
 
   drawAttackStyleButton(world: World, weapon: Weapon, attackStyle: AttackStyle, attackStyleImage: HTMLImageElement, x: number, y: number) {
     
+    let scale = 0.5;
     const currentAttackStyle = weapon.attackStyle();
 
-    world.viewport.context.drawImage(      
-      currentAttackStyle === attackStyle ? this.selectedCombatStyleButtonImage : this.combatStyleButtonImage,
+    let currentAttackStyleImage = currentAttackStyle === attackStyle ? this.selectedCombatStyleButtonImage : this.combatStyleButtonImage;
+    world.viewport.context.drawImage(   
+      currentAttackStyleImage,   
       x,
-      y
+      y,
+      currentAttackStyleImage.width * scale,
+      currentAttackStyleImage.height * scale
     )
 
     world.viewport.context.drawImage(      
       attackStyleImage,
-      x + 35 - Math.floor(attackStyleImage.width / 2),
-      y + 5
+      x + (35 - Math.floor(attackStyleImage.width / 2)) * scale,
+      y + (5) * scale,
+      attackStyleImage.width * scale,
+      attackStyleImage.height * scale
     )
 
 
-    world.viewport.context.font = '16px Stats_11'
+    world.viewport.context.font = (16*scale) + 'px Stats_11'
     world.viewport.context.textAlign = 'center'
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35 + 1, y + 40 + 1)
+    world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 36 * scale, y + 41*scale)
 
     world.viewport.context.fillStyle = '#FF9700'
-    world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35, y + 40)
+    world.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35 * scale, y + 40*scale)
 
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
+    let scale = 0.5;
     
     
     const weapon = world.player.equipment.weapon;
@@ -99,14 +106,14 @@ export class CombatControls extends BaseControls {
     }
 
 
-    world.viewport.context.font = '21px Stats_11'
+    world.viewport.context.font = (21 * scale) + 'px Stats_11'
     world.viewport.context.textAlign = 'center'
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100 + 1, y + 30 + 1)
+    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 101 * scale, y + 31 * scale)
 
     world.viewport.context.fillStyle = '#FF9700'
-    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100, y + 30)
+    world.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100 * scale, y + 30 * scale)
 
 
 
@@ -129,27 +136,30 @@ export class CombatControls extends BaseControls {
   
         const attackStyleImage = imageMap[weapon.attackStyles()[index]]
         if (attackStyleImage){
-          this.drawAttackStyleButton(world, weapon, weapon.attackStyles()[index], attackStyleImage, x + offsets.x, y + offsets.y)      
+          this.drawAttackStyleButton(world, weapon, weapon.attackStyles()[index], attackStyleImage, x + offsets.x * scale, y + offsets.y * scale)      
         }
       })
   
     }
 
+    const autoRetailateImage = world.player.autoRetaliate ? this.selectedAutoRetailButtonImage : this.autoRetailButtonImage;
     world.viewport.context.drawImage(      
-      world.player.autoRetaliate ? this.selectedAutoRetailButtonImage : this.autoRetailButtonImage,
-      x + 25,
-      y + 155
+      autoRetailateImage,
+      x + 25 * scale,
+      y + 155 * scale,
+      autoRetailateImage.width * scale,
+      autoRetailateImage.height * scale
     )
 
 
-    world.viewport.context.font = '19px Stats_11'
+    world.viewport.context.font = (19* scale)+'px Stats_11'
     world.viewport.context.textAlign = 'center'
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText("Auto Retaliate", x + 115 + 1, y + 182 + 1)
+    world.viewport.context.fillText("Auto Retaliate", x + 116 * scale, y + 183 * scale)
 
     world.viewport.context.fillStyle = '#FF9700'
-    world.viewport.context.fillText("Auto Retaliate", x + 115, y + 182)
+    world.viewport.context.fillText("Auto Retaliate", x + 115 * scale, y + 182 * scale)
 
 
   }

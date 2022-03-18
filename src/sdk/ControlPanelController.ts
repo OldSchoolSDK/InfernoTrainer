@@ -222,7 +222,7 @@ export class ControlPanelController {
         world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
       }
 
-      if ([0, 1,3,4,5,6, 11].indexOf(index) === -1){
+      if ([0,1,3,4,5,6,11].indexOf(index) === -1){
         world.viewport.context.fillStyle = '#00000099'
         world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33, 36)
   

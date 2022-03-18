@@ -138,12 +138,13 @@ export class InventoryControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
+    let scale = 0.5;
     world.player.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
 
-      const itemX = 20 + x + (x2) * 43
-      const itemY = 17 + y + (y2) * 35
+      const itemX = x + (20 + (x2) * 43) * scale;
+      const itemY = y + (17 + (y2) * 35) * scale;
 
       if (inventoryItem !== null) {
         
@@ -156,20 +157,36 @@ export class InventoryControls extends BaseControls {
         if (inventoryItem === this.clickedDownItem) {
           world.viewport.context.globalAlpha = 0.4;
           if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {
-            world.viewport.context.drawImage(sprite, this.cursorLocation.x + sprite.width / 2, this.cursorLocation.y - sprite.height / 2)
+            world.viewport.context.drawImage(
+              sprite, 
+              this.cursorLocation.x + sprite.width * scale / 2, 
+              this.cursorLocation.y - sprite.height * scale / 2, 
+              sprite.width * scale, 
+              sprite.height * scale
+              );
           }else{
-            world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
+            world.viewport.context.drawImage(sprite, 
+              itemX + xOff, 
+              itemY + yOff, 
+              sprite.width * scale, 
+              sprite.height * scale
+              );
           }
           world.viewport.context.globalAlpha = 1;
 
         }else{
-          world.viewport.context.drawImage(sprite, itemX + xOff, itemY + yOff)
+          world.viewport.context.drawImage(
+            sprite, 
+            itemX + xOff, 
+            itemY + yOff, 
+            sprite.width * scale, 
+            sprite.height * scale);
         }
 
         if (inventoryItem.selected) {
           world.viewport.context.beginPath()
           world.viewport.context.fillStyle = '#D1BB7773'
-          world.viewport.context.arc(itemX + 15, itemY + 17, 16, 0, 2 * Math.PI)
+          world.viewport.context.arc(itemX + 15 * scale, itemY + 17 * scale, 16 * scale, 0, 2 * Math.PI)
           world.viewport.context.fill()
         }
       }
