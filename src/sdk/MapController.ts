@@ -396,7 +396,7 @@ export class MapController {
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
   
-    let scale = 0.5;
+    let scale = 0.75;
     const offset = this.world.viewport.canvas.width - (this.width * scale);
     
     ctx.font = (16 * scale) + 'px Stats_11'
