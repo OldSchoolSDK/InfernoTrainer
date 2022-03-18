@@ -1,0 +1,14 @@
+{
+  "short_name": "Inferno Trainer",
+  "name": "Inferno Trainer",
+  "icons": [
+    { 
+      "src": "/webappicon.png",
+      "sizes": "930x1062",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}
