@@ -37,6 +37,7 @@ export class InventoryControls extends BaseControls {
   }
 
   panelRightClick(world: World, x: number, y: number) {
+    let scale = 0.5;
 
     let menuOptions: MenuOption[] = []
     // mobs.forEach((mob) => {
@@ -52,7 +53,7 @@ export class InventoryControls extends BaseControls {
       const y2 = Math.floor(index / 4)
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX * scale, itemY * scale, 32 * scale)
     })) as Item
 
     if (clickedItem) {
@@ -68,6 +69,7 @@ export class InventoryControls extends BaseControls {
     if (!this.clickedDownItem) {
       return;
     }
+    let scale = 0.5;
 
     const sanitizedInventory = world.player.inventory.map((item: Item, index: number) => {
       if (item) {
@@ -86,7 +88,7 @@ export class InventoryControls extends BaseControls {
       const y2 = Math.floor(index / 4)
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX * scale, itemY * scale, 32 * scale)
     })) as Item;
 
     const isPlaceholder: boolean = clickedItem && !!(clickedItem as any).isPlaceholder;
@@ -116,6 +118,7 @@ export class InventoryControls extends BaseControls {
   panelClickDown (world: World, x: number, y: number) {
     this.cursorLocation = { x, y }
     this.clickedDownLocation = {x, y};
+    let scale = 0.5;
 
     const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -125,7 +128,7 @@ export class InventoryControls extends BaseControls {
       const y2 = Math.floor(index / 4)
       const itemX = 20 + x2 * 43
       const itemY = 17 + (y2 + 1) * 35
-      return Collision.collisionMath(x, y, 1, itemX, itemY, 32)
+      return Collision.collisionMath(x, y, 1, itemX * scale, itemY * scale, 32 * scale)
     })) as Item
 
     world.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))

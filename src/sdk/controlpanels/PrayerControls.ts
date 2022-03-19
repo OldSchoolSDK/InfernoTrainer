@@ -45,6 +45,11 @@ export class PrayerControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
+    let scale = 0.5;
+
+    x = x / scale;
+    y = y / scale;
+    
     const gridX = x - 14
     const gridY = y - 22
 

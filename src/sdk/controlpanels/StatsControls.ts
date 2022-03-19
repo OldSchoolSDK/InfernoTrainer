@@ -28,6 +28,11 @@ export class StatsControls extends BaseControls {
   }
 
   panelClickUp (world: World, x: number, y: number) {
+    let scale = 0.5;
+
+    x = x / scale;
+    y = y / scale;
+    
     if (x > 9 && x < 73) {
       if (y > 12 && y < 44) {
         

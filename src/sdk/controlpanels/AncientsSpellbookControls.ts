@@ -25,7 +25,10 @@ export class AncientsSpellbookControls extends BaseControls {
 
   panelClickDown (world: World, x: number, y: number) {
     world.player.manualSpellCastSelection = null;
+    let scale = 0.5;
 
+    x = x / scale;
+    y = y / scale;
     if (x >= 21 && x <= 42 && y >= 229 && y <= 249) {
       world.player.manualSpellCastSelection = new IceBarrageSpell()
     }else if (x >= 166 && x <= 187 && y >= 194 && y <= 214) {

@@ -36,7 +36,11 @@ export class CombatControls extends BaseControls {
 
 
   panelClickDown (world: World, x: number, y: number) {
-    
+    let scale = 0.5;
+
+    x = x / scale;
+    y = y / scale;
+
     const attackStyleOffsets = [
       { x: 25, y: 45},
       { x: 105, y: 45},

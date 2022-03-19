@@ -96,15 +96,16 @@ export class ControlPanelController {
   }
 
   cursorMovedTo (e: MouseEvent) {
+    let scale = 0.5;
     if (this.selectedControl) {
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelX = this.width - panelWidth
+    const panelY = 275 - panelHeight
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -118,14 +119,15 @@ export class ControlPanelController {
   }
   controlPanelRightClick (e: MouseEvent): boolean {
     let intercepted = false;
+    let scale = 0.5;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelX = this.width - panelWidth
+    const panelY = 275 - panelHeight
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -140,6 +142,7 @@ export class ControlPanelController {
 
   controlPanelClickUp (e: MouseEvent): boolean {
 
+    let scale = 0.5;
     if (!this.selectedControl) {
       return false;
     }
@@ -149,10 +152,10 @@ export class ControlPanelController {
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelX = this.width - panelWidth
+    const panelY = 275 - panelHeight
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -168,6 +171,7 @@ export class ControlPanelController {
 
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
+    let scale = 0.5;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
@@ -192,10 +196,10 @@ export class ControlPanelController {
       return intercepted;
     }
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelX = this.width - panelWidth
+    const panelY = 275 - panelHeight
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -211,8 +215,9 @@ export class ControlPanelController {
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
 
+    let scale = 0.5;
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(world, this, this.width - 204, 0)
+      this.selectedControl.draw(world, this, this.width - 204 * scale, 275 - (275 * scale))
     }
 
     let selectedPosition: TabPosition = null

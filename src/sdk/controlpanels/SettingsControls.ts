@@ -92,6 +92,11 @@ export class SettingsControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
+    let scale = 0.5;
+
+    x = x / scale;
+    y = y / scale;
+    
     if (x > 20 && x < 56 && y > 20 && y < 56) {
       Settings.playsAudio = !Settings.playsAudio
     } else if (x > 90 && x < 105 && y > 20 && y < 36) {
