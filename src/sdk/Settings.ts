@@ -34,11 +34,12 @@ export class Settings {
   static menuVisible: boolean; 
 
 
-  static minimapScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
-  static controlPanelScale = Settings.mobileOrTabletCheck() ? 0.9 : 1;
+  static minimapScale = Settings.mobileOrTabletCheck() ? 0.5 : 1;
+  static controlPanelScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
 
   static _isMobileResult = null;
   static mobileOrTabletCheck() {
+    return true;
     if (Settings._isMobileResult !== null) {
       return Settings._isMobileResult;
     }
