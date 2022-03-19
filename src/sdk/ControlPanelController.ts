@@ -33,7 +33,8 @@ export class ControlPanelController {
   });
 
   world?: World;
-  controls: BaseControls[];
+  desktopControls: BaseControls[];
+  mobileControls: BaseControls[];
   selectedControl: BaseControls;
   
   width: number;
@@ -47,7 +48,7 @@ export class ControlPanelController {
     this.world = null
 
 
-    this.controls = [
+    this.desktopControls = [
       ControlPanelController.controls.COMBAT,
       ControlPanelController.controls.STATS,
       new QuestsControls(),
@@ -64,6 +65,25 @@ export class ControlPanelController {
       new MusicControls()
     ]
 
+    this.mobileControls = [
+      ControlPanelController.controls.COMBAT,
+      ControlPanelController.controls.PRAYER,
+      ControlPanelController.controls.ANCIENTSSPELLBOOK,
+      new EmotesControls(),
+      new ClanChatControls(),
+      new FriendsControls(),
+      new AccountControls(),
+
+      // break
+      ControlPanelController.controls.INVENTORY,
+      ControlPanelController.controls.EQUIPMENT,
+      ControlPanelController.controls.STATS,
+      new QuestsControls(),
+      new MusicControls(),
+      new SettingsControls(),
+      new EmptyControls(),
+    ]
+
     this.selectedControl = ControlPanelController.controls.PRAYER
 
 
@@ -72,7 +92,7 @@ export class ControlPanelController {
         return;
       }
       
-      this.controls.forEach((control) => {
+      this.desktopControls.forEach((control) => {
         if (control.keyBinding === event.key) {
           this.selectedControl = control
           event.preventDefault();
@@ -89,10 +109,31 @@ export class ControlPanelController {
     if (compact) {
       const x = i % 7
       const y = Math.floor(i / 7)
-      return { x: x * 33, y: y * 36 + 275 }
+      return { x: x * 33, y: y * 36 }
     }
     // untested
     return { x: i * 33, y: 0 }
+  }
+
+  mobileTabPosition (i: number, size: HTMLCanvasElement): TabPosition {
+
+    if (i < 7) {
+      return { x: 30, y: 100 + i * 36 };
+
+    }else{
+      return { x: size.width - 78, y: 100 + (i - 7) * 36 };
+
+    }
+
+    // return { x: 0, y: 0 };
+
+    // if (compact) {
+    //   const x = i % 7
+    //   const y = Math.floor(i / 7)
+    //   return { x: x * 33, y: y * 36 + 275 }
+    // }
+    // // untested
+    // return { x: i * 33, y: 0 }
   }
 
   cursorMovedTo (e: MouseEvent) {
@@ -177,16 +218,16 @@ export class ControlPanelController {
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
 
     if (y > 275) {
-      this.controls.forEach((control: BaseControls, index: number) => {
+      this.desktopControls.forEach((control: BaseControls, index: number) => {
         const tabPosition = this.tabPosition(index, true)
         if (tabPosition.x <= x && x < tabPosition.x + 33) {
           if (tabPosition.y <= y && x < tabPosition.y + 36) {
             intercepted = true;
-            if (this.controls[index] === this.selectedControl) {
+            if (this.desktopControls[index] === this.selectedControl) {
               this.selectedControl = null
               return
             }
-            this.selectedControl = this.controls[index]
+            this.selectedControl = this.desktopControls[index]
           }
         }
       })
@@ -221,13 +262,44 @@ export class ControlPanelController {
     }
 
     let selectedPosition: TabPosition = null
-    this.controls.forEach((control, index) => {
-      const tabPosition = this.tabPosition(index, true)
+
+
+    // this.desktopControls.forEach((control, index) => {
+    //   const tabPosition = this.tabPosition(index, true)
+    //   if (control.tabImage){
+    //     world.viewport.context.drawImage(control.tabImage, world.viewport.canvas.width - 232 + tabPosition.x, world.viewport.canvas.height - 72 + tabPosition.y, control.tabImage.width, control.tabImage.height)
+    //   }
+
+    //   if ([0,1,3,4,5,6,11].indexOf(index) === -1){
+    //     world.viewport.context.fillStyle = '#00000099'
+    //     world.viewport.context.fillRect(world.viewport.canvas.width - 232 + tabPosition.x, world.viewport.canvas.height - 72 + tabPosition.y, 33, 36)
+  
+    //   }
+
+      
+    //   if (control === this.selectedControl) {
+    //     selectedPosition = tabPosition
+    //   }
+    // })
+
+    // if (selectedPosition) {
+    //   world.viewport.context.strokeStyle = '#00FF0073'
+    //   world.viewport.context.lineWidth = 3
+    //   world.viewport.context.strokeRect(world.viewport.canvas.width - 232 + selectedPosition.x, world.viewport.canvas.height - 72 + selectedPosition.y, 33, 36)
+    // }
+
+
+    
+
+
+
+    this.mobileControls.forEach((control, index) => {
+      const tabPosition = this.mobileTabPosition(index, world.viewport.canvas)
       if (control.tabImage){
-        world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+        world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y, control.tabImage.width, control.tabImage.height)
       }
 
-      if ([0,1,3,4,5,6,11].indexOf(index) === -1){
+      if ([0,1,2, 7, 8, 9, 12].indexOf(index) === -1){
         world.viewport.context.fillStyle = '#00000099'
         world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33, 36)
   
@@ -238,11 +310,14 @@ export class ControlPanelController {
         selectedPosition = tabPosition
       }
     })
+
     if (selectedPosition) {
       world.viewport.context.strokeStyle = '#00FF0073'
       world.viewport.context.lineWidth = 3
       world.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
     }
+
+
 
   }
 }

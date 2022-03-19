@@ -212,9 +212,9 @@ export class World {
     this.viewport.context.save();
 
     // draw control panel
-    this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
+    // this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
     this.controlPanel.draw(this)
-    this.viewport.context.restore();
+    // this.viewport.context.restore();
     XpDropController.controller.draw(this.viewport.context, this.viewport.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.viewport.context, this.tickPercent);
     this.contextMenu.draw(this)
@@ -231,14 +231,10 @@ export class World {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
       this.drawVPText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
-
-
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
     if (region.wave > 69 && region.wave < 74) {
-
-
       this.viewport.context.font = '24px OSRS'
       this.viewport.context.textAlign = 'left'
 
