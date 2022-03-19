@@ -34,7 +34,7 @@ export class BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    let scale = 0.5;
+    let scale = 0.75;
     if (this.panelImage) {
       world.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
     }

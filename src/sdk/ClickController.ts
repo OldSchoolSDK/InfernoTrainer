@@ -99,7 +99,7 @@ export class ClickController {
     const { viewportX, viewportY } = this.viewport.getViewport(world);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
-    
+
     if (Settings.rotated === 'south') {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
@@ -115,7 +115,7 @@ export class ClickController {
     }
 
     
-    let scale = 0.5;
+    let scale = 0.75;
 
     if (e.offsetX > this.viewport.canvas.width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {

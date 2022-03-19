@@ -24,7 +24,7 @@ export class EquipmentControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = 0.5;
+    let scale = 0.75;
 
     x = x / scale;
     y = y / scale;
@@ -66,7 +66,7 @@ export class EquipmentControls extends BaseControls {
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = 0.5;
+    let scale = 0.75;
 
     if (world.player.equipment.helmet) {
       world.viewport.context.drawImage(this.usedSpotBackground, x + 84 * scale, y + 11 * scale, this.usedSpotBackground.width * scale, this.usedSpotBackground.height * scale)
