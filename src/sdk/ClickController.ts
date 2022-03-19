@@ -125,15 +125,13 @@ export class ClickController {
         }
       }
     }
+    
 
-    if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.canvas.height - world.controlPanel.height){
-        const intercepted = world.controlPanel.controlPanelClickDown(e);
-        if (intercepted) {
-          return;
-        }
-      }
+    const controlPanelIntercepted = world.controlPanel.controlPanelClickDown(e);
+    if (controlPanelIntercepted) {
+      return;
     }
+
 
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
     const groundItems = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));

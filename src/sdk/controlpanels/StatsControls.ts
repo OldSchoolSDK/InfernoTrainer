@@ -117,7 +117,7 @@ export class StatsControls extends BaseControls {
   }
 
   get appearsOnLeftInMobile (): boolean {
-    return true;
+    return false;
   }
   
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {

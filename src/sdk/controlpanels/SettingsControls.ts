@@ -88,7 +88,7 @@ export class SettingsControls extends BaseControls {
   }
 
   get appearsOnLeftInMobile (): boolean {
-    return true;
+    return false;
   }
   
   get keyBinding () {

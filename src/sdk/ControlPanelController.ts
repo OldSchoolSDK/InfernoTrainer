@@ -123,9 +123,9 @@ export class ControlPanelController {
     const spacer = (world.viewport.canvas.height - mapHeight - (36 * 7)) / 2;
 
     if (i < 7) {
-      return { x: 30, y: mapHeight + spacer + i * 36 };
+      return { x: 15, y: mapHeight + spacer + i * 36 };
     }else{
-      return { x: world.viewport.canvas.width - 78, y: mapHeight + spacer + (i - 7) * 36 };
+      return { x: world.viewport.canvas.width - 33-15, y: mapHeight + spacer + (i - 7) * 36 };
     }
 
     // return { x: 0, y: 0 };
@@ -217,24 +217,39 @@ export class ControlPanelController {
     let intercepted = false;
     let scale = 0.9;
 
-    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
+    const x = e.offsetX; // - (this.world.viewport.canvas.width - this.width);
+    const y = e.offsetY; // - (this.world.viewport.canvas.height - this.height);
 
-    if (y > 275) {
-      this.desktopControls.forEach((control: BaseControls, index: number) => {
-        const tabPosition = this.tabPosition(index, true)
-        if (tabPosition.x <= x && x < tabPosition.x + 33) {
-          if (tabPosition.y <= y && x < tabPosition.y + 36) {
-            intercepted = true;
-            if (this.desktopControls[index] === this.selectedControl) {
-              this.selectedControl = null
-              return
-            }
-            this.selectedControl = this.desktopControls[index]
+    
+    // this.desktopControls.forEach((control: BaseControls, index: number) => {
+    //   const tabPosition = this.tabPosition(index, true)
+    //   if (tabPosition.x <= x && x < tabPosition.x + 33) {
+    //     if (tabPosition.y <= y && y < tabPosition.y + 36) {
+    //       intercepted = true;
+    //       if (this.desktopControls[index] === this.selectedControl) {
+    //         this.selectedControl = null
+    //         return
+    //       }
+    //       this.selectedControl = this.desktopControls[index]
+    //     }
+    //   }
+    // })
+
+
+    this.mobileControls.forEach((control: BaseControls, index: number) => {
+      const tabPosition = this.mobileTabPosition(index, this.world)
+      if (tabPosition.x <= x && x < tabPosition.x + 33) {
+        if (tabPosition.y <= y && y < tabPosition.y + 36) {
+          intercepted = true;
+          if (this.mobileControls[index] === this.selectedControl) {
+            this.selectedControl = null
+            return
           }
+          this.selectedControl = this.mobileControls[index]
         }
-      })
-    }
+      }
+    })
+
 
     if (!this.selectedControl) {
       return intercepted;
@@ -259,17 +274,14 @@ export class ControlPanelController {
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
 
-    let scale = 0.9;
     if (this.selectedControl && this.selectedControl.draw) {
-
-
       const mapHeight = 110;
       const spacer = (world.viewport.canvas.height - mapHeight - (36 * 7)) / 2;
 
       if (this.selectedControl.appearsOnLeftInMobile) {
-        this.selectedControl.draw(world, this, 63, mapHeight + spacer)
+        this.selectedControl.draw(world, this, 33+15, mapHeight + spacer)
       }else{
-        this.selectedControl.draw(world, this, world.viewport.canvas.width - 78 - 200 * 0.9, mapHeight + spacer)
+        this.selectedControl.draw(world, this, world.viewport.canvas.width - 33 - 15 - 200 * 0.9, mapHeight + spacer)
       }
     }
 

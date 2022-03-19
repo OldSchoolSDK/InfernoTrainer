@@ -347,7 +347,6 @@ export class MapController {
     const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
     
-    console.log(x, y)
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
