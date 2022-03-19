@@ -36,8 +36,12 @@ export class InventoryControls extends BaseControls {
     this.cursorLocation = { x, y }
   }
 
+  get appearsOnLeftInMobile (): boolean {
+    return false;
+  }
+  
   panelRightClick(world: World, x: number, y: number) {
-    let scale = 0.75;
+    let scale = 0.9;
 
     let menuOptions: MenuOption[] = []
     // mobs.forEach((mob) => {
@@ -69,7 +73,7 @@ export class InventoryControls extends BaseControls {
     if (!this.clickedDownItem) {
       return;
     }
-    let scale = 0.75;
+    let scale = 0.9;
 
     const sanitizedInventory = world.player.inventory.map((item: Item, index: number) => {
       if (item) {
@@ -118,7 +122,7 @@ export class InventoryControls extends BaseControls {
   panelClickDown (world: World, x: number, y: number) {
     this.cursorLocation = { x, y }
     this.clickedDownLocation = {x, y};
-    let scale = 0.75;
+    let scale = 0.9;
 
     const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -141,7 +145,7 @@ export class InventoryControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    let scale = 0.75;
+    let scale = 0.9;
     world.player.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)

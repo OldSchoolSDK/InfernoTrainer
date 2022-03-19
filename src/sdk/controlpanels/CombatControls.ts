@@ -36,7 +36,7 @@ export class CombatControls extends BaseControls {
 
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = 0.75;
+    let scale = 0.9;
 
     x = x / scale;
     y = y / scale;
@@ -65,7 +65,7 @@ export class CombatControls extends BaseControls {
 
   drawAttackStyleButton(world: World, weapon: Weapon, attackStyle: AttackStyle, attackStyleImage: HTMLImageElement, x: number, y: number) {
     
-    let scale = 0.75;
+    let scale = 0.9;
     const currentAttackStyle = weapon.attackStyle();
 
     let currentAttackStyleImage = currentAttackStyle === attackStyle ? this.selectedCombatStyleButtonImage : this.combatStyleButtonImage;
@@ -100,7 +100,7 @@ export class CombatControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    let scale = 0.75;
+    let scale = 0.9;
     
     
     const weapon = world.player.equipment.weapon;

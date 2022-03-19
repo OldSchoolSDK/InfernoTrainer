@@ -87,12 +87,16 @@ export class SettingsControls extends BaseControls {
     })
   }
 
+  get appearsOnLeftInMobile (): boolean {
+    return true;
+  }
+  
   get keyBinding () {
     return BrowserUtils.getQueryVar('settings_key')
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = 0.75;
+    let scale = 0.9;
 
     x = x / scale;
     y = y / scale;
@@ -138,7 +142,7 @@ export class SettingsControls extends BaseControls {
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = 0.75;
+    let scale = 0.9;
 
     world.viewport.context.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20 * scale, y + 20 * scale, this.musicOffImage.width * scale, this.musicOffImage.height * scale)
 

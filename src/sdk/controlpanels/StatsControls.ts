@@ -28,7 +28,7 @@ export class StatsControls extends BaseControls {
   }
 
   panelClickUp (world: World, x: number, y: number) {
-    let scale = 0.75;
+    let scale = 0.9;
 
     x = x / scale;
     y = y / scale;
@@ -116,12 +116,16 @@ export class StatsControls extends BaseControls {
     }
   }
 
+  get appearsOnLeftInMobile (): boolean {
+    return true;
+  }
+  
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     
     super.draw(world, ctrl, x, y)
 
 
-    let scale = 0.75;
+    let scale = 0.9;
 
     world.viewport.context.font = (16 * scale) + 'px Stats_11'
     

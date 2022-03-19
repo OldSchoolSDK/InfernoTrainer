@@ -116,16 +116,16 @@ export class ControlPanelController {
   }
 
   mobileTabPosition (i: number, world: World): TabPosition {
-    let scale = 0.75;
-    
-    const spacer = (world.viewport.canvas.height - world.mapController.height - (36 * 7)) / 2;
+    let scale = 0.9;
+
+    const mapHeight = 110;
+
+    const spacer = (world.viewport.canvas.height - mapHeight - (36 * 7)) / 2;
 
     if (i < 7) {
-      return { x: 30, y: world.mapController.height + spacer + i * 36 };
-
+      return { x: 30, y: mapHeight + spacer + i * 36 };
     }else{
-      return { x: world.viewport.canvas.width - 78, y: world.mapController.height * scale + spacer + (i - 7) * 36 };
-
+      return { x: world.viewport.canvas.width - 78, y: mapHeight + spacer + (i - 7) * 36 };
     }
 
     // return { x: 0, y: 0 };
@@ -140,7 +140,7 @@ export class ControlPanelController {
   }
 
   cursorMovedTo (e: MouseEvent) {
-    let scale = 0.75;
+    let scale = 0.9;
     if (this.selectedControl) {
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
@@ -163,7 +163,7 @@ export class ControlPanelController {
   }
   controlPanelRightClick (e: MouseEvent): boolean {
     let intercepted = false;
-    let scale = 0.75;
+    let scale = 0.9;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
@@ -186,7 +186,7 @@ export class ControlPanelController {
 
   controlPanelClickUp (e: MouseEvent): boolean {
 
-    let scale = 0.75;
+    let scale = 0.9;
     if (!this.selectedControl) {
       return false;
     }
@@ -215,7 +215,7 @@ export class ControlPanelController {
 
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
-    let scale = 0.75;
+    let scale = 0.9;
 
     const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
     const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
@@ -259,12 +259,18 @@ export class ControlPanelController {
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
 
-    let scale = 0.75;
+    let scale = 0.9;
     if (this.selectedControl && this.selectedControl.draw) {
 
-      // this.selectedControl.draw(world, this, 76, 200)
 
-      this.selectedControl.draw(world, this, this.width - 204 * scale, 275 - (275 * scale))
+      const mapHeight = 110;
+      const spacer = (world.viewport.canvas.height - mapHeight - (36 * 7)) / 2;
+
+      if (this.selectedControl.appearsOnLeftInMobile) {
+        this.selectedControl.draw(world, this, 63, mapHeight + spacer)
+      }else{
+        this.selectedControl.draw(world, this, world.viewport.canvas.width - 78 - 200 * 0.9, mapHeight + spacer)
+      }
     }
 
     let selectedPosition: TabPosition = null

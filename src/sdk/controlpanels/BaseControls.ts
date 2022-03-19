@@ -19,6 +19,10 @@ export class BaseControls {
     return ''
   }
 
+  get appearsOnLeftInMobile (): boolean {
+    return true;
+  }
+  
   cursorMovedto(world: World, x: number, y: number) {
   }
 
@@ -34,7 +38,7 @@ export class BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    let scale = 0.75;
+    let scale = 0.9;
     if (this.panelImage) {
       world.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
     }
