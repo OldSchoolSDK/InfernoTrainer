@@ -96,8 +96,9 @@ export class MapController {
 
   cursorMovedTo(event: MouseEvent) {
     
-    const x = event.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = event.offsetY;
+    let scale = 0.5;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width)) / scale;
+    const y = event.offsetY / scale;
 
     this.hovering = MapHover.NONE;
     if (x > 4 && x < 28 && y > 31 && y < 56) {
@@ -249,8 +250,9 @@ export class MapController {
 
 
     let intercepted = false;
-    const x = event.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = event.offsetY;
+    let scale = 0.5;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
+    const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       intercepted = true;
@@ -339,30 +341,13 @@ export class MapController {
   
   }
 
-  canSpecialAttack() {
-    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
-  }
-  toggleSpecialAttack() {
-    if (this.canSpecialAttack()) {
-      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
-    }
-  }
-
-  toggleQuickprayers() {
-    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
-    if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-      ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
-      this.world.player.prayerController.drainCounter = 0;
-    }else {
-      ControlPanelController.controls.PRAYER.activateQuickPrayers(this.world);
-    }
-  }
-
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    const x = event.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = event.offsetY;
-
+    let scale = 0.5;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
+    const y = event.offsetY / scale;
+    
+    console.log(x, y)
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
@@ -394,9 +379,29 @@ export class MapController {
     return intercepted;
   }
 
+  canSpecialAttack() {
+    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
+  }
+  toggleSpecialAttack() {
+    if (this.canSpecialAttack()) {
+      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+    }
+  }
+
+  toggleQuickprayers() {
+    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+    if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+      ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
+      this.world.player.prayerController.drainCounter = 0;
+    }else {
+      ControlPanelController.controls.PRAYER.activateQuickPrayers(this.world);
+    }
+  }
+
+
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
   
-    let scale = 0.75;
+    let scale = 0.5;
     const offset = this.world.viewport.canvas.width - (this.width * scale);
     
     ctx.font = (16 * scale) + 'px Stats_11'

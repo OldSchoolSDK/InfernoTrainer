@@ -114,7 +114,9 @@ export class ClickController {
     }
 
     
-    if (e.offsetX > this.viewport.canvas.width - world.mapController.width) {
+    let scale = 0.5;
+
+    if (e.offsetX > this.viewport.canvas.width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.leftClickDown(e);
         if (intercepted) {
