@@ -202,7 +202,6 @@ export class World {
     this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
 
     if (Settings.rotated === 'south') {
-      this.viewport.context.translate(-this.mapController.width, 0);
       this.viewport.context.rotate(Math.PI)
       this.viewport.context.translate(-this.viewport.canvas.width, -this.viewport.canvas.height)
     }

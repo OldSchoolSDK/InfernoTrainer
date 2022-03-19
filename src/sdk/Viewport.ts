@@ -61,18 +61,18 @@ export class Viewport {
     let viewportY = perceivedY + 0.5 - this._viewport.height / 2;
 
 
-    if (viewportX < 0) {
-      viewportX = 0;
-    }
-    if (viewportY < 0) {
-      viewportY = 0;
-    }
-    if (viewportX + this._viewport.width > world.region.width) {
-      viewportX = world.region.width - this._viewport.width;
-    }
-    if (viewportY + this._viewport.height > world.region.height) {
-      viewportY = world.region.height - this._viewport.height;
-    }
+    // if (viewportX < 0) {
+    //   viewportX = 0;
+    // }
+    // if (viewportY < 0) {
+    //   viewportY = 0;
+    // }
+    // if (viewportX + this._viewport.width > world.region.width) {
+    //   viewportX = world.region.width - this._viewport.width;
+    // }
+    // if (viewportY + this._viewport.height > world.region.height) {
+    //   viewportY = world.region.height - this._viewport.height;
+    // }
 
     return { viewportX, viewportY };
   }
