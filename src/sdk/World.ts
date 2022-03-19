@@ -198,7 +198,7 @@ export class World {
     this.viewport.context.fillStyle = '#3B3224'
     this.viewport.context.restore()
     this.viewport.context.save()
-    this.viewport.context.fillStyle = '#3B3224'
+    this.viewport.context.fillStyle = 'black'
     this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
 
     if (Settings.rotated === 'south') {
