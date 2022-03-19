@@ -45,7 +45,7 @@ export class PrayerControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -64,9 +64,13 @@ export class PrayerControls extends BaseControls {
     }
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     world.player.prayerController.prayers.forEach((prayer, index) => {
       const x2 = index % 5

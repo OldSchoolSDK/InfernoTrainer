@@ -1,6 +1,7 @@
 import { ControlPanelController } from "../ControlPanelController";
 import { World } from "../World";
 import { ImageLoader } from "../utils/ImageLoader";
+import { Settings } from "../Settings";
 
 export class BaseControls {
   panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
@@ -9,6 +10,10 @@ export class BaseControls {
 
   get keyBinding (): string {
     return '';
+  }
+
+  get isAvailable (): boolean {
+    return false;
   }
 
   get panelImageReference (): string {
@@ -38,7 +43,7 @@ export class BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
     if (this.panelImage) {
       world.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
     }

@@ -23,9 +23,13 @@ export class AncientsSpellbookControls extends BaseControls {
     return Settings.spellbook_key
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   panelClickDown (world: World, x: number, y: number) {
     world.player.manualSpellCastSelection = null;
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -40,7 +44,7 @@ export class AncientsSpellbookControls extends BaseControls {
     super.draw(world, ctrl, x, y);
     world.viewport.context.fillStyle = '#D1BB7773'
 
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
     if (world.player.manualSpellCastSelection) {
       if (world.player.manualSpellCastSelection.itemName === ItemName.ICE_BARRAGE) {
           world.viewport.context.fillRect(x + 20 * scale, y + 225 * scale, 21 * scale, 21 * scale)

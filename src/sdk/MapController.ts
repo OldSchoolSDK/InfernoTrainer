@@ -96,7 +96,7 @@ export class MapController {
 
   cursorMovedTo(event: MouseEvent) {
     
-    let scale = 0.75;
+    let scale = Settings.minimapScale;
     const x = (event.offsetX - (this.world.viewport.canvas.width - this.width)) / scale;
     const y = event.offsetY / scale;
 
@@ -250,7 +250,7 @@ export class MapController {
 
 
     let intercepted = false;
-    let scale = 0.75;
+    let scale = Settings.minimapScale;
     const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
 
@@ -343,7 +343,7 @@ export class MapController {
 
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    let scale = 0.75;
+    let scale = Settings.minimapScale;
     const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
     
@@ -400,7 +400,7 @@ export class MapController {
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
   
-    let scale = 0.75;
+    let scale = Settings.minimapScale;
     const offset = this.world.viewport.canvas.width - (this.width * scale);
     
     ctx.font = (16 * scale) + 'px Stats_11'

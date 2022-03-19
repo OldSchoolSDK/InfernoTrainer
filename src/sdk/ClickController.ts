@@ -75,15 +75,9 @@ export class ClickController {
     const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
     const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
 
-
-    if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
-        const intercepted = world.controlPanel.controlPanelClickUp(e);
-        if (intercepted) {
-          return;
-        }
-  
-      }
+    const intercepted = world.controlPanel.controlPanelClickUp(e);
+    if (intercepted) {
+      return;
     }
   }
 
@@ -115,7 +109,7 @@ export class ClickController {
     }
 
     
-    let scale = 0.75;
+    let scale = Settings.minimapScale;
 
     if (e.offsetX > this.viewport.canvas.width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {

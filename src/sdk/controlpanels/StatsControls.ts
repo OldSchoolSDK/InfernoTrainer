@@ -15,6 +15,10 @@ export class StatsControls extends BaseControls {
     return StatsTab
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   levelPrompt(skill: string): number {
 
     const newLvl = parseInt(prompt("What level would you like to set your "+skill+"?", "99"))
@@ -28,7 +32,7 @@ export class StatsControls extends BaseControls {
   }
 
   panelClickUp (world: World, x: number, y: number) {
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -125,7 +129,7 @@ export class StatsControls extends BaseControls {
     super.draw(world, ctrl, x, y)
 
 
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     world.viewport.context.font = (16 * scale) + 'px Stats_11'
     

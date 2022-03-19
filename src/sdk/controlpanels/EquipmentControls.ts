@@ -24,7 +24,7 @@ export class EquipmentControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -64,13 +64,17 @@ export class EquipmentControls extends BaseControls {
     }
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   get appearsOnLeftInMobile (): boolean {
     return false;
   }
   
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = 0.9;
+    let scale = Settings.controlPanelScale;
 
     if (world.player.equipment.helmet) {
       world.viewport.context.drawImage(this.usedSpotBackground, x + 84 * scale, y + 11 * scale, this.usedSpotBackground.width * scale, this.usedSpotBackground.height * scale)
