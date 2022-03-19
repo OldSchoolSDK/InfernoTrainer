@@ -34,8 +34,8 @@ export class Settings {
   static menuVisible: boolean; 
 
 
-  static minimapScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
-  static controlPanelScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
+  static minimapScale: number;
+  static controlPanelScale: number;
 
   static _isMobileResult = null;
   static mobileOrTabletCheck() {
@@ -73,6 +73,10 @@ export class Settings {
   }
 
   static readFromStorage () {
+    Settings.minimapScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
+    Settings.controlPanelScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
+
+
     Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
