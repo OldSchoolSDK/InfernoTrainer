@@ -100,7 +100,7 @@ export class Settings {
     Settings.combat_key = window.localStorage.getItem('combat_key') || 'F5'
     Settings.player_stats = DeserializePlayerStats(window.localStorage.getItem('stats'))
     Settings.tile_markers = JSON.parse(window.localStorage.getItem('tile_markers'))
-    console.log('reading');
+
     if (window.localStorage.getItem('menuVisible') === 'true') {
       Settings.menuVisible = true;
     }else if (window.localStorage.getItem('menuVisible') === 'false') {
