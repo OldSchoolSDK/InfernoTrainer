@@ -116,7 +116,7 @@ export class SettingsControls extends BaseControls {
     } else if (x > 80 && x < 120 && y > 100 && y < 140) {
       Settings.displayMobLoS = !Settings.displayMobLoS;
     } else if (x > 140 && x < 180 && y > 120 && y < 160) {
-      Settings.lockPOV = !Settings.lockPOV;
+      // Settings.lockPOV = !Settings.lockPOV;
     } else if (x > 140 && x < 180 && y > 70 && y < 110) {
       Settings.displayFeedback = !Settings.displayFeedback;
     } else if (x > 140 && x < 180 && y > 20 && y < 60) {
@@ -164,8 +164,8 @@ export class SettingsControls extends BaseControls {
     world.viewport.context.drawImage(Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 80 * scale, y + 100 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
     world.viewport.context.fillText('M LoS', x + 100 * scale, y + 125 * scale)
 
-    world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
+    // world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    // world.viewport.context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
 
 
     world.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 70 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)

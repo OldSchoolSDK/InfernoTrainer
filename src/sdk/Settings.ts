@@ -85,7 +85,7 @@ export class Settings {
     Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
     Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
     Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
-    Settings.lockPOV = window.localStorage.getItem('lockPOV') !== 'false' || false;
+    Settings.lockPOV = false; //window.localStorage.getItem('lockPOV') !== 'false' || false;
     Settings.displayFeedback = !(window.localStorage.getItem('displayFeedback') === 'false' || false);
     Settings.metronome = window.localStorage.getItem('metronome') === 'true' || false;
 
