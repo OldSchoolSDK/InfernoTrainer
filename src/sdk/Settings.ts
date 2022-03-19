@@ -73,7 +73,7 @@ export class Settings {
   }
 
   static readFromStorage () {
-    Settings.minimapScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
+    Settings.minimapScale = Settings.mobileOrTabletCheck() ? 0.65 : 1;
     Settings.controlPanelScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
 
 
