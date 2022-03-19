@@ -37,11 +37,12 @@ export class AncientsSpellbookControls extends BaseControls {
     super.draw(world, ctrl, x, y);
     world.viewport.context.fillStyle = '#D1BB7773'
 
+    let scale = 0.5;
     if (world.player.manualSpellCastSelection) {
       if (world.player.manualSpellCastSelection.itemName === ItemName.ICE_BARRAGE) {
-          world.viewport.context.fillRect(47, 225, 21, 21)
+          world.viewport.context.fillRect(x + 20 * scale, y + 225 * scale, 21 * scale, 21 * scale)
       }else if (world.player.manualSpellCastSelection.itemName === ItemName.BLOOD_BARRAGE) {
-        world.viewport.context.fillRect(191, 188, 21, 21)
+        world.viewport.context.fillRect(x + 164 * scale, y+ 188 * scale, 21 * scale, 21 * scale)
       }
     }
   }
