@@ -23,6 +23,7 @@ export class Viewport {
   }
 
   constructor(world: World) {
+    window.addEventListener("orientationchange", () => this.initializeViewport(world));
     window.addEventListener('resize', () => this.initializeViewport(world));
     this.initializeViewport(world);
     this.world = world;
