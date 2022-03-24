@@ -399,7 +399,9 @@ export class MapController {
 
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
-  
+    const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
+
     let scale = Settings.minimapScale;
     const offset = this.world.viewport.canvas.width - (this.width * scale);
     

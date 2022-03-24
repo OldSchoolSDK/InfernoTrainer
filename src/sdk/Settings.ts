@@ -38,7 +38,7 @@ export class Settings {
   static controlPanelScale: number;
 
   static _isMobileResult = null;
-  static mobileOrTabletCheck() {
+  static mobileCheck() {
     if (Settings._isMobileResult !== null) {
       return Settings._isMobileResult;
     }
@@ -73,8 +73,8 @@ export class Settings {
   }
 
   static readFromStorage () {
-    Settings.minimapScale = Settings.mobileOrTabletCheck() ? 0.65 : 1;
-    Settings.controlPanelScale = Settings.mobileOrTabletCheck() ? 0.75 : 1;
+    Settings.minimapScale = Settings.mobileCheck() ? 0.65 : 1;
+    Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
 
 
     Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false
@@ -106,7 +106,7 @@ export class Settings {
     }else if (window.localStorage.getItem('menuVisible') === 'false') {
       Settings.menuVisible = false;
     }else{
-      Settings.menuVisible = (Settings.mobileOrTabletCheck() === false);
+      Settings.menuVisible = (Settings.mobileCheck() === false);
     }
   }
 }

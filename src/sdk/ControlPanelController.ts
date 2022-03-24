@@ -85,7 +85,7 @@ export class ControlPanelController {
       new SettingsControls(),
       new EmptyControls(),
     ]
-    this.controls = Settings.mobileOrTabletCheck() ? this.mobileControls : this.desktopControls;
+    this.controls = Settings.mobileCheck() ? this.mobileControls : this.desktopControls;
 
     this.selectedControl = ControlPanelController.controls.PRAYER
 
@@ -108,10 +108,28 @@ export class ControlPanelController {
     this.world = world
   }
 
-  tabPosition (i: number, world: World): TabPosition {
-    let scale = Settings.controlPanelScale
-    if (Settings.mobileOrTabletCheck()) {
-      const mapHeight = 110 * Settings.minimapScale;
+  getTabScale() {
+
+    const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const controlAreaHeight = gameHeight - this.world.mapController.height;
+    let scaleRatio = controlAreaHeight / 7 / 36;
+    
+    if (scaleRatio > 1) {
+      scaleRatio = 1;
+    }
+
+    Settings.controlPanelScale = scaleRatio * 0.915;
+
+    return scaleRatio;
+  }
+
+   tabPosition (i: number, world: World): TabPosition {
+    // let scale = Settings.controlPanelScale
+    
+    let scale = this.getTabScale();
+    
+    if (Settings.mobileCheck()) {
+      const mapHeight = 170 * Settings.minimapScale;
       const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
       if (i < 7) {
         return { x: 15, y: mapHeight + spacer + i * 36 * scale };
@@ -252,31 +270,33 @@ export class ControlPanelController {
 
   controlPosition(control: BaseControls, world: World): Location {
     
-    let scale = Settings.controlPanelScale;
+    let scale = this.getTabScale();
     
-    if (Settings.mobileOrTabletCheck()){
-      const mapHeight = 110 * Settings.minimapScale;
+    if (Settings.mobileCheck()){
+      const mapHeight = 170 * Settings.minimapScale;
       const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
       if (this.selectedControl.appearsOnLeftInMobile) {
         // left side mobile
         return { x: 33 * scale + 15, y: mapHeight + spacer};
       }else{
         // right side mobile
-        return { x: world.viewport.canvas.width - 33 * scale - 15 - 200 * scale, y: mapHeight + spacer};
+        return { x: world.viewport.canvas.width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
       }
     }else{
       // desktop compact
       return { 
-        x: world.viewport.canvas.width - 200 * scale, 
-        y: world.viewport.canvas.height - 72 * scale - 275 * scale
+        x: world.viewport.canvas.width - 188 * scale, 
+        y: world.viewport.canvas.height - 72 * scale - 251 * scale
       };
     }
   }
 
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
-    let scale = Settings.controlPanelScale;
+    let scale = this.getTabScale();
 
+    
+    
     if (this.selectedControl && this.selectedControl.draw) {
       const position = this.controlPosition(this.selectedControl, world);
       this.selectedControl.draw(world, this, position.x, position.y);

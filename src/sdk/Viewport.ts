@@ -36,7 +36,6 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-
     Settings.tileSize = width / world.region.width;
     // todo: refactor how viewport works to not need this width restrictor anymore.
     const widthRestrictors =  (Settings.menuVisible ? 220 : 0); // 227 = control panel width, 200 = side menu, when opened
