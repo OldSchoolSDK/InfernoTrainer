@@ -4,7 +4,7 @@
   "icons": [
     { 
       "src": "/webappicon.png",
-      "sizes": "930x1062",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ],
