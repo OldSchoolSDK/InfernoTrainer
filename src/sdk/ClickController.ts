@@ -61,7 +61,14 @@ export class ClickController {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
-
+    if (Settings.mobileCheck()) {
+      if (e.offsetX > 20 && e.offsetX < 60) {
+        if (e.offsetY > 20 && e.offsetY < 60) {
+          // reset button
+          location.reload();
+        }
+      }
+    }
     // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
     //   if (e.offsetY < this.mapController.height) {
     //     const intercepted = this.mapController.clicked(e);

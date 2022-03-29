@@ -11,11 +11,16 @@ import { Viewport } from './Viewport'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import MetronomeSound from '../assets/sounds/bonk.ogg'
 import { Pathing } from './Pathing'
+import { ImageLoader } from './utils/ImageLoader'
+import ButtonActiveIcon from '../assets/images/interface/button_active.png'
+
 
 export class World {
   viewport: Viewport;
   region: Region;
   player?: Player;
+
+  activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon)
 
   controlPanel: ControlPanelController;
   mapController: MapController;
@@ -210,6 +215,17 @@ export class World {
     this.viewport.context.drawImage(this.region.canvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
     this.viewport.context.restore()
     this.viewport.context.save();
+
+    if (Settings.mobileCheck()) {
+      this.viewport.context.fillStyle = '#FFFF00'
+      this.viewport.context.font = (16) + 'px OSRS'
+      this.viewport.context.textAlign = 'center'
+
+      console.log(this.activeButtonImage.width)
+      this.viewport.context.drawImage(this.activeButtonImage, 20, 20, this.activeButtonImage.width, this.activeButtonImage.height)
+      this.viewport.context.fillText('RESET', 40, 45)
+
+    }
 
     // draw control panel
     // this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)

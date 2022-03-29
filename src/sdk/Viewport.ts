@@ -39,8 +39,7 @@ export class Viewport {
 
     Settings.tileSize = width / world.region.width;
     // todo: refactor how viewport works to not need this width restrictor anymore.
-    const widthRestrictors =  (Settings.menuVisible ? 220 : 0); // 227 = control panel width, 200 = side menu, when opened
-
+    const widthRestrictors =  (Settings.menuVisible ? 220 : 0);
     this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);
     this._viewport.height = (height / Settings.tileSize);
     // create new canvas that is the on screen canvas
