@@ -38,7 +38,7 @@ export class Settings {
   static controlPanelScale: number;
 
   static _isMobileResult = null;
-  static mobileCheck() { return true;
+  static mobileCheck() {
     if (Settings._isMobileResult !== null) {
       return Settings._isMobileResult;
     }
