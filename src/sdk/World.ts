@@ -221,7 +221,6 @@ export class World {
       this.viewport.context.font = (16) + 'px OSRS'
       this.viewport.context.textAlign = 'center'
 
-      console.log(this.activeButtonImage.width)
       this.viewport.context.drawImage(this.activeButtonImage, 20, 20, this.activeButtonImage.width, this.activeButtonImage.height)
       this.viewport.context.fillText('RESET', 40, 45)
 

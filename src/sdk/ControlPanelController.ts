@@ -109,13 +109,18 @@ export class ControlPanelController {
   }
 
   getTabScale() {
-
+    var gameWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     const controlAreaHeight = gameHeight - this.world.mapController.height;
     let scaleRatio = controlAreaHeight / 7 / 36;
+
+    let maxScaleRatio = 1.0;
+    if (Settings.mobileCheck() && gameWidth > 600) {
+      maxScaleRatio = 1.1;
+    }
     
-    if (scaleRatio > 1) {
-      scaleRatio = 1;
+    if (scaleRatio > maxScaleRatio) {
+      scaleRatio = maxScaleRatio;
     }
 
     Settings.controlPanelScale = scaleRatio * 0.915;
