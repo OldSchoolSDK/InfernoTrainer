@@ -77,7 +77,12 @@ export class Settings {
     Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
 
 
-    Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false
+    Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false;
+
+    if (Settings.mobileCheck()){
+      Settings.playsAudio = false;
+
+    }
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
