@@ -15,6 +15,9 @@ import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
 
+import MagicSound from '../../assets/sounds/TzTok-Jad-Magic-attack.ogg'
+import RangeSound from '../../assets/sounds/TzTok-Jad-Ranged-attack.ogg'
+
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -194,7 +197,7 @@ export class JalTokJad extends Mob {
   }
 
   get sound () {
-    return null
+    return this.attackStyle === 'magic' ? MagicSound : RangeSound;
   }
 
   attackStyleForNewAttack () {
