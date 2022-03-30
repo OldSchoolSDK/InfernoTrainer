@@ -2,6 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/webappicon.png">
+    <meta name="application-name" content="Inferno Trainer">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <title>Inferno Trainer</title>
     <style>
       @font-face {
@@ -20,6 +27,13 @@
         font-family: 'Stats_12';
         src: url(/assets/fonts/RuneScape-Plain-12.woff) format("woff");
         src: url(/assets/fonts/RuneScape-Plain-12.woff2) format("woff2");
+      }
+      body {
+          overscroll-behavior: contain;
+      }
+
+      #world{
+        position: fixed;
       }
       .hidden {
         display: none !important; 

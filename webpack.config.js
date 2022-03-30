@@ -31,6 +31,8 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: `index.html`, to: "", context: `src/` },
+        { from: `manifest.json`, to: "", context: `src/` },
+        { from: `assets/images/webappicon.png`, to: "webappicon.png", context: `src/` },
         { from: `assets/fonts/*.woff`, to: "", context: `src/` },
         { from: `assets/fonts/*.woff2`, to: "", context: `src/` },
       ],
