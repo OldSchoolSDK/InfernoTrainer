@@ -204,7 +204,7 @@ export class World {
     this.viewport.context.restore()
     this.viewport.context.save()
     this.viewport.context.fillStyle = 'black'
-    this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
+    this.viewport.context.fillRect(0, 0, 10000000, 1000000)
 
     if (Settings.rotated === 'south') {
       this.viewport.context.rotate(Math.PI)
