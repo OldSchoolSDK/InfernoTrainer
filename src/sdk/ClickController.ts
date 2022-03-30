@@ -47,7 +47,7 @@ export class ClickController {
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
-    this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
+    this.viewport.canvas.addEventListener('whe el', this.eventListeners[6] = this.wheel.bind(this))
   }
 
   wheel (e: WheelEvent) {
