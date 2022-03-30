@@ -37,6 +37,7 @@ export class ClickController {
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[3])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[4])
     this.viewport.canvas.removeEventListener('contextmenu', this.eventListeners[5])
+    this.viewport.canvas.removeEventListener('wheel', this.eventListeners[6])
   }
 
   registerClickActions(world: World) {
@@ -46,6 +47,23 @@ export class ClickController {
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
+    this.viewport.canvas.addEventListener('whe el', this.eventListeners[6] = this.wheel.bind(this))
+  }
+
+  wheel (e: WheelEvent) {
+
+    Settings.zoomScale -= (e.deltaY / 500);
+
+    if (Settings.zoomScale < 0.5) {
+      Settings.zoomScale = 0.5;
+    }
+
+
+    if (Settings.zoomScale > 2) {
+      Settings.zoomScale = 2;
+    }
+    
+
   }
 
   leftClickUp (e: MouseEvent) {
