@@ -52,7 +52,7 @@ export class ClickController {
 
   wheel (e: WheelEvent) {
 
-    Settings.zoomScale -= (e.deltaY / 100);
+    Settings.zoomScale -= (e.deltaY / 300);
 
     if (Settings.zoomScale < 0.5) {
       Settings.zoomScale = 0.5;
