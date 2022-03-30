@@ -25,6 +25,7 @@ export class Viewport {
   constructor(world: World) {
     window.addEventListener("orientationchange", () => this.initializeViewport(world));
     window.addEventListener('resize', () => this.initializeViewport(world));
+    window.addEventListener('wheel', () => this.initializeViewport(world));
     this.initializeViewport(world);
     this.world = world;
     this.clickController = new ClickController(this);
@@ -37,7 +38,7 @@ export class Viewport {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    Settings.tileSize = width / world.region.width;
+    Settings._tileSize = width / world.region.width;
     // todo: refactor how viewport works to not need this width restrictor anymore.
     const widthRestrictors =  (Settings.menuVisible ? 220 : 0);
     this._viewport.width = ((width - widthRestrictors) / Settings.tileSize);

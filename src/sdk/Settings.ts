@@ -4,7 +4,13 @@ import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./Pla
 import { Location } from './Location';
 
 export class Settings {
-  static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
+  static zoomScale: number = 1;
+
+  static _tileSize: number;
+  static get tileSize() {
+    return Settings._tileSize * Settings.zoomScale;
+  }
+  // static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
   static fps = 50;
   static tickMs = 600;
   static playsAudio: boolean;
