@@ -11,11 +11,16 @@ import { Viewport } from './Viewport'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import MetronomeSound from '../assets/sounds/bonk.ogg'
 import { Pathing } from './Pathing'
+import { ImageLoader } from './utils/ImageLoader'
+import ButtonActiveIcon from '../assets/images/interface/button_active.png'
+
 
 export class World {
   viewport: Viewport;
   region: Region;
   player?: Player;
+
+  activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon)
 
   controlPanel: ControlPanelController;
   mapController: MapController;
@@ -32,6 +37,8 @@ export class World {
 
   _serialNumber: string;
 
+  lastMenuVisible: boolean;
+
   get serialNumber(): string {
     if (!this._serialNumber) {
       this._serialNumber = String(Math.random())
@@ -46,9 +53,9 @@ export class World {
     this.controlPanel = controlPanel;
     this.controlPanel.setWorld(this);
     this.mapController.setWorld(this)
-    this.region.canvas = new OffscreenCanvas(this.region.width * Settings.tileSize, this.region.height * Settings.tileSize)
-
     this.viewport = new Viewport(this);
+
+    
 
   }
 
@@ -81,6 +88,7 @@ export class World {
   worldLoop (now: number) {
     window.requestAnimationFrame(this.worldLoop.bind(this));
 
+
     const elapsed = now - this.then;
 
     const tickElapsed = now - this.tickTimer;
@@ -98,6 +106,16 @@ export class World {
       this.draw();
       this.frameCount ++;
     }
+
+    if (Settings.menuVisible !== this.lastMenuVisible) {
+      if (Settings.menuVisible) {
+        document.getElementById('right_panel').classList.remove('hidden');
+      }else{
+        document.getElementById('right_panel').classList.add('hidden');
+      }
+      this.viewport.initializeViewport(this);
+    }
+    this.lastMenuVisible = Settings.menuVisible;
   }
 
   worldTick () {
@@ -185,11 +203,10 @@ export class World {
     this.viewport.context.fillStyle = '#3B3224'
     this.viewport.context.restore()
     this.viewport.context.save()
-    this.viewport.context.fillStyle = '#3B3224'
+    this.viewport.context.fillStyle = 'black'
     this.viewport.context.fillRect(0, 0, this.viewport.canvas.width, this.viewport.canvas.height)
 
     if (Settings.rotated === 'south') {
-      this.viewport.context.translate(-this.mapController.width, 0);
       this.viewport.context.rotate(Math.PI)
       this.viewport.context.translate(-this.viewport.canvas.width, -this.viewport.canvas.height)
     }
@@ -199,10 +216,20 @@ export class World {
     this.viewport.context.restore()
     this.viewport.context.save();
 
+    if (Settings.mobileCheck()) {
+      this.viewport.context.fillStyle = '#FFFF00'
+      this.viewport.context.font = (16) + 'px OSRS'
+      this.viewport.context.textAlign = 'center'
+
+      this.viewport.context.drawImage(this.activeButtonImage, 20, 20, this.activeButtonImage.width, this.activeButtonImage.height)
+      this.viewport.context.fillText('RESET', 40, 45)
+
+    }
+
     // draw control panel
-    this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
+    // this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
     this.controlPanel.draw(this)
-    this.viewport.context.restore();
+    // this.viewport.context.restore();
     XpDropController.controller.draw(this.viewport.context, this.viewport.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.viewport.context, this.tickPercent);
     this.contextMenu.draw(this)
@@ -219,14 +246,10 @@ export class World {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
       this.drawVPText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
-
-
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
     if (region.wave > 69 && region.wave < 74) {
-
-
       this.viewport.context.font = '24px OSRS'
       this.viewport.context.textAlign = 'left'
 

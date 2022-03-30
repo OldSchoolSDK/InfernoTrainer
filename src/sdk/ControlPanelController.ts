@@ -16,6 +16,7 @@ import { SettingsControls } from './controlpanels/SettingsControls'
 import { StatsControls } from './controlpanels/StatsControls'
 import { World } from './World'
 import { Settings } from './Settings'
+import { Location } from './Location'
 
 interface TabPosition{
   x: number;
@@ -33,6 +34,8 @@ export class ControlPanelController {
   });
 
   world?: World;
+  desktopControls: BaseControls[];
+  mobileControls: BaseControls[];
   controls: BaseControls[];
   selectedControl: BaseControls;
   
@@ -47,7 +50,7 @@ export class ControlPanelController {
     this.world = null
 
 
-    this.controls = [
+    this.desktopControls = [
       ControlPanelController.controls.COMBAT,
       ControlPanelController.controls.STATS,
       new QuestsControls(),
@@ -63,6 +66,26 @@ export class ControlPanelController {
       new EmotesControls(),
       new MusicControls()
     ]
+
+    this.mobileControls = [
+      ControlPanelController.controls.COMBAT,
+      ControlPanelController.controls.PRAYER,
+      ControlPanelController.controls.ANCIENTSSPELLBOOK,
+      new EmotesControls(),
+      new ClanChatControls(),
+      new FriendsControls(),
+      new AccountControls(),
+
+      // break
+      ControlPanelController.controls.INVENTORY,
+      ControlPanelController.controls.EQUIPMENT,
+      ControlPanelController.controls.STATS,
+      new QuestsControls(),
+      new MusicControls(),
+      new SettingsControls(),
+      new EmptyControls(),
+    ]
+    this.controls = Settings.mobileCheck() ? this.mobileControls : this.desktopControls;
 
     this.selectedControl = ControlPanelController.controls.PRAYER
 
@@ -85,26 +108,60 @@ export class ControlPanelController {
     this.world = world
   }
 
-  tabPosition (i: number, compact: boolean): TabPosition {
-    if (compact) {
-      const x = i % 7
-      const y = Math.floor(i / 7)
-      return { x: x * 33, y: y * 36 + 275 }
+  getTabScale() {
+    var gameWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const controlAreaHeight = gameHeight - this.world.mapController.height;
+    let scaleRatio = controlAreaHeight / 7 / 36;
+
+    let maxScaleRatio = 1.0;
+    if (Settings.mobileCheck() && gameWidth > 600) {
+      maxScaleRatio = 1.1;
     }
-    // untested
-    return { x: i * 33, y: 0 }
+    
+    if (scaleRatio > maxScaleRatio) {
+      scaleRatio = maxScaleRatio;
+    }
+
+    Settings.controlPanelScale = scaleRatio * 0.915;
+
+    return scaleRatio;
   }
 
+   tabPosition (i: number, world: World): TabPosition {
+    // let scale = Settings.controlPanelScale
+    
+    let scale = this.getTabScale();
+    
+    if (Settings.mobileCheck()) {
+      const mapHeight = 170 * Settings.minimapScale;
+      const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
+      if (i < 7) {
+        return { x: 15, y: mapHeight + spacer + i * 36 * scale };
+      }else{
+        return { x: world.viewport.canvas.width - 33 * scale - 15, y: mapHeight + spacer + (i - 7) * 36 * scale };
+      }
+    }else{
+      const x = i % 7
+      const y = Math.floor(i / 7)
+      return { 
+        x: world.viewport.canvas.width - 231 * scale + x * 33 * scale, 
+        y: world.viewport.canvas.height - 72 * scale + y * 36 * scale 
+      }
+    }
+  }
   cursorMovedTo (e: MouseEvent) {
+    let scale = Settings.controlPanelScale;
     if (this.selectedControl) {
 
-    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
+    const x = e.offsetX;
+    const y = e.offsetY;
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelX = panelPosition.x;
+    const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -119,13 +176,15 @@ export class ControlPanelController {
   controlPanelRightClick (e: MouseEvent): boolean {
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
+    let scale = Settings.controlPanelScale;
+    const x = e.offsetX;
+    const y = e.offsetY;
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelX = panelPosition.x;
+    const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -140,19 +199,22 @@ export class ControlPanelController {
 
   controlPanelClickUp (e: MouseEvent): boolean {
 
+
+    let scale = Settings.controlPanelScale;
     if (!this.selectedControl) {
       return false;
     }
     
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
-
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const x = e.offsetX;
+    const y = e.offsetY;
+    
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelX = panelPosition.x;
+    const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -169,33 +231,36 @@ export class ControlPanelController {
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
 
-    const x = e.offsetX - (this.world.viewport.canvas.width - this.width);
-    const y = e.offsetY - (this.world.viewport.canvas.height - this.height);
+    let scale = Settings.controlPanelScale;
 
-    if (y > 275) {
-      this.controls.forEach((control: BaseControls, index: number) => {
-        const tabPosition = this.tabPosition(index, true)
-        if (tabPosition.x <= x && x < tabPosition.x + 33) {
-          if (tabPosition.y <= y && x < tabPosition.y + 36) {
-            intercepted = true;
-            if (this.controls[index] === this.selectedControl) {
-              this.selectedControl = null
-              return
-            }
-            this.selectedControl = this.controls[index]
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+
+    this.controls.forEach((control: BaseControls, index: number) => {
+      const tabPosition = this.tabPosition(index, this.world)
+      if (tabPosition.x <= x && x < tabPosition.x + 33 * scale) {
+        if (tabPosition.y <= y && y < tabPosition.y + 36 * scale) {
+          intercepted = true;
+          if (this.controls[index] === this.selectedControl) {
+            this.selectedControl = null
+            return
           }
+          this.selectedControl = this.controls[index]
         }
-      })
-    }
+      }
+    })
+
 
     if (!this.selectedControl) {
       return intercepted;
     }
 
-    const panelX = this.width - 204
-    const panelY = 0
-    const panelWidth = 204
-    const panelHeight = 275
+    const panelWidth = 204 * scale
+    const panelHeight = 275 * scale
+    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelX = panelPosition.x;
+    const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
@@ -208,24 +273,58 @@ export class ControlPanelController {
     return intercepted;
   }
 
+  controlPosition(control: BaseControls, world: World): Location {
+    
+    let scale = this.getTabScale();
+    
+    if (Settings.mobileCheck()){
+      const mapHeight = 170 * Settings.minimapScale;
+      const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
+      if (this.selectedControl.appearsOnLeftInMobile) {
+        // left side mobile
+        return { x: 33 * scale + 15, y: mapHeight + spacer};
+      }else{
+        // right side mobile
+        return { x: world.viewport.canvas.width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
+      }
+    }else{
+      // desktop compact
+      return { 
+        x: world.viewport.canvas.width - 188 * scale, 
+        y: world.viewport.canvas.height - 72 * scale - 251 * scale
+      };
+    }
+  }
+
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
+    let scale = this.getTabScale();
 
+    
+    
     if (this.selectedControl && this.selectedControl.draw) {
-      this.selectedControl.draw(world, this, this.width - 204, 0)
+      const position = this.controlPosition(this.selectedControl, world);
+      this.selectedControl.draw(world, this, position.x, position.y);
     }
 
     let selectedPosition: TabPosition = null
+
+
     this.controls.forEach((control, index) => {
-      const tabPosition = this.tabPosition(index, true)
+      const tabPosition = this.tabPosition(index, world)
       if (control.tabImage){
-        world.viewport.context.drawImage(control.tabImage, tabPosition.x, tabPosition.y)
+        world.viewport.context.drawImage(
+          control.tabImage, 
+          tabPosition.x, 
+          tabPosition.y, 
+          control.tabImage.width * scale, 
+          control.tabImage.height * scale
+          )
       }
 
-      if ([0, 1,3,4,5,6, 11].indexOf(index) === -1){
+      if (control.isAvailable === false){
         world.viewport.context.fillStyle = '#00000099'
-        world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33, 36)
-  
+        world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33 * scale, 36 * scale)
       }
 
       
@@ -233,11 +332,14 @@ export class ControlPanelController {
         selectedPosition = tabPosition
       }
     })
+
     if (selectedPosition) {
       world.viewport.context.strokeStyle = '#00FF0073'
       world.viewport.context.lineWidth = 3
-      world.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33, 36)
+      world.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33 * scale, 36 * scale)
     }
+
+
 
   }
 }

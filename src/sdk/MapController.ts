@@ -95,8 +95,10 @@ export class MapController {
   }
 
   cursorMovedTo(event: MouseEvent) {
-    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
-    const y = event.offsetY;
+    
+    let scale = Settings.minimapScale;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width)) / scale;
+    const y = event.offsetY / scale;
 
     this.hovering = MapHover.NONE;
     if (x > 4 && x < 28 && y > 31 && y < 56) {
@@ -248,8 +250,9 @@ export class MapController {
 
 
     let intercepted = false;
-    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
-    const y = event.offsetY;
+    let scale = Settings.minimapScale;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
+    const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       intercepted = true;
@@ -338,30 +341,12 @@ export class MapController {
   
   }
 
-  canSpecialAttack() {
-    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
-  }
-  toggleSpecialAttack() {
-    if (this.canSpecialAttack()) {
-      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
-    }
-  }
-
-  toggleQuickprayers() {
-    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
-    if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-      ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
-      this.world.player.prayerController.drainCounter = 0;
-    }else {
-      ControlPanelController.controls.PRAYER.activateQuickPrayers(this.world);
-    }
-  }
-
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    const x = event.offsetX - this.world.viewport.width * Settings.tileSize;
-    const y = event.offsetY;
-
+    let scale = Settings.minimapScale;
+    const x = (event.offsetX - (this.world.viewport.canvas.width - this.width * scale)) / scale;
+    const y = event.offsetY / scale;
+    
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
@@ -393,46 +378,69 @@ export class MapController {
     return intercepted;
   }
 
-  draw(ctx: CanvasRenderingContext2D, tickPercent: number){
-  
+  canSpecialAttack() {
+    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
+  }
+  toggleSpecialAttack() {
+    if (this.canSpecialAttack()) {
+      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+    }
+  }
 
-    const offset = this.world.viewport.canvas.width - this.width
+  toggleQuickprayers() {
+    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
+    if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
+      ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
+      this.world.player.prayerController.drainCounter = 0;
+    }else {
+      ControlPanelController.controls.PRAYER.activateQuickPrayers(this.world);
+    }
+  }
+
+
+  draw(ctx: CanvasRenderingContext2D, tickPercent: number){
+    const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
+
+    let scale = Settings.minimapScale;
+    const offset = this.world.viewport.canvas.width - (this.width * scale);
     
-    ctx.font = '16px Stats_11'
+    ctx.font = (16 * scale) + 'px Stats_11'
     ctx.textAlign = 'center'
     
     
     this.generateMaskedMap();
-    ctx.drawImage(this.mapCanvas, offset + 52, 8);
+    ctx.drawImage(this.mapCanvas, offset + 52 * scale, 8, 152 * scale, 152 * scale);
 
     // draw compass
     ctx.save()
-    ctx.translate(offset + 50.5, 23.5)
+    ctx.translate(offset + 50.5 * scale, 23.5 * scale)
     if (Settings.rotated === 'south') {
       ctx.rotate(Math.PI)
     }
-    ctx.translate(-50.5, -23.5)
+    ctx.translate(-50.5 * scale, -23.5 * scale)
     if (this.compassImage) {
 
-      ctx.drawImage(this.compassImage, 25, -2)
+      ctx.drawImage(this.compassImage, 25 * scale, -2, 51 * scale, 51 * scale)
     }
     ctx.restore()
 
 
 
-    ctx.drawImage(this.outlineImage, offset + 28, 0);
-    ctx.drawImage(this.hovering == MapHover.XP ? this.mapXpHoverButton : this.mapXpButton, offset, 26)
+    ctx.drawImage(this.outlineImage, offset + 28 * scale, 0, 182 * scale, 166 * scale);
+    ctx.drawImage(this.hovering == MapHover.XP ? this.mapXpHoverButton : this.mapXpButton, offset, 26, 27 * scale, 27 * scale)
 
-    ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 47);
-    ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 81);
-    ctx.drawImage(this.hovering == MapHover.RUN ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 10, 114);
-    ctx.drawImage(this.hovering == MapHover.SPEC ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 32, 140);
+    ctx.drawImage(this.hovering == MapHover.HITPOINT ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 47 * scale, 57 * scale, 34 * scale);
+    ctx.drawImage(this.hovering == MapHover.PRAYER ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset, 81 * scale, 57 * scale, 34 * scale);
+    ctx.drawImage(this.hovering == MapHover.RUN ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 10 * scale, 114 * scale, 57 * scale, 34 * scale);
+    ctx.drawImage(this.hovering == MapHover.SPEC ? this.mapSelectedNumberOrb : this.mapNumberOrb, offset + 32 * scale, 140 * scale, 57 * scale, 34 * scale);
 
-    ctx.drawImage(this.mapHitpointOrbMasked, offset + 27, 51)
-    ctx.drawImage(this.mapHitpointIcon, offset + 27, 51)
-    ctx.drawImage(this.mapPrayerOrbMasked, offset + 27, 85)
-    ctx.drawImage(this.mapPrayerIcon, offset + 27, 85)
-    ctx.drawImage(this.mapRunOrbMasked, offset + 37, 118)
+
+    ctx.drawImage(this.mapHitpointOrbMasked, offset + 27 * scale, 51 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapHitpointIcon, offset + 27 * scale, 51 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapPrayerOrbMasked, offset + 27 * scale, 85 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapPrayerIcon, offset + 27 * scale, 85 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapRunOrbMasked, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale)
 
     let mapRunIcon = this.mapWalkIcon;
     if (this.world.player.effects.stamina){
@@ -440,36 +448,36 @@ export class MapController {
     } else if (this.world.player.running) {
       mapRunIcon = this.mapRunIcon;
     }
-    ctx.drawImage(mapRunIcon, offset + 37, 118)
-    ctx.drawImage(this.mapSpecOrbMasked, offset + 59, 144)
-    ctx.drawImage(this.mapSpecIcon, offset + 57, 142, 30, 30)
+    ctx.drawImage(mapRunIcon, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapSpecOrbMasked, offset + 59 * scale, 144 * scale, 26 * scale, 26 * scale)
+    ctx.drawImage(this.mapSpecIcon, offset + 57 * scale, 142 * scale, 30 * scale, 30 * scale)
 
 
 
-    // hitpoints
+    // // hitpoints
     ctx.fillStyle = 'black'
-    ctx.fillText( String(this.currentStats.hitpoint), offset + 15, 74 )
+    ctx.fillText( String(this.currentStats.hitpoint), offset + 15 * scale, 74 * scale )
     ctx.fillStyle = this.colorScale.getColor(this.currentStats.hitpoint / this.stats.hitpoint).toHexString()
-    ctx.fillText( String(this.currentStats.hitpoint), offset + 14, 73 )  
+    ctx.fillText( String(this.currentStats.hitpoint), offset + 14 * scale, 73 * scale )  
     // prayer
     ctx.fillStyle = 'black'
-    ctx.fillText( String(this.currentStats.prayer), offset + 15, 108 )
+    ctx.fillText( String(this.currentStats.prayer), offset + 15 * scale, 108 * scale )
     ctx.fillStyle = this.colorScale.getColor(this.currentStats.prayer / this.stats.prayer).toHexString()
-    ctx.fillText( String(this.currentStats.prayer), offset + 14, 107 )
+    ctx.fillText( String(this.currentStats.prayer), offset + 14 * scale, 107 * scale )
 
 
     // run
     ctx.fillStyle = 'black'
-    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 25, 140 )
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 25 * scale, 140 * scale )
     ctx.fillStyle = this.colorScale.getColor(this.currentStats.run / 10000).toHexString()
-    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 24, 139 )
+    ctx.fillText( String(Math.floor(this.currentStats.run / 100)), offset + 24 * scale, 139 * scale )
 
 
     // spec
     ctx.fillStyle = 'black'
-    ctx.fillText( String(this.currentStats.specialAttack), offset + 47, 166 )
+    ctx.fillText( String(this.currentStats.specialAttack), offset + 47 * scale, 166 * scale )
     ctx.fillStyle = this.colorScale.getColor(this.currentStats.specialAttack / 100).toHexString()
-    ctx.fillText( String(this.currentStats.specialAttack), offset + 46, 165 )
+    ctx.fillText( String(this.currentStats.specialAttack), offset + 46 * scale, 165 * scale )
 
     
 

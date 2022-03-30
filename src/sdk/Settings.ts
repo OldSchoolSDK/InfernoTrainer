@@ -2,6 +2,7 @@
 
 import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./PlayerStats";
 import { Location } from './Location';
+
 export class Settings {
   static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
   static fps = 50;
@@ -30,6 +31,20 @@ export class Settings {
 
   static displayPlayerLoS = false;
   static displayMobLoS = false;
+  static menuVisible: boolean; 
+
+
+  static minimapScale: number;
+  static controlPanelScale: number;
+
+  static _isMobileResult = null;
+  static mobileCheck() {
+    if (Settings._isMobileResult !== null) {
+      return Settings._isMobileResult;
+    }
+    Settings._isMobileResult =  /Mobi/.test(navigator.userAgent);
+    return Settings._isMobileResult;
+  };
 
   static persistToStorage () {
     // window.localStorage.setItem('tileSize', Settings.tileSize);
@@ -54,10 +69,20 @@ export class Settings {
     window.localStorage.setItem('displayFeedback', String(Settings.displayFeedback))
     window.localStorage.setItem('tile_markers', JSON.stringify(Settings.tile_markers))
     window.localStorage.setItem('lockPOV', JSON.stringify(Settings.lockPOV))
+    window.localStorage.setItem('menuVisible', String(Settings.menuVisible))
   }
 
   static readFromStorage () {
-    Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false
+    Settings.minimapScale = Settings.mobileCheck() ? 0.65 : 1;
+    Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
+
+
+    Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false;
+
+    if (Settings.mobileCheck()){
+      Settings.playsAudio = false;
+
+    }
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem('inputDelay')) || 100
@@ -66,7 +91,7 @@ export class Settings {
     Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
     Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
     Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
-    Settings.lockPOV = window.localStorage.getItem('lockPOV') !== 'false' || false;
+    Settings.lockPOV = false; //window.localStorage.getItem('lockPOV') !== 'false' || false;
     Settings.displayFeedback = !(window.localStorage.getItem('displayFeedback') === 'false' || false);
     Settings.metronome = window.localStorage.getItem('metronome') === 'true' || false;
 
@@ -80,5 +105,13 @@ export class Settings {
     Settings.combat_key = window.localStorage.getItem('combat_key') || 'F5'
     Settings.player_stats = DeserializePlayerStats(window.localStorage.getItem('stats'))
     Settings.tile_markers = JSON.parse(window.localStorage.getItem('tile_markers'))
+
+    if (window.localStorage.getItem('menuVisible') === 'true') {
+      Settings.menuVisible = true;
+    }else if (window.localStorage.getItem('menuVisible') === 'false') {
+      Settings.menuVisible = false;
+    }else{
+      Settings.menuVisible = (Settings.mobileCheck() === false);
+    }
   }
 }
