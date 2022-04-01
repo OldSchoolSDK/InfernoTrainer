@@ -1,6 +1,7 @@
 'use strict'
 
 import { remove } from "lodash";
+import { Chrome } from "./Chrome";
 import { Entity } from "./Entity";
 import { Item } from "./Item"
 import { Mob } from "./Mob";
@@ -34,7 +35,11 @@ export class Region{
 
   get context() {
     if (!this.canvas) {
-      this.canvas = new OffscreenCanvas(10000, 10000);
+      if (Settings.mobileCheck()) {
+        this.canvas = new OffscreenCanvas(5000, 5000);
+      }else{
+        this.canvas = new OffscreenCanvas(10000, 10000);
+      }
     }
     return this.canvas.getContext('2d');
   }
