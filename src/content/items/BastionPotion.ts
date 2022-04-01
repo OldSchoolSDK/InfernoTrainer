@@ -39,7 +39,8 @@ export class BastionPotion extends Potion {
   
 
   drink(player: Player) {
-
+    super.drink(player);
+    
     const rangedBoost = Math.floor(player.stats.range * 0.10) + 4
     player.currentStats.range += rangedBoost;
     player.currentStats.range = Math.min(player.currentStats.range, player.stats.range + rangedBoost)

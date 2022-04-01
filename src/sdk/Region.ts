@@ -20,7 +20,7 @@ export interface GroundItems {
 
 // Base class for any trainer region.
 export class Region{
-  canvas: OffscreenCanvas;
+  canvas =  new OffscreenCanvas(10000, 10000);
 
   world: World;
 

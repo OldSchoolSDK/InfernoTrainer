@@ -13,6 +13,7 @@ import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
 import { EntityName } from './EntityName'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
+import { SoundCache } from './utils/SoundCache';
 
 export enum AttackIndicators {
   NONE = 0,
@@ -333,7 +334,7 @@ export class Mob extends Unit {
 
   playAttackSound () {
     if (Settings.playsAudio) {
-      const sound = new Audio(this.sound)
+      const sound = SoundCache.getCachedSound(this.sound);
       let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y);
       attemptedVolume = Math.min(1, Math.max(0, attemptedVolume))
       sound.volume = attemptedVolume;

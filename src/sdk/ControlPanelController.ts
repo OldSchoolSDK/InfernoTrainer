@@ -17,6 +17,7 @@ import { StatsControls } from './controlpanels/StatsControls'
 import { World } from './World'
 import { Settings } from './Settings'
 import { Location } from './Location'
+import { Chrome } from './Chrome'
 
 interface TabPosition{
   x: number;
@@ -109,13 +110,14 @@ export class ControlPanelController {
   }
 
   getTabScale() {
-    var gameWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const controlAreaHeight = gameHeight - this.world.mapController.height;
+    let { width, height } = Chrome.size();
+
+
+    const controlAreaHeight = height - this.world.mapController.height;
     let scaleRatio = controlAreaHeight / 7 / 36;
 
     let maxScaleRatio = 1.0;
-    if (Settings.mobileCheck() && gameWidth > 600) {
+    if (Settings.mobileCheck() && width > 600) {
       maxScaleRatio = 1.1;
     }
     
@@ -130,23 +132,23 @@ export class ControlPanelController {
 
    tabPosition (i: number, world: World): TabPosition {
     // let scale = Settings.controlPanelScale
-    
+    let { width, height } = Chrome.size();
     let scale = this.getTabScale();
     
     if (Settings.mobileCheck()) {
       const mapHeight = 170 * Settings.minimapScale;
-      const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
+      const spacer = (height - mapHeight - (36 * scale * 7)) / 2;
       if (i < 7) {
         return { x: 15, y: mapHeight + spacer + i * 36 * scale };
       }else{
-        return { x: world.viewport.canvas.width - 33 * scale - 15, y: mapHeight + spacer + (i - 7) * 36 * scale };
+        return { x: width - 33 * scale - 15, y: mapHeight + spacer + (i - 7) * 36 * scale };
       }
     }else{
       const x = i % 7
       const y = Math.floor(i / 7)
       return { 
-        x: world.viewport.canvas.width - 231 * scale + x * 33 * scale, 
-        y: world.viewport.canvas.height - 72 * scale + y * 36 * scale 
+        x: width - 231 * scale + x * 33 * scale, 
+        y: height - 72 * scale + y * 36 * scale 
       }
     }
   }
@@ -276,7 +278,8 @@ export class ControlPanelController {
   controlPosition(control: BaseControls, world: World): Location {
     
     let scale = this.getTabScale();
-    
+    let { width, height } = Chrome.size();
+
     if (Settings.mobileCheck()){
       const mapHeight = 170 * Settings.minimapScale;
       const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
@@ -285,13 +288,13 @@ export class ControlPanelController {
         return { x: 33 * scale + 15, y: mapHeight + spacer};
       }else{
         // right side mobile
-        return { x: world.viewport.canvas.width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
+        return { x: width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
       }
     }else{
       // desktop compact
       return { 
-        x: world.viewport.canvas.width - 188 * scale, 
-        y: world.viewport.canvas.height - 72 * scale - 251 * scale
+        x: width - 188 * scale, 
+        y: height - 72 * scale - 251 * scale
       };
     }
   }

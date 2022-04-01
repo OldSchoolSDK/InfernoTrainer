@@ -73,6 +73,10 @@ export class Player extends Unit {
   }
 
 
+  interruptCombat() {
+    this.setAggro(null);
+  }
+
   get isPlayer(): boolean {
     return true;
   }
@@ -113,6 +117,7 @@ export class Player extends Unit {
   }
 
   equipmentChanged() {
+    this.interruptCombat();
 
     let gear = [
       this.equipment.weapon, 
@@ -234,7 +239,7 @@ export class Player extends Unit {
   }
 
   moveTo (x: number, y: number) {
-    this.setAggro(null);
+    this.interruptCombat();
 
     this.manualSpellCastSelection = null
 
@@ -280,7 +285,7 @@ export class Player extends Unit {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
       this.manualSpellCastSelection = null
-      this.setAggro(null);
+      this.interruptCombat();
       this.destinationLocation = this.location;
     } else {
       // use equipped weapon
@@ -333,13 +338,13 @@ export class Player extends Unit {
   }
 
   setSeekingItem(item: Item) {
-    this.aggro = null;
+    this.interruptCombat();
     this.seekingItem = item;
   }
   determineDestination () {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
-        this.setAggro(null);
+        this.interruptCombat();
         this.destinationLocation = this.location
         return
       }

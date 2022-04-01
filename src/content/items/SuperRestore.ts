@@ -39,6 +39,8 @@ export class SuperRestore extends Potion {
 
   drink(player: Player) {
 
+    super.drink(player);
+    
     const prayerBonus = Math.floor(player.stats.prayer  * 0.27) + 8
     player.currentStats.prayer += prayerBonus;
     player.currentStats.prayer = Math.min(player.currentStats.prayer, player.stats.prayer);
