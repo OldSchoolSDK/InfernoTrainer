@@ -282,7 +282,7 @@ export class ControlPanelController {
 
     if (Settings.mobileCheck()){
       const mapHeight = 170 * Settings.minimapScale;
-      const spacer = (world.viewport.canvas.height - mapHeight - (36 * scale * 7)) / 2;
+      const spacer = (height - mapHeight - (36 * scale * 7)) / 2;
       if (this.selectedControl.appearsOnLeftInMobile) {
         // left side mobile
         return { x: 33 * scale + 15, y: mapHeight + spacer};
