@@ -36,7 +36,7 @@ export class Region{
   get context() {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {
-        this.canvas = new OffscreenCanvas(5000, 5000);
+        this.canvas = new OffscreenCanvas(2000, 2000);
       }else{
         this.canvas = new OffscreenCanvas(10000, 10000);
       }
