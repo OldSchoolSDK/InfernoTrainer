@@ -37,17 +37,17 @@ export class ClickController {
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[2])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[3])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[4])
-    this.viewport.canvas.removeEventListener('contextmenu', this.eventListeners[5])
+    // this.viewport.canvas.removeEventListener('contextmenu', this.eventListeners[5])
     this.viewport.canvas.removeEventListener('wheel', this.eventListeners[6])
   }
 
   registerClickActions(world: World) {
-    this.viewport.canvas.addEventListener('mousedown', this.eventListeners[0] = this.leftClickDown.bind(this))
+    this.viewport.canvas.addEventListener('mousedown', this.eventListeners[0] = this.clickDown.bind(this))
     this.viewport.canvas.addEventListener('mouseup', this.eventListeners[1] = this.leftClickUp.bind(this))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[2] = (e: MouseEvent) => world.controlPanel.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
-    this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
+    // this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
     this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
   }
 
@@ -108,7 +108,12 @@ export class ClickController {
     }
   }
 
-  leftClickDown (e: MouseEvent) {
+  clickDown (e: MouseEvent) {
+
+    if (e.button === 2) {
+      this.rightClickDown(e);
+    }
+
 
     if (e.button !== 0) {
       return;
@@ -173,10 +178,9 @@ export class ClickController {
     world.contextMenu.setInactive()
   }
 
-  rightClick (e: MouseEvent) {
+  rightClickDown (e: MouseEvent) {
     const world = this.viewport.world;
     
-
     const { viewportX, viewportY } = this.viewport.getViewport(world);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
