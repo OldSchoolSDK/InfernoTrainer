@@ -63,6 +63,7 @@ export class ClickController {
       Settings.zoomScale = 2;
     }
     
+    Settings.persistToStorage();
 
   }
 

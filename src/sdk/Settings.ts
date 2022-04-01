@@ -10,7 +10,7 @@ export class Settings {
   static get tileSize() {
     return Settings._tileSize * Settings.zoomScale;
   }
-  // static tileSize = parseInt(window.localStorage.getItem('tile_size')) || 24;
+
   static fps = 50;
   static tickMs = 600;
   static playsAudio: boolean;
@@ -55,6 +55,7 @@ export class Settings {
   static persistToStorage () {
     // window.localStorage.setItem('tileSize', Settings.tileSize);
     // window.localStorage.setItem('framesPerTick', Settings.framesPerTick);
+    window.localStorage.setItem('zoomScale', String(Settings.zoomScale))
     window.localStorage.setItem('playsAudio', String(Settings.playsAudio))
     window.localStorage.setItem('inputDelay', String(Settings.inputDelay))
     window.localStorage.setItem('rotated', Settings.rotated)
@@ -82,6 +83,7 @@ export class Settings {
     Settings.minimapScale = Settings.mobileCheck() ? 0.65 : 1;
     Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
 
+    Settings.zoomScale = parseFloat(window.localStorage.getItem('zoomScale'));
 
     Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false;
 
