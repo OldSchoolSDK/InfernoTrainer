@@ -134,7 +134,7 @@ export class ClickController {
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
     const groundItems = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
 
-    world.player.setAggro(null)
+    world.player.interruptCombat();
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
       this.sendToServer(() => this.playerAttackClick(mobs[0]))

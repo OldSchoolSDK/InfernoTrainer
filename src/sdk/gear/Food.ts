@@ -13,6 +13,7 @@ export class Food extends Item {
   }
 
   eat(player: Player) {
+    player.interruptCombat();
     if (player.currentStats.hitpoint < player.stats.hitpoint) {
       player.currentStats.hitpoint += this.healAmount;
       player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint)

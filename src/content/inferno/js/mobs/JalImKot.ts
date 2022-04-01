@@ -125,7 +125,7 @@ export class JalImKot extends Mob {
 
   dig () {
     if (this.world.player.aggro === this) {
-      this.world.player.aggro = null;
+      this.world.player.interruptCombat();
     }
     this.attackCooldownTicks = 12
     if (!Collision.collidesWithAnyEntities(this.world, this.world.player.location.x - 3, this.world.player.location.y + 3, this.size)) {
