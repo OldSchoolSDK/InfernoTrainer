@@ -364,6 +364,8 @@ export class InfernoRegion extends Region {
   }
 
   drawWorldBackground(ctx: any) {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, 10000000, 10000000);
     if (this.mapImage){
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;

@@ -23,9 +23,16 @@ export class AncientsSpellbookControls extends BaseControls {
     return Settings.spellbook_key
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   panelClickDown (world: World, x: number, y: number) {
     world.player.manualSpellCastSelection = null;
+    let scale = Settings.controlPanelScale;
 
+    x = x / scale;
+    y = y / scale;
     if (x >= 21 && x <= 42 && y >= 229 && y <= 249) {
       world.player.manualSpellCastSelection = new IceBarrageSpell()
     }else if (x >= 166 && x <= 187 && y >= 194 && y <= 214) {
@@ -34,14 +41,15 @@ export class AncientsSpellbookControls extends BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    world.viewport.context.drawImage(this.panelImage, x, y)
+    super.draw(world, ctrl, x, y);
     world.viewport.context.fillStyle = '#D1BB7773'
 
+    let scale = Settings.controlPanelScale;
     if (world.player.manualSpellCastSelection) {
       if (world.player.manualSpellCastSelection.itemName === ItemName.ICE_BARRAGE) {
-          world.viewport.context.fillRect(47, 225, 21, 21)
+          world.viewport.context.fillRect(x + 20 * scale, y + 225 * scale, 21 * scale, 21 * scale)
       }else if (world.player.manualSpellCastSelection.itemName === ItemName.BLOOD_BARRAGE) {
-        world.viewport.context.fillRect(191, 188, 21, 21)
+        world.viewport.context.fillRect(x + 164 * scale, y+ 188 * scale, 21 * scale, 21 * scale)
       }
     }
   }

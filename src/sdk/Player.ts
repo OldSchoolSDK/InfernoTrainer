@@ -47,6 +47,8 @@ export class Player extends Unit {
   effects = new PlayerEffects();
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
+  autocastDelay: number = 1;
+
   eats: Eating = new Eating();
   inventory: Item[];
 
@@ -278,7 +280,7 @@ export class Player extends Unit {
     document.body.style.background = 'red'
   }
 
-  attack () {
+  attack (): boolean {
     if (this.manualSpellCastSelection) {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
@@ -294,20 +296,22 @@ export class Player extends Unit {
             this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
             this.regenTimer.specUsed();
           }
-          this.useSpecialAttack  = false;
+          this.useSpecialAttack = false;
         }else{
           const bonuses: AttackBonuses = { };
           if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
             bonuses.gearMultiplier = 7/6;
           }
 
-          this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
+          return this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
         }
       }else{
-        console.log('TODO: Implement punching')
+        return false;
       }
     }
 
+
+    return true;
     // this.playAttackSound();
   }
 
@@ -324,6 +328,11 @@ export class Player extends Unit {
 
 
   setAggro(mob: Unit) {
+    
+    if (mob !== this.aggro) { // do spam clicks constantly reset autocast delay? idk
+      this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever
+    }
+
     this.aggro = mob;
     this.seekingItem = null;
   }
@@ -520,8 +529,9 @@ export class Player extends Unit {
     if (this.aggro) {
       this.setHasLOS()
       if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
-        this.attack()
-        this.attackCooldownTicks = this.attackSpeed
+        if (this.attack()) {
+          this.attackCooldownTicks = this.attackSpeed
+        }
       }
     }
   }
@@ -593,15 +603,15 @@ export class Player extends Unit {
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
-    if (this.path && this.path.length === 2) {
-      if (tickPercent < 0.5) {
-        perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
-        perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
-      }else{
-        perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2)
-        perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2)
-      }
-    }
+    // if (this.path && this.path.length === 2) {
+    //   if (tickPercent < 0.5) {
+    //     perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
+    //     perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
+    //   }else{
+    //     perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2)
+    //     perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2)
+    //   }
+    // }
     return {
       x: perceivedX,
       y: perceivedY

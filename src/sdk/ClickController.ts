@@ -37,6 +37,7 @@ export class ClickController {
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[3])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[4])
     this.viewport.canvas.removeEventListener('contextmenu', this.eventListeners[5])
+    this.viewport.canvas.removeEventListener('wheel', this.eventListeners[6])
   }
 
   registerClickActions(world: World) {
@@ -46,6 +47,23 @@ export class ClickController {
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
+    this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
+  }
+
+  wheel (e: WheelEvent) {
+
+    Settings.zoomScale -= (e.deltaY / 500);
+
+    if (Settings.zoomScale < 0.5) {
+      Settings.zoomScale = 0.5;
+    }
+
+
+    if (Settings.zoomScale > 2) {
+      Settings.zoomScale = 2;
+    }
+    
+
   }
 
   leftClickUp (e: MouseEvent) {
@@ -61,7 +79,14 @@ export class ClickController {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
-
+    if (Settings.mobileCheck()) {
+      if (e.offsetX > 20 && e.offsetX < 60) {
+        if (e.offsetY > 20 && e.offsetY < 60) {
+          // reset button
+          location.reload();
+        }
+      }
+    }
     // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
     //   if (e.offsetY < this.mapController.height) {
     //     const intercepted = this.mapController.clicked(e);
@@ -75,15 +100,9 @@ export class ClickController {
     const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
     const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
 
-
-    if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
-        const intercepted = world.controlPanel.controlPanelClickUp(e);
-        if (intercepted) {
-          return;
-        }
-  
-      }
+    const intercepted = world.controlPanel.controlPanelClickUp(e);
+    if (intercepted) {
+      return;
     }
   }
 
@@ -99,6 +118,7 @@ export class ClickController {
     const { viewportX, viewportY } = this.viewport.getViewport(world);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
+
     if (Settings.rotated === 'south') {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
@@ -113,7 +133,10 @@ export class ClickController {
       return;
     }
 
-    if (e.offsetX > this.viewport.width * Settings.tileSize) {
+    
+    let scale = Settings.minimapScale;
+
+    if (e.offsetX > this.viewport.canvas.width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.leftClickDown(e);
         if (intercepted) {
@@ -121,15 +144,13 @@ export class ClickController {
         }
       }
     }
+    
 
-    if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
-        const intercepted = world.controlPanel.controlPanelClickDown(e);
-        if (intercepted) {
-          return;
-        }
-      }
+    const controlPanelIntercepted = world.controlPanel.controlPanelClickDown(e);
+    if (controlPanelIntercepted) {
+      return;
     }
+
 
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
     const groundItems = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
@@ -173,7 +194,7 @@ export class ClickController {
       }
     }
 
-    if (e.offsetX > this.viewport.width * Settings.tileSize) {
+    if (e.offsetX > this.viewport.canvas.width - world.mapController.width) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.rightClick(e);
         if (intercepted) {

@@ -45,6 +45,11 @@ export class PrayerControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
+    let scale = Settings.controlPanelScale;
+
+    x = x / scale;
+    y = y / scale;
+    
     const gridX = x - 14
     const gridY = y - 22
 
@@ -59,8 +64,13 @@ export class PrayerControls extends BaseControls {
     }
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
+    let scale = Settings.controlPanelScale;
 
     world.player.prayerController.prayers.forEach((prayer, index) => {
       const x2 = index % 5
@@ -69,13 +79,13 @@ export class PrayerControls extends BaseControls {
       if (prayer.isActive || prayer.isLit) {
         world.viewport.context.beginPath()
         world.viewport.context.fillStyle = '#D1BB7773'
-        world.viewport.context.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
         world.viewport.context.fill()
       }
       if (world.player.stats.prayer < prayer.levelRequirement()) {
         world.viewport.context.beginPath()
         world.viewport.context.fillStyle = '#00000073'
-        world.viewport.context.arc(37 + (x2 + 0.5) * 36.8, 16 + y + (y2 + 0.5) * 37, 18, 0, 2 * Math.PI)
+        world.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
         world.viewport.context.fill()
       }
     })

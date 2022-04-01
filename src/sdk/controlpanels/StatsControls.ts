@@ -15,6 +15,10 @@ export class StatsControls extends BaseControls {
     return StatsTab
   }
 
+  get isAvailable (): boolean {
+    return true;
+  }
+  
   levelPrompt(skill: string): number {
 
     const newLvl = parseInt(prompt("What level would you like to set your "+skill+"?", "99"))
@@ -28,6 +32,11 @@ export class StatsControls extends BaseControls {
   }
 
   panelClickUp (world: World, x: number, y: number) {
+    let scale = Settings.controlPanelScale;
+
+    x = x / scale;
+    y = y / scale;
+    
     if (x > 9 && x < 73) {
       if (y > 12 && y < 44) {
         
@@ -111,102 +120,109 @@ export class StatsControls extends BaseControls {
     }
   }
 
+  get appearsOnLeftInMobile (): boolean {
+    return false;
+  }
+  
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
+    
     super.draw(world, ctrl, x, y)
 
 
-    world.viewport.context.font = '16px Stats_11'
+    let scale = Settings.controlPanelScale;
+
+    world.viewport.context.font = (16 * scale) + 'px Stats_11'
     
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.attack), x + 49, y + 22)
+    world.viewport.context.fillText(String(world.player.currentStats.attack), x + 49 * scale, y + 22 * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.attack), x + 48, y + 21)
+    world.viewport.context.fillText(String(world.player.currentStats.attack), x + 48 * scale, y + 21 * scale)
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.attack), x + 61, y + 36)
+    world.viewport.context.fillText(String(world.player.stats.attack), x + 61 * scale, y + 36 * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.attack), x + 60, y + 35)
-
-
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.strength), x + 49, y + 22 + 32)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.strength), x + 48, y + 21 + 32)
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.strength), x + 61, y + 36 + 32)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.strength), x + 60, y + 35 + 32)
+    world.viewport.context.fillText(String(world.player.stats.attack), x + 60 * scale, y + 35 * scale)
 
 
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.defence), x + 49, y + 22 + 64)
+    world.viewport.context.fillText(String(world.player.currentStats.strength), x + 49 * scale, y + (22 + 32) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.defence), x + 48, y + 21 + 64)
+    world.viewport.context.fillText(String(world.player.currentStats.strength), x + 48 * scale, y + (21 + 32) * scale)
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.defence), x + 61, y + 36 + 64)
+    world.viewport.context.fillText(String(world.player.stats.strength), x + 61 * scale, y + (36 + 32) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.defence), x + 60, y + 35 + 64)
-
-
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.range), x + 49, y + 22 + 96)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.range), x + 48, y + 21 + 96)
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.range), x + 61, y + 36 + 96)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.range), x + 60, y + 35 + 96)
-
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.prayer), x + 49, y + 22 + 128)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.prayer), x + 48, y + 21 + 128)
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.prayer), x + 61, y + 36 + 128)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.prayer), x + 60, y + 35 + 128)
+    world.viewport.context.fillText(String(world.player.stats.strength), x + 60 * scale, y + (35 + 32) * scale)
 
 
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.magic), x + 49, y + 22 + 160)
+    world.viewport.context.fillText(String(world.player.currentStats.defence), x + 49 * scale, y + (22 + 64) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.magic), x + 48, y + 21 + 160)
+    world.viewport.context.fillText(String(world.player.currentStats.defence), x + 48 * scale, y + (21 + 64) * scale)
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.magic), x + 61, y + 36 + 160)
+    world.viewport.context.fillText(String(world.player.stats.defence), x + 61 * scale, y + (36 + 64) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.magic), x + 60, y + 35 + 160)
+    world.viewport.context.fillText(String(world.player.stats.defence), x + 60 * scale, y + (35 + 64) * scale)
 
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.hitpoint), x + 49 + 63, y + 22)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.hitpoint), x + 48 + 63, y + 21)
-
-    world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.hitpoint), x + 61 + 63, y + 36)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.hitpoint), x + 60 + 63, y + 35)
 
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.currentStats.agility), x + 49 + 63, y + 22 + 32)
+    world.viewport.context.fillText(String(world.player.currentStats.range), x + 49 * scale, y + (22 + 96) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.currentStats.agility), x + 48 + 63, y + 21 + 32)
+    world.viewport.context.fillText(String(world.player.currentStats.range), x + 48 * scale, y + (21 + 96) * scale)
 
     world.viewport.context.fillStyle = '#000'
-    world.viewport.context.fillText(String(world.player.stats.agility), x + 61 + 63, y + 36 + 32)
+    world.viewport.context.fillText(String(world.player.stats.range), x + 61 * scale, y + (36 + 96) * scale)
     world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.fillText(String(world.player.stats.agility), x + 60 + 63, y + 35 + 32)
+    world.viewport.context.fillText(String(world.player.stats.range), x + 60 * scale, y + (35 + 96) * scale)
+
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.currentStats.prayer), x + 49 * scale, y + (22 + 128) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.currentStats.prayer), x + 48 * scale, y + (21 + 128) * scale)
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.stats.prayer), x + 61 * scale, y + (36 + 128) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.stats.prayer), x + 60 * scale, y + (35 + 128) * scale)
+
+
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.currentStats.magic), x + 49 * scale, y + (22 + 160) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.currentStats.magic), x + 48 * scale, y + (21 + 160) * scale)
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.stats.magic), x + 61 * scale, y + (36 + 160) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.stats.magic), x + 60 * scale, y + (35 + 160) * scale)
+
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.currentStats.hitpoint), x + (49 + 63) * scale, y + 22 * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.currentStats.hitpoint), x + (48 + 63) * scale, y + 21 * scale)
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.stats.hitpoint), x + (61 + 63) * scale, y + 36 * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.stats.hitpoint), x + (60 + 63) * scale, y + 35 * scale)
+
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.currentStats.agility), x + (49 + 63) * scale, y + (22 + 32) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.currentStats.agility), x + (48 + 63) * scale, y + (21 + 32) * scale)
+
+    world.viewport.context.fillStyle = '#000'
+    world.viewport.context.fillText(String(world.player.stats.agility), x + (61 + 63) * scale, y + (36 + 32) * scale)
+    world.viewport.context.fillStyle = '#FFFF00'
+    world.viewport.context.fillText(String(world.player.stats.agility), x + (60 + 63) * scale, y + (35 + 32) * scale)
 
   }
 }
