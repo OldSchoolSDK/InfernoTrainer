@@ -1,6 +1,7 @@
 'use strict'
 
 import { remove } from "lodash";
+import { Chrome } from "./Chrome";
 import { Entity } from "./Entity";
 import { Item } from "./Item"
 import { Mob } from "./Mob";
@@ -20,7 +21,7 @@ export interface GroundItems {
 
 // Base class for any trainer region.
 export class Region{
-  canvas =  new OffscreenCanvas(10000, 10000);
+  canvas: OffscreenCanvas;
 
   world: World;
 
@@ -33,6 +34,13 @@ export class Region{
   groundItems: GroundItems = { }
 
   get context() {
+    if (!this.canvas) {
+      if (Settings.mobileCheck()) {
+        this.canvas = new OffscreenCanvas(2000, 2000);
+      }else{
+        this.canvas = new OffscreenCanvas(10000, 10000);
+      }
+    }
     return this.canvas.getContext('2d');
   }
 
