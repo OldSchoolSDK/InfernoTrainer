@@ -18,11 +18,11 @@ export class Viewport {
   }
 
   constructor(world: World) {
-    window.addEventListener("orientationchange", () => this.initializeViewport(world));
-    window.addEventListener('resize', () => this.initializeViewport(world));
-    window.addEventListener('wheel', () => this.initializeViewport(world));
-    window.addEventListener('resize', () => this.initializeViewport(world));
-    this.initializeViewport(world);
+    window.addEventListener("orientationchange", () => this.calculateViewport(world));
+    window.addEventListener('resize', () => this.calculateViewport(world));
+    window.addEventListener('wheel', () => this.calculateViewport(world));
+    window.addEventListener('resize', () => this.calculateViewport(world));
+    this.calculateViewport(world);
     
 
     this.canvas.width = Settings._tileSize * 2 * this.width;// + world.mapController.width;
@@ -33,18 +33,13 @@ export class Viewport {
     this.clickController.registerClickActions(world)
   }
 
-  initializeViewport(world: World) {
+  calculateViewport(world: World) {
     // convert this to a world map canvas (offscreencanvas)
     this.canvas = document.getElementById('world') as HTMLCanvasElement;
     const { width, height } = Chrome.size();
-    
     Settings._tileSize = width / world.region.width;
-    // // todo: refactor how viewport works to not need this width restrictor anymore.
-
-    const widthRestrictors =  (Settings.menuVisible ? 220 : 0);
-    this.width = ((width - widthRestrictors) / Settings.tileSize);
+    this.width = (width / Settings.tileSize);
     this.height = (height / Settings.tileSize);
-
   }
 
   getViewport(world: World) {

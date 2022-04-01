@@ -114,7 +114,7 @@ export class World {
       }else{
         document.getElementById('right_panel').classList.add('hidden');
       }
-      this.viewport.initializeViewport(this);
+      this.viewport.calculateViewport(this);
     }
     this.lastMenuVisible = Settings.menuVisible;
   }
