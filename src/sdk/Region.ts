@@ -32,12 +32,10 @@ export class Region{
 
   groundItems: GroundItems = { }
 
-  constructor() {
-    this.canvas = new OffscreenCanvas(10000, 10000);
-
-  }
-
   get context() {
+    if (!this.canvas) {
+      this.canvas = new OffscreenCanvas(10000, 10000);
+    }
     return this.canvas.getContext('2d');
   }
 
