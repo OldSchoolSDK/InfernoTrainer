@@ -18,6 +18,7 @@ import { Unit } from './Unit';
 import { Viewport } from './Viewport';
 import { World } from './World';
 import { Location } from './Location';
+import { Chrome } from './Chrome';
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -136,8 +137,9 @@ export class ClickController {
 
     
     let scale = Settings.minimapScale;
+    let { width, height } = Chrome.size();
 
-    if (e.offsetX > this.viewport.canvas.width - world.mapController.width * scale) {
+    if (e.offsetX > width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.leftClickDown(e);
         if (intercepted) {
@@ -184,8 +186,9 @@ export class ClickController {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
+    let { width, height } = Chrome.size();
 
-    if (e.offsetX > this.viewport.canvas.width - world.controlPanel.width) {
+    if (e.offsetX > width - world.controlPanel.width) {
       if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
         const intercepted = world.controlPanel.controlPanelRightClick(e);
         if (intercepted) {
@@ -195,7 +198,7 @@ export class ClickController {
       }
     }
 
-    if (e.offsetX > this.viewport.canvas.width - world.mapController.width) {
+    if (e.offsetX > width - world.mapController.width) {
       if (e.offsetY < world.mapController.height) {
         const intercepted = world.mapController.rightClick(e);
         if (intercepted) {

@@ -3,7 +3,7 @@ import { Settings } from './Settings';
 import { Pathing } from './Pathing';
 import { World } from './World';
 import { ClickController } from './ClickController';
-
+import { Chrome } from './Chrome';
 
 export class Viewport {
   clickController: ClickController;
@@ -21,8 +21,12 @@ export class Viewport {
     window.addEventListener("orientationchange", () => this.initializeViewport(world));
     window.addEventListener('resize', () => this.initializeViewport(world));
     window.addEventListener('wheel', () => this.initializeViewport(world));
+    window.addEventListener('resize', () => this.initializeViewport(world));
     this.initializeViewport(world);
-    world.region.canvas = new OffscreenCanvas(10000, 10000)
+    
+
+    this.canvas.width = Settings._tileSize * 2 * this.width;// + world.mapController.width;
+    this.canvas.height = Settings._tileSize * 2 * this.height;
 
     this.world = world;
     this.clickController = new ClickController(this);
@@ -32,17 +36,15 @@ export class Viewport {
   initializeViewport(world: World) {
     // convert this to a world map canvas (offscreencanvas)
     this.canvas = document.getElementById('world') as HTMLCanvasElement;
-    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
+    const { width, height } = Chrome.size();
+    
     Settings._tileSize = width / world.region.width;
-    // todo: refactor how viewport works to not need this width restrictor anymore.
+    // // todo: refactor how viewport works to not need this width restrictor anymore.
+
     const widthRestrictors =  (Settings.menuVisible ? 220 : 0);
     this.width = ((width - widthRestrictors) / Settings.tileSize);
     this.height = (height / Settings.tileSize);
-    // create new canvas that is the on screen canvas
-    this.canvas.width = Settings.tileSize * this.width;// + world.mapController.width;
-    this.canvas.height = Settings.tileSize * this.height;
+
   }
 
   getViewport(world: World) {

@@ -13,6 +13,7 @@ import MetronomeSound from '../assets/sounds/bonk.ogg'
 import { Pathing } from './Pathing'
 import { ImageLoader } from './utils/ImageLoader'
 import ButtonActiveIcon from '../assets/images/interface/button_active.png'
+import { Chrome } from './Chrome'
 
 
 export class World {
@@ -206,9 +207,15 @@ export class World {
     this.viewport.context.fillStyle = 'black'
     this.viewport.context.fillRect(0, 0, 10000000, 1000000)
 
+    let { width, height } = Chrome.size();
+
+
     if (Settings.rotated === 'south') {
       this.viewport.context.rotate(Math.PI)
-      this.viewport.context.translate(-this.viewport.canvas.width, -this.viewport.canvas.height)
+
+
+
+      this.viewport.context.translate(-width, -height);
     }
     this.drawWorld(this.tickPercent)
     const { viewportX, viewportY } = this.viewport.getViewport(this);
@@ -227,10 +234,9 @@ export class World {
     }
 
     // draw control panel
-    // this.viewport.context.translate(this.viewport.canvas.width - this.controlPanel.width, this.viewport.canvas.height - this.controlPanel.height)
     this.controlPanel.draw(this)
     // this.viewport.context.restore();
-    XpDropController.controller.draw(this.viewport.context, this.viewport.canvas.width - 140 - this.mapController.width, 0, this.tickPercent);
+    XpDropController.controller.draw(this.viewport.context, width - 140 - this.mapController.width, 0, this.tickPercent);
     MapController.controller.draw(this.viewport.context, this.tickPercent);
     this.contextMenu.draw(this)
 
@@ -245,7 +251,7 @@ export class World {
     if (this.getReadyTimer > 0) {
       this.viewport.context.font = '72px OSRS'
       this.viewport.context.textAlign = 'center'
-      this.drawVPText(`GET READY...${this.getReadyTimer}`, this.viewport.canvas.width / 2, this.viewport.canvas.height / 2 - 50)
+      this.drawVPText(`GET READY...${this.getReadyTimer}`, width / 2, height / 2 - 50)
     }
 
     const region = this.region as InfernoRegion; // HACK HACK
@@ -253,8 +259,8 @@ export class World {
       this.viewport.context.font = '24px OSRS'
       this.viewport.context.textAlign = 'left'
 
-      this.drawVPText(`Mode: ${this.modeName(region.wave)}`, 6, this.viewport.canvas.height - 50)
-      this.drawVPText(`Score: ${region.score}`, 6, this.viewport.canvas.height - 24)
+      this.drawVPText(`Mode: ${this.modeName(region.wave)}`, 6, height - 50)
+      this.drawVPText(`Score: ${region.score}`, 6, height - 24)
 
 
       if (region.finalScore === -1 && document.body.style.background === 'red') {
@@ -263,7 +269,7 @@ export class World {
       if (region.finalScore !== -1) {
         this.viewport.context.font = '24px OSRS'
         this.viewport.context.textAlign = 'left'
-        this.drawVPText(`Final Score: ${region.finalScore}`, 6, this.viewport.canvas.height)
+        this.drawVPText(`Final Score: ${region.finalScore}`, 6, height)
       }
         
     }
