@@ -32,6 +32,10 @@ import { EntityName } from '../../../sdk/EntityName'
 
 export class InfernoRegion extends Region {
 
+  constructor() {
+    super();
+  }
+
   score: number = 0;
   finalScore: number = -1;
   wave: number;

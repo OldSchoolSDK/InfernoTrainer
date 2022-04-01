@@ -20,7 +20,7 @@ export interface GroundItems {
 
 // Base class for any trainer region.
 export class Region{
-  canvas =  new OffscreenCanvas(10000, 10000);
+  canvas: OffscreenCanvas;
 
   world: World;
 
@@ -31,6 +31,11 @@ export class Region{
   mapImage: HTMLImageElement;
 
   groundItems: GroundItems = { }
+
+  constructor() {
+    this.canvas = new OffscreenCanvas(10000, 10000);
+
+  }
 
   get context() {
     return this.canvas.getContext('2d');
