@@ -37,6 +37,9 @@ export class SaradominBrew extends Potion {
   }
 
   drink(player: Player) {
+    super.drink(player);
+    
+    
     const healAmount = Math.floor(player.stats.hitpoint * 0.15) + 2;
     player.currentStats.hitpoint += healAmount;
     player.currentStats.hitpoint = Math.max(1, Math.min(player.currentStats.hitpoint, player.stats.hitpoint + healAmount))

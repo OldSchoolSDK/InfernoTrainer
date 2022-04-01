@@ -38,6 +38,9 @@ export class StaminaPotion extends Potion {
   }
 
   drink(player: Player) { 
+    super.drink(player);
+    
+    
     player.effects.stamina = 200; // 2 minutes = 200 ticks
     player.currentStats.run += 2000;
     player.currentStats.run = Math.min(Math.max(player.currentStats.run, 0), 10000);

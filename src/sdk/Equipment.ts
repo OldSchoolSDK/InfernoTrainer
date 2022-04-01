@@ -27,6 +27,7 @@ export class Equipment extends Item {
   get hasInventoryLeftClick(): boolean {
     return true;
   }
+
   inventoryLeftClick(player: Player) {
     const currentItem = this.currentEquipment(player) || null; 
     let openInventorySlots = player.openInventorySlots()
@@ -34,7 +35,6 @@ export class Equipment extends Item {
     this.assignToPlayer(player);
     player.inventory[openInventorySlots.shift()] = currentItem;
     player.equipmentChanged()
-    player.setAggro(null);
   }
 
   get equipmentSetEffect(): typeof SetEffect{

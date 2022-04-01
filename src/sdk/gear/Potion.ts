@@ -14,7 +14,7 @@ export class Potion extends Item {
     this.defaultAction = 'Drink';
   }
   drink(player: Player) {
-
+    player.interruptCombat();
   }
 
   get weight(): number {
