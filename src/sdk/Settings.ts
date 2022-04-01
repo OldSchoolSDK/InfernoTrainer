@@ -83,7 +83,7 @@ export class Settings {
     Settings.minimapScale = Settings.mobileCheck() ? 0.65 : 1;
     Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
 
-    Settings.zoomScale = parseFloat(window.localStorage.getItem('zoomScale'));
+    Settings.zoomScale = parseFloat(window.localStorage.getItem('zoomScale')) || 1;
 
     Settings.playsAudio = window.localStorage.getItem('playsAudio') === 'true' || false;
 
