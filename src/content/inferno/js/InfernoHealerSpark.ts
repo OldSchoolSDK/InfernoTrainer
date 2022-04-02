@@ -15,6 +15,7 @@ import { Collision, CollisionType } from '../../../sdk/Collision'
 import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
 import { JalMejJak } from './mobs/JalMejJak'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
+import { Random } from '../../../sdk/Random'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {
@@ -27,7 +28,7 @@ class InfernoSparkWeapon extends Weapon{
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
-    this.damage = 5 + Math.floor(Math.random() * 6);
+    this.damage = 5 + Math.floor(Random.get() * 6);
     to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
     return true;
   }

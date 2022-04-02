@@ -14,6 +14,7 @@ import { Collision } from './Collision'
 import { EntityName } from './EntityName'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import { SoundCache } from './utils/SoundCache';
+import { Random } from './Random'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -125,16 +126,16 @@ export class Mob extends Unit {
 
       if (Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // Random movement if player is under the mob.
-        if (Math.random() < 0.5) {
+        if (Random.get() < 0.5) {
           dy = this.location.y
-          if (Math.random() < 0.5) {
+          if (Random.get() < 0.5) {
             dx = this.location.x + 1
           } else {
             dx = this.location.x - 1
           }
         } else {
           dx = this.location.x
-          if (Math.random() < 0.5) {
+          if (Random.get() < 0.5) {
             dy = this.location.y + 1
           } else {
             dy = this.location.y - 1
@@ -305,7 +306,7 @@ export class Mob extends Unit {
   attack () {
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(this.attackStyle) === false) {
-      if (this.isWithinMeleeRange() && Math.random() < 0.5) {
+      if (this.isWithinMeleeRange() && Random.get() < 0.5) {
         this.attackStyle = this.canMeleeIfClose()
       }
     }

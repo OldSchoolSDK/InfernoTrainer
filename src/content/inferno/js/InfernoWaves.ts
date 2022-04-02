@@ -12,12 +12,31 @@ import { JalNib } from './mobs/JalNib'
 import { JalXil } from './mobs/JalXil'
 import { Location } from "../../../sdk/Location"
 import { Collision } from '../../../sdk/Collision'
+import { Random } from '../../../sdk/Random'
 
 
 export class InfernoWaves {
 
+  static shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Random.get() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
+
   static getRandomSpawns () {
-    return shuffle(InfernoWaves.spawns)
+    return InfernoWaves.shuffle(InfernoWaves.spawns)
   }
 
   static spawn (world: World, randomPillar: Entity, spawns: Location[], wave: number) {
@@ -62,7 +81,7 @@ export class InfernoWaves {
         JalMejRah
       ];
 
-      const randomType = mobTypes[Math.floor(Math.random() * 5)]
+      const randomType = mobTypes[Math.floor(Random.get() * 5)]
 
       let randomSpawn = null;
       if (check) {

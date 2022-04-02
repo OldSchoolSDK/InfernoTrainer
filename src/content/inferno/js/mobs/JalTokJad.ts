@@ -17,6 +17,7 @@ import { EntityName } from "../../../../sdk/EntityName"
 
 import MagicSound from '../../assets/sounds/TzTok-Jad-Magic-attack.ogg'
 import RangeSound from '../../assets/sounds/TzTok-Jad-Ranged-attack.ogg'
+import { Random } from '../../../../sdk/Random'
 
 
 interface JadUnitOptions extends UnitOptions {
@@ -136,11 +137,11 @@ export class JalTokJad extends Mob {
 
           while (Collision.collidesWithMob(this.world, this.location.x + xOff, this.location.y + yOff, 1, this)){
             if (this.isZukWave) {
-              xOff = Math.floor(Math.random() * 6);
-              yOff = -Math.floor(Math.random() * 4) - this.size;
+              xOff = Math.floor(Random.get() * 6);
+              yOff = -Math.floor(Random.get() * 4) - this.size;
             }else{
-              xOff = Math.floor(Math.random() * 11) - 5;
-              yOff = Math.floor(Math.random() * 15) - 5 - this.size;
+              xOff = Math.floor(Random.get() * 11) - 5;
+              yOff = Math.floor(Random.get() * 15) - 5 - this.size;
             }
           }
 
@@ -201,7 +202,7 @@ export class JalTokJad extends Mob {
   }
 
   attackStyleForNewAttack () {
-    return Math.random() < 0.5 ? 'range' : 'magic'
+    return Random.get() < 0.5 ? 'range' : 'magic'
   }
 
   attackAnimation (tickPercent: number) {

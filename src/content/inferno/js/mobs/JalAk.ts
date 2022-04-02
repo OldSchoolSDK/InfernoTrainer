@@ -14,6 +14,7 @@ import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
 import { InfernoRegion } from '../InfernoRegion'
+import { Random } from '../../../../sdk/Random'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -116,7 +117,7 @@ export class JalAk extends Mob {
 
   attackStyleForNewAttack () {
     if (this.playerPrayerScan !== 'magic' && this.playerPrayerScan !== 'range') {
-      return (Math.random() < 0.5) ? 'magic' : 'range'
+      return (Random.get() < 0.5) ? 'magic' : 'range'
     }
     return (this.playerPrayerScan === 'magic') ? 'range' : 'magic'
   }

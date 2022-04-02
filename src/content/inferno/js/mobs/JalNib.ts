@@ -14,10 +14,11 @@ import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 import { Location } from "../../../../sdk/Location"
 import { EntityName } from "../../../../sdk/EntityName"
+import { Random } from '../../../../sdk/Random'
 
 class NibblerWeapon extends MeleeWeapon {
   attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}): boolean {
-    const damage = Math.floor(Math.random() * 5)
+    const damage = Math.floor(Random.get() * 5)
     this.damage = damage;
     to.addProjectile(new Projectile(this, this.damage, from, to, 'crush', options))
     return true;

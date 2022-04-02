@@ -17,6 +17,7 @@ import { AttackIndicators, Mob } from '../../../sdk/Mob';
 import { LineOfSightMask } from '../../../sdk/LineOfSight';
 import { DelayedAction } from '../../../sdk/DelayedAction';
 import { JalXil } from './mobs/JalXil';
+import { Random } from '../../../sdk/Random';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -26,7 +27,7 @@ export class ZukShield extends Mob {
   currentStats: UnitStats;
 
 
-  movementDirection: boolean = Math.random() < 0.5 ? true : false;
+  movementDirection: boolean = Random.get() < 0.5 ? true : false;
 
   get lineOfSight() {
     return LineOfSightMask.NONE;

@@ -11,6 +11,7 @@ import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { InfernoRegion } from '../InfernoRegion'
+import { Random } from '../../../../sdk/Random'
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
@@ -161,7 +162,7 @@ export class JalZek extends Mob {
     const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
-      if (Math.random() < 0.1 && !this.shouldRespawnMobs) {
+      if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.world)
         if (!mobToResurrect) {
           this.attack()

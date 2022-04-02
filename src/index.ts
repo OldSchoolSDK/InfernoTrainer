@@ -8,12 +8,15 @@ import { Region } from './sdk/Region'
 import { MapController } from './sdk/MapController'
 import { ImageLoader } from './sdk/utils/ImageLoader'
 import NewRelicBrowser from 'new-relic-browser';
+import { Random } from './sdk/Random'
 
 declare global {
   interface Window {
     newrelic: typeof NewRelicBrowser
   }
 }
+
+// Random.setRandom('sin');
 
 Settings.readFromStorage()
 const selectedRegionName = Settings.region

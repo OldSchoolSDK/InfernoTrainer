@@ -12,6 +12,7 @@ import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
+import { Random } from '../../../../sdk/Random'
 
 class HealWeapon extends Weapon {
   calculateHitDelay(distance: number) {
@@ -19,7 +20,7 @@ class HealWeapon extends Weapon {
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
-    this.damage = -Math.floor(Math.random() * 25);
+    this.damage = -Math.floor(Random.get() * 25);
     this.registerProjectile(from, to, bonuses, options)
     return true;
   }
@@ -37,11 +38,11 @@ class AoeWeapon extends Weapon {
       const limitedPlayerLocation = { x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 5), y: playerLocation.y };
       const spark1 = new InfernoHealerSpark(world, limitedPlayerLocation, from);
       world.region.addEntity(spark1);
-      const spark2Location = { x: from.location.x + (Math.floor(Math.random() * 11) - 5), y: 16 + Math.floor(Math.random() * 5) };
+      const spark2Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
       const spark2 = new InfernoHealerSpark(world, spark2Location, from);
       world.region.addEntity(spark2);
 
-      const spark3Location = { x: from.location.x + (Math.floor(Math.random() * 11) - 5), y: 16 + Math.floor(Math.random() * 5) };
+      const spark3Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
       const spark3 = new InfernoHealerSpark(world, spark3Location, from);
       world.region.addEntity(spark3);
       

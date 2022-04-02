@@ -47,16 +47,14 @@ export class World {
     return this._serialNumber;
   }
 
-  constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
+  constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController) {
 
     this.region = region;
     this.mapController = mapController;
     this.controlPanel = controlPanel;
     this.controlPanel.setWorld(this);
     this.mapController.setWorld(this)
-    this.viewport = new Viewport(this);
-
-    
+    this.viewport = new Viewport(this);    
 
   }
 
