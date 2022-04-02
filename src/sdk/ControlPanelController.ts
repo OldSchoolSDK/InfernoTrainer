@@ -18,6 +18,7 @@ import { World } from './World'
 import { Settings } from './Settings'
 import { Location } from './Location'
 import { Chrome } from './Chrome'
+import { MapController } from './MapController'
 
 interface TabPosition{
   x: number;
@@ -25,6 +26,7 @@ interface TabPosition{
 }
 
 export class ControlPanelController {
+  
   static controls = Object.freeze({
     COMBAT: new CombatControls(),
     INVENTORY: new InventoryControls(),
@@ -33,6 +35,9 @@ export class ControlPanelController {
     STATS: new StatsControls(),
     ANCIENTSSPELLBOOK: new AncientsSpellbookControls()
   });
+
+  
+  static controller = new ControlPanelController();
 
   world?: World;
   desktopControls: BaseControls[];
@@ -113,7 +118,7 @@ export class ControlPanelController {
     const { width, height } = Chrome.size();
 
 
-    const controlAreaHeight = height - this.world.mapController.height;
+    const controlAreaHeight = height - MapController.controller.height;
     let scaleRatio = controlAreaHeight / 7 / 36;
 
     let maxScaleRatio = 1.0;

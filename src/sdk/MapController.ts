@@ -49,8 +49,6 @@ export class MapController {
   colorScale: ColorScale = new ColorScale(0, 1, [ '#FF0000', '#FF7300', '#00FF00'], 1);
 
   world: World;
-  canvas = document.getElementById('map') as HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
 
   outlineImage: HTMLImageElement = ImageLoader.createImage(MapBoarder)
   mapAlphaImage: HTMLImageElement = ImageLoader.createImage(MapBorderMask);

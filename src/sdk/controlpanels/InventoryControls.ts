@@ -10,6 +10,7 @@ import { ControlPanelController } from '../ControlPanelController'
 import { Location } from "../../sdk/Location"
 import { Collision } from '../Collision'
 import { MenuOption } from '../ContextMenu'
+import { MapController } from '../MapController'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
@@ -104,7 +105,7 @@ export class InventoryControls extends BaseControls {
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
         clickedItem.inventoryLeftClick(world.player);
-        world.mapController.updateOrbsMask(null, null)
+        MapController.controller.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }

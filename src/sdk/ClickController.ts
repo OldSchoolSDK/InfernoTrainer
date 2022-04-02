@@ -18,6 +18,8 @@ import { Unit } from './Unit';
 import { Viewport } from './Viewport';
 import { World } from './World';
 import { Chrome } from './Chrome';
+import { MapController } from './MapController';
+import { ControlPanelController } from './ControlPanelController';
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -42,8 +44,8 @@ export class ClickController {
   registerClickActions(world: World) {
     this.viewport.canvas.addEventListener('mousedown', this.eventListeners[0] = this.clickDown.bind(this))
     this.viewport.canvas.addEventListener('mouseup', this.eventListeners[1] = this.leftClickUp.bind(this))
-    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[2] = (e: MouseEvent) => world.controlPanel.cursorMovedTo(e))
-    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
+    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[2] = (e: MouseEvent) => ControlPanelController.controller.cursorMovedTo(e))
+    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => MapController.controller.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
   }
@@ -81,7 +83,7 @@ export class ClickController {
     }
     
     const world = this.viewport.world;
-    const intercepted = world.controlPanel.controlPanelClickUp(e);
+    const intercepted = ControlPanelController.controller.controlPanelClickUp(e);
     if (intercepted) {
       return;
     }
@@ -143,9 +145,9 @@ export class ClickController {
     const scale = Settings.minimapScale;
     const { width } = Chrome.size();
 
-    if (e.offsetX > width - world.mapController.width * scale) {
-      if (e.offsetY < world.mapController.height) {
-        const intercepted = world.mapController.leftClickDown(e);
+    if (e.offsetX > width - MapController.controller.width * scale) {
+      if (e.offsetY < MapController.controller.height) {
+        const intercepted = MapController.controller.leftClickDown(e);
         if (intercepted) {
           return;
         }
@@ -153,7 +155,7 @@ export class ClickController {
     }
     
 
-    const controlPanelIntercepted = world.controlPanel.controlPanelClickDown(e);
+    const controlPanelIntercepted = ControlPanelController.controller.controlPanelClickDown(e);
     if (controlPanelIntercepted) {
       return;
     }
@@ -191,9 +193,9 @@ export class ClickController {
     }
     const { width } = Chrome.size();
 
-    if (e.offsetX > width - world.controlPanel.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){
-        const intercepted = world.controlPanel.controlPanelRightClick(e);
+    if (e.offsetX > width - ControlPanelController.controller.width) {
+      if (e.offsetY > this.viewport.height * Settings.tileSize - ControlPanelController.controller.height){
+        const intercepted = ControlPanelController.controller.controlPanelRightClick(e);
         if (intercepted) {
           return;
         }
@@ -201,9 +203,9 @@ export class ClickController {
       }
     }
 
-    if (e.offsetX > width - world.mapController.width) {
-      if (e.offsetY < world.mapController.height) {
-        const intercepted = world.mapController.rightClick(e);
+    if (e.offsetX > width - MapController.controller.width) {
+      if (e.offsetY < MapController.controller.height) {
+        const intercepted = MapController.controller.rightClick(e);
         if (intercepted) {
           return;
         }

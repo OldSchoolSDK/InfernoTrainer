@@ -27,7 +27,7 @@ export class Viewport {
     this.calculateViewport(world);
     
 
-    this.canvas.width = Settings._tileSize * 2 * this.width;// + world.mapController.width;
+    this.canvas.width = Settings._tileSize * 2 * this.width;
     this.canvas.height = Settings._tileSize * 2 * this.height;
 
     this.world = world;

@@ -23,8 +23,6 @@ export class World {
 
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon)
 
-  controlPanel: ControlPanelController;
-  mapController: MapController;
   contextMenu: ContextMenu = new ContextMenu();
 
   tickCounter = 0;
@@ -47,17 +45,15 @@ export class World {
     return this._serialNumber;
   }
 
-  constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController) {
+  constructor (region: Region) {
     this.region = region;
 
-    this.controlPanel = controlPanel;
-    if (this.controlPanel) {
-      this.controlPanel.setWorld(this);
+    if (ControlPanelController.controller) {
+      ControlPanelController.controller.setWorld(this);
     }
 
-    this.mapController = mapController;
-    if (this.mapController) {
-      this.mapController.setWorld(this)
+    if (MapController.controller) {
+      MapController.controller.setWorld(this)
     }
 
     this.viewport = new Viewport(this);    
@@ -245,9 +241,9 @@ export class World {
     }
 
     // draw control panel
-    this.controlPanel.draw(this)
+    ControlPanelController.controller.draw(this)
     // this.viewport.context.restore();
-    XpDropController.controller.draw(this.viewport.context, width - 140 - this.mapController.width, 0, this.tickPercent);
+    XpDropController.controller.draw(this.viewport.context, width - 140 - MapController.controller.width, 0, this.tickPercent);
     MapController.controller.draw(this.viewport.context);
     this.contextMenu.draw(this)
 
