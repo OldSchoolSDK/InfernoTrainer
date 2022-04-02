@@ -60,7 +60,7 @@ export class Region{
   }
 
   addMob (mob: Mob) {
-    if (this.world.tickCounter === 0) {
+    if (!mob.region.world) {
       this.mobs.push(mob)
     }else{
       this.newMobs.push(mob)
@@ -99,10 +99,6 @@ export class Region{
     return ''
   }
 
-  // Spawn entities, NPCs, player and initialize any extra UI controls.
-  initialize () {
-    // hmm
-  }
 
   drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {
     ctx;
