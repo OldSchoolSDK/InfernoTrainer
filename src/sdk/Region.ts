@@ -6,6 +6,7 @@ import { Item } from "./Item"
 import { Mob } from "./Mob";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
+import { Viewport } from "./Viewport";
 import { World } from "./World"
 
 
@@ -31,7 +32,14 @@ export class Region{
   mapImage: HTMLImageElement;
 
   groundItems: GroundItems = { }
-
+  
+  _serialNumber: string;
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
   get context() {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {
@@ -63,7 +71,7 @@ export class Region{
     remove(this.mobs, mob)
   }
 
-  addGroundItem(world: World, item: Item, x: number, y: number) {
+  addGroundItem(item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
       this.groundItems[x] = {};
     }
@@ -71,7 +79,7 @@ export class Region{
       this.groundItems[x][y] = [];
     }
 
-    item.groundLocation = { x:  world.player.location.x, y:  world.player.location.y };
+    item.groundLocation = { x:  Viewport.viewport.player.location.x, y:  Viewport.viewport.player.location.y };
     this.groundItems[x][y].push(item);
   }
 
@@ -92,8 +100,8 @@ export class Region{
   }
 
   // Spawn entities, NPCs, player and initialize any extra UI controls.
-  initialize (world: World) {
-    this.world = world;
+  initialize () {
+    // hmm
   }
 
   drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {

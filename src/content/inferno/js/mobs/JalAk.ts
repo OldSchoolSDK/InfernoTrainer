@@ -14,6 +14,7 @@ import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
+import { Viewport } from '../../../../sdk/Viewport'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -32,7 +33,7 @@ export class JalAk extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this.world, this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -106,7 +107,7 @@ export class JalAk extends Mob {
     return BlobSound
   }
   attackAnimation (tickPercent: number) {
-    this.world.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+    this.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   }
 
   shouldShowAttackAnimation () {
@@ -144,7 +145,7 @@ export class JalAk extends Mob {
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = this.world.player.prayerController.overhead()
+      const overhead = Viewport.viewport.player.prayerController.overhead()
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       
@@ -161,13 +162,13 @@ export class JalAk extends Mob {
   }
 
   removedFromWorld () {
-    const xil = new JalAkRekXil(this.world, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(xil as Mob)
+    const xil = new JalAkRekXil(this.region, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro, cooldown: 4 })
+    this.region.addMob(xil as Mob)
 
-    const ket = new JalAkRekKet(this.world, this.location, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(ket as Mob)
+    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro, cooldown: 4 })
+    this.region.addMob(ket as Mob)
 
-    const mej = new JalAkRekMej(this.world, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(mej as Mob)
+    const mej = new JalAkRekMej(this.region, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro, cooldown: 4 })
+    this.region.addMob(mej as Mob)
   }
 }

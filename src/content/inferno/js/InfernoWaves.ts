@@ -2,7 +2,6 @@
 import { shuffle } from 'lodash'
 import { Entity } from '../../../sdk/Entity'
 import { Mob } from '../../../sdk/Mob'
-import { World } from '../../../sdk/World'
 import { UnitOptions } from '../../../sdk/Unit'
 import { JalMejRah } from './mobs/JalMejRah'
 import { JalAk } from './mobs/JalAk'
@@ -13,6 +12,8 @@ import { JalXil } from './mobs/JalXil'
 import { Location } from "../../../sdk/Location"
 import { Collision } from '../../../sdk/Collision'
 import { Random } from '../../../sdk/Random'
+import { Region } from '../../../sdk/Region'
+import { Player } from '../../../sdk/Player'
 
 
 export class InfernoWaves {
@@ -39,22 +40,22 @@ export class InfernoWaves {
     return InfernoWaves.shuffle(InfernoWaves.spawns)
   }
 
-  static spawn (world: World, randomPillar: Entity, spawns: Location[], wave: number) {
+  static spawn (region: Region, player: Player, randomPillar: Entity, spawns: Location[], wave: number) {
 
     const mobCounts = InfernoWaves.waves[wave - 1]
     let mobs: Mob[] = []
     let i = 0
-    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new JalZek(world, spawns[i++], { aggro: world.player })))
-    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new JalXil(world, spawns[i++], { aggro: world.player })))
-    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new JalImKot(world, spawns[i++], { aggro: world.player })))
-    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new JalAk(world, spawns[i++], { aggro: world.player })))
-    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(world, spawns[i++], { aggro: world.player })))
+    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new JalZek(region, spawns[i++], { aggro: player })))
+    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new JalXil(region, spawns[i++], { aggro: player })))
+    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new JalImKot(region, spawns[i++], { aggro: player })))
+    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new JalAk(region, spawns[i++], { aggro: player })))
+    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(region, spawns[i++], { aggro: player })))
 
-    mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], world, randomPillar))
+    mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], region, randomPillar))
     return mobs
   }
 
-  static spawnEnduranceMode (world: World, concurrentSpawns: number, check = false) {
+  static spawnEnduranceMode (region: Region, player: Player, concurrentSpawns: number, check = false) {
     let j = 0;
 
     const mobs: Mob[] = []
@@ -87,19 +88,19 @@ export class InfernoWaves {
       if (check) {
         do{
           randomSpawn = randomSpawns[j++]
-        } while(j < randomSpawns.length && Collision.collidesWithAnyMobs(world, randomSpawn.x, randomSpawn.y, 4));
+        } while(j < randomSpawns.length && Collision.collidesWithAnyMobs(region, randomSpawn.x, randomSpawn.y, 4));
       }else{
         randomSpawn = randomSpawns[j++]
       }
       if (randomSpawn){
-        mobs.push(new randomType(world, randomSpawn, { aggro: world.player }));
+        mobs.push(new randomType(region, randomSpawn, { aggro: player }));
       }
     }
 
     return mobs
   }
 
-  static spawnNibblers (n: number, world: World, pillar: Entity) {
+  static spawnNibblers (n: number, region: Region, pillar: Entity) {
     const mobs: Mob[] = []
     const nibblerSpawns = shuffle([
       { x: 8 + 11, y: 13 + 14 },
@@ -113,9 +114,9 @@ export class InfernoWaves {
       { x: 10 + 11, y: 11 + 14 }
     ])
 
-    const options: UnitOptions = { aggro: pillar || world.player };
+    const options: UnitOptions = { aggro: pillar /* TODO: || world.player */ };
 
-    Array(n).fill(0).forEach(() => mobs.push(new JalNib(world, nibblerSpawns.shift(), options)))
+    Array(n).fill(0).forEach(() => mobs.push(new JalNib(region, nibblerSpawns.shift(), options)))
     return mobs
   }
 

@@ -24,6 +24,7 @@ import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
 import { AmmoType } from './gear/Ammo'
+import { Region } from './Region'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
@@ -55,20 +56,26 @@ export class Player extends Unit {
 
   path: any;
 
-  constructor(world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
+  constructor(region: Region, location: Location, options: UnitOptions = {}) {
+    super(region, location, options)
+
     this.destinationLocation = location
-    this.equipment = options.equipment || {};
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
     this.eats.player = this;
-    this.inventory = options.inventory || new Array(28).fill(null);
+
+    this.setUnitOptions(options);
 
     this.prayerController = new PrayerController(this);
 
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats))
 
+  }
+
+  setUnitOptions(options: UnitOptions) {
+    this.equipment = options.equipment || {};
+    this.inventory = options.inventory || new Array(28).fill(null);
   }
 
 
@@ -245,7 +252,7 @@ export class Player extends Unit {
 
     this.manualSpellCastSelection = null
 
-    const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.world, x, y, 1)
+    const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.region, x, y, 1)
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0]
@@ -256,7 +263,7 @@ export class Player extends Unit {
         for (let xOff = -maxDist; xOff < maxDist; xOff++) {
           const potentialX = x + xOff
           const potentialY = y + yOff
-          const e = Collision.collideableEntitiesAtPoint(this.world, potentialX, potentialY, 1)
+          const e = Collision.collideableEntitiesAtPoint(this.region, potentialX, potentialY, 1)
           if (e.length === 0) {
             const distance = Pathing.dist(potentialX, potentialY, x, y)
             if (distance <= bestDistance) {
@@ -285,7 +292,7 @@ export class Player extends Unit {
   attack(): boolean {
     if (this.manualSpellCastSelection) {
       const target = this.aggro;
-      this.manualSpellCastSelection.cast(this.world, this, target)
+      this.manualSpellCastSelection.cast(this, target)
       this.manualSpellCastSelection = null
       this.interruptCombat();
       this.destinationLocation = this.location;
@@ -294,7 +301,7 @@ export class Player extends Unit {
       if (this.equipment.weapon) {
         if (this.equipment.weapon.hasSpecialAttack() && this.useSpecialAttack) {
           if (this.currentStats.specialAttack >= this.equipment.weapon.specialAttackDrain()) {
-            this.equipment.weapon.specialAttack(this.world, this, this.aggro as Unit /* hack */)
+            this.equipment.weapon.specialAttack(this, this.aggro as Unit /* hack */)
             this.currentStats.specialAttack -= this.equipment.weapon.specialAttackDrain();
             this.regenTimer.specUsed();
           }
@@ -305,7 +312,7 @@ export class Player extends Unit {
             bonuses.gearMultiplier = 7 / 6;
           }
 
-          return this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
+          return this.equipment.weapon.attack(this, this.aggro as Unit /* hack */, bonuses)
         }
       } else {
         return false;
@@ -361,7 +368,7 @@ export class Player extends Unit {
           for (let xx = -maxDist; xx < maxDist; xx++) {
             const x = this.location.x + xx
             const y = this.location.y + yy
-            if (Pathing.canTileBePathedTo(this.world, x, y, 1, {} as Mob)) {
+            if (Pathing.canTileBePathedTo(this.region, x, y, 1, {} as Mob)) {
               const distance = Pathing.dist(this.location.x, this.location.y, x, y)
               if (distance > 0 && distance < bestDistance) {
                 bestDistance = distance
@@ -388,7 +395,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.region, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -401,7 +408,7 @@ export class Player extends Unit {
             // Don't path into an unpathable object.
             const px = this.aggro.location.x + xx;
             const py = this.aggro.location.y - yy;
-            if (!Collision.collidesWithAnyEntities(this.world, px, py, 1)) {
+            if (!Collision.collidesWithAnyEntities(this.region, px, py, 1)) {
               seekingTiles.push({
                 x: px,
                 y: py
@@ -410,7 +417,7 @@ export class Player extends Unit {
           });
         });
         // Create paths to all npc tiles
-        const potentialPaths = map(seekingTiles, (point) => Pathing.constructPath(this.world, this.location, { x: point.x, y: point.y }));
+        const potentialPaths = map(seekingTiles, (point) => Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }));
         const potentialPathLengths = map(potentialPaths, (path) => path.length);
         // Figure out what the min distance is
         const shortestPathLength = min(potentialPathLengths);
@@ -453,7 +460,7 @@ export class Player extends Unit {
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
 
-    const path = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
+    const path = Pathing.path(this.region, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
     this.location = { x: path.x, y: path.y }
 
     this.path = path.path;
@@ -465,7 +472,7 @@ export class Player extends Unit {
       if (this.seekingItem.groundLocation.x === this.location.x) {
         if (this.seekingItem.groundLocation.y === this.location.y) {
           // Verify player is close. Apparently we need to have the player keep track of this item 
-          this.world.region.removeGroundItem(this.seekingItem, this.location.x, this.location.y)
+          this.region.removeGroundItem(this.seekingItem, this.location.x, this.location.y)
           const slots = this.openInventorySlots();
           if (slots.length) {
             const slot = slots[0];
@@ -497,7 +504,7 @@ export class Player extends Unit {
   }
 
   pretick() {
-    this.prayerController.tick(this.world);
+    this.prayerController.tick();
   }
 
   attackStep() {
@@ -541,8 +548,8 @@ export class Player extends Unit {
 
   draw(tickPercent: number) {
 
-    // this.world.region.context.fillStyle = '#FFFF00'
-    // this.world.region.context.fillRect(
+    // this.region.context.fillStyle = '#FFFF00'
+    // this.region.context.fillRect(
     //   26 * Settings.tileSize,
     //   24 * Settings.tileSize,
     //   6 * Settings.tileSize,
@@ -553,35 +560,35 @@ export class Player extends Unit {
 
     // )
     if (Settings.displayPlayerLoS) {
-      LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
+      LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
     }
 
-    this.world.region.context.save();
+    this.region.context.save();
     const perceivedLocation = this.getPerceivedLocation(tickPercent);
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
 
     // Perceived location
 
-    this.world.region.context.globalAlpha = 0.7
-    this.world.region.context.fillStyle = '#FFFF00'
-    this.world.region.context.fillRect(
+    this.region.context.globalAlpha = 0.7
+    this.region.context.fillStyle = '#FFFF00'
+    this.region.context.fillRect(
       perceivedX * Settings.tileSize,
       perceivedY * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.region.context.globalAlpha = 1
+    this.region.context.globalAlpha = 1
 
     // Draw player on true tile
-    this.world.region.context.fillStyle = '#ffffff73'
+    this.region.context.fillStyle = '#ffffff73'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
-      this.world.region.context.fillStyle = '#00FFFF'
+      this.region.context.fillStyle = '#00FFFF'
     }
-    this.world.region.context.strokeStyle = '#FFFFFF73'
-    this.world.region.context.lineWidth = 3
-    this.world.region.context.fillRect(
+    this.region.context.strokeStyle = '#FFFFFF73'
+    this.region.context.lineWidth = 3
+    this.region.context.fillRect(
       this.location.x * Settings.tileSize,
       this.location.y * Settings.tileSize,
       Settings.tileSize,
@@ -589,15 +596,15 @@ export class Player extends Unit {
     )
 
     // Destination location
-    this.world.region.context.strokeStyle = '#FFFFFF73'
-    this.world.region.context.lineWidth = 3
-    this.world.region.context.strokeRect(
+    this.region.context.strokeStyle = '#FFFFFF73'
+    this.region.context.lineWidth = 3
+    this.region.context.strokeRect(
       this.destinationLocation.x * Settings.tileSize,
       this.destinationLocation.y * Settings.tileSize,
       Settings.tileSize,
       Settings.tileSize
     )
-    this.world.region.context.restore();
+    this.region.context.restore();
   }
 
   getPerceivedLocation(tickPercent: number): Location {
@@ -625,21 +632,21 @@ export class Player extends Unit {
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
 
-    this.world.region.context.save();
+    this.region.context.save();
 
 
-    this.world.region.context.translate(
+    this.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
     if (Settings.rotated === 'south') {
-      this.world.region.context.rotate(Math.PI)
+      this.region.context.rotate(Math.PI)
     }
     this.drawHPBar()
     this.drawHitsplats()
     this.drawOverheadPrayers()
-    this.world.region.context.restore();
+    this.region.context.restore();
     this.drawIncomingProjectiles(tickPercent);
 
   }

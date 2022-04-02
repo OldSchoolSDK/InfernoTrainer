@@ -5,6 +5,7 @@ import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
 import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
+import { Viewport } from '../Viewport'
 
 export class PrayerControls extends BaseControls {
 
@@ -22,28 +23,28 @@ export class PrayerControls extends BaseControls {
     return Settings.prayer_key
   }
 
-  deactivateAllPrayers(world: World) {
+  deactivateAllPrayers() {
 
     this.hasQuickPrayersActivated = false;
-    world.player.prayerController.activePrayers().forEach((prayer) => prayer.deactivate());
+    Viewport.viewport.player.prayerController.activePrayers().forEach((prayer) => prayer.deactivate());
   }
 
-  activateQuickPrayers(world: World){
+  activateQuickPrayers(){
     this.hasQuickPrayersActivated = true;
     
-    world.player.prayerController.prayers.forEach((prayer) => {
+    Viewport.viewport.player.prayerController.prayers.forEach((prayer) => {
       prayer.deactivate();
       if (prayer.name === 'Protect from Magic'){
-        prayer.activate(world.player);
+        prayer.activate(Viewport.viewport.player);
       }
       if (prayer.name === 'Rigour'){
-        prayer.activate(world.player);
+        prayer.activate(Viewport.viewport.player);
       }
     });
 
   }
 
-  panelClickDown (world: World, x: number, y: number) {
+  panelClickDown (x: number, y: number) {
     const scale = Settings.controlPanelScale;
 
     x = x / scale;
@@ -52,12 +53,12 @@ export class PrayerControls extends BaseControls {
     const gridX = x - 14
     const gridY = y - 22
 
-    const clickedPrayer = world.player.prayerController.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
-    if (clickedPrayer && world.player.currentStats.prayer > 0) {
+    const clickedPrayer = Viewport.viewport.player.prayerController.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
+    if (clickedPrayer && Viewport.viewport.player.currentStats.prayer > 0) {
 
-      clickedPrayer.toggle(world.player)
+      clickedPrayer.toggle(Viewport.viewport.player)
 
-      if (this.hasQuickPrayersActivated && world.player.prayerController.activePrayers().length === 0) {
+      if (this.hasQuickPrayersActivated && Viewport.viewport.player.prayerController.activePrayers().length === 0) {
         ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
       }      
     }
@@ -67,25 +68,25 @@ export class PrayerControls extends BaseControls {
     return true;
   }
   
-  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(world, ctrl, x, y)
+  draw (ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(ctrl, x, y)
     const scale = Settings.controlPanelScale;
 
-    world.player.prayerController.prayers.forEach((prayer, index) => {
+    Viewport.viewport.player.prayerController.prayers.forEach((prayer, index) => {
       const x2 = index % 5
       const y2 = Math.floor(index / 5)
 
       if (prayer.isActive || prayer.isLit) {
-        world.viewport.context.beginPath()
-        world.viewport.context.fillStyle = '#D1BB7773'
-        world.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
-        world.viewport.context.fill()
+        Viewport.viewport.context.beginPath()
+        Viewport.viewport.context.fillStyle = '#D1BB7773'
+        Viewport.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
+        Viewport.viewport.context.fill()
       }
-      if (world.player.stats.prayer < prayer.levelRequirement()) {
-        world.viewport.context.beginPath()
-        world.viewport.context.fillStyle = '#00000073'
-        world.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
-        world.viewport.context.fill()
+      if (Viewport.viewport.player.stats.prayer < prayer.levelRequirement()) {
+        Viewport.viewport.context.beginPath()
+        Viewport.viewport.context.fillStyle = '#00000073'
+        Viewport.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)
+        Viewport.viewport.context.fill()
       }
     })
   }

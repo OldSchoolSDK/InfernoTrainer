@@ -4,19 +4,19 @@ import { Mob } from '../../../../sdk/Mob'
 import JalMejJakImage from '../../assets/images/Jal-MejJak.png'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
-import { World } from '../../../../sdk/World'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
+import { Viewport } from '../../../../sdk/Viewport'
 
 class HealWeapon extends Weapon {
   calculateHitDelay(distance: number) {
     return 3;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
+  attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
     this.damage = -Math.floor(Random.get() * 25);
     this.registerProjectile(from, to, bonuses, options)
     return true;
@@ -28,20 +28,20 @@ class AoeWeapon extends Weapon {
     return 1;
   }
 
-  attack(world: World, from: Unit): boolean {
-    const playerLocation = world.player.location;
+  attack(from: Unit): boolean {
+    const playerLocation = Viewport.viewport.player.location;
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       // make splat in 2 random spots and where the player is 
       const limitedPlayerLocation = { x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 5), y: playerLocation.y };
-      const spark1 = new InfernoHealerSpark(world, limitedPlayerLocation, from);
-      world.region.addEntity(spark1);
+      const spark1 = new InfernoHealerSpark(from.region, limitedPlayerLocation, from);
+      from.region.addEntity(spark1);
       const spark2Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
-      const spark2 = new InfernoHealerSpark(world, spark2Location, from);
-      world.region.addEntity(spark2);
+      const spark2 = new InfernoHealerSpark(from.region, spark2Location, from);
+      from.region.addEntity(spark2);
 
       const spark3Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
-      const spark3 = new InfernoHealerSpark(world, spark3Location, from);
-      world.region.addEntity(spark3);
+      const spark3 = new InfernoHealerSpark(from.region, spark3Location, from);
+      from.region.addEntity(spark3);
       
     }, 4))
     return true;
@@ -140,7 +140,7 @@ export class JalMejJak extends Mob {
     return null
   }
   // attackAnimation (tickPercent: number) {
-  //   this.world.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
+  //   this.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
   // }
 
   // shouldShowAttackAnimation () {
@@ -154,7 +154,7 @@ export class JalMejJak extends Mob {
   
   attackStyleForNewAttack () {
     
-    return this.aggro === this.world.player ? 'aoe' : 'heal';
+    return this.aggro === Viewport.viewport.player ? 'aoe' : 'heal';
   }
 
 

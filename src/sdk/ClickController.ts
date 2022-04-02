@@ -41,12 +41,12 @@ export class ClickController {
     this.viewport.canvas.removeEventListener('wheel', this.eventListeners[6])
   }
 
-  registerClickActions(world: World) {
+  registerClickActions() {
     this.viewport.canvas.addEventListener('mousedown', this.eventListeners[0] = this.clickDown.bind(this))
     this.viewport.canvas.addEventListener('mouseup', this.eventListeners[1] = this.leftClickUp.bind(this))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[2] = (e: MouseEvent) => ControlPanelController.controller.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => MapController.controller.cursorMovedTo(e))
-    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
+    this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY))
     this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
   }
 
@@ -82,7 +82,6 @@ export class ClickController {
       }
     }
     
-    const world = this.viewport.world;
     const intercepted = ControlPanelController.controller.controlPanelClickUp(e);
     if (intercepted) {
       return;
@@ -119,11 +118,12 @@ export class ClickController {
     if (e.button !== 0) {
       return;
     }
+    const region = Viewport.viewport.player.region as InfernoRegion;
+    const world = Viewport.viewport.player.region.world;
+    const player = Viewport.viewport.player;
 
-    const world = this.viewport.world;
-
-    world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY)
-    const { viewportX, viewportY } = this.viewport.getViewport(world);
+    Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY)
+    const { viewportX, viewportY } = Viewport.viewport.getViewport(world.tickPercent);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
 
@@ -132,12 +132,12 @@ export class ClickController {
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     } 
 
-    const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
-    const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
+    const xAlign = Viewport.viewport.contextMenu.location.x - (Viewport.viewport.contextMenu.width / 2) < e.offsetX && e.offsetX < Viewport.viewport.contextMenu.location.x + Viewport.viewport.contextMenu.width / 2
+    const yAlign = Viewport.viewport.contextMenu.location.y < e.offsetY && e.offsetY < Viewport.viewport.contextMenu.location.y + Viewport.viewport.contextMenu.height
 
-    if (world.contextMenu.isActive && xAlign && yAlign) {
-      world.contextMenu.clicked(world, e.offsetX, e.offsetY)
-      world.contextMenu.setInactive();
+    if (Viewport.viewport.contextMenu.isActive && xAlign && yAlign) {
+      Viewport.viewport.contextMenu.clicked(e.offsetX, e.offsetY)
+      Viewport.viewport.contextMenu.setInactive();
       return;
     }
 
@@ -161,32 +161,34 @@ export class ClickController {
     }
 
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
-    const groundItems = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
+    const groundItems = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
 
-    world.player.interruptCombat();
+    Viewport.viewport.player.interruptCombat();
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
       this.sendToServer(() => this.playerAttackClick(mobs[0]))
     } else if (groundItems.length){
       this.redClick()
 
-      this.sendToServer(() => world.player.setSeekingItem(groundItems[0]));
+      this.sendToServer(() => player.setSeekingItem(groundItems[0]));
     } else {
       this.yellowClick()
       this.sendToServer(() => this.playerWalkClick(x, y));
     }
-    world.contextMenu.setInactive()
+    Viewport.viewport.contextMenu.setInactive()
   }
 
   rightClickDown (e: MouseEvent) {
-    const world = this.viewport.world;
+
+    const region = Viewport.viewport.player.region as InfernoRegion;
+    const world = Viewport.viewport.player.region.world;
     
-    const { viewportX, viewportY } = this.viewport.getViewport(world);
+    const { viewportX, viewportY } = Viewport.viewport.getViewport(world.tickPercent);
     let x = e.offsetX + viewportX * Settings.tileSize
     let y = e.offsetY + viewportY * Settings.tileSize
 
-    world.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
+    Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY })
     if (Settings.rotated === 'south') {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
@@ -212,7 +214,7 @@ export class ClickController {
       }
     }
     
-    world.contextMenu.destinationLocation = {
+    Viewport.viewport.contextMenu.destinationLocation = {
       x : Math.floor(x / Settings.tileSize),
       y : Math.floor(y / Settings.tileSize)
     }
@@ -221,17 +223,17 @@ export class ClickController {
     let menuOptions: MenuOption[] = [
     ]
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(world, x, y, world.tickPercent)
+    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
     mobs.forEach((mob) => {
-      menuOptions = menuOptions.concat(mob.contextActions(world, x, y))
+      menuOptions = menuOptions.concat(mob.contextActions(region, x, y))
     })
 
-    const groundItems: Item[] = world.region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
+    const groundItems: Item[] = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
     groundItems.forEach((item: Item) => {
       menuOptions.push(
         {
           text: [ { text: 'Take ', fillStyle: 'white' }, { text: item.itemName, fillStyle: '#FF911F' } ],
-          action: () => this.sendToServer(() => world.player.setSeekingItem(item))
+          action: () => this.sendToServer(() => Viewport.viewport.player.setSeekingItem(item))
         }
       )
     });
@@ -241,8 +243,8 @@ export class ClickController {
         text: [{ text: 'Walk Here', fillStyle: 'white' }],
         action: () => {
           this.yellowClick()
-          const x = world.contextMenu.destinationLocation.x;
-          const y = world.contextMenu.destinationLocation.y;
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
           this.sendToServer(() => this.playerWalkClick(x * Settings.tileSize, y * Settings.tileSize))
           
         }
@@ -251,24 +253,24 @@ export class ClickController {
         text: [{ text: 'Mark / Unmark Tile', fillStyle: 'white' }],
         action: () => {
           this.yellowClick()
-          const x = world.contextMenu.destinationLocation.x;
-          const y = world.contextMenu.destinationLocation.y;
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
           
           let removed = false;
-          const entitiesAtPoint = Pathing.entitiesAtPoint(world, x, y, 1);
+          const entitiesAtPoint = Pathing.entitiesAtPoint(region, x, y, 1);
           entitiesAtPoint.forEach((entity: TileMarker) => {
             if (entity.entityName() === EntityName.TILE_MARKER && entity.saveable) {
-              world.region.removeEntity(entity);
+              region.removeEntity(entity);
               removed = true;
             }
           });
           
 
           if (!removed) {
-            world.region.addEntity(new TileMarker(world, { x, y }, "#FF0000"))
+            region.addEntity(new TileMarker(Viewport.viewport.player.region, { x, y }, "#FF0000"))
           }
 
-          Settings.tile_markers = filter(filter(world.region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER), (tileMarker: TileMarker) => tileMarker.saveable).map((entity: Entity) => entity.location)
+          Settings.tile_markers = filter(filter(region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER), (tileMarker: TileMarker) => tileMarker.saveable).map((entity: Entity) => entity.location)
 
           Settings.persistToStorage();
           
@@ -276,7 +278,6 @@ export class ClickController {
       },
     )
 
-    const region = world.region as InfernoRegion;
     if (region.wave === 0){
 
       menuOptions.push(
@@ -284,9 +285,9 @@ export class ClickController {
           text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
           action: () => {
             this.yellowClick()
-            const x = world.contextMenu.destinationLocation.x;
-            const y = world.contextMenu.destinationLocation.y;
-            world.region.addMob(new JalMejRah(world, { x, y }, { aggro: world.player }))
+            const x = Viewport.viewport.contextMenu.destinationLocation.x;
+            const y = Viewport.viewport.contextMenu.destinationLocation.y;
+            region.addMob(new JalMejRah(region, { x, y }, { aggro: Viewport.viewport.player }))
 
           }
         }
@@ -297,9 +298,9 @@ export class ClickController {
           text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
           action: () => {
             this.yellowClick()
-            const x = world.contextMenu.destinationLocation.x;
-            const y = world.contextMenu.destinationLocation.y;
-            world.region.addMob(new JalAk(world, { x, y }, { aggro: world.player }))
+            const x = Viewport.viewport.contextMenu.destinationLocation.x;
+            const y = Viewport.viewport.contextMenu.destinationLocation.y;
+            region.addMob(new JalAk(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
           }
         }
@@ -309,9 +310,9 @@ export class ClickController {
           text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
           action: () => {
             this.yellowClick()
-            const x = world.contextMenu.destinationLocation.x;
-            const y = world.contextMenu.destinationLocation.y;
-            world.region.addMob(new JalImKot(world, { x, y }, { aggro: world.player }))
+            const x = Viewport.viewport.contextMenu.destinationLocation.x;
+            const y = Viewport.viewport.contextMenu.destinationLocation.y;
+            region.addMob(new JalImKot(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
           }
         }
@@ -321,9 +322,9 @@ export class ClickController {
           text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
           action: () => {
             this.yellowClick()
-            const x = world.contextMenu.destinationLocation.x;
-            const y = world.contextMenu.destinationLocation.y;
-            world.region.addMob(new JalXil(world, { x, y }, { aggro: world.player }))
+            const x = Viewport.viewport.contextMenu.destinationLocation.x;
+            const y = Viewport.viewport.contextMenu.destinationLocation.y;
+            region.addMob(new JalXil(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
           }
         }
@@ -333,16 +334,16 @@ export class ClickController {
           text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
           action: () => {
             this.yellowClick()
-            const x = world.contextMenu.destinationLocation.x;
-            const y = world.contextMenu.destinationLocation.y;
-            world.region.addMob(new JalZek(world, { x, y }, { aggro: world.player }))
+            const x = Viewport.viewport.contextMenu.destinationLocation.x;
+            const y = Viewport.viewport.contextMenu.destinationLocation.y;
+            region.addMob(new JalZek(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
           }
         }
       )
     }
-    world.contextMenu.setMenuOptions(menuOptions)
-    world.contextMenu.setActive()
+    Viewport.viewport.contextMenu.setMenuOptions(menuOptions)
+    Viewport.viewport.contextMenu.setActive()
   }
 
   sendToServer(fn: () => void) {
@@ -353,17 +354,15 @@ export class ClickController {
   }
 
   playerAttackClick (mob: Unit) {
-    this.viewport.world.player.setAggro(mob);
+    Viewport.viewport.player.setAggro(mob);
   }
   playerWalkClick (x: number, y: number) {
-    this.viewport.world.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
+    Viewport.viewport.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
   }
   redClick () {
-    const world = this.viewport.world;
-    this.clickAnimation = new ClickAnimation('red', world.contextMenu.cursorPosition.x, world.contextMenu.cursorPosition.y)
+    this.clickAnimation = new ClickAnimation('red', Viewport.viewport.contextMenu.cursorPosition.x, Viewport.viewport.contextMenu.cursorPosition.y)
   }
   yellowClick () {
-    const world = this.viewport.world;
-    this.clickAnimation = new ClickAnimation('yellow', world.contextMenu.cursorPosition.x, world.contextMenu.cursorPosition.y)
+    this.clickAnimation = new ClickAnimation('yellow', Viewport.viewport.contextMenu.cursorPosition.x, Viewport.viewport.contextMenu.cursorPosition.y)
   }
 }

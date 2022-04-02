@@ -13,8 +13,8 @@ import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 
 class JalMejRahWeapon extends RangedWeapon {
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
-    super.attack(world, from, to, bonuses, options);
+  attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+    super.attack(from, to, bonuses, options);
     const player = to as Player;
     player.currentStats.run -= 300;
     return true;
@@ -36,7 +36,7 @@ export class JalMejRah extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this.world, this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -111,7 +111,7 @@ export class JalMejRah extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.translate(
+    this.region.context.translate(
       Math.sin(tickPercent * Math.PI * 4) * 2, 
       Math.sin(tickPercent * Math.PI * -2))
   }

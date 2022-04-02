@@ -5,9 +5,9 @@ import { World } from '../World'
 
 export class MeleeWeapon extends Weapon {
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
     bonuses.attackStyle = bonuses.attackStyle || 'slash'
-    return super.attack(world, from, to, bonuses);
+    return super.attack(from, to, bonuses);
   }
 
   grantXp(from: Unit) {

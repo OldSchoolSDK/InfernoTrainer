@@ -18,6 +18,7 @@ import { EntityName } from "../../../../sdk/EntityName"
 import MagicSound from '../../assets/sounds/TzTok-Jad-Magic-attack.ogg'
 import RangeSound from '../../assets/sounds/TzTok-Jad-Ranged-attack.ogg'
 import { Random } from '../../../../sdk/Random'
+import { Region } from '../../../../sdk/Region'
 
 
 interface JadUnitOptions extends UnitOptions {
@@ -29,16 +30,16 @@ interface JadUnitOptions extends UnitOptions {
 
 class JadMagicWeapon extends MagicWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack (from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
-      const overhead = world.player.prayerController.matchFeature('magic')
+      const overhead = to.prayerController.matchFeature('magic')
       from.attackFeedback = AttackIndicators.HIT
       if (overhead){
         from.attackFeedback = AttackIndicators.BLOCKED
       }
 
-      super.attack(world, from, to, bonuses);
+      super.attack(from, to, bonuses);
     }, 3));
     return true;
   }
@@ -49,16 +50,16 @@ class JadMagicWeapon extends MagicWeapon {
 }
 class JadRangeWeapon extends RangedWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack (from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
-      const overhead = world.player.prayerController.matchFeature('range')
+      const overhead = to.prayerController.matchFeature('range')
       from.attackFeedback = AttackIndicators.HIT
       if (overhead){
         from.attackFeedback = AttackIndicators.BLOCKED
       }
       
-      super.attack(world, from, to, bonuses);
+      super.attack(from, to, bonuses);
     }, 3));
     return true;
   }
@@ -75,8 +76,8 @@ export class JalTokJad extends Mob {
   healers: number;
   isZukWave: boolean;
 
-  constructor (world: World, location: Location, options: JadUnitOptions) {
-    super(world, location, options)
+  constructor (region: Region, location: Location, options: JadUnitOptions) {
+    super(region, location, options)
     this.waveCooldown = options.attackSpeed;
     this.stunned = options.stun;
     this.healers = options.healers;
@@ -135,7 +136,7 @@ export class JalTokJad extends Mob {
           let xOff = 0;
           let yOff = 0;
 
-          while (Collision.collidesWithMob(this.world, this.location.x + xOff, this.location.y + yOff, 1, this)){
+          while (Collision.collidesWithMob(this.region, this.location.x + xOff, this.location.y + yOff, 1, this)){
             if (this.isZukWave) {
               xOff = Math.floor(Random.get() * 6);
               yOff = -Math.floor(Random.get() * 4) - this.size;
@@ -145,8 +146,8 @@ export class JalTokJad extends Mob {
             }
           }
 
-          const healer = new YtHurKot(this.world, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
-          this.world.region.addMob(healer)
+          const healer = new YtHurKot(this.region, { x: this.location.x + xOff, y: this.location.y + yOff }, { aggro: this });
+          this.region.addMob(healer)
 
         }
       }  
@@ -207,9 +208,9 @@ export class JalTokJad extends Mob {
 
   attackAnimation (tickPercent: number) {
     if (this.attackStyle === 'magic') {
-      this.world.region.context.rotate(tickPercent * Math.PI * 2)
+      this.region.context.rotate(tickPercent * Math.PI * 2)
     }else{
-      this.world.region.context.rotate(Math.sin(-tickPercent * Math.PI))
+      this.region.context.rotate(Math.sin(-tickPercent * Math.PI))
     }
   }
 

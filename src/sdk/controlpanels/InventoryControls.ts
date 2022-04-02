@@ -4,13 +4,13 @@ import InventoryTab from '../../assets/images/tabs/inventory.png'
 import { Pathing } from '../Pathing'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
-import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
 import { Location } from "../../sdk/Location"
 import { Collision } from '../Collision'
 import { MenuOption } from '../ContextMenu'
 import { MapController } from '../MapController'
+import { Viewport } from '../Viewport'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
@@ -32,7 +32,7 @@ export class InventoryControls extends BaseControls {
   }
 
 
-  cursorMovedto(world: World, x: number, y: number) {
+  cursorMovedto(x: number, y: number) {
 
     this.cursorLocation = { x, y }
   }
@@ -45,7 +45,7 @@ export class InventoryControls extends BaseControls {
     return false;
   }
   
-  panelRightClick(world: World, x: number, y: number) {
+  panelRightClick(x: number, y: number) {
     const scale = Settings.controlPanelScale;
 
     let menuOptions: MenuOption[] = []
@@ -54,7 +54,7 @@ export class InventoryControls extends BaseControls {
     // })
 
 
-    const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
+    const clickedItem = first(filter(Viewport.viewport.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
       }
@@ -66,21 +66,21 @@ export class InventoryControls extends BaseControls {
     })) as Item
 
     if (clickedItem) {
-      menuOptions = menuOptions.concat(clickedItem.contextActions(world))
+      menuOptions = menuOptions.concat(clickedItem.contextActions(Viewport.viewport.player.region))
     }
 
-    world.contextMenu.setMenuOptions(menuOptions)
-    world.contextMenu.setActive()
+    Viewport.viewport.contextMenu.setMenuOptions(menuOptions)
+    Viewport.viewport.contextMenu.setActive()
   }
 
 
-  panelClickUp (world: World, x: number, y: number) {
+  panelClickUp (x: number, y: number) {
     if (!this.clickedDownItem) {
       return;
     }
     const scale = Settings.controlPanelScale;
 
-    const sanitizedInventory = world.player.inventory.map((item: Item, index: number) => {
+    const sanitizedInventory = Viewport.viewport.player.inventory.map((item: Item, index: number) => {
       if (item) {
         return item;
       }
@@ -104,32 +104,32 @@ export class InventoryControls extends BaseControls {
 
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
-        clickedItem.inventoryLeftClick(world.player);
+        clickedItem.inventoryLeftClick(Viewport.viewport.player);
         MapController.controller.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }
     }else if (!isPlaceholder && clickedItem){
       const theItemWereReplacing = clickedItem;
-      const theItemWereReplacingPosition = clickedItem.inventoryPosition(world.player);
-      const thisPosition = this.clickedDownItem.inventoryPosition(world.player);
-      world.player.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
-      world.player.inventory[thisPosition] = theItemWereReplacing;
+      const theItemWereReplacingPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
+      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
+      Viewport.viewport.player.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
+      Viewport.viewport.player.inventory[thisPosition] = theItemWereReplacing;
     }else if (clickedItem){
-      const thisPosition = this.clickedDownItem.inventoryPosition(world.player);
-      world.player.inventory[clickedItem.inventoryPosition(world.player)] = this.clickedDownItem;
-      world.player.inventory[thisPosition] = null;
+      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
+      Viewport.viewport.player.inventory[clickedItem.inventoryPosition(Viewport.viewport.player)] = this.clickedDownItem;
+      Viewport.viewport.player.inventory[thisPosition] = null;
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
   }
 
-  panelClickDown (world: World, x: number, y: number) {
+  panelClickDown ( x: number, y: number) {
     this.cursorLocation = { x, y }
     this.clickedDownLocation = {x, y};
     const scale = Settings.controlPanelScale;
 
-    const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
+    const clickedItem = first(filter(Viewport.viewport.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
         return
       }
@@ -140,18 +140,18 @@ export class InventoryControls extends BaseControls {
       return Collision.collisionMath(x, y, 1, itemX * scale, itemY * scale, 32 * scale)
     })) as Item
 
-    world.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
+    Viewport.viewport.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false))
 
     if (clickedItem) {
       this.clickedDownItem = clickedItem;
     }
   }
 
-  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(world, ctrl, x, y)
+  draw (ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(ctrl, x, y)
 
     const scale = Settings.controlPanelScale;
-    world.player.inventory.forEach((inventoryItem, index) => {
+    Viewport.viewport.player.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)
 
@@ -160,16 +160,16 @@ export class InventoryControls extends BaseControls {
 
       if (inventoryItem !== null) {
         
-        world.viewport.context.fillStyle = "#ffffff22"
-        // world.viewport.context.fillRect(itemX, itemY, 32, 32)
+        Viewport.viewport.context.fillStyle = "#ffffff22"
+        // Viewport.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
         const xOff = Math.floor((32 - sprite.width) / 2);
         const yOff = Math.floor((32 - sprite.height) / 2)
         if (inventoryItem === this.clickedDownItem) {
-          world.viewport.context.globalAlpha = 0.4;
+          Viewport.viewport.context.globalAlpha = 0.4;
           if (Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > 5) {
-            world.viewport.context.drawImage(
+            Viewport.viewport.context.drawImage(
               sprite, 
               this.cursorLocation.x + sprite.width * scale / 2, 
               this.cursorLocation.y - sprite.height * scale / 2, 
@@ -177,17 +177,17 @@ export class InventoryControls extends BaseControls {
               sprite.height * scale
               );
           }else{
-            world.viewport.context.drawImage(sprite, 
+            Viewport.viewport.context.drawImage(sprite, 
               itemX + xOff, 
               itemY + yOff, 
               sprite.width * scale, 
               sprite.height * scale
               );
           }
-          world.viewport.context.globalAlpha = 1;
+          Viewport.viewport.context.globalAlpha = 1;
 
         }else{
-          world.viewport.context.drawImage(
+          Viewport.viewport.context.drawImage(
             sprite, 
             itemX + xOff, 
             itemY + yOff, 
@@ -196,10 +196,10 @@ export class InventoryControls extends BaseControls {
         }
 
         if (inventoryItem.selected) {
-          world.viewport.context.beginPath()
-          world.viewport.context.fillStyle = '#D1BB7773'
-          world.viewport.context.arc(itemX + 15 * scale, itemY + 17 * scale, 16 * scale, 0, 2 * Math.PI)
-          world.viewport.context.fill()
+          Viewport.viewport.context.beginPath()
+          Viewport.viewport.context.fillStyle = '#D1BB7773'
+          Viewport.viewport.context.arc(itemX + 15 * scale, itemY + 17 * scale, 16 * scale, 0, 2 * Math.PI)
+          Viewport.viewport.context.fill()
         }
       }
     })

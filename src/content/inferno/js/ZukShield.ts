@@ -16,6 +16,8 @@ import { DelayedAction } from '../../../sdk/DelayedAction';
 import { JalXil } from './mobs/JalXil';
 import { Random } from '../../../sdk/Random';
 import { Mob } from '../../../sdk/Mob';
+import { Region } from '../../../sdk/Region';
+import { Viewport } from '../../../sdk/Viewport';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -31,8 +33,8 @@ export class ZukShield extends Mob {
     return LineOfSightMask.NONE;
   }
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
+  constructor (region: Region, location: Location, options: UnitOptions) {
+    super(region, location, options)
 
     this.frozen = 1;
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
@@ -92,18 +94,18 @@ export class ZukShield extends Mob {
   dead () {
     this.dying = 3
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
-      this.world.region.removeMob(this)
-      const ranger = find(this.world.region.mobs, (mob: Mob) => {
+      this.region.removeMob(this)
+      const ranger = find(this.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_XIL;
       }) as JalXil;
       if (ranger) {
-        ranger.setAggro(this.world.player);
+        ranger.setAggro(Viewport.viewport.player);
       }
-      const mager = find(this.world.region.mobs, (mob: Mob) => {
+      const mager = find(this.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_ZEK;
       }) as JalXil;
       if (mager) {
-        mager.setAggro(this.world.player);
+        mager.setAggro(Viewport.viewport.player);
       }
       
     }, 2))
@@ -183,9 +185,9 @@ export class ZukShield extends Mob {
   
   drawUnderTile() {
 
-    this.world.region.context.fillStyle = this.color;
+    this.region.context.fillStyle = this.color;
     // Draw mob
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       -(3 * Settings.tileSize) / 2,
       -(3 * Settings.tileSize) / 2,
       3 * Settings.tileSize,

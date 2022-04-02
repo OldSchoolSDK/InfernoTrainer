@@ -11,6 +11,8 @@ import { World } from '../../../../sdk/World'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
+import { Region } from '../../../../sdk/Region'
+import { Viewport } from '../../../../sdk/Viewport'
 
 class HealWeapon extends Weapon {
 
@@ -21,7 +23,7 @@ class HealWeapon extends Weapon {
     return true;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
+  attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
     this.damage = -Math.floor(Random.get() * 20);
     this.registerProjectile(from, to, bonuses, options)
     return true;
@@ -33,8 +35,8 @@ export class YtHurKot extends Mob {
 
   myJad: Unit;
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
+  constructor (region: Region, location: Location, options: UnitOptions) {
+    super(region, location, options)
     this.myJad = this.aggro as Unit;
 
   }
@@ -116,7 +118,7 @@ export class YtHurKot extends Mob {
   }
 
   attackStyleForNewAttack () {
-    return this.aggro === this.world.player ? 'crush' : 'heal';
+    return this.aggro === Viewport.viewport.player ? 'crush' : 'heal';
   }
 
 
@@ -141,7 +143,7 @@ export class YtHurKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.transform(
+    this.region.context.transform(
       1, 
       0, 
       Math.sin(-tickPercent * Math.PI * 2) / 2, 

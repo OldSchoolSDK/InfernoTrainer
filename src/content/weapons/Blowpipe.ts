@@ -80,10 +80,10 @@ export class Blowpipe extends RangedWeapon {
     return 0.5
   }
 
-  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     
     bonuses.isSpecialAttack = true;
-    super.attack(world, from, to, bonuses)
+    super.attack(from, to, bonuses)
     
     const healAttackerBy = Math.floor(this.damage / 2);
     from.currentStats.hitpoint += healAttackerBy;

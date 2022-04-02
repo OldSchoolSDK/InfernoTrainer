@@ -9,6 +9,7 @@ import { UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
+import { Viewport } from '../../../../sdk/Viewport'
 
 export class JalImKot extends Mob {
 
@@ -26,7 +27,7 @@ export class JalImKot extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this.world, this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -104,7 +105,7 @@ export class JalImKot extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.transform(
+    this.region.context.transform(
       1, 
       0, 
       Math.sin(-tickPercent * Math.PI * 2) / 2, 
@@ -124,25 +125,25 @@ export class JalImKot extends Mob {
   }
 
   dig () {
-    if (this.world.player.aggro === this) {
-      this.world.player.interruptCombat();
+    if (Viewport.viewport.player.aggro === this) {
+      Viewport.viewport.player.interruptCombat();
     }
     this.attackCooldownTicks = 12
-    if (!Collision.collidesWithAnyEntities(this.world, this.world.player.location.x - 3, this.world.player.location.y + 3, this.size)) {
-      this.location.x = this.world.player.location.x - this.size + 1
-      this.location.y = this.world.player.location.y + this.size - 1
-    } else if (!Collision.collidesWithAnyEntities(this.world, this.world.player.location.x, this.world.player.location.y, this.size)) {
-      this.location.x = this.world.player.location.x
-      this.location.y = this.world.player.location.y
-    } else if (!Collision.collidesWithAnyEntities(this.world, this.world.player.location.x - 3, this.world.player.location.y, this.size)) {
-      this.location.x = this.world.player.location.x - this.size + 1
-      this.location.y = this.world.player.location.y
-    } else if (!Collision.collidesWithAnyEntities(this.world, this.world.player.location.x, this.world.player.location.y + 3, this.size)) {
-      this.location.x = this.world.player.location.x
-      this.location.y = this.world.player.location.y + this.size - 1
+    if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x - 3, Viewport.viewport.player.location.y + 3, this.size)) {
+      this.location.x = Viewport.viewport.player.location.x - this.size + 1
+      this.location.y = Viewport.viewport.player.location.y + this.size - 1
+    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y, this.size)) {
+      this.location.x = Viewport.viewport.player.location.x
+      this.location.y = Viewport.viewport.player.location.y
+    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x - 3, Viewport.viewport.player.location.y, this.size)) {
+      this.location.x = Viewport.viewport.player.location.x - this.size + 1
+      this.location.y = Viewport.viewport.player.location.y
+    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y + 3, this.size)) {
+      this.location.x = Viewport.viewport.player.location.x
+      this.location.y = Viewport.viewport.player.location.y + this.size - 1
     } else {
-      this.location.x = this.world.player.location.x - 1
-      this.location.y = this.world.player.location.y + 1
+      this.location.x = Viewport.viewport.player.location.x - 1
+      this.location.y = Viewport.viewport.player.location.y + 1
     }
     this.perceivedLocation = this.location
   }

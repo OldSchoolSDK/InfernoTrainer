@@ -8,8 +8,8 @@ import RedX2 from '../assets/images/interface/red_x_2.png'
 import RedX3 from '../assets/images/interface/red_x_3.png'
 import RedX4 from '../assets/images/interface/red_x_4.png'
 import { Settings } from './Settings'
-import { World } from './World'
 import { ImageLoader } from './utils/ImageLoader'
+import { Viewport } from './Viewport'
 
 interface ClickAnimationFrames {
   red: HTMLImageElement[];
@@ -45,13 +45,13 @@ export class ClickAnimation {
   };
 
 
-  draw (world: World) {
+  draw () {
     if (this.ttl <= 0) {
       return
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4)
     const frames = this.color === 'red' ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
-    world.viewport.context.drawImage(      
+    Viewport.viewport.context.drawImage(      
       frames[frameNumber],
       this.x - 9,
       this.y - 9

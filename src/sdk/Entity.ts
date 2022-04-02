@@ -5,19 +5,19 @@ import { World } from './World'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
 import { EntityName } from './EntityName';
+import { Region } from './Region';
 
 export class Entity extends GameObject{
-  world: World;
   location: Location;
 
   entityName(): EntityName {
     return null;
   }
 
-  constructor (world: World, location: Location) {
+  constructor ( region: Region, location: Location) {
     super()
-    this.world = world
     this.location = location
+    this.region = region;
   }
 
   get type () {
@@ -35,9 +35,9 @@ export class Entity extends GameObject{
 
   
   draw (tickPercent: number) {
-    this.world.region.context.fillStyle = '#000073'
+    this.region.context.fillStyle = '#000073'
 
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,

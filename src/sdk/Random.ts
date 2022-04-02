@@ -6,6 +6,11 @@ export class Random {
     Random.randomFn = fn;
   }
 
+  static reset() {
+    Random.memory = 0;
+    Random.callCount = 0;
+  }
+
   static get() {
     this.callCount++;
     return Random.randomFn();

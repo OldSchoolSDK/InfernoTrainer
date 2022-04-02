@@ -1,5 +1,5 @@
-import { World } from './World';
 import { Location } from "./Location";
+import { Viewport } from './Viewport';
 
 export interface MultiColorTextBlock {
   text: string;
@@ -39,8 +39,8 @@ d
     this.menuOptions = menuOptions
   }
 
-  cursorMovedTo (world: World, x: number, y: number) {
-    const cRect = world.viewport.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
+  cursorMovedTo (x: number, y: number) {
+    const cRect = Viewport.viewport.canvas.getBoundingClientRect() // Gets CSS pos, and width/height
     const canvasX = Math.round(x - cRect.left) // Subtract the 'left' of the canvas
     const canvasY = Math.round(y - cRect.top) // from the X/Y positions to make
     
@@ -57,49 +57,49 @@ d
     }
   }
 
-  draw (world: World) {
+  draw () {
     if (this.isActive) {
       this.linesOfText = [
         {
           text: [{ text: 'Choose Option', fillStyle: '#5f5445' }],
           action: () => {
-            world.viewport.clickController.yellowClick()
+            Viewport.viewport.clickController.yellowClick()
           }
         },
         ...this.menuOptions,
         {
           text: [{ text: 'Cancel', fillStyle: 'white' }],
           action: () => {
-            world.viewport.clickController.yellowClick()
+            Viewport.viewport.clickController.yellowClick()
           }
         }
       ]
-      world.viewport.context.textAlign = 'left';
+      Viewport.viewport.context.textAlign = 'left';
 
-      world.viewport.context.font = '17px OSRS'
+      Viewport.viewport.context.font = '17px OSRS'
 
       this.width = 0
       this.linesOfText.forEach((line) => {
-        this.width = Math.max(this.width, this.fillMixedTextWidth(world.viewport.context, line.text) + 10)
+        this.width = Math.max(this.width, this.fillMixedTextWidth(Viewport.viewport.context, line.text) + 10)
       })
 
       this.height = 22 + (this.linesOfText.length - 1) * 20
 
-      world.viewport.context.fillStyle = '#5f5445'
-      world.viewport.context.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
+      Viewport.viewport.context.fillStyle = '#5f5445'
+      Viewport.viewport.context.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height)
 
-      world.viewport.context.fillStyle = 'black'
-      world.viewport.context.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
+      Viewport.viewport.context.fillStyle = 'black'
+      Viewport.viewport.context.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17)
 
-      world.viewport.context.lineWidth = 1
-      world.viewport.context.strokeStyle = 'black'
-      world.viewport.context.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
+      Viewport.viewport.context.lineWidth = 1
+      Viewport.viewport.context.strokeStyle = 'black'
+      Viewport.viewport.context.strokeRect(this.location.x - this.width / 2 + 2, this.location.y + 20, this.width - 4, this.height - 22)
 
       for (let i = 0; i < this.linesOfText.length; i++) {
-        this.drawLineOfText(world.viewport.context, this.linesOfText[i].text, this.width, i * 20)
+        this.drawLineOfText(Viewport.viewport.context, this.linesOfText[i].text, this.width, i * 20)
       }
     }
-    world.viewport.context.restore()
+    Viewport.viewport.context.restore()
   }
 
   fillMixedText (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], x: number, y: number, inputColor: string) {
@@ -145,7 +145,7 @@ d
     this.fillMixedText(ctx, text, this.location.x - width / 2 + 4, this.location.y + 15 + y, isHovered ? 'yellow' : 'white')
   }
 
-  clicked (world: World, x: number, y: number) {
+  clicked (x: number, y: number) {
     const index = Math.floor((y - this.location.y) / 20)
     this.linesOfText[index].action()
   }

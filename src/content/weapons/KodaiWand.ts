@@ -47,14 +47,14 @@ export class KodaiWand extends MeleeWeapon {
   }
 
 
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
 
     if (this.attackStyle() === AttackStyle.AUTOCAST){
 
       if (from.isPlayer) {
         const player: Player = from as Player;
         if (player.autocastDelay === 0) {
-          this.autocastSpell.cast(world, from, to);
+          this.autocastSpell.cast(from, to);
           return true;
         }
         if (player.autocastDelay > 0) {
@@ -64,7 +64,7 @@ export class KodaiWand extends MeleeWeapon {
       }
     }
 
-    return super.attack(world, from, to, bonuses);
+    return super.attack(from, to, bonuses);
   }
   
   

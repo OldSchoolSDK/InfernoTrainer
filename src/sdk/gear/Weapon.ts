@@ -83,7 +83,7 @@ export class Weapon extends Equipment{
   specialAttackDrain(): number {
     return 50;
   }
-  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     // Override me
   }
   
@@ -124,7 +124,7 @@ export class Weapon extends Equipment{
   }
   
   
-  cast(world: World, from: Unit, to: GameObject) {
+  cast(from: Unit, to: GameObject) {
     // Override me
   }
 
@@ -138,7 +138,7 @@ export class Weapon extends Equipment{
   }
 
   // Return value: If the attack was performed or not. If the attack was not performed, do not reset timers.
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
