@@ -7,10 +7,10 @@ import { Settings } from '../Settings'
 import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
-import { Weapon } from '../gear/Weapon'
 import { Location } from "../../sdk/Location"
 import { Collision } from '../Collision'
 import { MenuOption } from '../ContextMenu'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
 

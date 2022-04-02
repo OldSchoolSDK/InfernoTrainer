@@ -1,7 +1,6 @@
 
 import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
-import { intersection, words } from 'lodash'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
 import { World } from '../World'

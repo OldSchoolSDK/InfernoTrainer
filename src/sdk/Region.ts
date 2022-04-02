@@ -1,7 +1,6 @@
 'use strict'
 
 import { remove } from "lodash";
-import { Chrome } from "./Chrome";
 import { Entity } from "./Entity";
 import { Item } from "./Item"
 import { Mob } from "./Mob";
@@ -98,7 +97,8 @@ export class Region{
   }
 
   drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {
-
+    ctx;
+    // Override me
   }
   groundItemsAtLocation(x: number, y: number) {
     return (this.groundItems[x] ? this.groundItems[x][y] : []) || [];
@@ -113,9 +113,9 @@ export class Region{
   }
 
   drawGroundItems(ctx: OffscreenCanvasRenderingContext2D) {
-    Object.entries(this.groundItems).forEach((scope1: [string, any]) => {
+    Object.entries(this.groundItems).forEach((scope1: [string, string]) => {
       const x = parseInt(scope1[0]);
-      Object.entries(this.groundItems[x]).forEach((scope2: [string, any]) => {
+      Object.entries(this.groundItems[x]).forEach((scope2: [string, string]) => {
         const y = parseInt(scope2[0]);
         const items = this.groundItems[x][y];
         items.forEach((item: Item) => {

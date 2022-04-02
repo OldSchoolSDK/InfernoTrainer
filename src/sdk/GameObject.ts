@@ -48,7 +48,4 @@ export class GameObject {
     return [clamp(x, this.location.x, this.location.x + this.size - 1), clamp(y, this.location.y - this.size + 1, this.location.y)]
   }
 
-  constructor(){
-    
-  }
 }

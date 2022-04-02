@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
 import { Location } from "../../../../sdk/Location"
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
-import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
@@ -29,7 +29,7 @@ interface JadUnitOptions extends UnitOptions {
 
 class JadMagicWeapon extends MagicWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('magic')
@@ -43,13 +43,13 @@ class JadMagicWeapon extends MagicWeapon {
     return true;
   }
   
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'magic', { reduceDelay: 3 }))
   }
 }
 class JadRangeWeapon extends RangedWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('range')
@@ -63,7 +63,7 @@ class JadRangeWeapon extends RangedWeapon {
     return true;
   }
   
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 3 }))
   }
 }
@@ -228,8 +228,5 @@ export class JalTokJad extends Mob {
   attack () {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE
-  }
-
-  removedFromWorld () {
   }
 }

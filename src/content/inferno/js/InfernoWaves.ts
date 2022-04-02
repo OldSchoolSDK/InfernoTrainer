@@ -1,5 +1,5 @@
 'use strict'
-import { random, shuffle } from 'lodash'
+import { shuffle } from 'lodash'
 import { Entity } from '../../../sdk/Entity'
 import { Mob } from '../../../sdk/Mob'
 import { World } from '../../../sdk/World'

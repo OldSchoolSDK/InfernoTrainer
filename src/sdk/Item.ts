@@ -23,7 +23,8 @@ export class Item {
   }
 
   inventoryLeftClick(player: Player) {
-    
+    // Override me
+    player;
   }
   
   contextActions (world: World) {
@@ -45,7 +46,9 @@ export class Item {
         text: [
           { text: 'Examine ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
         ],
-        action: () => {}
+        action: () => {
+          // TODO: Examine feature
+        }
       },
     ]
 

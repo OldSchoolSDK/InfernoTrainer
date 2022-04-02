@@ -20,7 +20,9 @@ export class Potion extends Item {
   get weight(): number {
     return 0.226;
   }
+  
   updateInventorySprite() {
+    // Override me
   }
 
 

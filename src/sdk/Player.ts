@@ -2,8 +2,8 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min, uniq, sumBy, times } from 'lodash'
-import { Unit, UnitTypes, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
+import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
+import { Unit, UnitTypes, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
 import { AttackBonuses, Weapon } from './gear/Weapon'
@@ -23,8 +23,8 @@ import { Eating } from './Eating'
 import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
-import { AttackStylesController } from './AttackStylesController'
 import { AmmoType } from './gear/Ammo'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
   poisoned = 0;

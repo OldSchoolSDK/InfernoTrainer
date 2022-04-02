@@ -6,8 +6,6 @@ import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Settings } from '../../../../sdk/Settings'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
-import { World } from '../../../../sdk/World'
-import { Location } from '../../../../sdk/Location'
 
 export class JalAkRekMej extends Mob {
 
@@ -23,7 +21,7 @@ export class JalAkRekMej extends Mob {
     return 'lime'
   }
 
-  drawUnderTile(tickPercent: number) {
+  drawUnderTile() {
 
     if (this.dying > -1) {
       this.world.region.context.fillStyle = '#964B0073'

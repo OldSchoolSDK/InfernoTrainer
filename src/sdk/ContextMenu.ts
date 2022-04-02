@@ -1,7 +1,5 @@
 import { World } from './World';
-import { Settings } from './Settings'
 import { Location } from "./Location";
-import { Pathing } from './Pathing';
 
 export interface MultiColorTextBlock {
   text: string;
@@ -23,7 +21,7 @@ export class ContextMenu {
   height = 0;
   menuOptions: MenuOption[] = []
   linesOfText: MenuOption[] = []
-  destinationLocation: any;
+  destinationLocation: Location;
 
   setPosition (position: Location) {
     this.location = position

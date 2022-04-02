@@ -1,6 +1,6 @@
 'use strict'
 import { Settings } from './Settings'
-import { ContextMenu, MenuOption } from './ContextMenu'
+import { ContextMenu } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { XpDropController } from './XpDropController'
 import { Player } from './Player'
@@ -248,11 +248,11 @@ export class World {
     this.controlPanel.draw(this)
     // this.viewport.context.restore();
     XpDropController.controller.draw(this.viewport.context, width - 140 - this.mapController.width, 0, this.tickPercent);
-    MapController.controller.draw(this.viewport.context, this.tickPercent);
+    MapController.controller.draw(this.viewport.context);
     this.contextMenu.draw(this)
 
     if (this.viewport.clickController.clickAnimation) {
-      this.viewport.clickController.clickAnimation.draw(this, this.tickPercent)
+      this.viewport.clickController.clickAnimation.draw(this)
     }
 
     this.viewport.context.restore()

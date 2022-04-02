@@ -13,7 +13,6 @@ import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
-import { InfernoRegion } from '../InfernoRegion'
 import { Random } from '../../../../sdk/Random'
 
 export class JalAk extends Mob {
@@ -34,7 +33,6 @@ export class JalAk extends Mob {
   dead () {
     super.dead()
     InfernoMobDeathStore.npcDied(this.world, this)
-    const region = this.world.region as InfernoRegion;
   }
 
   setStats () {
@@ -164,12 +162,12 @@ export class JalAk extends Mob {
 
   removedFromWorld () {
     const xil = new JalAkRekXil(this.world, { x: this.location.x + 1, y: this.location.y - 1 }, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(xil)
+    this.world.region.addMob(xil as Mob)
 
     const ket = new JalAkRekKet(this.world, this.location, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(ket)
+    this.world.region.addMob(ket as Mob)
 
     const mej = new JalAkRekMej(this.world, { x: this.location.x + 2, y: this.location.y - 2 }, { aggro: this.aggro, cooldown: 4 })
-    this.world.region.addMob(mej)
+    this.world.region.addMob(mej as Mob)
   }
 }

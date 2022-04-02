@@ -4,15 +4,13 @@ import { Settings } from './Settings'
 import { Pathing } from './Pathing'
 import { World } from './World'
 import { GameObject } from './GameObject'
-import { Location } from "./Location"
 import { Collision } from './Collision'
-import { Mob } from './Mob'
-import { Unit } from './Unit'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
  This algorithm makes no sense and is copy pasta'd between basically every trainer.
- I have no clue how it works, nor do I care.
+ I have no clue how it works. I think Woox made a video that helps people understand it.
+ https://www.youtube.com/watch?v=vnyNLXTwjCE
 */
 
 export enum LineOfSightMask {
@@ -48,7 +46,7 @@ export class LineOfSight {
     return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
   }
 
-  static playerHasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1, isNPC = false) {
+  static playerHasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1) {
     const mobPoint = Pathing.closestPointTo(x, y, mob)
     return LineOfSight.hasLineOfSight(world, x, y, mobPoint.x, mobPoint.y, 1, r, false)
   }

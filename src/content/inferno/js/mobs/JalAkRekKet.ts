@@ -22,7 +22,7 @@ export class JalAkRekKet extends Mob {
   }
 
 
-  drawUnderTile(tickPercent: number) {
+  drawUnderTile() {
 
     if (this.dying > -1) {
       this.world.region.context.fillStyle = '#964B0073'

@@ -84,6 +84,7 @@ export class Weapon extends Equipment{
     return 50;
   }
   specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    // Override me
   }
   
   inventoryLeftClick(player: Player) {
@@ -124,7 +125,7 @@ export class Weapon extends Equipment{
   
   
   cast(world: World, from: Unit, to: GameObject) {
-
+    // Override me
   }
 
   rollDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {

@@ -25,6 +25,7 @@ export class Food extends Item {
   }
 
   updateInventorySprite() {
+    // Override me
   }
 
 

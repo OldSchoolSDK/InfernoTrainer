@@ -9,6 +9,8 @@ import { XpDrop } from "./XpDrop";
 import { ImageLoader } from "./utils/ImageLoader";
 import { Settings } from "./Settings";
 
+/* eslint-disable @typescript-eslint/no-empty-interface */
+
 interface SkillTypes {
   type: string,
   imgSrc: string,
@@ -16,7 +18,7 @@ interface SkillTypes {
 }
 
 interface Empty {
-
+  // Empty interface
 }
 
 export class XpDropController {

@@ -17,7 +17,6 @@ import { Settings } from './Settings';
 import { Unit } from './Unit';
 import { Viewport } from './Viewport';
 import { World } from './World';
-import { Location } from './Location';
 import { Chrome } from './Chrome';
 
 export class ClickController {
@@ -31,13 +30,12 @@ export class ClickController {
 
   eventListeners: ((e: MouseEvent) => void)[] = []
 
-  unload(world: World) {
+  unload() {
     this.viewport.canvas.removeEventListener('mousedown', this.eventListeners[0])
     this.viewport.canvas.removeEventListener('mouseup', this.eventListeners[1])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[2])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[3])
     this.viewport.canvas.removeEventListener('mousemove', this.eventListeners[4])
-    // this.viewport.canvas.removeEventListener('contextmenu', this.eventListeners[5])
     this.viewport.canvas.removeEventListener('wheel', this.eventListeners[6])
   }
 
@@ -47,7 +45,6 @@ export class ClickController {
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[2] = (e: MouseEvent) => world.controlPanel.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[3] = (e: MouseEvent) => world.mapController.cursorMovedTo(e))
     this.viewport.canvas.addEventListener('mousemove', this.eventListeners[4] = (e) => world.contextMenu.cursorMovedTo(world, e.clientX, e.clientY))
-    // this.viewport.canvas.addEventListener('contextmenu', this.eventListeners[5] = this.rightClick.bind(this));
     this.viewport.canvas.addEventListener('wheel', this.eventListeners[6] = this.wheel.bind(this))
   }
 
@@ -69,18 +66,11 @@ export class ClickController {
   }
 
   leftClickUp (e: MouseEvent) {
-    const world = this.viewport.world;
     
     if (e.button !== 0) {
       return;
     }
-    const { viewportX, viewportY } = this.viewport.getViewport(world);
-    let x = e.offsetX + viewportX * Settings.tileSize
-    let y = e.offsetY + viewportY * Settings.tileSize
-    if (Settings.rotated === 'south') {
-      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
-      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
-    }
+    
     if (Settings.mobileCheck()) {
       if (e.offsetX > 20 && e.offsetX < 60) {
         if (e.offsetY > 20 && e.offsetY < 60) {
@@ -89,6 +79,21 @@ export class ClickController {
         }
       }
     }
+    
+    const world = this.viewport.world;
+    const intercepted = world.controlPanel.controlPanelClickUp(e);
+    if (intercepted) {
+      return;
+    }
+
+
+    // const { viewportX, viewportY } = this.viewport.getViewport(world);
+    // let x = e.offsetX + viewportX * Settings.tileSize
+    // let y = e.offsetY + viewportY * Settings.tileSize
+    // if (Settings.rotated === 'south') {
+    //   x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
+    //   y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
+    // }
     // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
     //   if (e.offsetY < this.mapController.height) {
     //     const intercepted = this.mapController.clicked(e);
@@ -97,15 +102,9 @@ export class ClickController {
     //     }
     //   }
     // }
+    // const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
+    // const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
 
-
-    const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
-    const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
-
-    const intercepted = world.controlPanel.controlPanelClickUp(e);
-    if (intercepted) {
-      return;
-    }
   }
 
   clickDown (e: MouseEvent) {
@@ -142,7 +141,7 @@ export class ClickController {
 
     
     const scale = Settings.minimapScale;
-    const { width, height } = Chrome.size();
+    const { width } = Chrome.size();
 
     if (e.offsetX > width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {
@@ -190,7 +189,7 @@ export class ClickController {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
-    const { width, height } = Chrome.size();
+    const { width } = Chrome.size();
 
     if (e.offsetX > width - world.controlPanel.width) {
       if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){

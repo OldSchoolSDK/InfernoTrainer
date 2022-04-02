@@ -1,9 +1,6 @@
 'use strict'
 
-import { find } from 'lodash'
-import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JalMejJakImage from '../../assets/images/Jal-MejJak.png'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
@@ -31,7 +28,7 @@ class AoeWeapon extends Weapon {
     return 1;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack(world: World, from: Unit): boolean {
     const playerLocation = world.player.location;
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       // make splat in 2 random spots and where the player is 

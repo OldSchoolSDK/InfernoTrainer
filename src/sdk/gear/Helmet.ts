@@ -1,6 +1,5 @@
 
 import { Equipment, EquipmentTypes } from '../Equipment';
-import { UnitEquipment } from '../Unit';
 import { Player } from "../Player";
 
 export class Helmet extends Equipment {

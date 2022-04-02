@@ -1,17 +1,15 @@
 'use strict'
-import { every, LoDashImplicitNumberArrayWrapper, map } from 'lodash'
+import { every } from 'lodash'
 
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './gear/Weapon'
-import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
+import { Unit, UnitBonuses, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from "./Location"
-import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
-import { EntityName } from './EntityName'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import { SoundCache } from './utils/SoundCache';
 import { Random } from './Random'
@@ -243,13 +241,6 @@ export class Mob extends Unit {
     if (this.spawnDelay > 0) {
       return;
     }
-
-    if (this.currentAnimationTickLength > 0) {
-      if (--this.currentAnimationTickLength === 0) {
-        this.currentAnimation = null
-      }
-    }
-
     if (this.dying === 0) {
       return
     }
@@ -371,6 +362,7 @@ export class Mob extends Unit {
 
 
   drawOverTile(tickPercent: number) {
+    // Override me
   }
 
   drawUnderTile(tickPercent: number) {

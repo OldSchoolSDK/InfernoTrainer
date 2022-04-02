@@ -4,7 +4,7 @@ module.exports = {
     es2021: true
   },
   rules: {
-    "@typescript-eslint/no-unused-vars" : "off"
+    "@typescript-eslint/no-unused-vars": "off"
   },
   root: true,
   parser: '@typescript-eslint/parser',

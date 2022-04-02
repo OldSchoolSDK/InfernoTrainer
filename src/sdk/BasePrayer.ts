@@ -1,9 +1,7 @@
 'use strict'
 
-import { intersection } from "lodash";
 import { Player } from "./Player";
 import { ImageLoader } from "./utils/ImageLoader";
-import { World } from "./World";
 
 export enum PrayerGroups {
   OVERHEADS = 'overheads',
@@ -99,9 +97,9 @@ export class BasePrayer {
   }
 
   playOffSound() {
-
+    // Override me
   }
   playOnSound() {
-
+    // Override me
   }
 }

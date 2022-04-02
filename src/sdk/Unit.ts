@@ -28,6 +28,8 @@ import { SetEffect } from './SetEffect'
 import { EntityName } from "./EntityName"
 import { Item } from './Item'
 import { PrayerController } from './PrayerController'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -110,8 +112,6 @@ export class Unit extends GameObject {
   missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
   damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
   unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
-  currentAnimation?: any = null;
-  currentAnimationTickLength = 0;
   currentStats: UnitStats;
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
@@ -159,13 +159,27 @@ export class Unit extends GameObject {
   }
 
   
-  grantXp(xpDrop: XpDrop) { }
-  setStats(){ }
-  movementStep () { }
-  attackStep () { }
-  draw(tickPercent: number) { }
-  drawUILayer(tickPercent: number) { }
-  removedFromWorld () { }
+  grantXp(xpDrop: XpDrop) {
+    // Override me
+   }
+  setStats(){
+    // Override me
+   }
+  movementStep () {
+    // Override me
+   }
+  attackStep () {
+    // Override me
+   }
+  draw(tickPercent: number) {
+    // Override me
+   }
+  drawUILayer(tickPercent: number) { 
+    // Override me
+  }
+  removedFromWorld () {
+    // Override me
+   }
 
   static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses{
     return {
@@ -300,7 +314,7 @@ export class Unit extends GameObject {
     } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {
       this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.world, this, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -405,11 +419,11 @@ export class Unit extends GameObject {
   }
 
   postAttacksEvent() {
-
+    // Override me
   }
 
   damageTaken() {
-
+    // Override me
   }
 
   drawHitsplat(projectile: Projectile): boolean { 

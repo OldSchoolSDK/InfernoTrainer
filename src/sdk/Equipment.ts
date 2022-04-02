@@ -1,5 +1,5 @@
 import { Item } from "./Item";
-import { UnitBonuses, UnitEquipment } from "./Unit";
+import { UnitBonuses } from "./Unit";
 import { SetEffect } from "./SetEffect"
 import { Player } from "./Player";
 

@@ -53,7 +53,7 @@ export class InfernoRegion extends Region {
   initializeAndGetLoadoutType() { 
     const loadoutSelector = document.getElementById("loadouts") as HTMLInputElement;
     loadoutSelector.value = Settings.loadout;
-    loadoutSelector.addEventListener('change', (e: InputEvent) => {
+    loadoutSelector.addEventListener('change', () => {
       Settings.loadout = loadoutSelector.value;
       Settings.persistToStorage();
     })
@@ -64,7 +64,7 @@ export class InfernoRegion extends Region {
   initializeAndGetOnTask() {
     const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
     onTaskCheckbox.checked = Settings.onTask;
-    onTaskCheckbox.addEventListener('change', (e: InputEvent) => {
+    onTaskCheckbox.addEventListener('change', () => {
       Settings.onTask = onTaskCheckbox.checked;
       Settings.persistToStorage();
     })

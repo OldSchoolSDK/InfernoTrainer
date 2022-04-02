@@ -7,7 +7,6 @@ import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
 import { AttackStyleTypes, AttackStyle } from '../../sdk/AttackStylesController'
 import { Projectile } from '../../sdk/weapons/Projectile'
-import _ from 'lodash'
 import { Random } from '../../sdk/Random';
 
 export class RuneCrossbow extends RangedWeapon {

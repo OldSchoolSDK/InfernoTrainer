@@ -1,23 +1,21 @@
 
 import { CollisionType } from '../../../sdk/Collision';
-import { Entity } from '../../../sdk/Entity'
 import { EntityName } from "../../../sdk/EntityName";
 import { Settings } from '../../../sdk/Settings'
 import { Projectile } from '../../../sdk/weapons/Projectile';
-import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
+import { UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
 
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader';
 import { Location } from "../../../sdk/Location";
 import { World } from '../../../sdk/World';
-import { filter, find, remove } from 'lodash';
-import { Pathing } from '../../../sdk/Pathing';
-import { AttackIndicators, Mob } from '../../../sdk/Mob';
+import { find } from 'lodash';
 import { LineOfSightMask } from '../../../sdk/LineOfSight';
 import { DelayedAction } from '../../../sdk/DelayedAction';
 import { JalXil } from './mobs/JalXil';
 import { Random } from '../../../sdk/Random';
+import { Mob } from '../../../sdk/Mob';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -112,7 +110,7 @@ export class ZukShield extends Mob {
   }
 
 
-  contextActions (world: World, x: number, y: number) {
+  contextActions () {
     return [];
   }
   mobName(): EntityName { 
@@ -183,7 +181,7 @@ export class ZukShield extends Mob {
   }
 
   
-  drawUnderTile(tickPercent: number) {
+  drawUnderTile() {
 
     this.world.region.context.fillStyle = this.color;
     // Draw mob

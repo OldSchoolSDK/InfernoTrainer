@@ -29,10 +29,11 @@ export class BaseControls {
   }
   
   cursorMovedto(world: World, x: number, y: number) {
+    // Override me
   }
 
   panelRightClick (world: World, x: number, y: number) {
-    
+    // Override me
   }
 
   panelClickDown (world: World, x: number, y: number) {

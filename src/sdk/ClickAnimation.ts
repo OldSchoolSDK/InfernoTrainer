@@ -45,7 +45,7 @@ export class ClickAnimation {
   };
 
 
-  draw (world: World, tickPercent: number) {
+  draw (world: World) {
     if (this.ttl <= 0) {
       return
     }

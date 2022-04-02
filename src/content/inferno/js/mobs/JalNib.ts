@@ -6,11 +6,10 @@ import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
-import { LineOfSight } from '../../../../sdk/LineOfSight'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { World } from '../../../../sdk/World'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
-import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
+import { AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 import { Location } from "../../../../sdk/Location"
 import { EntityName } from "../../../../sdk/EntityName"
@@ -26,7 +25,6 @@ class NibblerWeapon extends MeleeWeapon {
 }
 
 export class JalNib extends Mob {
-  weapon: any;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
@@ -48,9 +46,6 @@ export class JalNib extends Mob {
   setStats () {
     this.stunned = 1
     this.autoRetaliate = false;
-    this.weapon = {
-      attackRange: 1
-    }
     this.weapons = {
       crush: new NibblerWeapon()
     }

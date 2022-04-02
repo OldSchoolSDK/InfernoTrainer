@@ -115,8 +115,6 @@ export class StatsControls extends BaseControls {
           Settings.persistToStorage();  
         }
       }
-    }else if (x > 138 && x < 202){
-      
     }
   }
 

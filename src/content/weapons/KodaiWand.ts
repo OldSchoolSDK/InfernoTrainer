@@ -5,7 +5,6 @@ import { MeleeWeapon } from '../../sdk/weapons/MeleeWeapon'
 import { ItemName } from "../../sdk/ItemName";
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
 import { BarrageSpell } from '../../sdk/weapons/BarrageSpell';
-import { IceBarrageSpell } from '../../sdk/weapons/IceBarrageSpell';
 import { AttackBonuses } from '../../sdk/gear/Weapon';
 import { Unit } from '../../sdk/Unit';
 import { World } from '../../sdk/World';

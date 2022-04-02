@@ -130,7 +130,7 @@ export class ControlPanelController {
     return scaleRatio;
   }
 
-   tabPosition (i: number, world: World): TabPosition {
+   tabPosition (i: number): TabPosition {
     // let scale = Settings.controlPanelScale
     const { width, height } = Chrome.size();
     const scale = this.getTabScale();
@@ -161,7 +161,7 @@ export class ControlPanelController {
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -184,7 +184,7 @@ export class ControlPanelController {
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -214,7 +214,7 @@ export class ControlPanelController {
     
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -240,7 +240,7 @@ export class ControlPanelController {
 
 
     this.controls.forEach((control: BaseControls, index: number) => {
-      const tabPosition = this.tabPosition(index, this.world)
+      const tabPosition = this.tabPosition(index)
       if (tabPosition.x <= x && x < tabPosition.x + 33 * scale) {
         if (tabPosition.y <= y && y < tabPosition.y + 36 * scale) {
           intercepted = true;
@@ -260,7 +260,7 @@ export class ControlPanelController {
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -275,7 +275,7 @@ export class ControlPanelController {
     return intercepted;
   }
 
-  controlPosition(control: BaseControls, world: World): Location {
+  controlPosition(control: BaseControls): Location {
     
     const scale = this.getTabScale();
     const { width, height } = Chrome.size();
@@ -306,7 +306,7 @@ export class ControlPanelController {
     
     
     if (this.selectedControl && this.selectedControl.draw) {
-      const position = this.controlPosition(this.selectedControl, world);
+      const position = this.controlPosition(this.selectedControl);
       this.selectedControl.draw(world, this, position.x, position.y);
     }
 
@@ -314,7 +314,7 @@ export class ControlPanelController {
 
 
     this.controls.forEach((control, index) => {
-      const tabPosition = this.tabPosition(index, world)
+      const tabPosition = this.tabPosition(index)
       if (control.tabImage){
         world.viewport.context.drawImage(
           control.tabImage, 

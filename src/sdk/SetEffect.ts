@@ -1,5 +1,3 @@
-import { Equipment } from "./Equipment"
-
 export enum SetEffectTypes {
   JUSTICIAR = 'JUSTICIAR'
 }
