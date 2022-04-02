@@ -1,15 +1,18 @@
 jest.mock('../sdk/utils/ImageLoader');
 jest.mock('../sdk/XpDropController', () => {
-
-  return jest.fn().mockImplementation(() => {
-    return { }
-  })
-})
+  return {
+    'XpDropController': {
+      controller: {
+        registerXpDrop: jest.fn()
+      }
+    }
+  }
+});
 
 jest.mock('../sdk/MapController', () => {
-  return jest.fn().mockImplementation(() => {
-    return { }
-  })
+  return {
+    'MapController' : null
+  }
 })
 
 jest.spyOn(document, 'getElementById').mockImplementation((elementId: string) => {
