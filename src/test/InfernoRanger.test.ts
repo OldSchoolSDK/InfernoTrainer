@@ -16,13 +16,14 @@ jest.spyOn(document, 'getElementById').mockImplementation((elementId: string) =>
   return document.createElement('canvas');
 });
 
-import { InfernoLoadout } from '../content/inferno/js/InfernoLoadout';
 import { JalXil } from '../content/inferno/js/mobs/JalXil';
 import { Player } from '../sdk/Player';
 import { Region } from '../sdk/Region'
 import { World } from '../sdk/World';
 import { Settings } from '../sdk/Settings';
 import { Random } from '../sdk/Random';
+import { Blowpipe } from '../content/weapons/Blowpipe';
+import { TwistedBow } from '../content/weapons/TwistedBow';
 
 Random.setRandom(() => {
   Random.memory = (Random.memory + 13.37) % 180;
@@ -49,12 +50,16 @@ describe('basic combat', () => {
     const world = new World(region, null, null);
     world.getReadyTimer = 0;
     region.initialize(world);
-    const loadout = new InfernoLoadout(69, 'max_tbow', false);
     const player = new Player(
       world,
       { x: 30, y: 60 },
-      loadout.getLoadout()
+      {}
     )
+
+    const tbow = new TwistedBow();
+    tbow.inventoryLeftClick(player);
+
+
     world.setPlayer(player)
 
     let jalxil = new JalXil(world, { x: 25, y: 25}, { aggro: player });
@@ -64,7 +69,7 @@ describe('basic combat', () => {
       world.worldTick();
     }
 
-    player.prayerController.prayers[17].activate(player); // protect range
+    player.prayerController.findPrayerByName('Protect from Range').activate(player);
     player.setAggro(jalxil)
     
     for (let i = 0; i < 20; i++) {
@@ -72,33 +77,56 @@ describe('basic combat', () => {
     }
 
     expect(player.location).toEqual({ x: 30, y: 54 });
-    expect(player.currentStats.hitpoint).toBe(78);
+    expect(player.currentStats.hitpoint).toBe(41);
     expect(player.equipment.weapon.itemName).toEqual('Twisted Bow');
+    
 
     expect(jalxil.location).toEqual({ x: 30, y: 45});
-    expect(jalxil.currentStats.hitpoint).toBe(105);
+    expect(jalxil.currentStats.hitpoint).toBe(124);
+    
+    player.moveTo(jalxil.location.x, jalxil.location.y);
 
-    player.prayerController.prayers[27].activate(player); // rigour
-    player.inventory[0].inventoryLeftClick(player);
+    player.prayerController.findPrayerByName('Rigour').activate(player);
+
+    const blowpipe = new Blowpipe();
+    blowpipe.inventoryLeftClick(player);
 
     expect(player.equipment.weapon.itemName).toEqual('Toxic Blowpipe');
     expect(player.aggro).toEqual(null);
-    
+
+    world.worldTick();
+
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
     player.setAggro(jalxil);
 
-    for (let i = 0; i < 20; i++) {
-      world.worldTick();
-    }
+    world.worldTick();
+
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
+    world.worldTick();
 
     expect(player.aggro).toEqual(jalxil);
 
-    world.worldTick();
-    world.worldTick();
-    world.worldTick();
-    world.worldTick();
+    for (let i=0;i<80; i++) {
+      world.worldTick();
+    }
+    expect(player.location).toEqual({ x: 30, y: 45 });
+    expect(player.currentStats.prayer).toEqual(39);
 
-    expect(jalxil.location).toEqual({ x: 30, y: 45});
+    expect(jalxil.location).toEqual({ x: 30, y: 44});
+
     expect(jalxil.currentStats.hitpoint).toBe(0);
+
+    expect(player.currentStats.hitpoint).toBe(33);
 
 
   });

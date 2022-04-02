@@ -59,7 +59,7 @@ export class Player extends Unit {
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.equipment = options.equipment;
+    this.equipment = options.equipment || {};
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
@@ -492,7 +492,7 @@ export class Player extends Unit {
 
 
   damageTaken() {
-    if (this.prayerController.matchName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
+    if (this.prayerController.isPrayerActiveByName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
       this.eats.redemptioned = true;
     }
   }

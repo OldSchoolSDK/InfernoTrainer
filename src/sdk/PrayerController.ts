@@ -86,7 +86,11 @@ export class PrayerController {
     return this.activePrayers().reduce((a, b) => a + b.drainRate(), 0);
   }
 
-  matchName(name: string): BasePrayer {
+  findPrayerByName(name: string): BasePrayer {
+    return find(this.prayers, (prayer: BasePrayer) => prayer.name === name);
+  }
+
+  isPrayerActiveByName(name: string): BasePrayer {
     return find(this.activePrayers(), (prayer: BasePrayer) => prayer.name === name);
   }
   
