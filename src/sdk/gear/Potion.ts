@@ -6,7 +6,7 @@ import { Player } from "../Player";
 export class Potion extends Item {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
   vial: HTMLImageElement = ImageLoader.createImage(Vial)
-  doses: number = 4;
+  doses = 4;
 
 
   constructor() {

@@ -15,7 +15,7 @@ export class BastionPotion extends Potion {
   threeDose: HTMLImageElement = ImageLoader.createImage(ThreeDose)
   fourDose: HTMLImageElement = ImageLoader.createImage(FourDose)
 
-  constructor(doses: number = 4) {
+  constructor(doses = 4) {
     super();
     this.doses = doses;
     this.updateInventorySprite();

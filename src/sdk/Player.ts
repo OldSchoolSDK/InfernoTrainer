@@ -27,13 +27,12 @@ import { AttackStylesController } from './AttackStylesController'
 import { AmmoType } from './gear/Ammo'
 
 class PlayerEffects {
-  poisoned: number = 0;
-  venomed: number = 0;
-  stamina: number = 0;
+  poisoned = 0;
+  venomed = 0;
+  stamina = 0;
 }
 
 export class Player extends Unit {
-  weapon?: Weapon;
   manualSpellCastSelection: Weapon;
   destinationLocation?: Location;
 
@@ -43,11 +42,11 @@ export class Player extends Unit {
   overhead: BasePrayer;
   running = true;
   cachedBonuses: UnitBonuses = null;
-  useSpecialAttack: boolean = false;
+  useSpecialAttack = false;
   effects = new PlayerEffects();
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
-  autocastDelay: number = 1;
+  autocastDelay = 1;
 
   eats: Eating = new Eating();
   inventory: Item[];
@@ -119,7 +118,7 @@ export class Player extends Unit {
   equipmentChanged() {
     this.interruptCombat();
 
-    let gear = [
+    const gear = [
       this.equipment.weapon, 
       this.equipment.offhand,
       this.equipment.helmet,
@@ -600,8 +599,8 @@ export class Player extends Unit {
 
   getPerceivedLocation(tickPercent: number): Location {
 
-    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
     // if (this.path && this.path.length === 2) {
     //   if (tickPercent < 0.5) {

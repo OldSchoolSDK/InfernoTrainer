@@ -3,7 +3,7 @@ import { ImageLoader } from "../utils/ImageLoader";
 import { Player } from "../Player";
 
 export class Food extends Item {
-  healAmount: number = 0;
+  healAmount = 0;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
   constructor() {

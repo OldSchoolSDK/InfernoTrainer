@@ -4,9 +4,9 @@ import { LineOfSightMask } from "./LineOfSight";
 import { Location } from "./Location";
 
 export class GameObject {
-  ticksAlive: number = 0;
+  ticksAlive = 0;
   location: Location;
-  dying: number = -1;
+  dying = -1;
 
   _serialNumber: string;
 

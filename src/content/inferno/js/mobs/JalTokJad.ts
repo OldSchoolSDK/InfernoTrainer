@@ -71,7 +71,7 @@ class JadRangeWeapon extends RangedWeapon {
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
   waveCooldown: number;
-  hasProccedHealers: boolean = false;
+  hasProccedHealers = false;
   healers: number;
   isZukWave: boolean;
 

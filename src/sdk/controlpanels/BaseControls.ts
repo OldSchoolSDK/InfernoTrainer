@@ -6,7 +6,7 @@ import { Settings } from "../Settings";
 export class BaseControls {
   panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
   tabImage: HTMLImageElement = ImageLoader.createImage(this.tabImageReference)
-  selected: boolean = false;
+  selected = false;
 
   get keyBinding (): string {
     return '';
@@ -43,7 +43,7 @@ export class BaseControls {
   }
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     if (this.panelImage) {
       world.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
     }

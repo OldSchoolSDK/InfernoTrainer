@@ -1,11 +1,11 @@
 'use strict'
 
 import InventImage from '../../assets/images/equipment/Rune_crossbow.png'
-import { Unit, UnitBonuses } from '../../sdk/Unit'
+import { Unit } from '../../sdk/Unit'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
-import { AttackStyleTypes, AttackStyle, AttackStylesController } from '../../sdk/AttackStylesController'
+import { AttackStyleTypes, AttackStyle } from '../../sdk/AttackStylesController'
 import { Projectile } from '../../sdk/weapons/Projectile'
 import _ from 'lodash'
 import { Random } from '../../sdk/Random';

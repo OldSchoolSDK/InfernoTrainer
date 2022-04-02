@@ -5,15 +5,15 @@ import { CollisionType } from '../sdk/Collision'
 import { Settings } from '../sdk/Settings';
 import { Location } from "../sdk/Location";
 import { World } from '../sdk/World';
-import { LineOfSight, LineOfSightMask } from '../sdk/LineOfSight';
+import { LineOfSightMask } from '../sdk/LineOfSight';
 import { EntityName } from '../sdk/EntityName';
 
 export class TileMarker extends Entity {
-  color: string = '#00FF00'
+  color = '#00FF00'
 
-  _size: number = 1;
-  saveable: boolean = true;; 
-  constructor (world: World, location: Location, color: string, size: number = 1, saveable: boolean = true) {
+  _size = 1;
+  saveable = true;; 
+  constructor (world: World, location: Location, color: string, size = 1, saveable = true) {
     super(world, location);
     this.color = color;
     this._size = size;

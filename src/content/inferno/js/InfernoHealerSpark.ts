@@ -39,7 +39,7 @@ export class InfernoHealerSpark extends Entity {
   from: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
-  hasSparked: boolean = false;
+  hasSparked = false;
 
   constructor (world: World, location: Location, from: Unit) {
     super(world, location);

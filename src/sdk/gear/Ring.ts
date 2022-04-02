@@ -1,5 +1,4 @@
 import { Equipment } from "../Equipment";
-import { UnitEquipment } from "../Unit";
 import { Player } from "../Player";
 
 export class Ring extends Equipment {

@@ -40,11 +40,11 @@ class ZukWeapon extends MagicWeapon {
 export class TzKalZuk extends Mob {
 
   shield: ZukShield;
-  enraged: boolean = false;
+  enraged = false;
 
-  setTimer: number = 72;
-  timerPaused: boolean = false;
-  hasPaused: boolean = false;
+  setTimer = 72;
+  timerPaused = false;
+  hasPaused = false;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)

@@ -48,8 +48,8 @@ export class Viewport {
     const perceivedX = Pathing.linearInterpolation(world.player.perceivedLocation.x, world.player.location.x, world.tickPercent);
     const perceivedY = Pathing.linearInterpolation(world.player.perceivedLocation.y, world.player.location.y, world.tickPercent);
 
-    let viewportX = perceivedX + 0.5 - this.width / 2;
-    let viewportY = perceivedY + 0.5 - this.height / 2;
+    const viewportX = perceivedX + 0.5 - this.width / 2;
+    const viewportY = perceivedY + 0.5 - this.height / 2;
 
 
     // if (viewportX < 0) {

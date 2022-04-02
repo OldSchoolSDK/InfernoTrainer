@@ -54,10 +54,10 @@ export class InfernoWaves {
     return mobs
   }
 
-  static spawnEnduranceMode (world: World, concurrentSpawns: number, check: boolean = false) {
+  static spawnEnduranceMode (world: World, concurrentSpawns: number, check = false) {
     let j = 0;
 
-    let mobs: Mob[] = []
+    const mobs: Mob[] = []
     let randomSpawns = [
       { x: 12, y: 19 },
       { x: 33, y: 19 },

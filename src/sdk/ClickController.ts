@@ -141,8 +141,8 @@ export class ClickController {
     }
 
     
-    let scale = Settings.minimapScale;
-    let { width, height } = Chrome.size();
+    const scale = Settings.minimapScale;
+    const { width, height } = Chrome.size();
 
     if (e.offsetX > width - world.mapController.width * scale) {
       if (e.offsetY < world.mapController.height) {
@@ -190,7 +190,7 @@ export class ClickController {
       x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
       y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
     }
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
     if (e.offsetX > width - world.controlPanel.width) {
       if (e.offsetY > this.viewport.height * Settings.tileSize - world.controlPanel.height){

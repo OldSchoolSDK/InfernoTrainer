@@ -33,7 +33,7 @@ import { Player } from './Player';
 import { World } from './World';
 
 export class PrayerController {
-  drainCounter: number = 0;
+  drainCounter = 0;
   player: Player;
 
   constructor(player: Player) {
@@ -56,7 +56,7 @@ export class PrayerController {
       });
     })
 
-    for (let feature in conflictingPrayers) {
+    for (const feature in conflictingPrayers) {
       conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
       conflictingPrayers[feature].shift();
       conflictingPrayers[feature].forEach((prayer: BasePrayer) => {

@@ -18,9 +18,9 @@ export enum PrayerGroups {
 
 export class BasePrayer {
 
-  lastActivated: number = 0;
-  isActive: boolean = false;
-  isLit: boolean = false;
+  lastActivated = 0;
+  isActive = false;
+  isLit = false;
   cachedImage: HTMLImageElement;
 
   constructor () {

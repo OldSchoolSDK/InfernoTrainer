@@ -44,7 +44,7 @@ export class LineOfSight {
     world.region.context.globalAlpha = 1
   }
 
-  static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r: number = 1, isNPC: boolean = true) {
+  static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r = 1, isNPC = true) {
     return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
   }
 
@@ -58,7 +58,7 @@ export class LineOfSight {
     return LineOfSight.hasLineOfSight(world, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false)
   }
   
-  static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s: number = 1, r: number = 1, isNPC: boolean = false): boolean {
+  static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s = 1, r = 1, isNPC = false): boolean {
     const dx = x2 - x1
     const dy = y2 - y1
     if (Collision.collidesWithAnyLoSBlockingEntities(world, x1, y1, 1) || Collision.collidesWithAnyLoSBlockingEntities(world, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
@@ -117,7 +117,7 @@ export class LineOfSight {
     } else {
       let yTile = y1;
       let x = (x1 << 16) + 0x8000;
-      let slope = Math.trunc((dx << 16) / dyAbs); // Integer division
+      const slope = Math.trunc((dx << 16) / dyAbs); // Integer division
       
       let yInc;
       let yMask;

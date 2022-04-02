@@ -51,8 +51,8 @@ export class Collision {
 
 
   static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
-    for (var i = 0; i < world.region.entities.length; i++) {
-      let entity = world.region.entities[i];
+    for (let i = 0; i < world.region.entities.length; i++) {
+      const entity = world.region.entities[i];
       if (entity.collisionType != CollisionType.NONE && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return true;
       }
@@ -61,8 +61,8 @@ export class Collision {
   }
 
   static collidesWithAnyLoSBlockingEntities (world: World, x: number, y: number, s: number): LineOfSightMask {
-    for (var i = 0; i < world.region.entities.length; i++) {
-      let entity = world.region.entities[i];
+    for (let i = 0; i < world.region.entities.length; i++) {
+      const entity = world.region.entities[i];
       if (Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return entity.lineOfSight
       }

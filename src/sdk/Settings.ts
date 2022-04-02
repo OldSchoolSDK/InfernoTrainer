@@ -4,7 +4,7 @@ import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./Pla
 import { Location } from './Location';
 
 export class Settings {
-  static zoomScale: number = 1;
+  static zoomScale = 1;
 
   static _tileSize: number;
   static get tileSize() {
@@ -50,7 +50,7 @@ export class Settings {
     }
     Settings._isMobileResult =  /Mobi/.test(navigator.userAgent);
     return Settings._isMobileResult;
-  };
+  }
 
   static persistToStorage () {
     // window.localStorage.setItem('tileSize', Settings.tileSize);

@@ -101,23 +101,23 @@ export class Unit extends GameObject {
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
   perceivedLocation: Location;
-  attackCooldownTicks: number = 0;
-  hasLOS: boolean = false;
-  frozen: number = 0;
-  stunned: number = 0;
+  attackCooldownTicks = 0;
+  hasLOS = false;
+  frozen = 0;
+  stunned = 0;
   incomingProjectiles: Projectile[] = [];
   healHitsplatImage: HTMLImageElement = ImageLoader.createImage(HealSplat);
   missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
   damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
   unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
   currentAnimation?: any = null;
-  currentAnimationTickLength: number = 0;
+  currentAnimationTickLength = 0;
   currentStats: UnitStats;
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
-  autoRetaliate: boolean = false;
-  spawnDelay: number = 0;
+  autoRetaliate = false;
+  spawnDelay = 0;
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -522,13 +522,13 @@ export class Unit extends GameObject {
         return;
       }
 
-      let startX = projectile.currentLocation.x;
-      let startY = projectile.currentLocation.y;
-      let endX = projectile.to.location.x + projectile.to.size / 2;
-      let endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+      const startX = projectile.currentLocation.x;
+      const startY = projectile.currentLocation.y;
+      const endX = projectile.to.location.x + projectile.to.size / 2;
+      const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
 
-      let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
-      let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
+      const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
+      const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
   
       this.world.region.context.save();
       this.world.region.context.translate(

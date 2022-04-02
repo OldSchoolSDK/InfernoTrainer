@@ -1,7 +1,6 @@
 'use strict'
 
-import { filter, find, random, shuffle } from 'lodash'
-import { InfernoViewport } from './InfernoViewport'
+import { filter, shuffle } from 'lodash'
 import { InfernoPillar } from './InfernoPillar'
 import { Player } from '../../../sdk/Player'
 import { InfernoWaves } from './InfernoWaves'
@@ -30,11 +29,13 @@ import { TileMarker } from '../../TileMarker'
 import { Mob } from '../../../sdk/Mob'
 import { EntityName } from '../../../sdk/EntityName'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export class InfernoRegion extends Region {
 
 
-  score: number = 0;
-  finalScore: number = -1;
+  score = 0;
+  finalScore = -1;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {

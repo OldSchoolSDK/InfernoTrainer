@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "lint": "eslint . --ext .ts --fix"
   },
   "repository": {
     "type": "git",
@@ -20,8 +21,10 @@
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.171",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
     "copy-webpack-plugin": "^9.0.1",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",

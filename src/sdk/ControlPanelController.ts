@@ -110,7 +110,7 @@ export class ControlPanelController {
   }
 
   getTabScale() {
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
 
     const controlAreaHeight = height - this.world.mapController.height;
@@ -132,8 +132,8 @@ export class ControlPanelController {
 
    tabPosition (i: number, world: World): TabPosition {
     // let scale = Settings.controlPanelScale
-    let { width, height } = Chrome.size();
-    let scale = this.getTabScale();
+    const { width, height } = Chrome.size();
+    const scale = this.getTabScale();
     
     if (Settings.mobileCheck()) {
       const mapHeight = 170 * Settings.minimapScale;
@@ -153,7 +153,7 @@ export class ControlPanelController {
     }
   }
   cursorMovedTo (e: MouseEvent) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     if (this.selectedControl) {
 
     const x = e.offsetX;
@@ -178,7 +178,7 @@ export class ControlPanelController {
   controlPanelRightClick (e: MouseEvent): boolean {
     let intercepted = false;
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     const x = e.offsetX;
     const y = e.offsetY;
 
@@ -202,7 +202,7 @@ export class ControlPanelController {
   controlPanelClickUp (e: MouseEvent): boolean {
 
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     if (!this.selectedControl) {
       return false;
     }
@@ -233,7 +233,7 @@ export class ControlPanelController {
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     const x = e.offsetX;
     const y = e.offsetY;
@@ -277,8 +277,8 @@ export class ControlPanelController {
 
   controlPosition(control: BaseControls, world: World): Location {
     
-    let scale = this.getTabScale();
-    let { width, height } = Chrome.size();
+    const scale = this.getTabScale();
+    const { width, height } = Chrome.size();
 
     if (Settings.mobileCheck()){
       const mapHeight = 170 * Settings.minimapScale;
@@ -301,7 +301,7 @@ export class ControlPanelController {
 
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
-    let scale = this.getTabScale();
+    const scale = this.getTabScale();
 
     
     

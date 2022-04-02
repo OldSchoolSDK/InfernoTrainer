@@ -179,7 +179,7 @@ export class ZukShield extends Mob {
   }
 
   attackIfPossible() {
-
+    // Shield can't attack.
   }
 
   

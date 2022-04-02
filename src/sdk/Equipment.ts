@@ -30,7 +30,7 @@ export class Equipment extends Item {
 
   inventoryLeftClick(player: Player) {
     const currentItem = this.currentEquipment(player) || null; 
-    let openInventorySlots = player.openInventorySlots()
+    const openInventorySlots = player.openInventorySlots()
     openInventorySlots.unshift(player.inventory.indexOf(this))
     this.assignToPlayer(player);
     player.inventory[openInventorySlots.shift()] = currentItem;
@@ -58,7 +58,7 @@ export class Equipment extends Item {
   }
 
   unequip(player: Player) {
-    let openInventorySlots = player.openInventorySlots()
+    const openInventorySlots = player.openInventorySlots()
     if (openInventorySlots.length === 0) {
       return;
     }

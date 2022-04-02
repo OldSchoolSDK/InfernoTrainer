@@ -31,7 +31,7 @@ export interface WeaponsMap {
 export class Mob extends Unit {
   static mobIdTracker = 0;
   mobId: number = Mob.mobIdTracker++;
-  hasResurrected: boolean = false;
+  hasResurrected = false;
   attackFeedback: AttackIndicators;
   stats: UnitStats;
   currentStats: UnitStats;
@@ -415,7 +415,7 @@ export class Mob extends Unit {
     )
 
     this.drawUnderTile(tickPercent)
-    let currentImage = this.unitImage
+    const currentImage = this.unitImage
 
     if (Settings.rotated === 'south') {
       this.world.region.context.rotate(Math.PI)

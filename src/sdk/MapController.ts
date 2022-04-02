@@ -96,9 +96,9 @@ export class MapController {
   }
 
   cursorMovedTo(event: MouseEvent) {
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width)) / scale;
     const y = event.offsetY / scale;
 
@@ -249,11 +249,11 @@ export class MapController {
   rightClick(event: MouseEvent): boolean {
 
     let menuOptions: MenuOption[] = []
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
 
     let intercepted = false;
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
 
@@ -346,8 +346,8 @@ export class MapController {
 
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    let { width, height } = Chrome.size();
-    let scale = Settings.minimapScale;
+    const { width, height } = Chrome.size();
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
     
@@ -403,13 +403,13 @@ export class MapController {
 
 
   draw(ctx: CanvasRenderingContext2D, tickPercent: number){
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
     
     const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
 
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const offset = width - (this.width * scale);
     
     ctx.font = (16 * scale) + 'px Stats_11'
