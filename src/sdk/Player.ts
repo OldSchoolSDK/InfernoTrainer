@@ -231,6 +231,9 @@ export class Player extends Unit {
   }
 
   sendXpToController() {
+    if (!XpDropController) {
+      return;
+    }
     Object.keys(this.xpDrops).forEach((skill) => {
       XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill])});
     })

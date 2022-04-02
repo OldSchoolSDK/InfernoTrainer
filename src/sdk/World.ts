@@ -48,12 +48,18 @@ export class World {
   }
 
   constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController) {
-
     this.region = region;
-    this.mapController = mapController;
+
     this.controlPanel = controlPanel;
-    this.controlPanel.setWorld(this);
-    this.mapController.setWorld(this)
+    if (this.controlPanel) {
+      this.controlPanel.setWorld(this);
+    }
+
+    this.mapController = mapController;
+    if (this.mapController) {
+      this.mapController.setWorld(this)
+    }
+
     this.viewport = new Viewport(this);    
 
   }
@@ -97,6 +103,9 @@ export class World {
       this.getReadyTimer--;
       this.worldTick();
 
+      XpDropController.controller.tick();
+
+      
     }
 
     if (elapsed > this.fpsInterval && this.isPaused === false) {
@@ -130,7 +139,7 @@ export class World {
       this.region.mobs.unshift(...this.region.newMobs)
       this.region.newMobs = [];
     }
-    XpDropController.controller.tick();
+
 
     this.player.pretick();
     
