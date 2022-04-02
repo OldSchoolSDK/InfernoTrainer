@@ -41,7 +41,6 @@ export class Mob extends Unit {
   attackStyle: string;
 
   tcc: Location[];
-  mobRangeAttackAnimation: any;
 
   get type () {
     return UnitTypes.MOB
@@ -74,13 +73,6 @@ export class Mob extends Unit {
 
   }
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
-
-    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
-    }
-  }
 
   get bonuses(): UnitBonuses {
     return {
@@ -318,11 +310,7 @@ export class Mob extends Unit {
     }
     this.weapons[this.attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
-    // hack hack
-    if (this.attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
-      this.currentAnimation = this.mobRangeAttackAnimation
-      this.currentAnimationTickLength = 1
-    }
+    
 
     this.playAttackSound()
 

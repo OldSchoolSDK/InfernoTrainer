@@ -90,10 +90,6 @@ export class InfernoRegion extends Region {
     const onTask = this.initializeAndGetOnTask();
     const loadout = new InfernoLoadout(this.wave, loadoutType, onTask);
     
-    // fun hack to hijack viewport
-    world.viewport.clickController.unload(world);
-    world.viewport = new InfernoViewport(world);
-
     // Add player
     const player = new Player(
       world,
