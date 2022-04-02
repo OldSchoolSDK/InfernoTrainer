@@ -1,4 +1,4 @@
-import { filter, find, groupBy, intersection } from 'lodash';
+import { filter, find, intersection } from 'lodash';
 import { Augury } from '../content/prayers/Augury';
 import { BurstOfStrength } from '../content/prayers/BurstOfStrength';
 import { Chivalry } from '../content/prayers/Chivalry';
@@ -33,7 +33,7 @@ import { Player } from './Player';
 import { World } from './World';
 
 export class PrayerController {
-  drainCounter: number = 0;
+  drainCounter = 0;
   player: Player;
 
   constructor(player: Player) {
@@ -56,7 +56,7 @@ export class PrayerController {
       });
     })
 
-    for (let feature in conflictingPrayers) {
+    for (const feature in conflictingPrayers) {
       conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
       conflictingPrayers[feature].shift();
       conflictingPrayers[feature].forEach((prayer: BasePrayer) => {
@@ -86,7 +86,11 @@ export class PrayerController {
     return this.activePrayers().reduce((a, b) => a + b.drainRate(), 0);
   }
 
-  matchName(name: string): BasePrayer {
+  findPrayerByName(name: string): BasePrayer {
+    return find(this.prayers, (prayer: BasePrayer) => prayer.name === name);
+  }
+
+  isPrayerActiveByName(name: string): BasePrayer {
     return find(this.activePrayers(), (prayer: BasePrayer) => prayer.name === name);
   }
   

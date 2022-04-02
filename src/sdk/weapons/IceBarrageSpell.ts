@@ -1,5 +1,5 @@
 import { World } from '../World'
-import { Unit, UnitTypes } from '../Unit'
+import { Unit } from '../Unit'
 import { BarrageSpell } from './BarrageSpell'
 import { ProjectileOptions } from './Projectile'
 import { AttackBonuses } from '../gear/Weapon';

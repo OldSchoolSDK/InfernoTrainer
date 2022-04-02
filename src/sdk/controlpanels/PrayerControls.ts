@@ -1,7 +1,6 @@
 
 import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
-import { intersection, words } from 'lodash'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
 import { World } from '../World'
@@ -9,7 +8,7 @@ import { ControlPanelController } from '../ControlPanelController'
 
 export class PrayerControls extends BaseControls {
 
-  hasQuickPrayersActivated: boolean = false;
+  hasQuickPrayersActivated = false;
 
   get panelImageReference () {
     return PrayerPanel
@@ -45,7 +44,7 @@ export class PrayerControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -70,7 +69,7 @@ export class PrayerControls extends BaseControls {
   
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     world.player.prayerController.prayers.forEach((prayer, index) => {
       const x2 = index % 5

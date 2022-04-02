@@ -55,6 +55,6 @@ const config = {
 };
 
 if (isDevBuild) {
-  config.devtool = 'eval';
+  //config.devtool = 'eval';
 }
 module.exports = config;

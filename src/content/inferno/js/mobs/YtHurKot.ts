@@ -10,6 +10,7 @@ import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { World } from '../../../../sdk/World'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
+import { Random } from '../../../../sdk/Random'
 
 class HealWeapon extends Weapon {
 
@@ -21,7 +22,7 @@ class HealWeapon extends Weapon {
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
-    this.damage = -Math.floor(Math.random() * 20);
+    this.damage = -Math.floor(Random.get() * 20);
     this.registerProjectile(from, to, bonuses, options)
     return true;
   }

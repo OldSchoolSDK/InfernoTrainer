@@ -18,6 +18,7 @@ import { World } from './World'
 import { Settings } from './Settings'
 import { Location } from './Location'
 import { Chrome } from './Chrome'
+import { MapController } from './MapController'
 
 interface TabPosition{
   x: number;
@@ -25,6 +26,7 @@ interface TabPosition{
 }
 
 export class ControlPanelController {
+  
   static controls = Object.freeze({
     COMBAT: new CombatControls(),
     INVENTORY: new InventoryControls(),
@@ -33,6 +35,9 @@ export class ControlPanelController {
     STATS: new StatsControls(),
     ANCIENTSSPELLBOOK: new AncientsSpellbookControls()
   });
+
+  
+  static controller = new ControlPanelController();
 
   world?: World;
   desktopControls: BaseControls[];
@@ -110,10 +115,10 @@ export class ControlPanelController {
   }
 
   getTabScale() {
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
 
-    const controlAreaHeight = height - this.world.mapController.height;
+    const controlAreaHeight = height - MapController.controller.height;
     let scaleRatio = controlAreaHeight / 7 / 36;
 
     let maxScaleRatio = 1.0;
@@ -130,10 +135,10 @@ export class ControlPanelController {
     return scaleRatio;
   }
 
-   tabPosition (i: number, world: World): TabPosition {
+   tabPosition (i: number): TabPosition {
     // let scale = Settings.controlPanelScale
-    let { width, height } = Chrome.size();
-    let scale = this.getTabScale();
+    const { width, height } = Chrome.size();
+    const scale = this.getTabScale();
     
     if (Settings.mobileCheck()) {
       const mapHeight = 170 * Settings.minimapScale;
@@ -153,7 +158,7 @@ export class ControlPanelController {
     }
   }
   cursorMovedTo (e: MouseEvent) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     if (this.selectedControl) {
 
     const x = e.offsetX;
@@ -161,7 +166,7 @@ export class ControlPanelController {
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -178,13 +183,13 @@ export class ControlPanelController {
   controlPanelRightClick (e: MouseEvent): boolean {
     let intercepted = false;
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     const x = e.offsetX;
     const y = e.offsetY;
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -202,7 +207,7 @@ export class ControlPanelController {
   controlPanelClickUp (e: MouseEvent): boolean {
 
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     if (!this.selectedControl) {
       return false;
     }
@@ -214,7 +219,7 @@ export class ControlPanelController {
     
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -233,14 +238,14 @@ export class ControlPanelController {
   controlPanelClickDown (e: MouseEvent): boolean {
     let intercepted = false;
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     const x = e.offsetX;
     const y = e.offsetY;
 
 
     this.controls.forEach((control: BaseControls, index: number) => {
-      const tabPosition = this.tabPosition(index, this.world)
+      const tabPosition = this.tabPosition(index)
       if (tabPosition.x <= x && x < tabPosition.x + 33 * scale) {
         if (tabPosition.y <= y && y < tabPosition.y + 36 * scale) {
           intercepted = true;
@@ -260,7 +265,7 @@ export class ControlPanelController {
 
     const panelWidth = 204 * scale
     const panelHeight = 275 * scale
-    const panelPosition = this.controlPosition(this.selectedControl, this.world);
+    const panelPosition = this.controlPosition(this.selectedControl);
     const panelX = panelPosition.x;
     const panelY = panelPosition.y;
     if (panelX < x && x < panelX + panelWidth) {
@@ -275,10 +280,10 @@ export class ControlPanelController {
     return intercepted;
   }
 
-  controlPosition(control: BaseControls, world: World): Location {
+  controlPosition(control: BaseControls): Location {
     
-    let scale = this.getTabScale();
-    let { width, height } = Chrome.size();
+    const scale = this.getTabScale();
+    const { width, height } = Chrome.size();
 
     if (Settings.mobileCheck()){
       const mapHeight = 170 * Settings.minimapScale;
@@ -301,12 +306,12 @@ export class ControlPanelController {
 
   draw (world: World) {
     world.viewport.context.fillStyle = '#000'
-    let scale = this.getTabScale();
+    const scale = this.getTabScale();
 
     
     
     if (this.selectedControl && this.selectedControl.draw) {
-      const position = this.controlPosition(this.selectedControl, world);
+      const position = this.controlPosition(this.selectedControl);
       this.selectedControl.draw(world, this, position.x, position.y);
     }
 
@@ -314,7 +319,7 @@ export class ControlPanelController {
 
 
     this.controls.forEach((control, index) => {
-      const tabPosition = this.tabPosition(index, world)
+      const tabPosition = this.tabPosition(index)
       if (control.tabImage){
         world.viewport.context.drawImage(
           control.tabImage, 

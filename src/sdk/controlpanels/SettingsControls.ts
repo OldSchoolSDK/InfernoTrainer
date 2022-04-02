@@ -100,7 +100,7 @@ export class SettingsControls extends BaseControls {
   }
 
   panelClickDown (world: World, x: number, y: number) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
@@ -146,7 +146,7 @@ export class SettingsControls extends BaseControls {
 
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     world.viewport.context.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20 * scale, y + 20 * scale, this.musicOffImage.width * scale, this.musicOffImage.height * scale)
 

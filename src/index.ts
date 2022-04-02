@@ -5,7 +5,6 @@ import { World } from './sdk/World'
 import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { Region } from './sdk/Region'
-import { MapController } from './sdk/MapController'
 import { ImageLoader } from './sdk/utils/ImageLoader'
 import NewRelicBrowser from 'new-relic-browser';
 
@@ -14,6 +13,8 @@ declare global {
     newrelic: typeof NewRelicBrowser
   }
 }
+
+// Random.setRandom('sin');
 
 Settings.readFromStorage()
 const selectedRegionName = Settings.region
@@ -28,10 +29,8 @@ switch (selectedRegionName) {
 // Create world
 
 
-const controlPanel = new ControlPanelController()
 
-
-const world = new World(selectedRegion, MapController.controller, controlPanel);
+const world = new World(selectedRegion);
 
 selectedRegion.initialize(world)
 

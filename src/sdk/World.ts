@@ -1,6 +1,6 @@
 'use strict'
 import { Settings } from './Settings'
-import { ContextMenu, MenuOption } from './ContextMenu'
+import { ContextMenu } from './ContextMenu'
 import { ControlPanelController } from './ControlPanelController'
 import { XpDropController } from './XpDropController'
 import { Player } from './Player'
@@ -23,18 +23,16 @@ export class World {
 
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon)
 
-  controlPanel: ControlPanelController;
-  mapController: MapController;
   contextMenu: ContextMenu = new ContextMenu();
 
-  tickCounter: number = 0;
-  isPaused: boolean = true;
+  tickCounter = 0;
+  isPaused = true;
   tickPercent: number;
 
-  getReadyTimer: number = 6
+  getReadyTimer = 6
   
-  deltaTimeSincePause: number = -1;
-  deltaTimeSinceLastTick: number = -1;
+  deltaTimeSincePause = -1;
+  deltaTimeSinceLastTick = -1;
 
   _serialNumber: string;
 
@@ -47,24 +45,26 @@ export class World {
     return this._serialNumber;
   }
 
-  constructor (region: Region, mapController: MapController, controlPanel: ControlPanelController, ) {
-
+  constructor (region: Region) {
     this.region = region;
-    this.mapController = mapController;
-    this.controlPanel = controlPanel;
-    this.controlPanel.setWorld(this);
-    this.mapController.setWorld(this)
-    this.viewport = new Viewport(this);
 
-    
+    if (ControlPanelController.controller) {
+      ControlPanelController.controller.setWorld(this);
+    }
+
+    if (MapController.controller) {
+      MapController.controller.setWorld(this)
+    }
+
+    this.viewport = new Viewport(this);    
 
   }
 
   fpsInterval = 1000 / Settings.fps;
   then: number;
   startTime: number;
-  frameCount: number = 0;
-  tickTimer: number = 0;
+  frameCount = 0;
+  tickTimer = 0;
   startTicking () {
     this.isPaused = false;
     if (this.deltaTimeSincePause === -1) {
@@ -97,8 +97,11 @@ export class World {
     if (tickElapsed >= 600 && this.isPaused === false) {
       this.tickTimer = now;
       this.getReadyTimer--;
-      this.worldTick();
+      this.worldTick(1);
 
+      XpDropController.controller.tick();
+
+      
     }
 
     if (elapsed > this.fpsInterval && this.isPaused === false) {
@@ -119,7 +122,7 @@ export class World {
     this.lastMenuVisible = Settings.menuVisible;
   }
 
-  worldTick () {
+  worldTick (n = 1) {
     Pathing.purgeTileCache();
     this.tickCounter++;
 
@@ -132,7 +135,7 @@ export class World {
       this.region.mobs.unshift(...this.region.newMobs)
       this.region.newMobs = [];
     }
-    XpDropController.controller.tick();
+
 
     this.player.pretick();
     
@@ -173,6 +176,10 @@ export class World {
     deadMobs.forEach((mob) => this.region.removeMob(mob))
     deadEntities.forEach((entity) => this.region.removeEntity(entity))
 
+    if (n > 1) {
+      return this.worldTick(n-1);
+    }
+
   }
 
   drawWorld (tickPercent: number) {
@@ -207,7 +214,7 @@ export class World {
     this.viewport.context.fillStyle = 'black'
     this.viewport.context.fillRect(0, 0, 10000000, 1000000)
 
-    let { width, height } = Chrome.size();
+    const { width, height } = Chrome.size();
 
 
     if (Settings.rotated === 'south') {
@@ -234,14 +241,14 @@ export class World {
     }
 
     // draw control panel
-    this.controlPanel.draw(this)
+    ControlPanelController.controller.draw(this)
     // this.viewport.context.restore();
-    XpDropController.controller.draw(this.viewport.context, width - 140 - this.mapController.width, 0, this.tickPercent);
-    MapController.controller.draw(this.viewport.context, this.tickPercent);
+    XpDropController.controller.draw(this.viewport.context, width - 140 - MapController.controller.width, 0, this.tickPercent);
+    MapController.controller.draw(this.viewport.context);
     this.contextMenu.draw(this)
 
     if (this.viewport.clickController.clickAnimation) {
-      this.viewport.clickController.clickAnimation.draw(this, this.tickPercent)
+      this.viewport.clickController.clickAnimation.draw(this)
     }
 
     this.viewport.context.restore()

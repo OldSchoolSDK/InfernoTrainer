@@ -7,16 +7,14 @@ import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import RangeImage from '../../assets/images/ranger.png'
 import RangerSound from '../../assets/sounds/ranger.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { Pathing } from '../../../../sdk/Pathing'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
-import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
-import { AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { EntityName } from "../../../../sdk/EntityName"
 
 
 class JalXilWeapon extends RangedWeapon { 
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
     }, 2));

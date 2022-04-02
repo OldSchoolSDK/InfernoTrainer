@@ -1,9 +1,6 @@
 'use strict'
 
-import { find } from 'lodash'
-import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JalMejJakImage from '../../assets/images/Jal-MejJak.png'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
@@ -12,6 +9,7 @@ import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { InfernoHealerSpark } from '../InfernoHealerSpark';
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
+import { Random } from '../../../../sdk/Random'
 
 class HealWeapon extends Weapon {
   calculateHitDelay(distance: number) {
@@ -19,7 +17,7 @@ class HealWeapon extends Weapon {
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
-    this.damage = -Math.floor(Math.random() * 25);
+    this.damage = -Math.floor(Random.get() * 25);
     this.registerProjectile(from, to, bonuses, options)
     return true;
   }
@@ -30,18 +28,18 @@ class AoeWeapon extends Weapon {
     return 1;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack(world: World, from: Unit): boolean {
     const playerLocation = world.player.location;
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
       // make splat in 2 random spots and where the player is 
       const limitedPlayerLocation = { x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 5), y: playerLocation.y };
       const spark1 = new InfernoHealerSpark(world, limitedPlayerLocation, from);
       world.region.addEntity(spark1);
-      const spark2Location = { x: from.location.x + (Math.floor(Math.random() * 11) - 5), y: 16 + Math.floor(Math.random() * 5) };
+      const spark2Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
       const spark2 = new InfernoHealerSpark(world, spark2Location, from);
       world.region.addEntity(spark2);
 
-      const spark3Location = { x: from.location.x + (Math.floor(Math.random() * 11) - 5), y: 16 + Math.floor(Math.random() * 5) };
+      const spark3Location = { x: from.location.x + (Math.floor(Random.get() * 11) - 5), y: 16 + Math.floor(Random.get() * 5) };
       const spark3 = new InfernoHealerSpark(world, spark3Location, from);
       world.region.addEntity(spark3);
       

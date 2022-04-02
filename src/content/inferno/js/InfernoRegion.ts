@@ -1,7 +1,6 @@
 'use strict'
 
-import { filter, find, random, shuffle } from 'lodash'
-import { InfernoViewport } from './InfernoViewport'
+import { filter, shuffle } from 'lodash'
 import { InfernoPillar } from './InfernoPillar'
 import { Player } from '../../../sdk/Player'
 import { InfernoWaves } from './InfernoWaves'
@@ -30,11 +29,13 @@ import { TileMarker } from '../../TileMarker'
 import { Mob } from '../../../sdk/Mob'
 import { EntityName } from '../../../sdk/EntityName'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export class InfernoRegion extends Region {
 
 
-  score: number = 0;
-  finalScore: number = -1;
+  score = 0;
+  finalScore = -1;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
   getName () {
@@ -52,7 +53,7 @@ export class InfernoRegion extends Region {
   initializeAndGetLoadoutType() { 
     const loadoutSelector = document.getElementById("loadouts") as HTMLInputElement;
     loadoutSelector.value = Settings.loadout;
-    loadoutSelector.addEventListener('change', (e: InputEvent) => {
+    loadoutSelector.addEventListener('change', () => {
       Settings.loadout = loadoutSelector.value;
       Settings.persistToStorage();
     })
@@ -63,7 +64,7 @@ export class InfernoRegion extends Region {
   initializeAndGetOnTask() {
     const onTaskCheckbox = document.getElementById("onTask") as HTMLInputElement;
     onTaskCheckbox.checked = Settings.onTask;
-    onTaskCheckbox.addEventListener('change', (e: InputEvent) => {
+    onTaskCheckbox.addEventListener('change', () => {
       Settings.onTask = onTaskCheckbox.checked;
       Settings.persistToStorage();
     })
@@ -90,10 +91,6 @@ export class InfernoRegion extends Region {
     const onTask = this.initializeAndGetOnTask();
     const loadout = new InfernoLoadout(this.wave, loadoutType, onTask);
     
-    // fun hack to hijack viewport
-    world.viewport.clickController.unload(world);
-    world.viewport = new InfernoViewport(world);
-
     // Add player
     const player = new Player(
       world,

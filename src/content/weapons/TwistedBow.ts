@@ -1,13 +1,11 @@
 'use strict'
 
 import TbowInventImage from '../../assets/images/weapons/twistedBow.png'
-import { Unit, UnitBonuses } from '../../sdk/Unit'
+import { Unit } from '../../sdk/Unit'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
-import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { ItemName } from "../../sdk/ItemName"
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
-import { Ammo } from '../../sdk/gear/Ammo'
-import { DragonArrows } from '../equipment/DragonArrows'
+import { AttackBonuses } from '../../sdk/gear/Weapon'
 
 export class TwistedBow extends RangedWeapon {
   constructor() {

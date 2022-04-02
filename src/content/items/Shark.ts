@@ -5,7 +5,7 @@ import SharkImage from '../../assets/images/potions/Shark.png';
 import { Food } from "../../sdk/gear/Food";
 
 export class Shark extends Food {
-  healAmount: number = 20;
+  healAmount = 20;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(SharkImage)
   get inventoryImage () {
     return SharkImage;

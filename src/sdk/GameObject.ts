@@ -4,9 +4,9 @@ import { LineOfSightMask } from "./LineOfSight";
 import { Location } from "./Location";
 
 export class GameObject {
-  ticksAlive: number = 0;
+  ticksAlive = 0;
   location: Location;
-  dying: number = -1;
+  dying = -1;
 
   _serialNumber: string;
 
@@ -48,7 +48,4 @@ export class GameObject {
     return [clamp(x, this.location.x, this.location.x + this.size - 1), clamp(y, this.location.y - this.size + 1, this.location.y)]
   }
 
-  constructor(){
-    
-  }
 }

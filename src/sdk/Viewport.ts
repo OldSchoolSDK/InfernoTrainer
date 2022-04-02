@@ -22,10 +22,12 @@ export class Viewport {
     window.addEventListener('resize', () => this.calculateViewport(world));
     window.addEventListener('wheel', () => this.calculateViewport(world));
     window.addEventListener('resize', () => this.calculateViewport(world));
+    this.canvas = document.getElementById('world') as HTMLCanvasElement;
+
     this.calculateViewport(world);
     
 
-    this.canvas.width = Settings._tileSize * 2 * this.width;// + world.mapController.width;
+    this.canvas.width = Settings._tileSize * 2 * this.width;
     this.canvas.height = Settings._tileSize * 2 * this.height;
 
     this.world = world;
@@ -35,7 +37,6 @@ export class Viewport {
 
   calculateViewport(world: World) {
     // convert this to a world map canvas (offscreencanvas)
-    this.canvas = document.getElementById('world') as HTMLCanvasElement;
     const { width, height } = Chrome.size();
     Settings._tileSize = width / world.region.width;
     this.width = (width / Settings.tileSize);
@@ -47,8 +48,8 @@ export class Viewport {
     const perceivedX = Pathing.linearInterpolation(world.player.perceivedLocation.x, world.player.location.x, world.tickPercent);
     const perceivedY = Pathing.linearInterpolation(world.player.perceivedLocation.y, world.player.location.y, world.tickPercent);
 
-    let viewportX = perceivedX + 0.5 - this.width / 2;
-    let viewportY = perceivedY + 0.5 - this.height / 2;
+    const viewportX = perceivedX + 0.5 - this.width / 2;
+    const viewportY = perceivedY + 0.5 - this.height / 2;
 
 
     // if (viewportX < 0) {

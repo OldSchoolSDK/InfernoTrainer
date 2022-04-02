@@ -1,9 +1,7 @@
 'use strict'
 
-import { intersection } from "lodash";
 import { Player } from "./Player";
 import { ImageLoader } from "./utils/ImageLoader";
-import { World } from "./World";
 
 export enum PrayerGroups {
   OVERHEADS = 'overheads',
@@ -18,9 +16,9 @@ export enum PrayerGroups {
 
 export class BasePrayer {
 
-  lastActivated: number = 0;
-  isActive: boolean = false;
-  isLit: boolean = false;
+  lastActivated = 0;
+  isActive = false;
+  isLit = false;
   cachedImage: HTMLImageElement;
 
   constructor () {
@@ -99,9 +97,9 @@ export class BasePrayer {
   }
 
   playOffSound() {
-
+    // Override me
   }
   playOnSound() {
-
+    // Override me
   }
 }

@@ -1,4 +1,4 @@
-import { Unit, UnitEquipment, UnitOptions } from "../../../sdk/Unit";
+import { UnitOptions } from "../../../sdk/Unit";
 
 import { JusticiarFaceguard } from '../../equipment/JusticiarFaceguard';
 import { NecklaceOfAnguish } from '../../equipment/NecklaceOfAnguish';
@@ -34,7 +34,6 @@ import { SaradominChaps } from '../../equipment/SaradominChaps'
 import { SaradominCoif } from '../../equipment/SaradominCoif'
 import { DiamondBoltsE } from '../../equipment/DiamontBoltsE'
 import { RubyBoltsE } from '../../equipment/RubyBoltsE'
-import { SaradominDhideBoots } from '../../equipment/SaradominDhideBoots'
 import { RuneCrossbow } from '../../equipment/RuneCrossbow'
 import { MagesBook } from '../../equipment/MagesBook'
 import { BlackDhideChaps } from '../../equipment/BlackDhideChaps'
@@ -49,8 +48,6 @@ import { BastionPotion } from '../../items/BastionPotion'
 import { TwistedBow } from '../../weapons/TwistedBow'
 import { Blowpipe } from '../../weapons/Blowpipe'
 import { Weapon } from "../../../sdk/gear/Weapon";
-import { Offhand } from "../../../sdk/gear/Offhand";
-import { Necklace } from "../../../sdk/gear/Necklace";
 import { ItemName } from "../../../sdk/ItemName";
 import { Item } from "../../../sdk/Item";
 import { filter, indexOf, map } from "lodash";
@@ -311,8 +308,4 @@ export class InfernoLoadout {
     return loadout;
   }
   
-}
-
-function pluck(): import("lodash").List<unknown> {
-  throw new Error("Function not implemented.");
 }

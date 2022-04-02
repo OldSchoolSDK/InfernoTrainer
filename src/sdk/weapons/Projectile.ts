@@ -2,10 +2,8 @@
 
 
 import chebyshev from 'chebyshev'
-import { GameObject } from '../GameObject'
 import { Location } from "../Location"
 import { Unit } from '../Unit'
-import { ImageLoader } from '../utils/ImageLoader'
 import { Weapon } from '../gear/Weapon'
 
 export interface ProjectileOptions {
@@ -64,7 +62,7 @@ export class Projectile {
       // Things like ice barrage calculate distance to SW tile only
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [this.to.location.x, this.to.location.y])
     } else {
-      let closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);      
+      const closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);      
       this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
     }
     

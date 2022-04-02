@@ -4,19 +4,17 @@ import { GameObject } from './GameObject'
 import { Location } from "./Location"
 import { World } from './World'
 import { Collision } from './Collision'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface PathingCache {
   [key: string]: boolean;
 }
 
-interface CacheStats {
-  [key: string]: number;
-}
 
 interface PathingNode {
   x: number;
   y: number;
-  parent?: any;
+  parent?: PathingNode;
 }
 export class Pathing {
 

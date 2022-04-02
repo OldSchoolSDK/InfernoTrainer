@@ -28,6 +28,8 @@ import { SetEffect } from './SetEffect'
 import { EntityName } from "./EntityName"
 import { Item } from './Item'
 import { PrayerController } from './PrayerController'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export enum UnitTypes {
   MOB = 0,
   PLAYER = 1,
@@ -101,23 +103,21 @@ export class Unit extends GameObject {
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
   perceivedLocation: Location;
-  attackCooldownTicks: number = 0;
-  hasLOS: boolean = false;
-  frozen: number = 0;
-  stunned: number = 0;
+  attackCooldownTicks = 0;
+  hasLOS = false;
+  frozen = 0;
+  stunned = 0;
   incomingProjectiles: Projectile[] = [];
   healHitsplatImage: HTMLImageElement = ImageLoader.createImage(HealSplat);
   missedHitsplatImage: HTMLImageElement = ImageLoader.createImage(MissSplat);
   damageHitsplatImage: HTMLImageElement = ImageLoader.createImage(DamageSplat);
   unitImage: HTMLImageElement = ImageLoader.createImage(this.image);
-  currentAnimation?: any = null;
-  currentAnimationTickLength: number = 0;
   currentStats: UnitStats;
   stats: UnitStats;
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
-  autoRetaliate: boolean = false;
-  spawnDelay: number = 0;
+  autoRetaliate = false;
+  spawnDelay = 0;
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -159,13 +159,27 @@ export class Unit extends GameObject {
   }
 
   
-  grantXp(xpDrop: XpDrop) { }
-  setStats(){ }
-  movementStep () { }
-  attackStep () { }
-  draw(tickPercent: number) { }
-  drawUILayer(tickPercent: number) { }
-  removedFromWorld () { }
+  grantXp(xpDrop: XpDrop) {
+    // Override me
+   }
+  setStats(){
+    // Override me
+   }
+  movementStep () {
+    // Override me
+   }
+  attackStep () {
+    // Override me
+   }
+  draw(tickPercent: number) {
+    // Override me
+   }
+  drawUILayer(tickPercent: number) { 
+    // Override me
+  }
+  removedFromWorld () {
+    // Override me
+   }
 
   static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses{
     return {
@@ -300,7 +314,7 @@ export class Unit extends GameObject {
     } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {
       this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.world, this, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange, this.type === UnitTypes.MOB)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -405,11 +419,11 @@ export class Unit extends GameObject {
   }
 
   postAttacksEvent() {
-
+    // Override me
   }
 
   damageTaken() {
-
+    // Override me
   }
 
   drawHitsplat(projectile: Projectile): boolean { 
@@ -522,13 +536,13 @@ export class Unit extends GameObject {
         return;
       }
 
-      let startX = projectile.currentLocation.x;
-      let startY = projectile.currentLocation.y;
-      let endX = projectile.to.location.x + projectile.to.size / 2;
-      let endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+      const startX = projectile.currentLocation.x;
+      const startY = projectile.currentLocation.y;
+      const endX = projectile.to.location.x + projectile.to.size / 2;
+      const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
 
-      let perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
-      let perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
+      const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
+      const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
   
       this.world.region.context.save();
       this.world.region.context.translate(

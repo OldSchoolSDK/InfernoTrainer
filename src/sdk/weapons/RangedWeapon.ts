@@ -2,7 +2,7 @@ import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { Projectile, ProjectileOptions } from './Projectile'
 import { AttackBonuses, Weapon } from '../gear/Weapon'
-import { ItemName } from '../ItemName'
+
 
 export class RangedWeapon extends Weapon {
 

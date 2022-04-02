@@ -1,19 +1,18 @@
 'use strict'
-import { every, LoDashImplicitNumberArrayWrapper, map } from 'lodash'
+import { every } from 'lodash'
 
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { Pathing } from './Pathing'
 
 import { Weapon } from './gear/Weapon'
-import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from './Unit'
+import { Unit, UnitBonuses, UnitStats, UnitTypes } from './Unit'
 import { World } from './World'
 import { Location } from "./Location"
-import { ImageLoader } from './utils/ImageLoader'
 import { Collision } from './Collision'
-import { EntityName } from './EntityName'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import { SoundCache } from './utils/SoundCache';
+import { Random } from './Random'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -30,7 +29,7 @@ export interface WeaponsMap {
 export class Mob extends Unit {
   static mobIdTracker = 0;
   mobId: number = Mob.mobIdTracker++;
-  hasResurrected: boolean = false;
+  hasResurrected = false;
   attackFeedback: AttackIndicators;
   stats: UnitStats;
   currentStats: UnitStats;
@@ -40,7 +39,6 @@ export class Mob extends Unit {
   attackStyle: string;
 
   tcc: Location[];
-  mobRangeAttackAnimation: any;
 
   get type () {
     return UnitTypes.MOB
@@ -73,13 +71,6 @@ export class Mob extends Unit {
 
   }
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
-
-    if (!this.mobRangeAttackAnimation && this.rangeAttackAnimation !== null) {
-      this.mobRangeAttackAnimation = map(this.rangeAttackAnimation, (image: any) => ImageLoader.createImage(image));
-    }
-  }
 
   get bonuses(): UnitBonuses {
     return {
@@ -125,16 +116,16 @@ export class Mob extends Unit {
 
       if (Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
         // Random movement if player is under the mob.
-        if (Math.random() < 0.5) {
+        if (Random.get() < 0.5) {
           dy = this.location.y
-          if (Math.random() < 0.5) {
+          if (Random.get() < 0.5) {
             dx = this.location.x + 1
           } else {
             dx = this.location.x - 1
           }
         } else {
           dx = this.location.x
-          if (Math.random() < 0.5) {
+          if (Random.get() < 0.5) {
             dy = this.location.y + 1
           } else {
             dy = this.location.y - 1
@@ -250,13 +241,6 @@ export class Mob extends Unit {
     if (this.spawnDelay > 0) {
       return;
     }
-
-    if (this.currentAnimationTickLength > 0) {
-      if (--this.currentAnimationTickLength === 0) {
-        this.currentAnimation = null
-      }
-    }
-
     if (this.dying === 0) {
       return
     }
@@ -305,7 +289,7 @@ export class Mob extends Unit {
   attack () {
 
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(this.attackStyle) === false) {
-      if (this.isWithinMeleeRange() && Math.random() < 0.5) {
+      if (this.isWithinMeleeRange() && Random.get() < 0.5) {
         this.attackStyle = this.canMeleeIfClose()
       }
     }
@@ -317,11 +301,7 @@ export class Mob extends Unit {
     }
     this.weapons[this.attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
-    // hack hack
-    if (this.attackStyle === 'range' && !this.currentAnimation && this.mobRangeAttackAnimation) {
-      this.currentAnimation = this.mobRangeAttackAnimation
-      this.currentAnimationTickLength = 1
-    }
+    
 
     this.playAttackSound()
 
@@ -382,6 +362,7 @@ export class Mob extends Unit {
 
 
   drawOverTile(tickPercent: number) {
+    // Override me
   }
 
   drawUnderTile(tickPercent: number) {
@@ -426,7 +407,7 @@ export class Mob extends Unit {
     )
 
     this.drawUnderTile(tickPercent)
-    let currentImage = this.unitImage
+    const currentImage = this.unitImage
 
     if (Settings.rotated === 'south') {
       this.world.region.context.rotate(Math.PI)

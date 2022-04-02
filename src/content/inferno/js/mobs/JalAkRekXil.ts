@@ -21,7 +21,7 @@ export class JalAkRekXil extends Mob {
     return 'lime'
   }
 
-  drawUnderTile(tickPercent: number) {
+  drawUnderTile() {
 
     if (this.dying > -1) {
       this.world.region.context.fillStyle = '#964B0073'

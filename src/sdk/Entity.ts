@@ -26,11 +26,11 @@ export class Entity extends GameObject{
   }
 
   tick () {
-
+    // Override me
   }
 
   drawUILayer(tickPercent: number){
-
+    // Override me
   }
 
   

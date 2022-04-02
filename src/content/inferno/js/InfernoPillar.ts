@@ -103,7 +103,7 @@ export class InfernoPillar extends Entity {
 
 
 
-  drawUILayer(tickPercent: number){
+  drawUILayer(){
 
 
     this.world.region.context.save()

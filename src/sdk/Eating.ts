@@ -6,14 +6,14 @@ import { Player } from './Player';
 
 export class Eating {
   player: Player;
-  foodDelay: number = 0;
-  potionDelay: number = 0;
-  comboDelay: number = 0;
+  foodDelay = 0;
+  potionDelay = 0;
+  comboDelay = 0;
 
   currentFood: Food;
   currentPotion: Potion;
   currentComboFood: Karambwan;
-  redemptioned: boolean = false;
+  redemptioned = false;
 
   tickFood(player: Player) {
     this.foodDelay--;

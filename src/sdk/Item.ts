@@ -8,7 +8,7 @@ export class Item {
   groundLocation: Location;
   inventorySprite: HTMLImageElement;
   selected: boolean;
-  defaultAction: string = 'Use';
+  defaultAction = 'Use';
   _serialNumber: string;
 
   get serialNumber(): string {
@@ -23,14 +23,15 @@ export class Item {
   }
 
   inventoryLeftClick(player: Player) {
-    
+    // Override me
+    player;
   }
   
   contextActions (world: World) {
     // use
     // drop
     // examine
-    let options = [
+    const options = [
       {
         text: [
           { text: 'Drop ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
@@ -45,7 +46,9 @@ export class Item {
         text: [
           { text: 'Examine ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
         ],
-        action: () => {}
+        action: () => {
+          // TODO: Examine feature
+        }
       },
     ]
 

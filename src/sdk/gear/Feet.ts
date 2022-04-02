@@ -1,5 +1,4 @@
 import { Equipment } from "../Equipment";
-import { UnitEquipment } from "../Unit";
 import { Player } from "../Player";
 
 export class Feet extends Equipment {

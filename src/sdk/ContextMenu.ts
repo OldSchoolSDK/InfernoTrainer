@@ -1,7 +1,5 @@
 import { World } from './World';
-import { Settings } from './Settings'
 import { Location } from "./Location";
-import { Pathing } from './Pathing';
 
 export interface MultiColorTextBlock {
   text: string;
@@ -15,15 +13,15 @@ export interface MenuOption {
 }
 
 export class ContextMenu {
-  isActive: boolean = false;
+  isActive = false;
   location: Location = { x: 0, y: 0 };
   cursorPosition: Location = { x: 0, y: 0 };
   activatedPosition: Location = { x: 0, y: 0 };
-  width: number = 0;
-  height: number = 0;
+  width = 0;
+  height = 0;
   menuOptions: MenuOption[] = []
   linesOfText: MenuOption[] = []
-  destinationLocation: any;
+  destinationLocation: Location;
 
   setPosition (position: Location) {
     this.location = position
@@ -124,7 +122,7 @@ d
       x += ctx.measureText(text).width
     })
     ctx.restore()
-  };
+  }
 
   fillMixedTextWidth (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[]) {
     const defaultFillStyle = ctx.fillStyle
@@ -137,7 +135,7 @@ d
       x += ctx.measureText(text).width
     })
     return x
-  };
+  }
 
   drawLineOfText (ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], width: number, y: number) {
     const isXAligned = this.cursorPosition.x > this.location.x - width / 2 && this.cursorPosition.x < this.location.x + width / 2

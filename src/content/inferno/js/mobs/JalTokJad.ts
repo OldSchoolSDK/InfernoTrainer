@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { World } from '../../../../sdk/World'
 import { Location } from "../../../../sdk/Location"
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
-import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { DelayedAction } from '../../../../sdk/DelayedAction'
 import { YtHurKot } from './YtHurKot';
 import { Collision } from '../../../../sdk/Collision'
@@ -17,6 +17,7 @@ import { EntityName } from "../../../../sdk/EntityName"
 
 import MagicSound from '../../assets/sounds/TzTok-Jad-Magic-attack.ogg'
 import RangeSound from '../../assets/sounds/TzTok-Jad-Ranged-attack.ogg'
+import { Random } from '../../../../sdk/Random'
 
 
 interface JadUnitOptions extends UnitOptions {
@@ -28,7 +29,7 @@ interface JadUnitOptions extends UnitOptions {
 
 class JadMagicWeapon extends MagicWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('magic')
@@ -42,13 +43,13 @@ class JadMagicWeapon extends MagicWeapon {
     return true;
   }
   
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'magic', { reduceDelay: 3 }))
   }
 }
 class JadRangeWeapon extends RangedWeapon {
 
-  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (world: World, from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
 
       const overhead = world.player.prayerController.matchFeature('range')
@@ -62,7 +63,7 @@ class JadRangeWeapon extends RangedWeapon {
     return true;
   }
   
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 3 }))
   }
 }
@@ -70,7 +71,7 @@ class JadRangeWeapon extends RangedWeapon {
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
   waveCooldown: number;
-  hasProccedHealers: boolean = false;
+  hasProccedHealers = false;
   healers: number;
   isZukWave: boolean;
 
@@ -136,11 +137,11 @@ export class JalTokJad extends Mob {
 
           while (Collision.collidesWithMob(this.world, this.location.x + xOff, this.location.y + yOff, 1, this)){
             if (this.isZukWave) {
-              xOff = Math.floor(Math.random() * 6);
-              yOff = -Math.floor(Math.random() * 4) - this.size;
+              xOff = Math.floor(Random.get() * 6);
+              yOff = -Math.floor(Random.get() * 4) - this.size;
             }else{
-              xOff = Math.floor(Math.random() * 11) - 5;
-              yOff = Math.floor(Math.random() * 15) - 5 - this.size;
+              xOff = Math.floor(Random.get() * 11) - 5;
+              yOff = Math.floor(Random.get() * 15) - 5 - this.size;
             }
           }
 
@@ -201,7 +202,7 @@ export class JalTokJad extends Mob {
   }
 
   attackStyleForNewAttack () {
-    return Math.random() < 0.5 ? 'range' : 'magic'
+    return Random.get() < 0.5 ? 'range' : 'magic'
   }
 
   attackAnimation (tickPercent: number) {
@@ -227,8 +228,5 @@ export class JalTokJad extends Mob {
   attack () {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE
-  }
-
-  removedFromWorld () {
   }
 }

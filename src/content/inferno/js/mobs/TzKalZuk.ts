@@ -9,12 +9,10 @@ import { UnitOptions } from '../../../../sdk/Unit'
 import { Location } from "../../../../sdk/Location"
 import { ZukShield } from '../ZukShield'
 import { find } from 'lodash'
-import { Entity } from '../../../../sdk/Entity'
 import { EntityName } from "../../../../sdk/EntityName"
-import { AttackBonuses, Weapon } from '../../../../sdk/gear/Weapon'
 import { ImageLoader } from '../../../../sdk/utils/ImageLoader'
 import ZukAttackImage from '../../assets/images/zuk_attack.png';
-import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
+import { Projectile } from '../../../../sdk/weapons/Projectile'
 import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
@@ -28,10 +26,10 @@ class ZukWeapon extends MagicWeapon {
     return zukWeaponImage; 
   }
 
-  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses) {
+  isBlockable () {
     return false;
   }
-  registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
+  registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(new Projectile(this, this.damage, from, to, 'range', { reduceDelay: 2 }))
   }
 
@@ -40,11 +38,11 @@ class ZukWeapon extends MagicWeapon {
 export class TzKalZuk extends Mob {
 
   shield: ZukShield;
-  enraged: boolean = false;
+  enraged = false;
 
-  setTimer: number = 72;
-  timerPaused: boolean = false;
-  hasPaused: boolean = false;
+  setTimer = 72;
+  timerPaused = false;
+  hasPaused = false;
 
   constructor (world: World, location: Location, options: UnitOptions) {
     super(world, location, options)

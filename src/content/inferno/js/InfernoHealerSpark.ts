@@ -1,10 +1,10 @@
 
 'use strict'
-import { filter, remove } from 'lodash'
+
 import { Settings } from '../../../sdk/Settings'
 
 import { World } from '../../../sdk/World'
-import { Unit, UnitBonuses, UnitStats } from '../../../sdk/Unit'
+import { Unit } from '../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../sdk/weapons/Projectile'
 import { Location } from "../../../sdk/Location"
 
@@ -13,8 +13,8 @@ import { Location } from "../../../sdk/Location"
 import { Entity } from "../../../sdk/Entity";
 import { Collision, CollisionType } from '../../../sdk/Collision'
 import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
-import { JalMejJak } from './mobs/JalMejJak'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
+import { Random } from '../../../sdk/Random'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {
@@ -27,7 +27,7 @@ class InfernoSparkWeapon extends Weapon{
   }
 
   attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
-    this.damage = 5 + Math.floor(Math.random() * 6);
+    this.damage = 5 + Math.floor(Random.get() * 6);
     to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
     return true;
   }
@@ -38,7 +38,7 @@ export class InfernoHealerSpark extends Entity {
   from: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
-  hasSparked: boolean = false;
+  hasSparked = false;
 
   constructor (world: World, location: Location, from: Unit) {
     super(world, location);

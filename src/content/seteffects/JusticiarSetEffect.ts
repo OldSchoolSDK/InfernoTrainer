@@ -1,7 +1,3 @@
-import { JusticiarFaceguard } from "../equipment/JusticiarFaceguard"
-import { JusticiarChestguard } from "../equipment/JusticiarChestguard"
-import { JusticiarLegguards } from "../equipment/JusticiarLegguards"
-import { Equipment } from "../../sdk/Equipment"
 import { SetEffect, SetEffectTypes } from "../../sdk/SetEffect"
 import { ItemName } from "../../sdk/ItemName"
 

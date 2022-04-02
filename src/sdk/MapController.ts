@@ -32,6 +32,8 @@ import { ControlPanelController } from './ControlPanelController'
 import { MenuOption } from './ContextMenu'
 import { Chrome } from './Chrome'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 enum MapHover {
   NONE = 0,
   HITPOINT = 1,
@@ -47,8 +49,6 @@ export class MapController {
   colorScale: ColorScale = new ColorScale(0, 1, [ '#FF0000', '#FF7300', '#00FF00'], 1);
 
   world: World;
-  canvas = document.getElementById('map') as HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
 
   outlineImage: HTMLImageElement = ImageLoader.createImage(MapBoarder)
   mapAlphaImage: HTMLImageElement = ImageLoader.createImage(MapBorderMask);
@@ -96,9 +96,9 @@ export class MapController {
   }
 
   cursorMovedTo(event: MouseEvent) {
-    let { width, height } = Chrome.size();
+    const { width } = Chrome.size();
 
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width)) / scale;
     const y = event.offsetY / scale;
 
@@ -249,11 +249,11 @@ export class MapController {
   rightClick(event: MouseEvent): boolean {
 
     let menuOptions: MenuOption[] = []
-    let { width, height } = Chrome.size();
+    const { width } = Chrome.size();
 
 
     let intercepted = false;
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
 
@@ -346,8 +346,8 @@ export class MapController {
 
   leftClickDown(event: MouseEvent): boolean {
     let intercepted = false;
-    let { width, height } = Chrome.size();
-    let scale = Settings.minimapScale;
+    const { width } = Chrome.size();
+    const scale = Settings.minimapScale;
     const x = (event.offsetX - (width - this.width * scale)) / scale;
     const y = event.offsetY / scale;
     
@@ -392,7 +392,6 @@ export class MapController {
   }
 
   toggleQuickprayers() {
-    const hasQuickPrayers = ControlPanelController.controls.PRAYER.hasQuickPrayersActivated;
     if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
       ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
       this.world.player.prayerController.drainCounter = 0;
@@ -402,14 +401,14 @@ export class MapController {
   }
 
 
-  draw(ctx: CanvasRenderingContext2D, tickPercent: number){
-    let { width, height } = Chrome.size();
+  draw(ctx: CanvasRenderingContext2D){
+    const { width } = Chrome.size();
 
     
     const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
 
-    let scale = Settings.minimapScale;
+    const scale = Settings.minimapScale;
     const offset = width - (this.width * scale);
     
     ctx.font = (16 * scale) + 'px Stats_11'

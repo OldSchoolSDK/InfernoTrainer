@@ -2,8 +2,8 @@
 import { Pathing } from './Pathing'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
-import { minBy, range, filter, find, map, min, uniq, sumBy, times } from 'lodash'
-import { Unit, UnitTypes, UnitBonuses, UnitOptions, UnitEquipment } from './Unit'
+import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
+import { Unit, UnitTypes, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
 import { World } from './World'
 import { AttackBonuses, Weapon } from './gear/Weapon'
@@ -23,17 +23,16 @@ import { Eating } from './Eating'
 import { PlayerStats } from './PlayerStats'
 import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
-import { AttackStylesController } from './AttackStylesController'
 import { AmmoType } from './gear/Ammo'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
-  poisoned: number = 0;
-  venomed: number = 0;
-  stamina: number = 0;
+  poisoned = 0;
+  venomed = 0;
+  stamina = 0;
 }
 
 export class Player extends Unit {
-  weapon?: Weapon;
   manualSpellCastSelection: Weapon;
   destinationLocation?: Location;
 
@@ -43,11 +42,11 @@ export class Player extends Unit {
   overhead: BasePrayer;
   running = true;
   cachedBonuses: UnitBonuses = null;
-  useSpecialAttack: boolean = false;
+  useSpecialAttack = false;
   effects = new PlayerEffects();
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
-  autocastDelay: number = 1;
+  autocastDelay = 1;
 
   eats: Eating = new Eating();
   inventory: Item[];
@@ -56,10 +55,10 @@ export class Player extends Unit {
 
   path: any;
 
-  constructor (world: World, location: Location, options: UnitOptions) {
+  constructor(world: World, location: Location, options: UnitOptions) {
     super(world, location, options)
     this.destinationLocation = location
-    this.equipment = options.equipment;
+    this.equipment = options.equipment || {};
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
@@ -68,7 +67,7 @@ export class Player extends Unit {
 
     this.prayerController = new PrayerController(this);
 
-    ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats)  )
+    ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats))
 
   }
 
@@ -80,22 +79,22 @@ export class Player extends Unit {
   get isPlayer(): boolean {
     return true;
   }
-  
-  get attackRange () {
+
+  get attackRange() {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackRange
     }
-    if (this.equipment.weapon){
+    if (this.equipment.weapon) {
       return this.equipment.weapon.attackRange
     }
     return 1;
   }
 
-  get attackSpeed () {
+  get attackSpeed() {
     if (this.manualSpellCastSelection) {
       return this.manualSpellCastSelection.attackSpeed
     }
-    if (this.equipment.weapon){
+    if (this.equipment.weapon) {
       return this.equipment.weapon.attackSpeed
     }
     return 5;
@@ -103,7 +102,7 @@ export class Player extends Unit {
 
   openInventorySlots(): number[] {
     const openSpots = [];
-    for (let i=0; i<28; i++) {
+    for (let i = 0; i < 28; i++) {
       if (!this.inventory[i]) {
         openSpots.push(i);
       }
@@ -119,8 +118,8 @@ export class Player extends Unit {
   equipmentChanged() {
     this.interruptCombat();
 
-    let gear = [
-      this.equipment.weapon, 
+    const gear = [
+      this.equipment.weapon,
       this.equipment.offhand,
       this.equipment.helmet,
       this.equipment.necklace,
@@ -132,16 +131,16 @@ export class Player extends Unit {
       this.equipment.cape,
     ]
 
-    if (this.equipment.weapon && this.equipment.ammo && this.equipment.weapon.compatibleAmmo().includes(this.equipment.ammo.itemName)){
+    if (this.equipment.weapon && this.equipment.ammo && this.equipment.weapon.compatibleAmmo().includes(this.equipment.ammo.itemName)) {
       gear.push(this.equipment.ammo);
-    }else if (this.equipment.ammo && this.equipment.ammo.ammoType() == AmmoType.BLESSING){
+    } else if (this.equipment.ammo && this.equipment.ammo.ammoType() == AmmoType.BLESSING) {
       gear.push(this.equipment.ammo);
     }
 
     // updated gear bonuses
     this.cachedBonuses = Unit.emptyBonuses();
     gear.forEach((gear: Equipment) => {
-      if (gear && gear.bonuses){
+      if (gear && gear.bonuses) {
         this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
       }
     })
@@ -150,7 +149,7 @@ export class Player extends Unit {
     // update set effects
     const allSetEffects = [];
     gear.forEach((equipment: Equipment) => {
-      if (equipment && equipment.equipmentSetEffect){
+      if (equipment && equipment.equipmentSetEffect) {
         allSetEffects.push(equipment.equipmentSetEffect)
       }
     })
@@ -160,10 +159,10 @@ export class Player extends Unit {
       let setItemsEquipped = 0;
       find(itemsInSet, (itemName: string) => {
         gear.forEach((equipment: Equipment) => {
-          if (!equipment){
+          if (!equipment) {
             return;
           }
-          if (itemName === equipment.itemName){
+          if (itemName === equipment.itemName) {
             setItemsEquipped++;
           }
         });
@@ -179,7 +178,7 @@ export class Player extends Unit {
     return this.cachedBonuses;
   }
 
-  setStats () {
+  setStats() {
     // non boosted numbers
     this.stats = Settings.player_stats;
 
@@ -191,7 +190,7 @@ export class Player extends Unit {
   get weight(): number {
 
     let gear: Item[] = [
-      this.equipment.weapon, 
+      this.equipment.weapon,
       this.equipment.offhand,
       this.equipment.helmet,
       this.equipment.necklace,
@@ -206,7 +205,7 @@ export class Player extends Unit {
     gear = gear.concat(this.inventory)
     gear = filter(gear)
 
-    const kgs = Math.max(Math.min(64,sumBy(gear, 'weight')), 0)
+    const kgs = Math.max(Math.min(64, sumBy(gear, 'weight')), 0)
     return kgs;
   }
 
@@ -214,8 +213,8 @@ export class Player extends Unit {
     // https://oldschool.runescape.wiki/w/Prayer#Prayer_drain_mechanics
     return 2 * this.bonuses.other.prayer + 60;
   }
-  
-  get type () {
+
+  get type() {
     return UnitTypes.PLAYER
   }
 
@@ -224,21 +223,24 @@ export class Player extends Unit {
   }
 
   grantXp(xpDrop: XpDrop) {
-    if (!this.xpDrops[xpDrop.skill]){
+    if (!this.xpDrops[xpDrop.skill]) {
       this.xpDrops[xpDrop.skill] = 0;
     }
     this.xpDrops[xpDrop.skill] += xpDrop.xp;
   }
 
   sendXpToController() {
+    if (!XpDropController.controller) {
+      return;
+    }
     Object.keys(this.xpDrops).forEach((skill) => {
-      XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill])});
+      XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill]) });
     })
-    
+
     this.clearXpDrops();
   }
 
-  moveTo (x: number, y: number) {
+  moveTo(x: number, y: number) {
     this.interruptCombat();
 
     this.manualSpellCastSelection = null
@@ -276,11 +278,11 @@ export class Player extends Unit {
     }
   }
 
-  dead () {
+  dead() {
     document.body.style.background = 'red'
   }
 
-  attack (): boolean {
+  attack(): boolean {
     if (this.manualSpellCastSelection) {
       const target = this.aggro;
       this.manualSpellCastSelection.cast(this.world, this, target)
@@ -289,7 +291,7 @@ export class Player extends Unit {
       this.destinationLocation = this.location;
     } else {
       // use equipped weapon
-      if (this.equipment.weapon){
+      if (this.equipment.weapon) {
         if (this.equipment.weapon.hasSpecialAttack() && this.useSpecialAttack) {
           if (this.currentStats.specialAttack >= this.equipment.weapon.specialAttackDrain()) {
             this.equipment.weapon.specialAttack(this.world, this, this.aggro as Unit /* hack */)
@@ -297,15 +299,15 @@ export class Player extends Unit {
             this.regenTimer.specUsed();
           }
           this.useSpecialAttack = false;
-        }else{
-          const bonuses: AttackBonuses = { };
-          if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I){
-            bonuses.gearMultiplier = 7/6;
+        } else {
+          const bonuses: AttackBonuses = {};
+          if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I) {
+            bonuses.gearMultiplier = 7 / 6;
           }
 
           return this.equipment.weapon.attack(this.world, this, this.aggro as Unit /* hack */, bonuses)
         }
-      }else{
+      } else {
         return false;
       }
     }
@@ -315,8 +317,8 @@ export class Player extends Unit {
     // this.playAttackSound();
   }
 
-  activatePrayers () {
-    
+  activatePrayers() {
+
     this.lastOverhead = this.overhead
     this.overhead = this.prayerController.overhead();
     if (this.lastOverhead && !this.overhead) {
@@ -328,7 +330,7 @@ export class Player extends Unit {
 
 
   setAggro(mob: Unit) {
-    
+
     if (mob !== this.aggro) { // do spam clicks constantly reset autocast delay? idk
       this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever
     }
@@ -341,7 +343,7 @@ export class Player extends Unit {
     this.interruptCombat();
     this.seekingItem = item;
   }
-  determineDestination () {
+  determineDestination() {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
         this.interruptCombat();
@@ -419,12 +421,12 @@ export class Player extends Unit {
       } else {
         this.destinationLocation = this.location
       }
-    }else if (this.seekingItem) {
+    } else if (this.seekingItem) {
       this.destinationLocation = this.seekingItem.groundLocation;
     }
   }
 
-  moveTorwardsDestination () {
+  moveTorwardsDestination() {
     // Actually move the player
 
     this.perceivedLocation = this.location
@@ -435,12 +437,12 @@ export class Player extends Unit {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
         this.currentStats.run -= Math.floor(0.3 * runReduction);
-      }else if (this.equipment.ring && this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE){
+      } else if (this.equipment.ring && this.equipment.ring.itemName === ItemName.RING_OF_ENDURANCE) {
         this.currentStats.run -= Math.floor(0.85 * runReduction);
-      }else{
+      } else {
         this.currentStats.run -= runReduction;
       }
-    }else{
+    } else {
       this.currentStats.run += Math.floor(this.currentStats.agility / 6) + 8
     }
     this.currentStats.run = Math.min(Math.max(this.currentStats.run, 0), 10000);
@@ -451,7 +453,7 @@ export class Player extends Unit {
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
 
-    const path = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro); 
+    const path = Pathing.path(this.world, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
     this.location = { x: path.x, y: path.y }
 
     this.path = path.path;
@@ -470,36 +472,36 @@ export class Player extends Unit {
             this.inventory[slot] = this.seekingItem;
           }
           this.seekingItem = null;
-        }          
+        }
       }
     }
   }
 
-  movementStep () {
+  movementStep() {
 
     this.activatePrayers()
 
     this.takeSeekingItem();
 
     this.determineDestination()
-    
+
     this.moveTorwardsDestination()
   }
 
 
 
   damageTaken() {
-    if (this.prayerController.matchName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)){
+    if (this.prayerController.isPrayerActiveByName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)) {
       this.eats.redemptioned = true;
     }
   }
-  
+
   pretick() {
     this.prayerController.tick(this.world);
   }
 
-  attackStep () {
-    
+  attackStep() {
+
     this.clearXpDrops();
 
     this.attackIfPossible()
@@ -514,18 +516,18 @@ export class Player extends Unit {
 
     this.sendXpToController();
 
-    if (this.world.mapController){
-      this.world.mapController.updateOrbsMask(this.currentStats, this.stats);
+    if (MapController.controller) {
+      MapController.controller.updateOrbsMask(this.currentStats, this.stats);
     }
   }
 
-  attackIfPossible () {
+  attackIfPossible() {
     this.attackCooldownTicks--
 
     if (this.canAttack() === false) {
       return;
     }
-    
+
     if (this.aggro) {
       this.setHasLOS()
       if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
@@ -536,8 +538,8 @@ export class Player extends Unit {
     }
   }
 
-  
-  draw (tickPercent: number) {
+
+  draw(tickPercent: number) {
 
     // this.world.region.context.fillStyle = '#FFFF00'
     // this.world.region.context.fillRect(
@@ -550,7 +552,7 @@ export class Player extends Unit {
 
 
     // )
-    if (Settings.displayPlayerLoS){
+    if (Settings.displayPlayerLoS) {
       LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#00FF0055', this.type === UnitTypes.MOB)
     }
 
@@ -600,8 +602,8 @@ export class Player extends Unit {
 
   getPerceivedLocation(tickPercent: number): Location {
 
-    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
 
     // if (this.path && this.path.length === 2) {
     //   if (tickPercent < 0.5) {
@@ -622,7 +624,7 @@ export class Player extends Unit {
     const perceivedLocation = this.getPerceivedLocation(tickPercent);
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
-    
+
     this.world.region.context.save();
 
 

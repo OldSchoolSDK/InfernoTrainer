@@ -6,7 +6,7 @@ import { Food } from "../../sdk/gear/Food";
 import { Player } from "../../sdk/Player";
 
 export class Karambwan extends Food {
-  healAmount: number = 18;
+  healAmount = 18;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(KarambwanImage)
   get inventoryImage () {
     return KarambwanImage;

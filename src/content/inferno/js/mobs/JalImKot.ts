@@ -2,13 +2,13 @@
 
 import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
-import { Pathing } from '../../../../sdk/Pathing'
 import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { UnitBonuses } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
+import { Random } from '../../../../sdk/Random'
 
 export class JalImKot extends Mob {
 
@@ -117,7 +117,7 @@ export class JalImKot extends Mob {
   movementStep () {
     super.movementStep()
     if (!this.hasLOS) {
-      if (((this.attackCooldownTicks <= -38) && (Math.random() < 0.1)) || (this.attackCooldownTicks <= -50)) {
+      if (((this.attackCooldownTicks <= -38) && (Random.get() < 0.1)) || (this.attackCooldownTicks <= -50)) {
         this.dig()
       }
     }

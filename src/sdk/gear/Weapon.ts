@@ -3,18 +3,16 @@
 import { GameObject } from "../GameObject";
 import { BasePrayer } from "../BasePrayer";
 import { World } from "../World";
-import { Unit, UnitEquipment } from "../Unit";
+import { Unit } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'
 import { Player } from "../Player";
-import { InventoryControls } from "../controlpanels/InventoryControls";
 import { Projectile, ProjectileOptions } from "../weapons/Projectile";
 import { find } from "lodash";
 import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
-import { Item } from "../Item";
-import { Ammo } from "./Ammo";
+import { Random } from "../Random";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -39,9 +37,9 @@ export interface AttackBonuses {
 
 export class Weapon extends Equipment{
   damage: number;
-  lastHitHit: boolean = false;
-  selected: boolean = false;
-  totalDamage: number = 0;
+  lastHitHit = false;
+  selected = false;
+  totalDamage = 0;
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
 
@@ -86,6 +84,7 @@ export class Weapon extends Equipment{
     return 50;
   }
   specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+    // Override me
   }
   
   inventoryLeftClick(player: Player) {
@@ -126,7 +125,7 @@ export class Weapon extends Equipment{
   
   
   cast(world: World, from: Unit, to: GameObject) {
-
+    // Override me
   }
 
   rollDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
@@ -185,12 +184,12 @@ export class Weapon extends Equipment{
   
   _rollAttack (from: Unit, to: Unit, bonuses: AttackBonuses) {
     this.lastHitHit = false;
-    return (Math.random() > this._hitChance(from, to, bonuses)) ? 0 : this._calculateHitDamage(from, to, bonuses);
+    return (Random.get() > this._hitChance(from, to, bonuses)) ? 0 : this._calculateHitDamage(from, to, bonuses);
   }
 
   _calculateHitDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
     this.lastHitHit = true;
-    return Math.floor(Math.random() * (this._maxHit(from, to, bonuses) + 1))
+    return Math.floor(Random.get() * (this._maxHit(from, to, bonuses) + 1))
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {

@@ -7,10 +7,11 @@ import { Settings } from '../Settings'
 import { World } from '../World'
 import { Item } from '../Item'
 import { ControlPanelController } from '../ControlPanelController'
-import { Weapon } from '../gear/Weapon'
 import { Location } from "../../sdk/Location"
 import { Collision } from '../Collision'
 import { MenuOption } from '../ContextMenu'
+import { MapController } from '../MapController'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
 
@@ -45,7 +46,7 @@ export class InventoryControls extends BaseControls {
   }
   
   panelRightClick(world: World, x: number, y: number) {
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     let menuOptions: MenuOption[] = []
     // mobs.forEach((mob) => {
@@ -77,7 +78,7 @@ export class InventoryControls extends BaseControls {
     if (!this.clickedDownItem) {
       return;
     }
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     const sanitizedInventory = world.player.inventory.map((item: Item, index: number) => {
       if (item) {
@@ -104,7 +105,7 @@ export class InventoryControls extends BaseControls {
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
         clickedItem.inventoryLeftClick(world.player);
-        world.mapController.updateOrbsMask(null, null)
+        MapController.controller.updateOrbsMask(null, null)
       } else {
         clickedItem.selected = true
       }
@@ -126,7 +127,7 @@ export class InventoryControls extends BaseControls {
   panelClickDown (world: World, x: number, y: number) {
     this.cursorLocation = { x, y }
     this.clickedDownLocation = {x, y};
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
 
     const clickedItem = first(filter(world.player.inventory, (inventoryItem: Item, index: number) => {
       if (!inventoryItem) {
@@ -149,7 +150,7 @@ export class InventoryControls extends BaseControls {
   draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(world, ctrl, x, y)
 
-    let scale = Settings.controlPanelScale;
+    const scale = Settings.controlPanelScale;
     world.player.inventory.forEach((inventoryItem, index) => {
       const x2 = index % 4
       const y2 = Math.floor(index / 4)

@@ -1,7 +1,6 @@
 import { Helmet } from "../../sdk/gear/Helmet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from '../../assets/images/equipment/Slayer_helmet_imbued.png';
-import { SetEffect } from "../../sdk/SetEffect";
 import { ItemName } from "../../sdk/ItemName";
 
 export class SlayerHelmet extends Helmet{

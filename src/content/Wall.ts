@@ -14,7 +14,7 @@ export class Wall extends Entity {
   get size() {
     return 1;
   }
-  draw (tickPercent: number) {
+  draw () {
      // force empty draw
   }
 }

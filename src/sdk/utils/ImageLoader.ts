@@ -2,9 +2,9 @@
 export class ImageLoader {
 
   static onLoadFns: (() => void)[] = [];
-  static pendingImages: number = 0;
-  static completedImages: number = 0;
-  static hasLoaded: boolean = false;
+  static pendingImages = 0;
+  static completedImages = 0;
+  static hasLoaded = false;
 
   static imageCache = {};
   
