@@ -29,6 +29,7 @@ import { Item } from './Item'
 import { PrayerController } from './PrayerController'
 import { Region } from './Region'
 import { Player } from './Player'
+import ColorScale from 'color-scales'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -66,6 +67,7 @@ export interface UnitStats {
   range: number;
   magic: number;
   hitpoint: number;
+  prayer?: number;
 }
 
 export interface UnitBonuses {
@@ -135,6 +137,49 @@ export class Unit extends GameObject {
     return null;
   }
 
+  get combatLevel () {
+    const base = 0.25 * (this.stats.defence + this.stats.hitpoint + Math.floor((this.stats.prayer || 0) * 0.5));
+    const melee = (13/40) * (this.stats.attack + this.stats.strength)
+    const range = (13/40) * Math.floor(this.stats.range * (3/2))
+    const mage = (13/40) * Math.floor(this.stats.magic * (3/2))
+    return Math.floor(base + Math.max(melee, range, mage));
+  }
+
+  combatLevelColor (against: Unit) {
+
+    // https://oldschool.runescape.wiki/w/Combat_level#Colours
+    const colorScale = [
+      "#ff0000", //+ 10
+      "#ff3000",
+      "#ff3000",
+      "#ff3000",
+      "#ff7000",
+      "#ff7000",
+      "#ff7000",
+      "#ffb000",
+      "#ffb000",
+      "#ffb000",
+      "#ffff00", // + 0
+      "#c0ff00",
+      "#c0ff00",
+      "#c0ff00",
+      "#80ff00",
+      "#80ff00",
+      "#80ff00",
+      "#40ff00",
+      "#40ff00",
+      "#40ff00",
+      "#00ff00"  // -10
+    ]
+
+    const myCombatLevel = this.combatLevel;
+    const theirCombatLevel = against.combatLevel;
+    const difference = Math.min(10, Math.max(-10, theirCombatLevel - myCombatLevel))
+
+    return colorScale[10 - difference];
+
+  }
+
   constructor (region: Region, location: Location, options?: UnitOptions) {
     super()
 
@@ -153,6 +198,9 @@ export class Unit extends GameObject {
 
   }
 
+  contextActions (region: Region, x: number, y: number) {
+    return [];
+  }
 
   setAggro(mob: Unit) {
     this.aggro = mob;

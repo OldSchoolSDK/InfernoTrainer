@@ -27,7 +27,7 @@ import { EntityName } from './sdk/EntityName'
 import { Mob } from './sdk/Mob'
 import { Location } from './sdk/Location'
 import { MapController } from './sdk/MapController'
-import { XpDropController } from './sdk/XpDropController'
+
 declare global {
   interface Window {
     newrelic: typeof NewRelicBrowser
@@ -52,6 +52,19 @@ const player = new Player(
 )
 
 selectedRegion.addPlayer(player);
+
+
+// const player2 = new Player(
+//   selectedRegion,
+//   { x: 30, y: 40 }
+// )
+// player2.autoRetaliate = true;
+// new Blowpipe().inventoryLeftClick(player2);
+// new NecklaceOfAnguish().inventoryLeftClick(player2);
+// new PegasianBoots().inventoryLeftClick(player2);
+// selectedRegion.addPlayer(player2);
+
+
 const loadoutType = selectedRegion.initializeAndGetLoadoutType();
 const onTask = selectedRegion.initializeAndGetOnTask();
 const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);

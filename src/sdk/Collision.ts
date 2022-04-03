@@ -3,6 +3,7 @@ import { GameObject } from './GameObject'
 import { LineOfSightMask } from './LineOfSight';
 import { Mob } from './Mob';
 import { Pathing } from './Pathing';
+import { Player } from './Player';
 import { Region } from './Region';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
@@ -78,7 +79,7 @@ export class Collision {
   static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number): Mob[] {
     const mobs = []
     for (let i = 0; i < region.mobs.length; i++) {
-      const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(x, y, tickPercent, region.mobs[i])
+      const collidedWithSpecificMob = Collision.collidesWithUnitAtPerceivedDisplayLocation(x, y, tickPercent, region.mobs[i])
       if (collidedWithSpecificMob) {
         mobs.push(region.mobs[i])
       }
@@ -86,10 +87,22 @@ export class Collision {
     return mobs
   }
 
-  static collidesWithMobAtPerceivedDisplayLocation (x: number, y: number, tickPercent: number, mob: Unit) {
-    const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
+  static collidesWithUnitAtPerceivedDisplayLocation (x: number, y: number, tickPercent: number, unit: Unit) {
+    const perceivedX = Pathing.linearInterpolation(unit.perceivedLocation.x * Settings.tileSize, unit.location.x * Settings.tileSize, tickPercent)
+    const perceivedY = Pathing.linearInterpolation(unit.perceivedLocation.y * Settings.tileSize, unit.location.y * Settings.tileSize, tickPercent)
 
-    return (Collision.collisionMath(x, y - Settings.tileSize, 1, perceivedX, perceivedY, (mob.size) * Settings.tileSize))
+    return (Collision.collisionMath(x, y - Settings.tileSize, 1, perceivedX, perceivedY, (unit.size) * Settings.tileSize))
   }
+
+  static collidesWithAnyPlayersAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number): Player[] {
+    const players = []
+    for (let i = 0; i < region.players.length; i++) {
+      const collidedWithSpecificPlayer = Collision.collidesWithUnitAtPerceivedDisplayLocation(x, y, tickPercent, region.players[i])
+      if (collidedWithSpecificPlayer) {
+        players.push(region.players[i])
+      }
+    }
+    return players
+  }
+
 }

@@ -23,7 +23,6 @@ export function DeserializePlayerStats(serializedStats: string): PlayerStats {
 
 export interface PlayerStats extends UnitStats {
   agility: number;
-  prayer: number;
   run: number;
   specialAttack: number;
 }

@@ -63,9 +63,6 @@ export class JalMejJak extends Mob {
     return 250
   }
 
-  get combatLevelColor () {
-    return 'red'
-  }
 
   setHasLOS () {
     this.hasLOS = true;

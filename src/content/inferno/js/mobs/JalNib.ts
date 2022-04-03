@@ -39,9 +39,6 @@ export class JalNib extends Mob {
     return 32
   }
 
-  get combatLevelColor () {
-    return 'lime'
-  }
 
   setStats () {
     this.stunned = 1

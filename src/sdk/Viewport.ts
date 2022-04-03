@@ -101,8 +101,10 @@ export class Viewport {
 
     if (world.getReadyTimer === 0) {
       region.mobs.forEach((mob) => mob.drawUILayer(world.tickPercent))
-      this.player.drawUILayer(world.tickPercent)
 
+      region.players.forEach((player: Player) => {
+        player.drawUILayer(world.tickPercent)
+      })
     }
 
     region.context.restore();

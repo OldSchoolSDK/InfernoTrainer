@@ -127,9 +127,11 @@ export class World {
 
     region.postTick();
 
-    // Safely remove the mobs from the world. If we do it while iterating we can cause ticks to be stole'd
+    // Safely remove the dead stuff from the world. If we do it while iterating we can cause ticks to be stole'd
+    const deadPlayers = region.players.filter((player) => player.dying === 0)
     const deadMobs = region.mobs.filter((mob) => mob.dying === 0)
     const deadEntities = region.entities.filter((mob) => mob.dying === 0)
+    deadPlayers.forEach((player) => region.removePlayer(player))
     deadMobs.forEach((mob) => region.removeMob(mob))
     deadEntities.forEach((entity) => region.removeEntity(entity))
 

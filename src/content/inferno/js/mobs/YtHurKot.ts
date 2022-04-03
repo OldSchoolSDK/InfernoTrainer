@@ -58,10 +58,6 @@ export class YtHurKot extends Mob {
   get combatLevel () {
     return 141
   }
-
-  get combatLevelColor () {
-    return 'red'
-  }
   
   setStats () {
     this.stunned = 1

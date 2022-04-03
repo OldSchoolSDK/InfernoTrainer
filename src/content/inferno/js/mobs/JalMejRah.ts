@@ -29,10 +29,6 @@ export class JalMejRah extends Mob {
     return 85
   }
 
-  get combatLevelColor () {
-    return 'lime'
-  }
-
   dead () {
     super.dead()
     InfernoMobDeathStore.npcDied(this)

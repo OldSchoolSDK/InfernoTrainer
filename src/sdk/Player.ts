@@ -22,6 +22,7 @@ import { PlayerRegenTimer } from './PlayerRegenTimers'
 import { PrayerController } from './PrayerController'
 import { AmmoType } from './gear/Ammo'
 import { Region } from './Region'
+import { Viewport } from './Viewport'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
@@ -70,6 +71,18 @@ export class Player extends Unit {
   }
 
 
+  contextActions (region: Region, x: number, y: number) {
+    return super.contextActions(region, x, y).concat([
+      {
+        text: [{ text: 'Attack ', fillStyle: 'white' }, { text: `Player`, fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) }],
+        action: () => {
+          Viewport.viewport.clickController.redClick()
+          Viewport.viewport.player.setAggro(this);          
+        }
+      }
+    ]);
+  }
+  
   setUnitOptions(options: UnitOptions) {
     this.equipment = options.equipment || {};
     this.inventory = options.inventory || new Array(28).fill(null);
@@ -282,9 +295,6 @@ export class Player extends Unit {
     }
   }
 
-  dead() {
-    document.body.style.background = 'red'
-  }
 
   attack(): boolean {
     if (this.manualSpellCastSelection) {
@@ -487,9 +497,12 @@ export class Player extends Unit {
 
     this.takeSeekingItem();
 
-    this.determineDestination()
+    if (!this.isFrozen()) {
+      this.determineDestination()
 
-    this.moveTorwardsDestination()
+      this.moveTorwardsDestination()  
+    }
+    this.frozen--;
   }
 
 
