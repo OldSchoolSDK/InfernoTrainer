@@ -43,7 +43,6 @@ export class Region{
     return this._serialNumber;
   }
 
-
   preTick() {
     
     // Override me
@@ -95,7 +94,9 @@ export class Region{
   removeMob (mob: Unit) {
     remove(this.mobs, mob)
   }
-
+  removePlayer (player: Player) {
+    remove(this.players, player);
+  }
   addGroundItem(player: Player, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
       this.groundItems[x] = {};

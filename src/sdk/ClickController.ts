@@ -129,12 +129,26 @@ export class ClickController {
 
 
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
+    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
     const groundItems = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+
+
+    
+    // players.forEach((player) => {
+    //   if (player !== Viewport.viewport.player){
+    //     menuOptions = menuOptions.concat(player.contextActions(region, x, y))
+    //   }
+    // })
+
+
 
     Viewport.viewport.player.interruptCombat();
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
       this.sendToServer(() => this.playerAttackClick(mobs[0]))
+    } else if (players.length) {
+      this.redClick()
+      this.sendToServer(() => this.playerAttackClick(players[0]))
     } else if (groundItems.length){
       this.redClick()
 
@@ -193,6 +207,15 @@ export class ClickController {
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(region, x, y))
+    })
+
+
+    
+    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
+    players.forEach((player) => {
+      if (player !== Viewport.viewport.player){
+        menuOptions = menuOptions.concat(player.contextActions(region, x, y))
+      }
     })
 
 

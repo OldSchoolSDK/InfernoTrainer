@@ -328,14 +328,10 @@ export class Mob extends Unit {
     return 99
   }
 
-  get combatLevelColor () {
-    return 'red'
-  }
-
   contextActions (region: Region, x: number, y: number) {
     const actions = [
       {
-        text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+        text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) }],
         action: () => {
           Viewport.viewport.clickController.redClick()
           Viewport.viewport.clickController.sendToServer(() => Viewport.viewport.clickController.playerAttackClick(this))
@@ -348,7 +344,7 @@ export class Mob extends Unit {
     if (this.removableWithRightClick) {
       actions.push(
         {
-          text: [{ text: 'Remove ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
+          text: [{ text: 'Remove ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) }],
           action: () => {
             this.region.removeMob(this);
           }

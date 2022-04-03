@@ -32,10 +32,6 @@ export class JalXil extends Mob {
     return 370
   }
 
-  get combatLevelColor () {
-    return 'red'
-  }
-
   dead () {
     super.dead()
     InfernoMobDeathStore.npcDied(this)

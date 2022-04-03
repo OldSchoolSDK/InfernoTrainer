@@ -17,10 +17,6 @@ export class JalAkRekXil extends Mob {
     return 70
   }
 
-  get combatLevelColor () {
-    return 'lime'
-  }
-
   drawUnderTile() {
 
     if (this.dying > -1) {

@@ -181,9 +181,6 @@ export class TzKalZuk extends Mob {
     return 1400
   }
 
-  get combatLevelColor () {
-    return 'red'
-  }
 
   canMove() {
     return false;
