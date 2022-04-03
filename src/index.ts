@@ -298,18 +298,6 @@ if (selectedRegion.wave === 0) {
 
   selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 36, y: 14 }, '#00FF00', 1, false));
 
-} else if (selectedRegion.wave === 70) {
-  player.location = { x: 28, y: 17 }
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 3).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (selectedRegion.wave === 71) {
-  player.location = { x: 28, y: 17 }
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 5).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (selectedRegion.wave === 72) {
-  player.location = { x: 28, y: 17 }
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 7).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (selectedRegion.wave === 73) {
-  player.location = { x: 28, y: 17 }
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 9).forEach((mob: Mob) => selectedRegion.addMob(mob))
 } else if (selectedRegion.wave === 74) {
   player.location = { x: 28, y: 17 }
 

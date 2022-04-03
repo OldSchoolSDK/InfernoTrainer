@@ -123,19 +123,20 @@ export class InfernoRegion extends Region {
 
   }
 
-  drawWorldBackground(ctx: any) {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, 10000000, 10000000);
+  drawWorldBackground() {
+    this.context.fillStyle = 'black';
+    this.context.fillRect(0, 0, 10000000, 10000000);
     if (this.mapImage) {
+      const ctx = this.context as any;
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
-      ctx.imageSmoothingEnabled = false;
+      this.context.imageSmoothingEnabled = false;
 
-      ctx.drawImage(this.mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
+      this.context.drawImage(this.mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize)
 
       ctx.webkitImageSmoothingEnabled = true;
       ctx.mozImageSmoothingEnabled = true;
-      ctx.imageSmoothingEnabled = true;
+      this.context.imageSmoothingEnabled = true;
 
     }
   }

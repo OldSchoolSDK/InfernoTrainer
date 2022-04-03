@@ -10,7 +10,10 @@ import { Random } from '../../sdk/Random';
 jest.mock('../../sdk/XpDropController', () => {
   return {
     'XpDropController': {
-      controller: null
+      controller: { 
+        tick: () => true,
+        registerXpDrop: () => true
+      }
     }
   }
 });
