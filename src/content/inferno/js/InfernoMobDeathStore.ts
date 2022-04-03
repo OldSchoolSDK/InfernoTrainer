@@ -3,7 +3,6 @@ import { DelayedAction } from '../../../sdk/DelayedAction';
 import { Mob } from '../../../sdk/Mob';
 import { Player } from '../../../sdk/Player';
 import { Region } from '../../../sdk/Region';
-import { World } from '../../../sdk/World';
 import { InfernoRegion } from './InfernoRegion';
 import { InfernoWaves } from './InfernoWaves';
 

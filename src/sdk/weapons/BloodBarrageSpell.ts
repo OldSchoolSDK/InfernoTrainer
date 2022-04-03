@@ -1,4 +1,3 @@
-import { World } from '../World'
 import { Unit } from '../Unit'
 import { BarrageSpell } from './BarrageSpell'
 import { ProjectileOptions } from './Projectile'

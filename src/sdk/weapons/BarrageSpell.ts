@@ -1,6 +1,5 @@
 import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
-import { World } from '../World'
 import { Unit } from '../Unit'
 import { MagicWeapon } from './MagicWeapon'
 import { ProjectileOptions } from './Projectile'

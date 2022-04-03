@@ -7,7 +7,6 @@ import { Player } from "../../../../sdk/Player"
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { ProjectileOptions } from "../../../../sdk/weapons/Projectile"
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
-import { World } from "../../../../sdk/World"
 import BatImage from '../../assets/images/bat.png'
 import BatSound from '../../assets/sounds/bat.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'

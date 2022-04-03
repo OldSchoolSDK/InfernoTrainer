@@ -4,7 +4,6 @@ import { Entity } from '../sdk/Entity'
 import { CollisionType } from '../sdk/Collision'
 import { Settings } from '../sdk/Settings';
 import { Location } from "../sdk/Location";
-import { World } from '../sdk/World';
 import { LineOfSightMask } from '../sdk/LineOfSight';
 import { EntityName } from '../sdk/EntityName';
 import { Region } from '../sdk/Region';

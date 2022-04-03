@@ -6,9 +6,7 @@ import { TwistedBow } from '../../content/weapons/TwistedBow';
 import { Settings } from '../../sdk/Settings';
 import { Region } from '../../sdk/Region';
 import { Random } from '../../sdk/Random';
-import { Viewport } from '../../sdk/Viewport';
 
-jest.mock('../../sdk/utils/ImageLoader');
 jest.mock('../../sdk/XpDropController', () => {
   return {
     'XpDropController': {

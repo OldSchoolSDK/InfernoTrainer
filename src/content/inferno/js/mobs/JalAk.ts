@@ -14,7 +14,6 @@ import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
 import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
-import { Viewport } from '../../../../sdk/Viewport'
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;

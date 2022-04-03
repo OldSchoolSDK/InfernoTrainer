@@ -7,7 +7,6 @@ import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 import { BarrageSpell } from '../../sdk/weapons/BarrageSpell';
 import { AttackBonuses } from '../../sdk/gear/Weapon';
 import { Unit } from '../../sdk/Unit';
-import { World } from '../../sdk/World';
 import { Player } from '../../sdk/Player';
 import { BloodBarrageSpell } from '../../sdk/weapons/BloodBarrageSpell';
 

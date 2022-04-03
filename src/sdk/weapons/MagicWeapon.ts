@@ -1,4 +1,3 @@
-import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { ProjectileOptions } from './Projectile'

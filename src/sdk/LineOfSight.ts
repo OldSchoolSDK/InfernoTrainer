@@ -5,7 +5,6 @@ import { Pathing } from './Pathing'
 import { GameObject } from './GameObject'
 import { Collision } from './Collision'
 import { Region } from './Region'
-import { Viewport } from './Viewport'
 import { Player } from './Player'
 
 /*

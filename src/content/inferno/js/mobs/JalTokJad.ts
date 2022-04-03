@@ -6,7 +6,6 @@ import { AttackIndicators, Mob } from '../../../../sdk/Mob'
 import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
 import JadImage from '../../assets/images/JalTok-Jad.png'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
-import { World } from '../../../../sdk/World'
 import { Location } from "../../../../sdk/Location"
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Projectile } from '../../../../sdk/weapons/Projectile'

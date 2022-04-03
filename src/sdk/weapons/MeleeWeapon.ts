@@ -1,7 +1,6 @@
 import { Weapon, AttackBonuses } from '../gear/Weapon'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
-import { World } from '../World'
 
 export class MeleeWeapon extends Weapon {
   

@@ -1,10 +1,4 @@
 import { filter } from 'lodash';
-// import { InfernoRegion } from '../content/inferno/js/InfernoRegion';
-// import { JalAk } from '../content/inferno/js/mobs/JalAk';
-// import { JalImKot } from '../content/inferno/js/mobs/JalImKot';
-// import { JalMejRah } from '../content/inferno/js/mobs/JalMejRah';
-// import { JalXil } from '../content/inferno/js/mobs/JalXil';
-// import { JalZek } from '../content/inferno/js/mobs/JalZek';
 import { TileMarker } from '../content/TileMarker';
 import { ClickAnimation } from './ClickAnimation';
 import { Collision } from './Collision';
@@ -85,26 +79,6 @@ export class ClickController {
     if (intercepted) {
       return;
     }
-
-
-    // const { viewportX, viewportY } = this.viewport.getViewport(world);
-    // let x = e.offsetX + viewportX * Settings.tileSize
-    // let y = e.offsetY + viewportY * Settings.tileSize
-    // if (Settings.rotated === 'south') {
-    //   x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize
-    //   y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize
-    // }
-    // if (e.offsetX > this.viewportWidth * Settings.tileSize) {
-    //   if (e.offsetY < this.mapController.height) {
-    //     const intercepted = this.mapController.clicked(e);
-    //     if (intercepted) {
-    //       return;
-    //     }
-    //   }
-    // }
-    // const xAlign = world.contextMenu.location.x - (world.contextMenu.width / 2) < e.offsetX && e.offsetX < world.contextMenu.location.x + world.contextMenu.width / 2
-    // const yAlign = world.contextMenu.location.y < e.offsetY && e.offsetY < world.contextMenu.location.y + world.contextMenu.height
-
   }
 
   clickDown (e: MouseEvent) {
@@ -226,6 +200,7 @@ export class ClickController {
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(region, x, y))
     })
+
 
     const groundItems: Item[] = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
     groundItems.forEach((item: Item) => {

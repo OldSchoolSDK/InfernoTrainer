@@ -1,5 +1,4 @@
 import { ControlPanelController } from "../ControlPanelController";
-import { World } from "../World";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Settings } from "../Settings";
 import { Viewport } from "../Viewport";

@@ -6,7 +6,6 @@ import { Pathing } from './Pathing';
 import { Region } from './Region';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
-import { World } from './World'
 
 
 export enum CollisionType {

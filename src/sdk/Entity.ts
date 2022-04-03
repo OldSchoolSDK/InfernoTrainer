@@ -1,7 +1,6 @@
 'use strict'
 import { GameObject } from './GameObject';
 import { Location } from "./Location";
-import { World } from './World'
 import { Settings } from './Settings'
 import { UnitTypes } from './Unit'
 import { EntityName } from './EntityName';

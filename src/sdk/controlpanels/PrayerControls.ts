@@ -3,7 +3,6 @@ import PrayerPanel from '../../assets/images/panels/prayer.png'
 import PrayerTab from '../../assets/images/tabs/prayer.png'
 import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
-import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
 import { Viewport } from '../Viewport'
 

@@ -28,7 +28,6 @@ import { EntityName } from "./EntityName"
 import { Item } from './Item'
 import { PrayerController } from './PrayerController'
 import { Region } from './Region'
-import { Viewport } from './Viewport'
 import { Player } from './Player'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

@@ -325,8 +325,7 @@ document.getElementById('playWaveNum').addEventListener('click', () => {
 })
 
 
-// TODO: Restore this
-// document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking(this) : world.stopTicking(this))
+document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking(selectedRegion, player) : world.stopTicking())
 
 
 

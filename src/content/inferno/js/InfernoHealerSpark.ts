@@ -11,7 +11,6 @@ import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
 import { Random } from '../../../sdk/Random'
 import { Region } from '../../../sdk/Region'
-import { Viewport } from '../../../sdk/Viewport'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {

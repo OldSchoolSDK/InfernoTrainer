@@ -7,7 +7,6 @@ import { Mob } from "./Mob";
 import { Player } from "./Player";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
-import { Viewport } from "./Viewport";
 import { World } from "./World"
 
 
@@ -41,6 +40,7 @@ export class Region{
     }
     return this._serialNumber;
   }
+  
   get context() {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {

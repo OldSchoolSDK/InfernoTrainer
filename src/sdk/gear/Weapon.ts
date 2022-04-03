@@ -2,7 +2,6 @@
 
 import { GameObject } from "../GameObject";
 import { BasePrayer } from "../BasePrayer";
-import { World } from "../World";
 import { Unit } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from '../Equipment'

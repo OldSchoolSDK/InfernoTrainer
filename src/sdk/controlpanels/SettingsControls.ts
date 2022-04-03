@@ -25,7 +25,6 @@ import CombatTab from '../../assets/images/controlTabs/style.png'
 
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../utils/BrowserUtils'
-import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
 import { ImageLoader } from '../utils/ImageLoader'
 import { Viewport } from '../Viewport'

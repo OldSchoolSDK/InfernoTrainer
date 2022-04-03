@@ -4,7 +4,6 @@ import StatsTab from '../../assets/images/tabs/stats.png'
 import { ControlPanelController } from '../ControlPanelController'
 import { Settings } from '../Settings'
 import { Viewport } from '../Viewport'
-import { World } from '../World'
 import { BaseControls } from './BaseControls'
 
 export class StatsControls extends BaseControls {

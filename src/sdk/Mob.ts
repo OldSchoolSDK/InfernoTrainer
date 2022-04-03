@@ -7,7 +7,6 @@ import { Pathing } from './Pathing'
 
 import { Weapon } from './gear/Weapon'
 import { Unit, UnitBonuses, UnitStats, UnitTypes } from './Unit'
-import { World } from './World'
 import { Location } from "./Location"
 import { Collision } from './Collision'
 import { InfernoRegion } from '../content/inferno/js/InfernoRegion'

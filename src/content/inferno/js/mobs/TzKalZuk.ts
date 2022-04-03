@@ -4,7 +4,6 @@ import { Mob } from '../../../../sdk/Mob'
 import ZukImage from '../../assets/images/TzKal-Zuk.png'
 import { Unit, UnitBonuses, UnitTypes } from '../../../../sdk/Unit'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
-import { World } from '../../../../sdk/World'
 import { UnitOptions } from '../../../../sdk/Unit'
 import { Location } from "../../../../sdk/Location"
 import { ZukShield } from '../ZukShield'
@@ -19,6 +18,7 @@ import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
 import { Viewport } from '../../../../sdk/Viewport'
 import { Region } from '../../../../sdk/Region'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
 

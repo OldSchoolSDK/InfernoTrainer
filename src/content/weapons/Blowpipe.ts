@@ -3,7 +3,6 @@
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { ItemName } from "../../sdk/ItemName";
-import { World } from '../../sdk/World';
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
