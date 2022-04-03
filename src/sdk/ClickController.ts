@@ -252,70 +252,11 @@ export class ClickController {
       },
     )
 
-    // if (region.wave === 0){
+    menuOptions = menuOptions.concat(region.rightClickActions());
 
-    //   menuOptions.push(
-    //     {
-    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
-    //       action: () => {
-    //         this.yellowClick()
-    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
-    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
-    //         region.addMob(new JalMejRah(region, { x, y }, { aggro: Viewport.viewport.player }))
 
-    //       }
-    //     }
-    //   )
 
-    //   menuOptions.push(
-    //     {
-    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
-    //       action: () => {
-    //         this.yellowClick()
-    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
-    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
-    //         region.addMob(new JalAk(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
-    //       }
-    //     }
-    //   )
-    //   menuOptions.push(
-    //     {
-    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
-    //       action: () => {
-    //         this.yellowClick()
-    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
-    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
-    //         region.addMob(new JalImKot(region,{ x, y }, { aggro: Viewport.viewport.player }))
-
-    //       }
-    //     }
-    //   )
-    //   menuOptions.push(
-    //     {
-    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
-    //       action: () => {
-    //         this.yellowClick()
-    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
-    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
-    //         region.addMob(new JalXil(region,{ x, y }, { aggro: Viewport.viewport.player }))
-
-    //       }
-    //     }
-    //   )
-    //   menuOptions.push(
-    //     {
-    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
-    //       action: () => {
-    //         this.yellowClick()
-    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
-    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
-    //         region.addMob(new JalZek(region,{ x, y }, { aggro: Viewport.viewport.player }))
-
-    //       }
-    //     }
-    //   )
-    // }
     Viewport.viewport.contextMenu.setMenuOptions(menuOptions)
     Viewport.viewport.contextMenu.setActive()
   }

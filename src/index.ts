@@ -58,18 +58,18 @@ Viewport.viewport.setPlayer(player);
 
 
 
-let wave = parseInt(BrowserUtils.getQueryVar('wave'));
-if (isNaN(wave)) {
-  wave = 62;
+selectedRegion.wave = parseInt(BrowserUtils.getQueryVar('wave'));
+if (isNaN(selectedRegion.wave)) {
+  selectedRegion.wave = 62;
 }
-if (wave < 0) {
-  wave = 0;
+if (selectedRegion.wave < 0) {
+  selectedRegion.wave = 0;
 }
-if (wave > InfernoWaves.waves.length + 8) {
-  wave = InfernoWaves.waves.length + 8;
+if (selectedRegion.wave > InfernoWaves.waves.length + 8) {
+  selectedRegion.wave = InfernoWaves.waves.length + 8;
 }
 
-if (wave < 67 || wave >= 70) {
+if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars
   InfernoPillar.addPillarsToWorld(selectedRegion)
 }
@@ -202,7 +202,7 @@ if (Settings.tile_markers) {
 }
 
 // Add mobs
-if (wave === 0) {
+if (selectedRegion.wave === 0) {
   // world.getReadyTimer = 0;
   player.location = { x: 28, y: 17 }
 
@@ -215,14 +215,14 @@ if (wave === 0) {
   });
 
   importSpawn();
-} else if (wave < 67) {
+} else if (selectedRegion.wave < 67) {
   player.location = { x: 28, y: 17 }
 
   // this.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
 
   if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
     // Backwards compatibility layer for runelite plugin
-    wave = 1;
+    selectedRegion.wave = 1;
 
     importSpawn();
 
@@ -230,18 +230,18 @@ if (wave === 0) {
     // Native approach
     const spawns = BrowserUtils.getQueryVar('spawns') ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar('spawns'))) : InfernoWaves.getRandomSpawns()
 
-    InfernoWaves.spawn(selectedRegion, player, randomPillar, spawns, wave).forEach(selectedRegion.addMob.bind(selectedRegion))
+    InfernoWaves.spawn(selectedRegion, player, randomPillar, spawns, selectedRegion.wave).forEach(selectedRegion.addMob.bind(selectedRegion))
 
     const encodedSpawn = encodeURIComponent(JSON.stringify(spawns))
-    replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
-    waveInput.value = String(wave);
+    replayLink.href = `/?wave=${selectedRegion.wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
+    waveInput.value = String(selectedRegion.wave);
   }
-} else if (wave === 67) {
+} else if (selectedRegion.wave === 67) {
 
   player.location = { x: 18, y: 25 }
   const jad = new JalTokJad(selectedRegion, { x: 23, y: 27 }, { aggro: player, attackSpeed: 8, stun: 1, healers: 5, isZukWave: false });
   selectedRegion.addMob(jad)
-} else if (wave === 68) {
+} else if (selectedRegion.wave === 68) {
   player.location = { x: 25, y: 27 }
 
   const jad1 = new JalTokJad(selectedRegion, { x: 18, y: 24 }, { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false });
@@ -252,7 +252,7 @@ if (wave === 0) {
 
   const jad3 = new JalTokJad(selectedRegion, { x: 23, y: 35 }, { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false });
   selectedRegion.addMob(jad3)
-} else if (wave === 69) {
+} else if (selectedRegion.wave === 69) {
   player.location = { x: 25, y: 15 }
 
   // spawn zuk
@@ -298,19 +298,19 @@ if (wave === 0) {
 
   selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 36, y: 14 }, '#00FF00', 1, false));
 
-} else if (wave === 70) {
+} else if (selectedRegion.wave === 70) {
   player.location = { x: 28, y: 17 }
   InfernoWaves.spawnEnduranceMode(selectedRegion, player, 3).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (wave === 71) {
+} else if (selectedRegion.wave === 71) {
   player.location = { x: 28, y: 17 }
   InfernoWaves.spawnEnduranceMode(selectedRegion, player, 5).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (wave === 72) {
+} else if (selectedRegion.wave === 72) {
   player.location = { x: 28, y: 17 }
   InfernoWaves.spawnEnduranceMode(selectedRegion, player, 7).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (wave === 73) {
+} else if (selectedRegion.wave === 73) {
   player.location = { x: 28, y: 17 }
   InfernoWaves.spawnEnduranceMode(selectedRegion, player, 9).forEach((mob: Mob) => selectedRegion.addMob(mob))
-} else if (wave === 74) {
+} else if (selectedRegion.wave === 74) {
   player.location = { x: 28, y: 17 }
 
   importSpawn();
@@ -321,7 +321,7 @@ player.destinationLocation = player.location
 // UI controls
 
 document.getElementById('playWaveNum').addEventListener('click', () => {
-  window.location.href = `/?wave=${waveInput.value || wave}`
+  window.location.href = `/?wave=${waveInput.value || selectedRegion.wave}`
 })
 
 

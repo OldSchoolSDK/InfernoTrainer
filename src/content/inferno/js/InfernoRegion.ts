@@ -6,6 +6,12 @@ import InfernoMapImage from '../assets/images/map.png'
 import { Region } from '../../../sdk/Region'
 import { Settings } from '../../../sdk/Settings'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
+import { Viewport } from '../../../sdk/Viewport'
+import { JalAk } from './mobs/JalAk'
+import { JalImKot } from './mobs/JalImKot'
+import { JalMejRah } from './mobs/JalMejRah'
+import { JalXil } from './mobs/JalXil'
+import { JalZek } from './mobs/JalZek'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -16,19 +22,86 @@ export class InfernoRegion extends Region {
   finalScore = -1;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
-  getName () {
+  getName() {
     return 'Inferno'
   }
 
-  get width (): number {
+  get width(): number {
     return 51
   }
 
-  get height (): number {
+  get height(): number {
     return 57
   }
 
-  initializeAndGetLoadoutType() { 
+  rightClickActions(): any[] {
+
+    if (this.wave !== 0) {
+      return [];
+    }
+
+    return [
+
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
+        action: () => {
+          Viewport.viewport.clickController.yellowClick()
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
+          this.addMob(new JalMejRah(this, { x, y }, { aggro: Viewport.viewport.player }))
+
+        }
+      },
+
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
+        action: () => {
+          Viewport.viewport.clickController.yellowClick()
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
+          this.addMob(new JalAk(this, { x, y }, { aggro: Viewport.viewport.player }))
+
+        }
+      },
+
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
+        action: () => {
+          Viewport.viewport.clickController.yellowClick()
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
+          this.addMob(new JalImKot(this, { x, y }, { aggro: Viewport.viewport.player }))
+
+        }
+      },
+
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
+        action: () => {
+          Viewport.viewport.clickController.yellowClick()
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
+          this.addMob(new JalXil(this, { x, y }, { aggro: Viewport.viewport.player }))
+
+        }
+      },
+
+      {
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
+        action: () => {
+          Viewport.viewport.clickController.yellowClick()
+          const x = Viewport.viewport.contextMenu.destinationLocation.x;
+          const y = Viewport.viewport.contextMenu.destinationLocation.y;
+          this.addMob(new JalZek(this, { x, y }, { aggro: Viewport.viewport.player }))
+
+        }
+      }
+    ];
+
+  }
+
+
+  initializeAndGetLoadoutType() {
     const loadoutSelector = document.getElementById("loadouts") as HTMLInputElement;
     loadoutSelector.value = Settings.loadout;
     loadoutSelector.addEventListener('change', () => {
@@ -53,7 +126,7 @@ export class InfernoRegion extends Region {
   drawWorldBackground(ctx: any) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 10000000, 10000000);
-    if (this.mapImage){
+    if (this.mapImage) {
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
       ctx.imageSmoothingEnabled = false;

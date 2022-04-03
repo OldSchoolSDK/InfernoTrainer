@@ -40,6 +40,10 @@ export class Region{
     }
     return this._serialNumber;
   }
+
+  rightClickActions() {
+    return [];
+  }
   
   get context() {
     if (!this.canvas) {

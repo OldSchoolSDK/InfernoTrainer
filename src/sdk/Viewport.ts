@@ -22,27 +22,19 @@ export class Viewport {
 
   setPlayer(player: Player) {
     this.player = player;
-
     window.addEventListener("orientationchange", () => this.calculateViewport());
     window.addEventListener('resize', () => this.calculateViewport());
     window.addEventListener('wheel', () => this.calculateViewport());
     window.addEventListener('resize', () => this.calculateViewport());
     this.canvas = document.getElementById('world') as HTMLCanvasElement;
-
     this.calculateViewport();
-
-
     this.canvas.width = Settings._tileSize * 2 * this.width;
     this.canvas.height = Settings._tileSize * 2 * this.height;
-
-
-    
     this.clickController = new ClickController(this);
     this.clickController.registerClickActions()
   }
 
   calculateViewport() {
-    // convert this to a world map canvas (offscreencanvas)
     const { width, height } = Chrome.size();
     Settings._tileSize = width / this.player.region.width;
     this.width = (width / Settings.tileSize);
@@ -50,27 +42,11 @@ export class Viewport {
   }
 
   getViewport(tickPercent: number) {
-
     const perceivedX = Pathing.linearInterpolation(this.player.perceivedLocation.x, this.player.location.x, tickPercent);
     const perceivedY = Pathing.linearInterpolation(this.player.perceivedLocation.y, this.player.location.y, tickPercent);
 
     const viewportX = perceivedX + 0.5 - this.width / 2;
     const viewportY = perceivedY + 0.5 - this.height / 2;
-
-
-    // if (viewportX < 0) {
-    //   viewportX = 0;
-    // }
-    // if (viewportY < 0) {
-    //   viewportY = 0;
-    // }
-    // if (viewportX + this.width > world.region.width) {
-    //   viewportX = world.region.width - this.width;
-    // }
-    // if (viewportY + this.height > world.region.height) {
-    //   viewportY = world.region.height - this.height;
-    // }
-
     return { viewportX, viewportY };
   }
 

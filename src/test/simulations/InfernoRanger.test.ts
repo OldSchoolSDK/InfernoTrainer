@@ -61,8 +61,8 @@ describe('basic combat scenario', () => {
       { x: 30, y: 60 }
     )
 
-    const tbow = new TwistedBow();
-    tbow.inventoryLeftClick(player);
+    new TwistedBow().inventoryLeftClick(player);
+
     const jalxil = new JalXil(region, { x: 25, y: 25 }, { aggro: player });
     region.addMob(jalxil)
 
