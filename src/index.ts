@@ -186,13 +186,13 @@ const replayLink = document.getElementById('replayLink') as HTMLLinkElement;
 function importSpawn() {
 
   try {
-    JSON.parse(mager).forEach((spawn: number[]) => this.addMob(new JalZek(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-    JSON.parse(ranger).forEach((spawn: number[]) => this.addMob(new JalXil(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-    JSON.parse(melee).forEach((spawn: number[]) => this.addMob(new JalImKot(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-    JSON.parse(blob).forEach((spawn: number[]) => this.addMob(new JalAk(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
-    JSON.parse(bat).forEach((spawn: number[]) => this.addMob(new JalMejRah(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
+    JSON.parse(mager).forEach((spawn: number[]) => selectedRegion.addMob(new JalZek(selectedRegion, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+    JSON.parse(ranger).forEach((spawn: number[]) => selectedRegion.addMob(new JalXil(selectedRegion, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+    JSON.parse(melee).forEach((spawn: number[]) => selectedRegion.addMob(new JalImKot(selectedRegion, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+    JSON.parse(blob).forEach((spawn: number[]) => selectedRegion.addMob(new JalAk(selectedRegion, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })));
+    JSON.parse(bat).forEach((spawn: number[]) => selectedRegion.addMob(new JalMejRah(selectedRegion, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })))
 
-    InfernoWaves.spawnNibblers(3, this, randomPillar).forEach(this.addMob.bind(this))
+    InfernoWaves.spawnNibblers(3, selectedRegion, randomPillar).forEach(selectedRegion.addMob.bind(selectedRegion))
 
     replayLink.href = `/${window.location.search}`
   } catch (ex) {

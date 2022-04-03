@@ -140,7 +140,7 @@ export class ControlPanelController {
       if (i < 7) {
         return { x: 15, y: mapHeight + spacer + i * 36 * scale };
       }else{
-        return { x: width - 33 * scale - 15, y: mapHeight + spacer + (i - 7) * 36 * scale };
+        return { x: width - 33 * scale - 15 - (Settings.menuVisible ? 232 : 0), y: mapHeight + spacer + (i - 7) * 36 * scale };
       }
     }else{
       const x = i % 7
@@ -287,7 +287,7 @@ export class ControlPanelController {
         return { x: 33 * scale + 15, y: mapHeight + spacer};
       }else{
         // right side mobile
-        return { x: width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
+        return { x: width - 33 * scale - 15 - 200 * Settings.controlPanelScale - (Settings.menuVisible ? 232 : 0), y: mapHeight + spacer};
       }
     }else{
       // desktop compact

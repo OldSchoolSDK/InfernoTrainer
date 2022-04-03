@@ -138,7 +138,7 @@ export class Viewport {
 
     // draw control panel
     ControlPanelController.controller.draw()
-    XpDropController.controller.draw(this.context, width - 140 - MapController.controller.width, 0, world.tickPercent);
+    XpDropController.controller.draw(this.context, width - 140 - MapController.controller.width - (Settings.menuVisible ? 232 : 0), 0, world.tickPercent);
     MapController.controller.draw(this.context);
     this.contextMenu.draw()
 
