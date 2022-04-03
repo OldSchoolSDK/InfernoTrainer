@@ -27,9 +27,6 @@ import { EntityName } from './sdk/EntityName'
 import { Mob } from './sdk/Mob'
 import { Location } from './sdk/Location'
 import { MapController } from './sdk/MapController'
-import { Blowpipe } from './content/weapons/Blowpipe'
-import { NecklaceOfAnguish } from './content/equipment/NecklaceOfAnguish'
-import { PegasianBoots } from './content/equipment/PegasianBoots'
 
 declare global {
   interface Window {
@@ -57,16 +54,15 @@ const player = new Player(
 selectedRegion.addPlayer(player);
 
 
-const player2 = new Player(
-  selectedRegion,
-  { x: 30, y: 40 }
-)
-player2.autoRetaliate = true;
-new Blowpipe().inventoryLeftClick(player2);
-new NecklaceOfAnguish().inventoryLeftClick(player2);
-new PegasianBoots().inventoryLeftClick(player2);
-
-selectedRegion.addPlayer(player2);
+// const player2 = new Player(
+//   selectedRegion,
+//   { x: 30, y: 40 }
+// )
+// player2.autoRetaliate = true;
+// new Blowpipe().inventoryLeftClick(player2);
+// new NecklaceOfAnguish().inventoryLeftClick(player2);
+// new PegasianBoots().inventoryLeftClick(player2);
+// selectedRegion.addPlayer(player2);
 
 
 const loadoutType = selectedRegion.initializeAndGetLoadoutType();

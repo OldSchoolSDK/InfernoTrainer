@@ -132,16 +132,6 @@ export class ClickController {
     const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
     const groundItems = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
 
-
-    
-    // players.forEach((player) => {
-    //   if (player !== Viewport.viewport.player){
-    //     menuOptions = menuOptions.concat(player.contextActions(region, x, y))
-    //   }
-    // })
-
-
-
     Viewport.viewport.player.interruptCombat();
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick()
