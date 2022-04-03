@@ -2,7 +2,7 @@
 
 import { Mob } from '../../../../sdk/Mob'
 import ZukImage from '../../assets/images/TzKal-Zuk.png'
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitTypes } from '../../../../sdk/Unit'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
 import { World } from '../../../../sdk/World'
 import { UnitOptions } from '../../../../sdk/Unit'
@@ -52,7 +52,7 @@ export class TzKalZuk extends Mob {
 
     // this.currentStats.hitpoint = 80;
 
-    this.shield = find(region.mobs, (mob: Unit) => {
+    this.shield = find(region.mobs.concat(region.newMobs), (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
   }
@@ -166,13 +166,13 @@ export class TzKalZuk extends Mob {
   attack () {
     let shieldOrPlayer: Unit = this.shield;
 
-    if (Viewport.viewport.player.location.x < this.shield.location.x || Viewport.viewport.player.location.x >= this.shield.location.x + 5) {
-      shieldOrPlayer = Viewport.viewport.player;
+    if (this.aggro.location.x < this.shield.location.x || this.aggro.location.x >= this.shield.location.x + 5) {
+      shieldOrPlayer = this.aggro as Unit;
     }
-    if (Viewport.viewport.player.location.y > 16){
-      shieldOrPlayer = Viewport.viewport.player;
+    if (this.aggro.location.y > 16){
+      shieldOrPlayer = this.aggro as Unit;
     }
-    this.weapons['typeless'].attack(this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer === Viewport.viewport.player ? this.magicMaxHit() : 0 });
+    this.weapons['typeless'].attack(this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer.type === UnitTypes.PLAYER ? this.magicMaxHit() : 0 });
 
     this.attackCooldownTicks = this.cooldown
   }

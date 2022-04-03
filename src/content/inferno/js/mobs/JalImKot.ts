@@ -5,11 +5,11 @@ import { Mob } from '../../../../sdk/Mob'
 import MeleerImage from '../../assets/images/meleer.png'
 import MeleerSound from '../../assets/sounds/meleer.ogg'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { UnitBonuses } from '../../../../sdk/Unit'
+import { UnitBonuses, UnitTypes } from '../../../../sdk/Unit'
 import { Collision } from '../../../../sdk/Collision'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
-import { Viewport } from '../../../../sdk/Viewport'
+import { Player } from '../../../../sdk/Player'
 
 export class JalImKot extends Mob {
 
@@ -125,25 +125,26 @@ export class JalImKot extends Mob {
   }
 
   dig () {
-    if (Viewport.viewport.player.aggro === this) {
-      Viewport.viewport.player.interruptCombat();
+    if (this.aggro.type === UnitTypes.PLAYER) {
+      const player = this.aggro as Player;
+      player.interruptCombat();
     }
     this.attackCooldownTicks = 12
-    if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x - 3, Viewport.viewport.player.location.y + 3, this.size)) {
-      this.location.x = Viewport.viewport.player.location.x - this.size + 1
-      this.location.y = Viewport.viewport.player.location.y + this.size - 1
-    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y, this.size)) {
-      this.location.x = Viewport.viewport.player.location.x
-      this.location.y = Viewport.viewport.player.location.y
-    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x - 3, Viewport.viewport.player.location.y, this.size)) {
-      this.location.x = Viewport.viewport.player.location.x - this.size + 1
-      this.location.y = Viewport.viewport.player.location.y
-    } else if (!Collision.collidesWithAnyEntities(this.region, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y + 3, this.size)) {
-      this.location.x = Viewport.viewport.player.location.x
-      this.location.y = Viewport.viewport.player.location.y + this.size - 1
+    if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x - 3, this.aggro.location.y + 3, this.size)) {
+      this.location.x = this.aggro.location.x - this.size + 1
+      this.location.y = this.aggro.location.y + this.size - 1
+    } else if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x, this.aggro.location.y, this.size)) {
+      this.location.x = this.aggro.location.x
+      this.location.y = this.aggro.location.y
+    } else if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x - 3, this.aggro.location.y, this.size)) {
+      this.location.x = this.aggro.location.x - this.size + 1
+      this.location.y = this.aggro.location.y
+    } else if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x, this.aggro.location.y + 3, this.size)) {
+      this.location.x = this.aggro.location.x
+      this.location.y = this.aggro.location.y + this.size - 1
     } else {
-      this.location.x = Viewport.viewport.player.location.x - 1
-      this.location.y = Viewport.viewport.player.location.y + 1
+      this.location.x = this.aggro.location.x - 1
+      this.location.y = this.aggro.location.y + 1
     }
     this.perceivedLocation = this.location
   }

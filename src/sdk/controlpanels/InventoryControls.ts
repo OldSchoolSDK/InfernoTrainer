@@ -66,7 +66,7 @@ export class InventoryControls extends BaseControls {
     })) as Item
 
     if (clickedItem) {
-      menuOptions = menuOptions.concat(clickedItem.contextActions(Viewport.viewport.player.region))
+      menuOptions = menuOptions.concat(clickedItem.contextActions(Viewport.viewport.player))
     }
 
     Viewport.viewport.contextMenu.setMenuOptions(menuOptions)

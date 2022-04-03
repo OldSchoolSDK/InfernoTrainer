@@ -33,13 +33,15 @@ class InfernoSparkWeapon extends Weapon{
 export class InfernoHealerSpark extends Entity {
 
   from: Unit;
+  to: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
   hasSparked = false;
 
-  constructor (region: Region, location: Location, from: Unit) {
+  constructor (region: Region, location: Location, from: Unit, to: Unit) {
     super(region, location);
     this.from = from;
+    this.to = to;
   }
 
   get collisionType() {
@@ -54,7 +56,7 @@ export class InfernoHealerSpark extends Entity {
     if (this.dying === -1) {
       this.dying = 0;
     }
-    if (!this.hasSparked && Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y, 1)){
+    if (!this.hasSparked && Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, this.to.location.x, this.to.location.y, 1)){
       this.weapon.attack(this.from, this.from.aggro as Unit, {});
       this.hasSparked = true;
     }

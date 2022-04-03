@@ -4,6 +4,7 @@ import { remove } from "lodash";
 import { Entity } from "./Entity";
 import { Item } from "./Item"
 import { Mob } from "./Mob";
+import { Player } from "./Player";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
 import { Viewport } from "./Viewport";
@@ -71,7 +72,7 @@ export class Region{
     remove(this.mobs, mob)
   }
 
-  addGroundItem(item: Item, x: number, y: number) {
+  addGroundItem(player: Player, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
       this.groundItems[x] = {};
     }
@@ -79,7 +80,7 @@ export class Region{
       this.groundItems[x][y] = [];
     }
 
-    item.groundLocation = { x:  Viewport.viewport.player.location.x, y:  Viewport.viewport.player.location.y };
+    item.groundLocation = { x: player.location.x, y:  player.location.y };
     this.groundItems[x][y].push(item);
   }
 

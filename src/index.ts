@@ -2,11 +2,9 @@
 
 import { InfernoRegion } from './content/inferno/js/InfernoRegion'
 import { World as World } from './sdk/World'
-import { ControlPanelController } from './sdk/ControlPanelController'
 import { Settings } from './sdk/Settings'
 import { ImageLoader } from './sdk/utils/ImageLoader'
 import NewRelicBrowser from 'new-relic-browser';
-import { MapController } from './sdk/MapController'
 import { Viewport } from './sdk/Viewport'
 import { Player } from './sdk/Player'
 import { BrowserUtils } from './sdk/utils/BrowserUtils'
@@ -61,7 +59,7 @@ Viewport.viewport.setPlayer(player);
 
 
 let wave = parseInt(BrowserUtils.getQueryVar('wave'));
-if (isNaN(wave)){
+if (isNaN(wave)) {
   wave = 62;
 }
 if (wave < 0) {
@@ -71,7 +69,7 @@ if (wave > InfernoWaves.waves.length + 8) {
   wave = InfernoWaves.waves.length + 8;
 }
 
-if (wave < 67 || wave >=70) {
+if (wave < 67 || wave >= 70) {
   // Add pillars
   InfernoPillar.addPillarsToWorld(selectedRegion)
 }
@@ -79,13 +77,13 @@ if (wave < 67 || wave >=70) {
 const randomPillar = (shuffle(selectedRegion.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
 
 
-for (let x = 10;x < 41;x++) {
-  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 13}))
-  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 44}))
+for (let x = 10; x < 41; x++) {
+  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 13 }))
+  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 44 }))
 }
-for (let y = 14;y < 44;y++) {
-  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x: 10, y}))
-  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x: 40, y}))
+for (let y = 14; y < 44; y++) {
+  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x: 10, y }))
+  selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x: 40, y }))
 }
 const waveInput: HTMLInputElement = document.getElementById('waveinput') as HTMLInputElement;
 
@@ -101,25 +99,25 @@ editWaveInput.addEventListener('click', () => {
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const rangers = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_XIL;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const meleers = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_IM_KOT;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const blobs = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_AK;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const bats = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_MEJ_RAJ;
   }).map((mob: Mob) => {
@@ -138,25 +136,25 @@ exportWaveInput.addEventListener('click', () => {
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const rangers = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_XIL;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const meleers = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_IM_KOT;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const blobs = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_AK;
   }).map((mob: Mob) => {
     return [mob.location.x - 11, mob.location.y - 14]
   });
-  
+
   const bats = filter(selectedRegion.mobs, (mob: Mob) => {
     return mob.mobName() === EntityName.JAL_MEJ_RAJ;
   }).map((mob: Mob) => {
@@ -189,43 +187,43 @@ function importSpawn() {
     InfernoWaves.spawnNibblers(3, this, randomPillar).forEach(this.addMob.bind(this))
 
     replayLink.href = `/${window.location.search}`
-  } catch(ex){
+  } catch (ex) {
     console.log('failed to import wave from inferno stats');
-    
+
   }
 }
 
 if (Settings.tile_markers) {
-Settings.tile_markers.map((location: Location) => {
-  return new TileMarker(selectedRegion, location, "#FF0000")
-}).forEach((tileMarker: TileMarker) => {
-  selectedRegion.addEntity(tileMarker);
-})
+  Settings.tile_markers.map((location: Location) => {
+    return new TileMarker(selectedRegion, location, "#FF0000")
+  }).forEach((tileMarker: TileMarker) => {
+    selectedRegion.addEntity(tileMarker);
+  })
 }
 
 // Add mobs
 if (wave === 0) {
   // world.getReadyTimer = 0;
-  player.location = { x: 28, y: 17}
+  player.location = { x: 28, y: 17 }
 
-  
+
   InfernoWaves.getRandomSpawns().forEach((spawn: Location) => {
-    [2,3,4].forEach((size: number) => {
+    [2, 3, 4].forEach((size: number) => {
       const tileMarker = new TileMarker(selectedRegion, spawn, "#FF730073", size, false)
       selectedRegion.addEntity(tileMarker);
     })
   });
-  
+
   importSpawn();
-}else if (wave < 67) {
-  player.location = { x: 28, y: 17}
+} else if (wave < 67) {
+  player.location = { x: 28, y: 17 }
 
   // this.addMob(new JalMejRah(world, {x: 0, y: 0}, { aggro: player}))
-  
+
   if (bat != '[]' || blob != '[]' || melee != '[]' || ranger != '[]' || mager != '[]') {
     // Backwards compatibility layer for runelite plugin
     wave = 1;
-    
+
     importSpawn();
 
   } else {
@@ -238,82 +236,82 @@ if (wave === 0) {
     replayLink.href = `/?wave=${wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`
     waveInput.value = String(wave);
   }
-}else if (wave === 67){ 
+} else if (wave === 67) {
 
-  player.location = { x: 18, y: 25}
-  const jad = new JalTokJad(selectedRegion, { x: 23, y: 27}, { aggro: player, attackSpeed: 8, stun: 1, healers: 5, isZukWave: false });
+  player.location = { x: 18, y: 25 }
+  const jad = new JalTokJad(selectedRegion, { x: 23, y: 27 }, { aggro: player, attackSpeed: 8, stun: 1, healers: 5, isZukWave: false });
   selectedRegion.addMob(jad)
-}else if (wave === 68){ 
-  player.location = { x: 25, y: 27}
+} else if (wave === 68) {
+  player.location = { x: 25, y: 27 }
 
-  const jad1 = new JalTokJad(selectedRegion, { x: 18, y: 24}, { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false });
+  const jad1 = new JalTokJad(selectedRegion, { x: 18, y: 24 }, { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false });
   selectedRegion.addMob(jad1)
 
-  const jad2 = new JalTokJad(selectedRegion, { x: 28, y: 24}, { aggro: player, attackSpeed: 9, stun: 7, healers: 3, isZukWave: false });
+  const jad2 = new JalTokJad(selectedRegion, { x: 28, y: 24 }, { aggro: player, attackSpeed: 9, stun: 7, healers: 3, isZukWave: false });
   selectedRegion.addMob(jad2)
 
-  const jad3 = new JalTokJad(selectedRegion, { x: 23, y: 35}, { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false });
+  const jad3 = new JalTokJad(selectedRegion, { x: 23, y: 35 }, { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false });
   selectedRegion.addMob(jad3)
-}else if (wave === 69){
-  player.location = { x: 25, y: 15}
+} else if (wave === 69) {
+  player.location = { x: 25, y: 15 }
 
   // spawn zuk
-  const shield = new ZukShield(selectedRegion, { x: 23, y: 13}, {});
+  const shield = new ZukShield(selectedRegion, { x: 23, y: 13 }, { aggro: player});
   selectedRegion.addMob(shield)
 
-  selectedRegion.addMob(new TzKalZuk(selectedRegion, { x: 22, y: 8}, { aggro: player }))
+  selectedRegion.addMob(new TzKalZuk(selectedRegion, { x: 22, y: 8 }, { aggro: player }))
 
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 8}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 7}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 6}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 5}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 4}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 3}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 2}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 1}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 21, y: 0}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 8}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 7}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 6}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 5}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 4}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 3}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 2}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 1}));
-  selectedRegion.addEntity(new Wall(selectedRegion, {x: 29, y: 0}));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 8 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 7 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 6 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 5 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 4 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 3 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 2 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 1 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 21, y: 0 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 8 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 7 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 6 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 5 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 4 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 3 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 2 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 1 }));
+  selectedRegion.addEntity(new Wall(selectedRegion, { x: 29, y: 0 }));
 
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 14, y: 14}, '#00FF00', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 14, y: 14 }, '#00FF00', 1, false));
 
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 16, y: 14}, '#FF0000', 1, false));
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 17, y: 14}, '#FF0000', 1, false));
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 18, y: 14}, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 16, y: 14 }, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 17, y: 14 }, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 18, y: 14 }, '#FF0000', 1, false));
 
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 20, y: 14}, '#00FF00', 1, false));
-  
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 30, y: 14}, '#00FF00', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 20, y: 14 }, '#00FF00', 1, false));
 
-
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 32, y: 14}, '#FF0000', 1, false));
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 33, y: 14}, '#FF0000', 1, false));
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 34, y: 14}, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 30, y: 14 }, '#00FF00', 1, false));
 
 
-  selectedRegion.addEntity(new TileMarker(selectedRegion, {x: 36, y: 14}, '#00FF00', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 32, y: 14 }, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 33, y: 14 }, '#FF0000', 1, false));
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 34, y: 14 }, '#FF0000', 1, false));
 
-}else if (wave === 70){
-  player.location = { x: 28, y: 17}
+
+  selectedRegion.addEntity(new TileMarker(selectedRegion, { x: 36, y: 14 }, '#00FF00', 1, false));
+
+} else if (wave === 70) {
+  player.location = { x: 28, y: 17 }
   InfernoWaves.spawnEnduranceMode(selectedRegion, player, 3).forEach((mob: Mob) => selectedRegion.addMob(mob))
-}else if (wave === 71){
-  player.location = { x: 28, y: 17}
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player,  5).forEach((mob: Mob) => selectedRegion.addMob(mob))
-}else if (wave === 72){
-  player.location = { x: 28, y: 17}
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player,  7).forEach((mob: Mob) => selectedRegion.addMob(mob))
-}else if (wave === 73){
-  player.location = { x: 28, y: 17}
-  InfernoWaves.spawnEnduranceMode(selectedRegion, player,  9).forEach((mob: Mob) => selectedRegion.addMob(mob))
-}else if (wave === 74){
-  player.location = { x: 28, y: 17}
+} else if (wave === 71) {
+  player.location = { x: 28, y: 17 }
+  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 5).forEach((mob: Mob) => selectedRegion.addMob(mob))
+} else if (wave === 72) {
+  player.location = { x: 28, y: 17 }
+  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 7).forEach((mob: Mob) => selectedRegion.addMob(mob))
+} else if (wave === 73) {
+  player.location = { x: 28, y: 17 }
+  InfernoWaves.spawnEnduranceMode(selectedRegion, player, 9).forEach((mob: Mob) => selectedRegion.addMob(mob))
+} else if (wave === 74) {
+  player.location = { x: 28, y: 17 }
 
   importSpawn();
 }
@@ -327,8 +325,8 @@ document.getElementById('playWaveNum').addEventListener('click', () => {
 })
 
 
-    // TODO: Restore this
-    // document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking(this) : world.stopTicking(this))
+// TODO: Restore this
+// document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking(this) : world.stopTicking(this))
 
 
 
@@ -344,7 +342,7 @@ ImageLoader.onAllImagesLoaded(() => {
   world.startTicking(selectedRegion, player)
 })
 
-const interval = setInterval(() => { 
+const interval = setInterval(() => {
   ImageLoader.checkImagesLoaded(interval);
 }, 50);
 

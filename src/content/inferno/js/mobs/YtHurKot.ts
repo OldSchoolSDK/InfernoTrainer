@@ -5,14 +5,12 @@ import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
 import { Mob } from '../../../../sdk/Mob'
 import HurKotImage from '../../assets/images/Yt-HurKot.png'
 import { Location } from "../../../../sdk/Location"
-import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitOptions, UnitTypes } from '../../../../sdk/Unit'
 import { Weapon, AttackBonuses } from '../../../../sdk/gear/Weapon'
-import { World } from '../../../../sdk/World'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
 import { Region } from '../../../../sdk/Region'
-import { Viewport } from '../../../../sdk/Viewport'
 
 class HealWeapon extends Weapon {
 
@@ -118,7 +116,7 @@ export class YtHurKot extends Mob {
   }
 
   attackStyleForNewAttack () {
-    return this.aggro === Viewport.viewport.player ? 'crush' : 'heal';
+    return this.aggro.type === UnitTypes.PLAYER ? 'crush' : 'heal';
   }
 
 

@@ -29,6 +29,7 @@ import { Item } from './Item'
 import { PrayerController } from './PrayerController'
 import { Region } from './Region'
 import { Viewport } from './Viewport'
+import { Player } from './Player'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -307,8 +308,8 @@ export class Unit extends GameObject {
       this.hasLOS = false;
       return;
     }
-    if (this.aggro === Viewport.viewport.player) {
-      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.region, this.location.x, this.location.y, this.size, this.attackRange, true)
+    if (this.aggro.type === UnitTypes.PLAYER) {
+      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.region, this.aggro as Player, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
       this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {

@@ -1,10 +1,10 @@
 import { filter } from 'lodash';
-import { InfernoRegion } from '../content/inferno/js/InfernoRegion';
-import { JalAk } from '../content/inferno/js/mobs/JalAk';
-import { JalImKot } from '../content/inferno/js/mobs/JalImKot';
-import { JalMejRah } from '../content/inferno/js/mobs/JalMejRah';
-import { JalXil } from '../content/inferno/js/mobs/JalXil';
-import { JalZek } from '../content/inferno/js/mobs/JalZek';
+// import { InfernoRegion } from '../content/inferno/js/InfernoRegion';
+// import { JalAk } from '../content/inferno/js/mobs/JalAk';
+// import { JalImKot } from '../content/inferno/js/mobs/JalImKot';
+// import { JalMejRah } from '../content/inferno/js/mobs/JalMejRah';
+// import { JalXil } from '../content/inferno/js/mobs/JalXil';
+// import { JalZek } from '../content/inferno/js/mobs/JalZek';
 import { TileMarker } from '../content/TileMarker';
 import { ClickAnimation } from './ClickAnimation';
 import { Collision } from './Collision';
@@ -16,7 +16,6 @@ import { Pathing } from './Pathing';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
 import { Viewport } from './Viewport';
-import { World } from './World';
 import { Chrome } from './Chrome';
 import { MapController } from './MapController';
 import { ControlPanelController } from './ControlPanelController';
@@ -118,7 +117,7 @@ export class ClickController {
     if (e.button !== 0) {
       return;
     }
-    const region = Viewport.viewport.player.region as InfernoRegion;
+    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
     const world = Viewport.viewport.player.region.world;
     const player = Viewport.viewport.player;
 
@@ -181,7 +180,7 @@ export class ClickController {
 
   rightClickDown (e: MouseEvent) {
 
-    const region = Viewport.viewport.player.region as InfernoRegion;
+    const region = Viewport.viewport.player.region; // TODO: Redo as InfernoRegion;
     const world = Viewport.viewport.player.region.world;
     
     const { viewportX, viewportY } = Viewport.viewport.getViewport(world.tickPercent);
@@ -278,70 +277,70 @@ export class ClickController {
       },
     )
 
-    if (region.wave === 0){
+    // if (region.wave === 0){
 
-      menuOptions.push(
-        {
-          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
-          action: () => {
-            this.yellowClick()
-            const x = Viewport.viewport.contextMenu.destinationLocation.x;
-            const y = Viewport.viewport.contextMenu.destinationLocation.y;
-            region.addMob(new JalMejRah(region, { x, y }, { aggro: Viewport.viewport.player }))
+    //   menuOptions.push(
+    //     {
+    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Bat', fillStyle: 'blue' }],
+    //       action: () => {
+    //         this.yellowClick()
+    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
+    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
+    //         region.addMob(new JalMejRah(region, { x, y }, { aggro: Viewport.viewport.player }))
 
-          }
-        }
-      )
+    //       }
+    //     }
+    //   )
 
-      menuOptions.push(
-        {
-          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
-          action: () => {
-            this.yellowClick()
-            const x = Viewport.viewport.contextMenu.destinationLocation.x;
-            const y = Viewport.viewport.contextMenu.destinationLocation.y;
-            region.addMob(new JalAk(region,{ x, y }, { aggro: Viewport.viewport.player }))
+    //   menuOptions.push(
+    //     {
+    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Blob', fillStyle: 'green' }],
+    //       action: () => {
+    //         this.yellowClick()
+    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
+    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
+    //         region.addMob(new JalAk(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
-          }
-        }
-      )
-      menuOptions.push(
-        {
-          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
-          action: () => {
-            this.yellowClick()
-            const x = Viewport.viewport.contextMenu.destinationLocation.x;
-            const y = Viewport.viewport.contextMenu.destinationLocation.y;
-            region.addMob(new JalImKot(region,{ x, y }, { aggro: Viewport.viewport.player }))
+    //       }
+    //     }
+    //   )
+    //   menuOptions.push(
+    //     {
+    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Meleer', fillStyle: 'yellow' }],
+    //       action: () => {
+    //         this.yellowClick()
+    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
+    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
+    //         region.addMob(new JalImKot(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
-          }
-        }
-      )
-      menuOptions.push(
-        {
-          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
-          action: () => {
-            this.yellowClick()
-            const x = Viewport.viewport.contextMenu.destinationLocation.x;
-            const y = Viewport.viewport.contextMenu.destinationLocation.y;
-            region.addMob(new JalXil(region,{ x, y }, { aggro: Viewport.viewport.player }))
+    //       }
+    //     }
+    //   )
+    //   menuOptions.push(
+    //     {
+    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Ranger', fillStyle: 'orange' }],
+    //       action: () => {
+    //         this.yellowClick()
+    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
+    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
+    //         region.addMob(new JalXil(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
-          }
-        }
-      )
-      menuOptions.push(
-        {
-          text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
-          action: () => {
-            this.yellowClick()
-            const x = Viewport.viewport.contextMenu.destinationLocation.x;
-            const y = Viewport.viewport.contextMenu.destinationLocation.y;
-            region.addMob(new JalZek(region,{ x, y }, { aggro: Viewport.viewport.player }))
+    //       }
+    //     }
+    //   )
+    //   menuOptions.push(
+    //     {
+    //       text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: 'Mager', fillStyle: 'red' }],
+    //       action: () => {
+    //         this.yellowClick()
+    //         const x = Viewport.viewport.contextMenu.destinationLocation.x;
+    //         const y = Viewport.viewport.contextMenu.destinationLocation.y;
+    //         region.addMob(new JalZek(region,{ x, y }, { aggro: Viewport.viewport.player }))
 
-          }
-        }
-      )
-    }
+    //       }
+    //     }
+    //   )
+    // }
     Viewport.viewport.contextMenu.setMenuOptions(menuOptions)
     Viewport.viewport.contextMenu.setActive()
   }

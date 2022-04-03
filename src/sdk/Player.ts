@@ -5,7 +5,6 @@ import { LineOfSight } from './LineOfSight'
 import { minBy, range, filter, find, map, min, uniq, sumBy } from 'lodash'
 import { Unit, UnitTypes, UnitBonuses, UnitOptions } from './Unit'
 import { XpDropController } from './XpDropController'
-import { World } from './World'
 import { AttackBonuses, Weapon } from './gear/Weapon'
 import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
@@ -72,6 +71,7 @@ export class Player extends Unit {
     ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats))
 
   }
+
 
   setUnitOptions(options: UnitOptions) {
     this.equipment = options.equipment || {};
@@ -504,7 +504,7 @@ export class Player extends Unit {
   }
 
   pretick() {
-    this.prayerController.tick();
+    this.prayerController.tick(this);
   }
 
   attackStep() {

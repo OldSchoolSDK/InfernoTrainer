@@ -3,21 +3,19 @@ import { CollisionType } from '../../../sdk/Collision';
 import { EntityName } from "../../../sdk/EntityName";
 import { Settings } from '../../../sdk/Settings'
 import { Projectile } from '../../../sdk/weapons/Projectile';
-import { UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitOptions, UnitStats } from '../../../sdk/Unit'
 
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
 import { ImageLoader } from '../../../sdk/utils/ImageLoader';
 import { Location } from "../../../sdk/Location";
-import { World } from '../../../sdk/World';
 import { find } from 'lodash';
 import { LineOfSightMask } from '../../../sdk/LineOfSight';
 import { DelayedAction } from '../../../sdk/DelayedAction';
 import { JalXil } from './mobs/JalXil';
-import { Random } from '../../../sdk/Random';
 import { Mob } from '../../../sdk/Mob';
 import { Region } from '../../../sdk/Region';
-import { Viewport } from '../../../sdk/Viewport';
+import { Random } from '../../../sdk/Random';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -99,13 +97,13 @@ export class ZukShield extends Mob {
         return mob.mobName() === EntityName.JAL_XIL;
       }) as JalXil;
       if (ranger) {
-        ranger.setAggro(Viewport.viewport.player);
+        ranger.setAggro(this.aggro as Unit);
       }
       const mager = find(this.region.mobs, (mob: Mob) => {
         return mob.mobName() === EntityName.JAL_ZEK;
       }) as JalXil;
       if (mager) {
-        mager.setAggro(Viewport.viewport.player);
+        mager.setAggro(this.aggro as Unit);
       }
       
     }, 2))

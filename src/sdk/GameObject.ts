@@ -5,6 +5,8 @@ import { Location } from "./Location";
 import { Region } from "./Region";
 
 export class GameObject {
+
+
   region: Region;
 
   ticksAlive = 0;

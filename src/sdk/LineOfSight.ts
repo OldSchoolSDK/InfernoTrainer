@@ -6,6 +6,7 @@ import { GameObject } from './GameObject'
 import { Collision } from './Collision'
 import { Region } from './Region'
 import { Viewport } from './Viewport'
+import { Player } from './Player'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -43,8 +44,8 @@ export class LineOfSight {
     region.context.globalAlpha = 1
   }
 
-  static mobHasLineOfSightOfPlayer (region: Region, x: number, y: number, s: number, r = 1, isNPC = true) {
-    return LineOfSight.hasLineOfSight(region, x, y, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y, s, r, isNPC)
+  static mobHasLineOfSightOfPlayer (region: Region, player: Player, x: number, y: number, s: number, r = 1, isNPC = true) {
+    return LineOfSight.hasLineOfSight(region, x, y, player.location.x, player.location.y, s, r, isNPC)
   }
 
   static playerHasLineOfSightOfMob (region: Region, x: number, y: number, mob: GameObject, r = 1) {

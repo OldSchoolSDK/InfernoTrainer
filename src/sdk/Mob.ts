@@ -318,7 +318,7 @@ export class Mob extends Unit {
     if (Settings.playsAudio) {
       const sound = SoundCache.getCachedSound(this.sound);
       if (sound) {
-        let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y);
+        let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, this.aggro.location.x, this.aggro.location.y);
         attemptedVolume = Math.min(1, Math.max(0, attemptedVolume))
         sound.volume = attemptedVolume;
         sound.play()
@@ -444,7 +444,9 @@ export class Mob extends Unit {
 
     if (this.aggro) {
 
-      if (LineOfSight.playerHasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, Viewport.viewport.player.attackRange)) {
+      const unit = this.aggro as Unit;
+
+      if (LineOfSight.playerHasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, unit.attackRange)) {
         this.region.context.strokeStyle = '#00FF0073'
         this.region.context.lineWidth = 1
         this.region.context.strokeRect(

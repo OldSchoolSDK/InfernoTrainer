@@ -11,7 +11,7 @@ import { JalAkRekKet } from './JalAkRekKet'
 import { JalAkRekMej } from './JalAkRekMej'
 import { JalAkRekXil } from './JalAkRekXil'
 import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
-import { UnitBonuses } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses } from '../../../../sdk/Unit'
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
 import { Viewport } from '../../../../sdk/Viewport'
@@ -145,7 +145,8 @@ export class JalAk extends Mob {
     // Scan when appropriate
     if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
-      const overhead = Viewport.viewport.player.prayerController.overhead()
+      const unit = this.aggro as Unit;
+      const overhead = unit.prayerController.overhead()
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       

@@ -1,9 +1,6 @@
 import { Location } from "./Location";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
-import { World } from "./World";
-import { Region } from "./Region";
-import { Viewport } from "./Viewport";
 
 export class Item {
   
@@ -29,7 +26,7 @@ export class Item {
     player;
   }
   
-  contextActions (region: Region) {
+  contextActions (player: Player) {
     
     // use
     // drop
@@ -41,8 +38,8 @@ export class Item {
         ],
         action: () => 
         {
-          region.addGroundItem(this, Viewport.viewport.player.location.x, Viewport.viewport.player.location.y)
-          this.consumeItem(Viewport.viewport.player);
+          player.region.addGroundItem(player, this, player.location.x, player.location.y)
+          this.consumeItem(player);
         }
       },
       {
@@ -63,7 +60,7 @@ export class Item {
           ],
           action: () => 
           {
-            this.inventoryLeftClick(Viewport.viewport.player);
+            this.inventoryLeftClick(player);
           }
         }
       )

@@ -21,23 +21,10 @@ export class World {
   tickCounter = 0;
   isPaused = true;
   tickPercent: number;
-
   getReadyTimer = 0;
-  
   deltaTimeSincePause = -1;
   deltaTimeSinceLastTick = -1;
-
-  _serialNumber: string;
-
   lastMenuVisible: boolean;
-
-  get serialNumber(): string {
-    if (!this._serialNumber) {
-      this._serialNumber = String(Math.random())
-    }
-    return this._serialNumber;
-  }
-
   fpsInterval = 1000 / Settings.fps;
   then: number;
   startTime: number;
