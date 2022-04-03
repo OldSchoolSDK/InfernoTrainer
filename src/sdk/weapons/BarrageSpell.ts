@@ -1,6 +1,5 @@
 import { Mob } from '../Mob'
 import { Pathing } from '../Pathing'
-import { World } from '../World'
 import { Unit } from '../Unit'
 import { MagicWeapon } from './MagicWeapon'
 import { ProjectileOptions } from './Projectile'
@@ -33,14 +32,14 @@ export class BarrageSpell extends MagicWeapon {
     return 9
   }
 
-  cast (world: World, from: Unit, to: Unit) {
+  cast (from: Unit, to: Unit) {
     from.grantXp(new XpDrop('magic', 52));
     // calculate AoE magic effects
     if (this.aoe.length) {
       const alreadyCastedOn: Unit[] = [ to ]
-      this.attack(world, from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
+      this.attack(from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
       this.aoe.forEach((point) => {
-        Pathing.mobsAtAoeOffset(world, to, point)
+        Pathing.mobsAtAoeOffset(from.region, to, point)
           .forEach((mob: Mob) => {
             if (alreadyCastedOn.length > this.maxConcurrentHits) {
               return
@@ -49,16 +48,16 @@ export class BarrageSpell extends MagicWeapon {
               return
             }
             alreadyCastedOn.push(mob)
-            this.attack(world, from, mob, { magicBaseSpellDamage: 30, attackStyle: 'magic' }, {hidden: true})
+            this.attack(from, mob, { magicBaseSpellDamage: 30, attackStyle: 'magic' }, {hidden: true})
           })
       })
     } else {
-      this.attack(world, from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
+      this.attack(from, to, { magicBaseSpellDamage: 30, attackStyle: 'magic' })
     }
   }
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     options.forceSWTile = true;
-    return super.attack(world, from, to, bonuses, options)
+    return super.attack(from, to, bonuses, options)
   }
 }

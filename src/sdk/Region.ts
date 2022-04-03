@@ -4,6 +4,7 @@ import { remove } from "lodash";
 import { Entity } from "./Entity";
 import { Item } from "./Item"
 import { Mob } from "./Mob";
+import { Player } from "./Player";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
 import { World } from "./World"
@@ -22,6 +23,8 @@ export interface GroundItems {
 export class Region{
   canvas: OffscreenCanvas;
 
+  players: Player[] = [];
+
   world: World;
 
   newMobs: Mob[] = [];
@@ -31,7 +34,37 @@ export class Region{
   mapImage: HTMLImageElement;
 
   groundItems: GroundItems = { }
+  
+  _serialNumber: string;
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
 
+
+  preTick() {
+    
+    // Override me
+  }
+
+  midTick() {
+    // Override me
+  }
+
+  postTick() {
+    // Override me
+  }
+
+  addPlayer(player: Player) {
+    this.players.push(player);
+  }
+
+  rightClickActions() {
+    return [];
+  }
+  
   get context() {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {
@@ -52,7 +85,7 @@ export class Region{
   }
 
   addMob (mob: Mob) {
-    if (this.world.tickCounter === 0) {
+    if (!mob.region.world) {
       this.mobs.push(mob)
     }else{
       this.newMobs.push(mob)
@@ -63,7 +96,7 @@ export class Region{
     remove(this.mobs, mob)
   }
 
-  addGroundItem(world: World, item: Item, x: number, y: number) {
+  addGroundItem(player: Player, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
       this.groundItems[x] = {};
     }
@@ -71,7 +104,7 @@ export class Region{
       this.groundItems[x][y] = [];
     }
 
-    item.groundLocation = { x:  world.player.location.x, y:  world.player.location.y };
+    item.groundLocation = { x: player.location.x, y:  player.location.y };
     this.groundItems[x][y].push(item);
   }
 
@@ -91,13 +124,8 @@ export class Region{
     return ''
   }
 
-  // Spawn entities, NPCs, player and initialize any extra UI controls.
-  initialize (world: World) {
-    this.world = world;
-  }
 
-  drawWorldBackground(ctx: OffscreenCanvasRenderingContext2D) {
-    ctx;
+  drawWorldBackground() {
     // Override me
   }
   groundItemsAtLocation(x: number, y: number) {

@@ -2,8 +2,13 @@ import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
 import { LineOfSightMask } from "./LineOfSight";
 import { Location } from "./Location";
+import { Region } from "./Region";
 
 export class GameObject {
+
+
+  region: Region;
+
   ticksAlive = 0;
   location: Location;
   dying = -1;

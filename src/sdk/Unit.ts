@@ -5,7 +5,6 @@ import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
 import { LineOfSight } from './LineOfSight'
 import { remove, filter } from 'lodash'
-import { World } from './World'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './weapons/Projectile'
 import { XpDrop } from './XpDrop'
@@ -28,6 +27,8 @@ import { SetEffect } from './SetEffect'
 import { EntityName } from "./EntityName"
 import { Item } from './Item'
 import { PrayerController } from './PrayerController'
+import { Region } from './Region'
+import { Player } from './Player'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -98,7 +99,6 @@ export interface UnitTargetBonuses {
 
 export class Unit extends GameObject {
 
-  world: World;
   prayerController: PrayerController;
   lastOverhead?: BasePrayer = null;
   aggro?: GameObject;
@@ -135,10 +135,10 @@ export class Unit extends GameObject {
     return null;
   }
 
-  constructor (world: World, location: Location, options?: UnitOptions) {
+  constructor (region: Region, location: Location, options?: UnitOptions) {
     super()
 
-    this.world = world
+    this.region = region;
      this.aggro = options.aggro || null
     this.perceivedLocation = location
     this.location = location
@@ -307,14 +307,14 @@ export class Unit extends GameObject {
       this.hasLOS = false;
       return;
     }
-    if (this.aggro === this.world.player) {
-      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.world, this.location.x, this.location.y, this.size, this.attackRange, true)
+    if (this.aggro.type === UnitTypes.PLAYER) {
+      this.hasLOS = LineOfSight.mobHasLineOfSightOfPlayer(this.region, this.aggro as Player, this.location.x, this.location.y, this.size, this.attackRange, true)
     } else if (this.type === UnitTypes.PLAYER) {
-      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.type === UnitTypes.MOB && this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.world, this, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.mobHasLineOfSightToMob(this.region, this, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.MOB) {
-      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.world, this.location.x, this.location.y, this.aggro, this.attackRange)
+      this.hasLOS = LineOfSight.playerHasLineOfSightOfMob(this.region, this.location.x, this.location.y, this.aggro, this.attackRange)
     } else if (this.aggro.type === UnitTypes.ENTITY) {
       this.hasLOS = false
     }
@@ -431,17 +431,17 @@ export class Unit extends GameObject {
   }
 
   drawHPBar () {
-    this.world.region.context.fillStyle = 'red'
-    this.world.region.context.fillRect(
+    this.region.context.fillStyle = 'red'
+    this.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.world.region.context.fillStyle = 'green'
+    this.region.context.fillStyle = 'green'
     const w = Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -481,22 +481,22 @@ export class Unit extends GameObject {
           image = this.healHitsplatImage;
         }
   
-        this.world.region.context.drawImage(
+        this.region.context.drawImage(
           image,
           projectile.offsetX - 12,
           -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
           24,
           23
         )
-        this.world.region.context.fillStyle = '#FFFFFF'
-        this.world.region.context.font = '16px Stats_11'
-        this.world.region.context.textAlign = 'center'
-        this.world.region.context.fillText(
+        this.region.context.fillStyle = '#FFFFFF'
+        this.region.context.font = '16px Stats_11'
+        this.region.context.textAlign = 'center'
+        this.region.context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
           -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
         )
-        this.world.region.context.textAlign = 'left'
+        this.region.context.textAlign = 'left'
       }
 
     })
@@ -512,7 +512,7 @@ export class Unit extends GameObject {
     if (overhead) {
       const overheadImg = overhead.overheadImage();
       if (overheadImg){
-        this.world.region.context.drawImage(
+        this.region.context.drawImage(
           overheadImg,
           -Settings.tileSize / 2,
           -Settings.tileSize * 3,
@@ -544,16 +544,16 @@ export class Unit extends GameObject {
       const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
       const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
   
-      this.world.region.context.save();
-      this.world.region.context.translate(
+      this.region.context.save();
+      this.region.context.translate(
         perceivedX * Settings.tileSize, 
         (perceivedY) * Settings.tileSize
       )
         
 
       if (projectile.image) {
-        this.world.region.context.rotate(Math.PI)
-        this.world.region.context.drawImage(
+        this.region.context.rotate(Math.PI)
+        this.region.context.drawImage(
           projectile.image,
           -Settings.tileSize / 2, 
           -Settings.tileSize / 2,
@@ -561,30 +561,30 @@ export class Unit extends GameObject {
           Settings.tileSize
         );
       }else{
-        this.world.region.context.beginPath()
+        this.region.context.beginPath()
 
-        this.world.region.context.fillStyle = '#D1BB7773'
+        this.region.context.fillStyle = '#D1BB7773'
         if (projectile.attackStyle === 'slash' || projectile.attackStyle === 'crush' || projectile.attackStyle === 'stab') {
-          this.world.region.context.fillStyle = '#FF000073';
+          this.region.context.fillStyle = '#FF000073';
         }else if (projectile.attackStyle === 'range') {
-          this.world.region.context.fillStyle = '#00FF0073';
+          this.region.context.fillStyle = '#00FF0073';
 
         }else if (projectile.attackStyle === 'magic') {
-          this.world.region.context.fillStyle = '#0000FF73';
+          this.region.context.fillStyle = '#0000FF73';
         }else if (projectile.attackStyle === 'heal') {
-          this.world.region.context.fillStyle = '#9813aa73';
+          this.region.context.fillStyle = '#9813aa73';
         }else{
           console.log('[WARN] This style is not accounted for in custom coloring: ', projectile.attackStyle);
 
         }
-        this.world.region.context.arc(0, 0, 5, 0, 2 * Math.PI)
-        this.world.region.context.fill()
+        this.region.context.arc(0, 0, 5, 0, 2 * Math.PI)
+        this.region.context.fill()
       }
-      this.world.region.context.restore();
+      this.region.context.restore();
 
       // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
-      //   this.world.region.context.strokeStyle = 'red';
-      //   this.world.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
+      //   this.region.context.strokeStyle = 'red';
+      //   this.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
       // }
 
     });

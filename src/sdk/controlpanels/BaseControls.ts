@@ -1,7 +1,7 @@
 import { ControlPanelController } from "../ControlPanelController";
-import { World } from "../World";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Settings } from "../Settings";
+import { Viewport } from "../Viewport";
 
 export class BaseControls {
   panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
@@ -28,25 +28,25 @@ export class BaseControls {
     return true;
   }
   
-  cursorMovedto(world: World, x: number, y: number) {
+  cursorMovedto(x: number, y: number) {
     // Override me
   }
 
-  panelRightClick (world: World, x: number, y: number) {
+  panelRightClick (x: number, y: number) {
     // Override me
   }
 
-  panelClickDown (world: World, x: number, y: number) {
+  panelClickDown (x: number, y: number) {
     console.log(x, y)
   }
-  panelClickUp (world: World, x: number, y: number) {
+  panelClickUp (x: number, y: number) {
     console.log(x, y)
   }
 
-  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
+  draw ( ctrl: ControlPanelController, x: number, y: number) {
     const scale = Settings.controlPanelScale;
     if (this.panelImage) {
-      world.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
+      Viewport.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
     }
   }
 }

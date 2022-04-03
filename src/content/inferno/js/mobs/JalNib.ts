@@ -7,16 +7,16 @@ import NibblerImage from '../../assets/images/nib.png'
 import NibblerSound from '../../assets/sounds/meleer.ogg'
 import { Pathing } from '../../../../sdk/Pathing'
 import { Projectile, ProjectileOptions } from '../../../../sdk/weapons/Projectile'
-import { World } from '../../../../sdk/World'
 import { Unit, UnitBonuses, UnitOptions } from '../../../../sdk/Unit'
 import { AttackBonuses } from '../../../../sdk/gear/Weapon'
 import { Collision } from '../../../../sdk/Collision'
 import { Location } from "../../../../sdk/Location"
 import { EntityName } from "../../../../sdk/EntityName"
 import { Random } from '../../../../sdk/Random'
+import { Region } from '../../../../sdk/Region'
 
 class NibblerWeapon extends MeleeWeapon {
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}): boolean {
     const damage = Math.floor(Random.get() * 5)
     this.damage = damage;
     to.addProjectile(new Projectile(this, this.damage, from, to, 'crush', options))
@@ -26,8 +26,8 @@ class NibblerWeapon extends MeleeWeapon {
 
 export class JalNib extends Mob {
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
+  constructor (region: Region, location: Location, options: UnitOptions) {
+    super(region, location, options)
     this.autoRetaliate = false;
   }
 
@@ -119,7 +119,7 @@ export class JalNib extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
   }
 
   attackIfPossible () {

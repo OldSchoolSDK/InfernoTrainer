@@ -7,12 +7,12 @@ import { Pathing } from './Pathing'
 
 import { Weapon } from './gear/Weapon'
 import { Unit, UnitBonuses, UnitStats, UnitTypes } from './Unit'
-import { World } from './World'
 import { Location } from "./Location"
 import { Collision } from './Collision'
-import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import { SoundCache } from './utils/SoundCache';
+import { Viewport } from './Viewport'
 import { Random } from './Random'
+import { Region } from './Region'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -37,8 +37,8 @@ export class Mob extends Unit {
   hasLOS: boolean;
   weapons: WeaponsMap;
   attackStyle: string;
-
   tcc: Location[];
+  removableWithRightClick = false;
 
   get type () {
     return UnitTypes.MOB
@@ -147,8 +147,8 @@ export class Mob extends Unit {
 
       let xTiles = this.getXMovementTiles(xOff, yOff);
       let yTiles = this.getYMovementTiles(xOff, yOff);
-      let xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
-      let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      let xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.region, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+      let ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.region, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
       const both = xSpace && ySpace;
 
       // if (this.mobName() === EntityName.JAL_AK){ 
@@ -157,10 +157,10 @@ export class Mob extends Unit {
 
       if (!both) {
         xTiles = this.getXMovementTiles(xOff, 0);
-        xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+        xSpace = every(xTiles.map((location: Location) => Pathing.canTileBePathedTo(this.region, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
         if (!xSpace) {
           yTiles = this.getYMovementTiles(0, yOff);
-          ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.world, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
+          ySpace = every(yTiles.map((location: Location) => Pathing.canTileBePathedTo(this.region, location.x, location.y, 1, this.consumesSpace as Mob)), Boolean)
         }        
       }
 
@@ -299,7 +299,7 @@ export class Mob extends Unit {
     } else {
       this.attackFeedback = AttackIndicators.HIT
     }
-    this.weapons[this.attackStyle].attack(this.world, this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
+    this.weapons[this.attackStyle].attack(this, this.aggro as Unit /* hack */, { attackStyle: this.attackStyle, magicBaseSpellDamage: this.magicMaxHit() })
 
     
 
@@ -316,7 +316,7 @@ export class Mob extends Unit {
     if (Settings.playsAudio) {
       const sound = SoundCache.getCachedSound(this.sound);
       if (sound) {
-        let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, this.world.player.location.x, this.world.player.location.y);
+        let attemptedVolume = 1 / Pathing.dist(this.location.x, this.location.y, this.aggro.location.x, this.aggro.location.y);
         attemptedVolume = Math.min(1, Math.max(0, attemptedVolume))
         sound.volume = attemptedVolume;
         sound.play()
@@ -332,26 +332,25 @@ export class Mob extends Unit {
     return 'red'
   }
 
-  contextActions (world: World, x: number, y: number) {
+  contextActions (region: Region, x: number, y: number) {
     const actions = [
       {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
         action: () => {
-          this.world.viewport.clickController.redClick()
-          this.world.viewport.clickController.sendToServer(() => this.world.viewport.clickController.playerAttackClick(this))
+          Viewport.viewport.clickController.redClick()
+          Viewport.viewport.clickController.sendToServer(() => Viewport.viewport.clickController.playerAttackClick(this))
         }
       }
     ];
 
     // hack hack hack
 
-    const infernoRegion = world.region as InfernoRegion;
-    if (infernoRegion.wave === 0) {
+    if (this.removableWithRightClick) {
       actions.push(
         {
           text: [{ text: 'Remove ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],
           action: () => {
-            this.world.region.removeMob(this);
+            this.region.removeMob(this);
           }
         }
       );
@@ -366,24 +365,24 @@ export class Mob extends Unit {
   }
 
   drawUnderTile(tickPercent: number) {
-    this.world.region.context.fillStyle = '#00000000';
+    this.region.context.fillStyle = '#00000000';
     if (Settings.displayFeedback){
       if (this.dying > -1) {
-        this.world.region.context.fillStyle = '#964B0073'
+        this.region.context.fillStyle = '#964B0073'
       } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-        this.world.region.context.fillStyle = '#00FF0073'
+        this.region.context.fillStyle = '#00FF0073'
       } else if (this.attackFeedback === AttackIndicators.HIT) {
-        this.world.region.context.fillStyle = '#FF000073'
+        this.region.context.fillStyle = '#FF000073'
       } else if (this.attackFeedback === AttackIndicators.SCAN) {
-        this.world.region.context.fillStyle = '#FFFF0073'
+        this.region.context.fillStyle = '#FFFF0073'
       } else if (this.hasLOS) {
-        this.world.region.context.fillStyle = '#FF730073'
+        this.region.context.fillStyle = '#FF730073'
       } else {
-        this.world.region.context.fillStyle = this.color;
+        this.region.context.fillStyle = this.color;
       }  
     }
     // Draw mob
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -394,14 +393,14 @@ export class Mob extends Unit {
   
   draw (tickPercent: number) {
     if (Settings.displayMobLoS){
-      LineOfSight.drawLOS(this.world, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
+      LineOfSight.drawLOS(this.region, this.location.x, this.location.y, this.size, this.attackRange, '#FF000055', this.type === UnitTypes.MOB)
     }
 
     
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.region.context.save()
-    this.world.region.context.translate(
+    this.region.context.save()
+    this.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
@@ -410,19 +409,19 @@ export class Mob extends Unit {
     const currentImage = this.unitImage
 
     if (Settings.rotated === 'south') {
-      this.world.region.context.rotate(Math.PI)
+      this.region.context.rotate(Math.PI)
     }
     if (Settings.rotated === 'south') {
-      this.world.region.context.scale(-1, 1)
+      this.region.context.scale(-1, 1)
     }
 
-    this.world.region.context.save()
+    this.region.context.save()
     if (this.shouldShowAttackAnimation()) {
       this.attackAnimation(tickPercent)
     }
 
     if (currentImage){
-      this.world.region.context.drawImage(
+      this.region.context.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -432,20 +431,22 @@ export class Mob extends Unit {
 
     }
 
-    this.world.region.context.restore()
+    this.region.context.restore()
 
     if (Settings.rotated === 'south') {
-      this.world.region.context.scale(-1, 1)
+      this.region.context.scale(-1, 1)
     }
 
     this.drawOverTile(tickPercent)
 
     if (this.aggro) {
 
-      if (LineOfSight.playerHasLineOfSightOfMob(this.world, this.aggro.location.x, this.aggro.location.y, this, this.world.player.attackRange)) {
-        this.world.region.context.strokeStyle = '#00FF0073'
-        this.world.region.context.lineWidth = 1
-        this.world.region.context.strokeRect(
+      const unit = this.aggro as Unit;
+
+      if (LineOfSight.playerHasLineOfSightOfMob(this.region, this.aggro.location.x, this.aggro.location.y, this, unit.attackRange)) {
+        this.region.context.strokeStyle = '#00FF0073'
+        this.region.context.lineWidth = 1
+        this.region.context.strokeRect(
           -(this.size * Settings.tileSize) / 2,
           -(this.size * Settings.tileSize) / 2,
           this.size * Settings.tileSize,
@@ -455,7 +456,7 @@ export class Mob extends Unit {
     }
 
 
-    this.world.region.context.restore()
+    this.region.context.restore()
 
     if (!this.tcc) {
       return;
@@ -467,8 +468,8 @@ export class Mob extends Unit {
     //   return;
     // }
     this.tcc.forEach((location: Location) => {
-      this.world.region.context.fillStyle = '#00FF0073'
-      this.world.region.context.fillRect(
+      this.region.context.fillStyle = '#00FF0073'
+      this.region.context.fillRect(
         location.x * Settings.tileSize, location.y * Settings.tileSize,
         Settings.tileSize,
         Settings.tileSize
@@ -479,15 +480,15 @@ export class Mob extends Unit {
   drawUILayer(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-    this.world.region.context.save()
-    this.world.region.context.translate(
+    this.region.context.save()
+    this.region.context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2
     )
 
 
     if (Settings.rotated === 'south') {
-      this.world.region.context.rotate(Math.PI)
+      this.region.context.rotate(Math.PI)
     }
     
     this.drawHPBar()
@@ -496,7 +497,7 @@ export class Mob extends Unit {
 
     this.drawOverheadPrayers()
 
-    this.world.region.context.restore()
+    this.region.context.restore()
 
     this.drawIncomingProjectiles(tickPercent)
 

@@ -5,12 +5,12 @@ import { Entity } from '../../../sdk/Entity'
 
 import MissSplat from '../../../assets/images/hitsplats/miss.png'
 import DamageSplat from '../../../assets/images/hitsplats/damage.png'
-import { World } from '../../../sdk/World'
 import { UnitBonuses, UnitStats } from '../../../sdk/Unit'
 import { Projectile } from '../../../sdk/weapons/Projectile'
 import { Location } from "../../../sdk/Location"
 import { ImageLoader } from '../../../sdk/utils/ImageLoader'
 import { DelayedAction } from '../../../sdk/DelayedAction'
+import { Region } from '../../../sdk/Region'
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -20,8 +20,8 @@ export class InfernoPillar extends Entity {
   currentStats: UnitStats;
   bonuses: UnitBonuses;
 
-  constructor (world: World, point: Location) {
-    super(world, point)
+  constructor (region: Region, point: Location) {
+    super(region, point)
 
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
     this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
@@ -91,9 +91,9 @@ export class InfernoPillar extends Entity {
   }
 
   draw () {
-    this.world.region.context.fillStyle = '#000073'
+    this.region.context.fillStyle = '#000073'
 
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
@@ -106,28 +106,28 @@ export class InfernoPillar extends Entity {
   drawUILayer(){
 
 
-    this.world.region.context.save()
+    this.region.context.save()
 
-    this.world.region.context.translate(
+    this.region.context.translate(
       (this.location.x * Settings.tileSize + this.size * Settings.tileSize / 2),
       ((this.location.y + 1) * Settings.tileSize - ((this.size) * Settings.tileSize) / 2)
     )
 
     if (Settings.rotated === 'south') {
-      this.world.region.context.rotate(Math.PI)
+      this.region.context.rotate(Math.PI)
     }
 
-    this.world.region.context.fillStyle = 'red'
-    this.world.region.context.fillRect(
+    this.region.context.fillStyle = 'red'
+    this.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       Settings.tileSize * this.size,
       5
     )
 
-    this.world.region.context.fillStyle = 'green'
+    this.region.context.fillStyle = 'green'
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size)
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
       (-this.size / 2) * Settings.tileSize,
       w,
@@ -160,24 +160,24 @@ export class InfernoPillar extends Entity {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
       })
 
-      this.world.region.context.drawImage(
+      this.region.context.drawImage(
         image,
         projectile.offsetX - 12,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23
       )
-      this.world.region.context.fillStyle = '#FFFFFF'
-      this.world.region.context.font = '16px Stats_11'
-      this.world.region.context.textAlign = 'center'
-      this.world.region.context.fillText(
+      this.region.context.fillStyle = '#FFFFFF'
+      this.region.context.font = '16px Stats_11'
+      this.region.context.textAlign = 'center'
+      this.region.context.fillText(
         String(projectile.damage),
         projectile.offsetX,
         -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
       )
-      this.world.region.context.textAlign = 'left'
+      this.region.context.textAlign = 'left'
     })
-    this.world.region.context.restore()
+    this.region.context.restore()
   }
 
   get size() {
@@ -187,7 +187,7 @@ export class InfernoPillar extends Entity {
   dead () {
     this.dying = 2
     DelayedAction.registerDelayedAction(new DelayedAction(() => {
-      this.world.region.removeEntity(this);
+      this.region.removeEntity(this);
     }, 2))
     // TODO: needs to AOE the nibblers around it
   }
@@ -196,11 +196,11 @@ export class InfernoPillar extends Entity {
     this.incomingProjectiles.push(projectile)
   }
 
-  static addPillarsToWorld (world: World) {
+  static addPillarsToWorld (region: Region) {
     [
       { x: 11, y: 23 },
       { x: 28, y: 21 },
       { x: 21, y: 37 }
-    ].forEach((position) => world.region.addEntity(new InfernoPillar(world, position)))
+    ].forEach((position) => region.addEntity(new InfernoPillar(region, position)))
   }
 }

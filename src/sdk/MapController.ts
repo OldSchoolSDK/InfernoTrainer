@@ -23,7 +23,6 @@ import MapRunIcon from '../assets/images/interface/map_run_icon.png'
 import MapStamIcon from '../assets/images/interface/map_stam_icon.png'
 import MapSpecIcon from '../assets/images/interface/map_spec_icon.png'
 
-import { World } from './World';
 import ColorScale from 'color-scales'
 import { PlayerStats } from "./PlayerStats"
 import { ImageLoader } from './utils/ImageLoader'
@@ -31,6 +30,7 @@ import { Settings } from './Settings'
 import { ControlPanelController } from './ControlPanelController'
 import { MenuOption } from './ContextMenu'
 import { Chrome } from './Chrome'
+import { Viewport } from './Viewport'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -47,8 +47,6 @@ export class MapController {
   static controller = new MapController();
 
   colorScale: ColorScale = new ColorScale(0, 1, [ '#FF0000', '#FF7300', '#00FF00'], 1);
-
-  world: World;
 
   outlineImage: HTMLImageElement = ImageLoader.createImage(MapBoarder)
   mapAlphaImage: HTMLImageElement = ImageLoader.createImage(MapBorderMask);
@@ -95,28 +93,6 @@ export class MapController {
 
   }
 
-  cursorMovedTo(event: MouseEvent) {
-    const { width } = Chrome.size();
-
-    const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width)) / scale;
-    const y = event.offsetY / scale;
-
-    this.hovering = MapHover.NONE;
-    if (x > 4 && x < 28 && y > 31 && y < 56) {
-      this.hovering = MapHover.XP;
-    }else if (x > 4 && x < 53 && y > 53 && y < 81){
-      this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
-      this.hovering = MapHover.PRAYER;
-    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
-      this.hovering = MapHover.RUN;
-    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
-      this.hovering = MapHover.SPEC;
-    }
-
-  }
-
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
 
     if (currentStats){
@@ -153,7 +129,7 @@ export class MapController {
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext('2d')
     ctx.fillStyle="white";
-    ctx.drawImage(this.world.player.running ? this.mapRunOrb: this.mapNoSpecOrb, 0, 0)
+    ctx.drawImage(Viewport.viewport.player.running ? this.mapRunOrb: this.mapNoSpecOrb, 0, 0)
     ctx.globalCompositeOperation = 'destination-in'
     ctx.fillRect(0,this.mapRunOrb.height * (1 - runPercentage), this.mapRunOrb.width, this.mapRunOrb.height * runPercentage)
     ctx.globalCompositeOperation = 'source-over'
@@ -164,8 +140,8 @@ export class MapController {
     ctx = this.mapSpecOrbMasked.getContext('2d')
     ctx.fillStyle="white";
     let specOrb = this.mapNoSpecOrb;
-    if (this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack()) {
-      if (this.world.player.useSpecialAttack) {
+    if (Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack()) {
+      if (Viewport.viewport.player.useSpecialAttack) {
         specOrb = this.mapSpecOnOrb;
       }else{
         specOrb = this.mapSpecOrb;
@@ -212,10 +188,6 @@ export class MapController {
 
   }
 
-  setWorld(world: World) {
-    this.world = world;
-  }
-
   generateMaskedMap() {
     this.mapCanvas = new OffscreenCanvas(152, 152);
     const mapContext = this.mapCanvas.getContext('2d')
@@ -229,12 +201,12 @@ export class MapController {
     mapContext.translate(-76, -76)
 
 
-    if (this.world.region.mapImage){
+    if (Viewport.viewport.player.region.mapImage){
       const compatCtx = mapContext as any;
       compatCtx.webkitImageSmoothingEnabled = false;
       compatCtx.mozImageSmoothingEnabled = false;
       compatCtx.imageSmoothingEnabled = false;
-      mapContext.drawImage(this.world.region.mapImage, 0, 0, 152, 152)
+      mapContext.drawImage(Viewport.viewport.player.region.mapImage, 0, 0, 152, 152)
       compatCtx.webkitImageSmoothingEnabled = true;
       compatCtx.mozImageSmoothingEnabled = true;
       compatCtx.imageSmoothingEnabled = true;
@@ -246,6 +218,30 @@ export class MapController {
     mapContext.restore()
   }
 
+  
+
+  cursorMovedTo(event: MouseEvent) {
+    const { width } = Chrome.size();
+
+    const scale = Settings.minimapScale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
+    const y = event.offsetY / scale;
+
+    this.hovering = MapHover.NONE;
+    if (x > 4 && x < 28 && y > 31 && y < 56) {
+      this.hovering = MapHover.XP;
+    }else if (x > 4 && x < 53 && y > 53 && y < 81){
+      this.hovering = MapHover.HITPOINT;
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
+      this.hovering = MapHover.PRAYER;
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
+      this.hovering = MapHover.RUN;
+    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
+      this.hovering = MapHover.SPEC;
+    }
+
+  }
+
   rightClick(event: MouseEvent): boolean {
 
     let menuOptions: MenuOption[] = []
@@ -254,7 +250,7 @@ export class MapController {
 
     let intercepted = false;
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width * scale)) / scale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -317,7 +313,7 @@ export class MapController {
         {
           text: [{ text: 'Toggle Run', fillStyle: 'white' } ],
           action: () => {
-            this.world.player.running = !this.world.player.running;
+            Viewport.viewport.player.running = !Viewport.viewport.player.running;
           }
         }
       ]
@@ -337,8 +333,8 @@ export class MapController {
       }
     }
 
-    this.world.contextMenu.setMenuOptions(menuOptions)
-    this.world.contextMenu.setActive()
+    Viewport.viewport.contextMenu.setMenuOptions(menuOptions)
+    Viewport.viewport.contextMenu.setActive()
 
     return intercepted;  
   
@@ -348,7 +344,7 @@ export class MapController {
     let intercepted = false;
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width * scale)) / scale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
     const y = event.offsetY / scale;
     
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -373,7 +369,7 @@ export class MapController {
       this.toggleQuickprayers();
     }else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
-      this.world.player.running = !this.world.player.running;
+      Viewport.viewport.player.running = !Viewport.viewport.player.running;
     }else if (x > 38 && x < 79 && y > 148 && y < 175) {
       intercepted = true;
       this.toggleSpecialAttack();
@@ -383,20 +379,20 @@ export class MapController {
   }
 
   canSpecialAttack() {
-    return this.world.player.equipment.weapon && this.world.player.equipment.weapon.hasSpecialAttack();
+    return Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
   }
   toggleSpecialAttack() {
     if (this.canSpecialAttack()) {
-      this.world.player.useSpecialAttack = !this.world.player.useSpecialAttack;
+      Viewport.viewport.player.useSpecialAttack = !Viewport.viewport.player.useSpecialAttack;
     }
   }
 
   toggleQuickprayers() {
     if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
-      ControlPanelController.controls.PRAYER.deactivateAllPrayers(this.world);
-      this.world.player.prayerController.drainCounter = 0;
+      ControlPanelController.controls.PRAYER.deactivateAllPrayers();
+      Viewport.viewport.player.prayerController.drainCounter = 0;
     }else {
-      ControlPanelController.controls.PRAYER.activateQuickPrayers(this.world);
+      ControlPanelController.controls.PRAYER.activateQuickPrayers();
     }
   }
 
@@ -409,7 +405,7 @@ export class MapController {
     Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
 
     const scale = Settings.minimapScale;
-    const offset = width - (this.width * scale);
+    const offset = width - (this.width * scale)  - (Settings.menuVisible ? 232 : 0);
     
     ctx.font = (16 * scale) + 'px Stats_11'
     ctx.textAlign = 'center'
@@ -449,9 +445,9 @@ export class MapController {
     ctx.drawImage(this.mapRunOrbMasked, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale)
 
     let mapRunIcon = this.mapWalkIcon;
-    if (this.world.player.effects.stamina){
+    if (Viewport.viewport.player.effects.stamina){
       mapRunIcon = this.mapStamIcon;
-    } else if (this.world.player.running) {
+    } else if (Viewport.viewport.player.running) {
       mapRunIcon = this.mapRunIcon;
     }
     ctx.drawImage(mapRunIcon, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale)

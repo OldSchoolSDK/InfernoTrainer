@@ -25,9 +25,9 @@ import CombatTab from '../../assets/images/controlTabs/style.png'
 
 import { Settings } from '../Settings'
 import { BrowserUtils } from '../utils/BrowserUtils'
-import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
 import { ImageLoader } from '../utils/ImageLoader'
+import { Viewport } from '../Viewport'
 
 export class SettingsControls extends BaseControls {
   get panelImageReference () {
@@ -99,7 +99,7 @@ export class SettingsControls extends BaseControls {
     return BrowserUtils.getQueryVar('settings_key')
   }
 
-  panelClickDown (world: World, x: number, y: number) {
+  panelClickDown (x: number, y: number) {
     const scale = Settings.controlPanelScale;
 
     x = x / scale;
@@ -138,76 +138,83 @@ export class SettingsControls extends BaseControls {
       this.bindingKey = 'combat'
     } else if (x > 140 && x < 180 && y > 220 && y < 260) {
       Settings.menuVisible = !Settings.menuVisible;
+      
+      if (Settings.menuVisible) {
+        document.getElementById('right_panel').classList.remove('hidden');
+      }else{
+        document.getElementById('right_panel').classList.add('hidden');
+      }
+      Viewport.viewport.calculateViewport();
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay)
     Settings.persistToStorage()
   }
 
-  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(world, ctrl, x, y)
+  draw ( ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(ctrl, x, y)
     const scale = Settings.controlPanelScale;
 
-    world.viewport.context.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20 * scale, y + 20 * scale, this.musicOffImage.width * scale, this.musicOffImage.height * scale)
+    Viewport.viewport.context.drawImage(Settings.playsAudio ? this.musicOnImage : this.musicOffImage, x + 20 * scale, y + 20 * scale, this.musicOffImage.width * scale, this.musicOffImage.height * scale)
 
-    world.viewport.context.drawImage(this.redUpImage, x + 90 * scale, y + 20 * scale, this.redUpImage.width * scale, this.redUpImage.height * scale)
-    world.viewport.context.fillStyle = '#FFFF00'
-    world.viewport.context.font = (16 * scale) + 'px OSRS'
-    world.viewport.context.textAlign = 'center'
-    world.viewport.context.fillText(String(Settings.inputDelay), x + 96 * scale, y + 48 * scale)
-    world.viewport.context.drawImage(this.greenDownImage, x + 90 * scale, y + 51 * scale, this.greenDownImage.width * scale, this.greenDownImage.height * scale)
-    world.viewport.context.fillText('Lag', x + 97 * scale, y + 81 * scale)
+    Viewport.viewport.context.drawImage(this.redUpImage, x + 90 * scale, y + 20 * scale, this.redUpImage.width * scale, this.redUpImage.height * scale)
+    Viewport.viewport.context.fillStyle = '#FFFF00'
+    Viewport.viewport.context.font = (16 * scale) + 'px OSRS'
+    Viewport.viewport.context.textAlign = 'center'
+    Viewport.viewport.context.fillText(String(Settings.inputDelay), x + 96 * scale, y + 48 * scale)
+    Viewport.viewport.context.drawImage(this.greenDownImage, x + 90 * scale, y + 51 * scale, this.greenDownImage.width * scale, this.greenDownImage.height * scale)
+    Viewport.viewport.context.fillText('Lag', x + 97 * scale, y + 81 * scale)
 
-    world.viewport.context.drawImage(Settings.displayPlayerLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 20 * scale, y + 100 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('P LoS', x + 40 * scale, y + 125 * scale)
+    Viewport.viewport.context.drawImage(Settings.displayPlayerLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 20 * scale, y + 100 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.fillText('P LoS', x + 40 * scale, y + 125 * scale)
 
-    world.viewport.context.drawImage(Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 80 * scale, y + 100 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('M LoS', x + 100 * scale, y + 125 * scale)
+    Viewport.viewport.context.drawImage(Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage, x + 80 * scale, y + 100 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.fillText('M LoS', x + 100 * scale, y + 125 * scale)
 
-    // world.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    // world.viewport.context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
-
-
-    world.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 70 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('Pray Ind.', x + 160 * scale, y + 95 * scale)
+    // Viewport.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    // Viewport.viewport.context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
 
 
-    world.viewport.context.drawImage(Settings.metronome ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 20 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('Metronome', x + 160 * scale, y + 45 * scale)
+    Viewport.viewport.context.drawImage(Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 70 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.fillText('Pray Ind.', x + 160 * scale, y + 95 * scale)
 
-    world.viewport.context.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.drawImage(this.inventoryImage, x + 25 * scale, y + 172 * scale, this.inventoryImage.width * scale, this.inventoryImage.height * scale)
-    world.viewport.context.fillText(Settings.inventory_key, x + (25 + 30) * scale, y + (172 + 30) * scale)
 
-    world.viewport.context.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.drawImage(this.spellbookImage, x + 85 * scale, y + 172 * scale, this.spellbookImage.width * scale, this.spellbookImage.height * scale)
-    world.viewport.context.fillText(Settings.spellbook_key, x + (85 + 30) * scale, y + (172 + 30) * scale)
+    Viewport.viewport.context.drawImage(Settings.metronome ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 20 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.fillText('Metronome', x + 160 * scale, y + 45 * scale)
 
-    world.viewport.context.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.drawImage(this.prayerImage, x + 145 * scale, y + 172 * scale, this.prayerImage.width * scale, this.prayerImage.height * scale)
-    world.viewport.context.fillText(Settings.prayer_key, x + (145 + 30) * scale
+    Viewport.viewport.context.drawImage(this.bindingKey === 'inventory' ? this.activeButtonImage : this.inactiveButtonImage, x + 22 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.drawImage(this.inventoryImage, x + 25 * scale, y + 172 * scale, this.inventoryImage.width * scale, this.inventoryImage.height * scale)
+    Viewport.viewport.context.fillText(Settings.inventory_key, x + (25 + 30) * scale, y + (172 + 30) * scale)
+
+    Viewport.viewport.context.drawImage(this.bindingKey === 'spellbook' ? this.activeButtonImage : this.inactiveButtonImage, x + 82 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.drawImage(this.spellbookImage, x + 85 * scale, y + 172 * scale, this.spellbookImage.width * scale, this.spellbookImage.height * scale)
+    Viewport.viewport.context.fillText(Settings.spellbook_key, x + (85 + 30) * scale, y + (172 + 30) * scale)
+
+    Viewport.viewport.context.drawImage(this.bindingKey === 'prayer' ? this.activeButtonImage : this.inactiveButtonImage, x + 142 * scale, y + 170 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.drawImage(this.prayerImage, x + 145 * scale, y + 172 * scale, this.prayerImage.width * scale, this.prayerImage.height * scale)
+    Viewport.viewport.context.fillText(Settings.prayer_key, x + (145 + 30) * scale
     , y + (172 + 30) * scale)
 
-    world.viewport.context.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.drawImage(this.equipmentImage, x + 25 * scale, y + 222 * scale, this.equipmentImage.width * scale, this.equipmentImage.height * scale)
-    world.viewport.context.fillText(Settings.equipment_key, x + (25 + 30) * scale, y + (222 + 30) * scale)
+    Viewport.viewport.context.drawImage(this.bindingKey === 'equipment' ? this.activeButtonImage : this.inactiveButtonImage, x + 22 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.drawImage(this.equipmentImage, x + 25 * scale, y + 222 * scale, this.equipmentImage.width * scale, this.equipmentImage.height * scale)
+    Viewport.viewport.context.fillText(Settings.equipment_key, x + (25 + 30) * scale, y + (222 + 30) * scale)
 
-    world.viewport.context.drawImage(this.bindingKey === 'combat' ? this.activeButtonImage : this.inactiveButtonImage, x + 82 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.drawImage(this.combatImage, x + 85 * scale, y + 222 * scale, this.combatImage.width * scale, this.combatImage.height * scale)
-    world.viewport.context.fillText(Settings.combat_key, x + (85 + 30) * scale, y + (222 + 30) * scale)
+    Viewport.viewport.context.drawImage(this.bindingKey === 'combat' ? this.activeButtonImage : this.inactiveButtonImage, x + 82 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.drawImage(this.combatImage, x + 85 * scale, y + 222 * scale, this.combatImage.width * scale, this.combatImage.height * scale)
+    Viewport.viewport.context.fillText(Settings.combat_key, x + (85 + 30) * scale, y + (222 + 30) * scale)
   
 
 
 
-    world.viewport.context.drawImage(Settings.menuVisible ? this.activeButtonImage : this.inactiveButtonImage, x + 142 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    world.viewport.context.fillText('Menu', x + 163 * scale, y + 241 * scale)
+    Viewport.viewport.context.drawImage(Settings.menuVisible ? this.activeButtonImage : this.inactiveButtonImage, x + 142 * scale, y + 220 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    Viewport.viewport.context.fillText('Menu', x + 163 * scale, y + 241 * scale)
 
 
 
     if (this.bindingKey === null){
-      world.viewport.context.fillText('Key Bindings', x + 100 * scale, y + (133 + 30) * scale)
+      Viewport.viewport.context.fillText('Key Bindings', x + 100 * scale, y + (133 + 30) * scale)
     }else{
-      world.viewport.context.fillText('Press Key To Bind', x + 100 * scale, y + (133 + 30) * scale)
+      Viewport.viewport.context.fillText('Press Key To Bind', x + 100 * scale, y + (133 + 30) * scale)
     }
   }
 }

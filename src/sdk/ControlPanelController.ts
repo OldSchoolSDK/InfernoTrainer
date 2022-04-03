@@ -14,11 +14,11 @@ import { PrayerControls } from './controlpanels/PrayerControls'
 import { QuestsControls } from './controlpanels/QuestsControls'
 import { SettingsControls } from './controlpanels/SettingsControls'
 import { StatsControls } from './controlpanels/StatsControls'
-import { World } from './World'
 import { Settings } from './Settings'
 import { Location } from './Location'
 import { Chrome } from './Chrome'
 import { MapController } from './MapController'
+import { Viewport } from './Viewport'
 
 interface TabPosition{
   x: number;
@@ -39,7 +39,6 @@ export class ControlPanelController {
   
   static controller = new ControlPanelController();
 
-  world?: World;
   desktopControls: BaseControls[];
   mobileControls: BaseControls[];
   controls: BaseControls[];
@@ -52,8 +51,6 @@ export class ControlPanelController {
 
     this.width = 33 * 7
     this.height = 36 * 2 + 275
-
-    this.world = null
 
 
     this.desktopControls = [
@@ -110,9 +107,6 @@ export class ControlPanelController {
     })
   }
 
-  setWorld (world: World) {
-    this.world = world
-  }
 
   getTabScale() {
     const { width, height } = Chrome.size();
@@ -146,7 +140,7 @@ export class ControlPanelController {
       if (i < 7) {
         return { x: 15, y: mapHeight + spacer + i * 36 * scale };
       }else{
-        return { x: width - 33 * scale - 15, y: mapHeight + spacer + (i - 7) * 36 * scale };
+        return { x: width - 33 * scale - 15 - (Settings.menuVisible ? 232 : 0), y: mapHeight + spacer + (i - 7) * 36 * scale };
       }
     }else{
       const x = i % 7
@@ -173,7 +167,7 @@ export class ControlPanelController {
       if (panelY < y && y < panelY + panelHeight) {
         const relativeX = x - panelX
         const relativeY = y - panelY
-        this.selectedControl.cursorMovedto(this.world, relativeX, relativeY)
+        this.selectedControl.cursorMovedto(relativeX, relativeY)
       }
     }
 
@@ -197,7 +191,7 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        this.selectedControl.panelRightClick(this.world, relativeX, relativeY)
+        this.selectedControl.panelRightClick(relativeX, relativeY)
       }
     }
 
@@ -227,7 +221,7 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        this.selectedControl.panelClickUp(this.world, relativeX, relativeY)
+        this.selectedControl.panelClickUp(relativeX, relativeY)
       }
     }
 
@@ -273,7 +267,7 @@ export class ControlPanelController {
         const relativeX = x - panelX
         const relativeY = y - panelY
         intercepted = true;
-        this.selectedControl.panelClickDown(this.world, relativeX, relativeY)
+        this.selectedControl.panelClickDown(relativeX, relativeY)
       }
     }
 
@@ -293,7 +287,7 @@ export class ControlPanelController {
         return { x: 33 * scale + 15, y: mapHeight + spacer};
       }else{
         // right side mobile
-        return { x: width - 33 * scale - 15 - 200 * Settings.controlPanelScale, y: mapHeight + spacer};
+        return { x: width - 33 * scale - 15 - 200 * Settings.controlPanelScale - (Settings.menuVisible ? 232 : 0), y: mapHeight + spacer};
       }
     }else{
       // desktop compact
@@ -304,15 +298,15 @@ export class ControlPanelController {
     }
   }
 
-  draw (world: World) {
-    world.viewport.context.fillStyle = '#000'
+  draw () {
+    Viewport.viewport.context.fillStyle = '#000'
     const scale = this.getTabScale();
 
     
     
     if (this.selectedControl && this.selectedControl.draw) {
       const position = this.controlPosition(this.selectedControl);
-      this.selectedControl.draw(world, this, position.x, position.y);
+      this.selectedControl.draw(this, position.x, position.y);
     }
 
     let selectedPosition: TabPosition = null
@@ -321,7 +315,7 @@ export class ControlPanelController {
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index)
       if (control.tabImage){
-        world.viewport.context.drawImage(
+        Viewport.viewport.context.drawImage(
           control.tabImage, 
           tabPosition.x, 
           tabPosition.y, 
@@ -331,8 +325,8 @@ export class ControlPanelController {
       }
 
       if (control.isAvailable === false){
-        world.viewport.context.fillStyle = '#00000099'
-        world.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33 * scale, 36 * scale)
+        Viewport.viewport.context.fillStyle = '#00000099'
+        Viewport.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33 * scale, 36 * scale)
       }
 
       
@@ -342,9 +336,9 @@ export class ControlPanelController {
     })
 
     if (selectedPosition) {
-      world.viewport.context.strokeStyle = '#00FF0073'
-      world.viewport.context.lineWidth = 3
-      world.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33 * scale, 36 * scale)
+      Viewport.viewport.context.strokeStyle = '#00FF0073'
+      Viewport.viewport.context.lineWidth = 3
+      Viewport.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33 * scale, 36 * scale)
     }
 
 

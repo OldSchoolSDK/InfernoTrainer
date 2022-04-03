@@ -1,4 +1,3 @@
-import { World } from '../World'
 import { Unit, UnitTypes } from '../Unit'
 import { XpDrop } from '../XpDrop'
 import { ProjectileOptions } from './Projectile'
@@ -6,8 +5,8 @@ import { AttackBonuses, Weapon } from '../gear/Weapon'
 
 export class MagicWeapon extends Weapon {
 
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
-    return super.attack(world,from,to,bonuses, options);
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+    return super.attack(from,to,bonuses, options);
   }
 
   calculateHitDelay(distance: number) {

@@ -1,4 +1,3 @@
-import { World } from '../World'
 import { Unit } from '../Unit'
 import { BarrageSpell } from './BarrageSpell'
 import { ProjectileOptions } from './Projectile'
@@ -12,9 +11,9 @@ export class BloodBarrageSpell extends BarrageSpell {
   }
 
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     const startDamage = this.totalDamage;
-    super.attack(world, from, to, bonuses, options)
+    super.attack(from, to, bonuses, options)
     const attackDamage = this.totalDamage - startDamage;
     if (from.currentStats.hitpoint < from.stats.hitpoint) {
       from.currentStats.hitpoint += Math.floor(attackDamage * 0.25);

@@ -2,9 +2,10 @@
 
 import { Settings } from './Settings'
 import { Pathing } from './Pathing'
-import { World } from './World'
 import { GameObject } from './GameObject'
 import { Collision } from './Collision'
+import { Region } from './Region'
+import { Player } from './Player'
 
 /*
  Basically, this entire file is lifted and modified to be as coherent as possible.
@@ -23,14 +24,14 @@ export enum LineOfSightMask {
 }
 
 export class LineOfSight {
-  static drawLOS (world: World, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
-    world.region.context.globalAlpha = 0.4
-    world.region.context.fillStyle = c
+  static drawLOS (region: Region, x: number, y: number, s: number, r: number, c: string, isNPC: boolean) {
+    region.context.globalAlpha = 0.4
+    region.context.fillStyle = c
 
     for (let x2 = -r; x2 < r + 1; x2++){
       for (let y2 = -r; y2 < r + 1; y2++){
-        if (LineOfSight.hasLineOfSight(world, x, y, x + x2, y + y2, s, r, isNPC)) {
-          world.region.context.fillRect(
+        if (LineOfSight.hasLineOfSight(region, x, y, x + x2, y + y2, s, r, isNPC)) {
+          region.context.fillRect(
             (x + x2) * Settings.tileSize,
             (y + y2) * Settings.tileSize,
             Settings.tileSize,
@@ -39,27 +40,27 @@ export class LineOfSight {
         }      
       }
     }
-    world.region.context.globalAlpha = 1
+    region.context.globalAlpha = 1
   }
 
-  static mobHasLineOfSightOfPlayer (world: World, x: number, y: number, s: number, r = 1, isNPC = true) {
-    return LineOfSight.hasLineOfSight(world, x, y, world.player.location.x, world.player.location.y, s, r, isNPC)
+  static mobHasLineOfSightOfPlayer (region: Region, player: Player, x: number, y: number, s: number, r = 1, isNPC = true) {
+    return LineOfSight.hasLineOfSight(region, x, y, player.location.x, player.location.y, s, r, isNPC)
   }
 
-  static playerHasLineOfSightOfMob (world: World, x: number, y: number, mob: GameObject, r = 1) {
+  static playerHasLineOfSightOfMob (region: Region, x: number, y: number, mob: GameObject, r = 1) {
     const mobPoint = Pathing.closestPointTo(x, y, mob)
-    return LineOfSight.hasLineOfSight(world, x, y, mobPoint.x, mobPoint.y, 1, r, false)
+    return LineOfSight.hasLineOfSight(region, x, y, mobPoint.x, mobPoint.y, 1, r, false)
   }
-  static mobHasLineOfSightToMob (world: World, mob1: GameObject, mob2: GameObject, r = 1) {
+  static mobHasLineOfSightToMob (region: Region, mob1: GameObject, mob2: GameObject, r = 1) {
     const mob1Point = Pathing.closestPointTo(mob1.location.x, mob1.location.y, mob2)
     const mob2Point = Pathing.closestPointTo(mob2.location.x, mob2.location.y, mob1)
-    return LineOfSight.hasLineOfSight(world, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false)
+    return LineOfSight.hasLineOfSight(region, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false)
   }
   
-  static hasLineOfSight (world: World, x1: number, y1: number, x2: number, y2: number, s = 1, r = 1, isNPC = false): boolean {
+  static hasLineOfSight (region: Region, x1: number, y1: number, x2: number, y2: number, s = 1, r = 1, isNPC = false): boolean {
     const dx = x2 - x1
     const dy = y2 - y1
-    if (Collision.collidesWithAnyLoSBlockingEntities(world, x1, y1, 1) || Collision.collidesWithAnyLoSBlockingEntities(world, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
+    if (Collision.collidesWithAnyLoSBlockingEntities(region, x1, y1, 1) || Collision.collidesWithAnyLoSBlockingEntities(region, x2, y2, 1) || Collision.collisionMath(x1, y1, s, x2, y2, 1)) {
       return false
     }
     // assume range 1 is melee
@@ -69,7 +70,7 @@ export class LineOfSight {
     if (isNPC) {
       const tx = Math.max(x1, Math.min(x1 + s - 1, x2))
       const ty = Math.max(y1 - s + 1, Math.min(y1, y2))
-      return LineOfSight.hasLineOfSight(world, x2, y2, tx, ty, 1, r, false)
+      return LineOfSight.hasLineOfSight(region, x2, y2, tx, ty, 1, r, false)
     }
     const dxAbs = Math.abs(dx)
     const dyAbs = Math.abs(dy)
@@ -103,12 +104,12 @@ export class LineOfSight {
       while (xTile !== x2) {
         xTile += xInc
         const yTile = y >>> 16
-        if ((Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1) & xMask) !== 0) {
+        if ((Collision.collidesWithAnyLoSBlockingEntities(region, xTile, yTile, 1) & xMask) !== 0) {
           return false
         }
         y += slope
         const newYTile = y >>> 16
-        if (newYTile !== yTile && (Collision.collidesWithAnyLoSBlockingEntities(world, xTile, newYTile, 1) & yMask) !== 0) {
+        if (newYTile !== yTile && (Collision.collidesWithAnyLoSBlockingEntities(region, xTile, newYTile, 1) & yMask) !== 0) {
           return false
         }
       }
@@ -137,12 +138,12 @@ export class LineOfSight {
       while (yTile !== y2) {
         yTile += yInc
         const xTile = x >>> 16
-        if ((Collision.collidesWithAnyLoSBlockingEntities(world, xTile, yTile, 1) & yMask) !== 0) {
+        if ((Collision.collidesWithAnyLoSBlockingEntities(region, xTile, yTile, 1) & yMask) !== 0) {
           return false
         }
         x += slope
         const newXTile = x >>> 16
-        if (newXTile !== xTile && (Collision.collidesWithAnyLoSBlockingEntities(world, newXTile, yTile, 1) & xMask) !== 0) {
+        if (newXTile !== xTile && (Collision.collidesWithAnyLoSBlockingEntities(region, newXTile, yTile, 1) & xMask) !== 0) {
           return false
         }
       }

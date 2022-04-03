@@ -1,4 +1,3 @@
-import { World } from '../World'
 import { Unit } from '../Unit'
 import { BarrageSpell } from './BarrageSpell'
 import { ProjectileOptions } from './Projectile'
@@ -11,8 +10,8 @@ export class IceBarrageSpell extends BarrageSpell {
     return ItemName.ICE_BARRAGE
   }
   
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
-    super.attack(world, from, to, bonuses, options)    
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+    super.attack(from, to, bonuses, options)    
     if (this.lastHitHit) {
       to.frozen = 32
     }

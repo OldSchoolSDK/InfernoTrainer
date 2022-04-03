@@ -30,7 +30,6 @@ import { ThickSkin } from '../content/prayers/ThickSkin';
 import { UltimateStrength } from '../content/prayers/UltimateStrength';
 import { BasePrayer, PrayerGroups } from './BasePrayer';
 import { Player } from './Player';
-import { World } from './World';
 
 export class PrayerController {
   drainCounter = 0;
@@ -41,13 +40,13 @@ export class PrayerController {
   }
 
 
-  tick(world: World) {
+  tick(player: Player) {
     // "transfer" prayers from client to "server" 
     this.prayers.forEach((prayer) => prayer.tick());
 
     // Deactivate any incompatible prayers
     const conflictingPrayers = {};
-    world.player.prayerController.prayers.forEach((activePrayer) => {
+    player.prayerController.prayers.forEach((activePrayer) => {
       activePrayer.groups.forEach((group) => {
         if (!conflictingPrayers[group]){
           conflictingPrayers[group] = [];

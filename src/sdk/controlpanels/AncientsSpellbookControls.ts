@@ -5,9 +5,9 @@ import { BaseControls } from './BaseControls'
 import { IceBarrageSpell } from '../weapons/IceBarrageSpell'
 import { BloodBarrageSpell } from '../weapons/BloodBarrageSpell'
 import { Settings } from '../Settings'
-import { World } from '../World'
 import { ControlPanelController } from '../ControlPanelController'
 import { ItemName } from '../ItemName'
+import { Viewport } from '../Viewport'
 
 export class AncientsSpellbookControls extends BaseControls {
   get panelImageReference () {
@@ -27,29 +27,29 @@ export class AncientsSpellbookControls extends BaseControls {
     return true;
   }
   
-  panelClickDown (world: World, x: number, y: number) {
-    world.player.manualSpellCastSelection = null;
+  panelClickDown (x: number, y: number) {
+    Viewport.viewport.player.manualSpellCastSelection = null;
     const scale = Settings.controlPanelScale;
 
     x = x / scale;
     y = y / scale;
     if (x >= 21 && x <= 42 && y >= 229 && y <= 249) {
-      world.player.manualSpellCastSelection = new IceBarrageSpell()
+      Viewport.viewport.player.manualSpellCastSelection = new IceBarrageSpell()
     }else if (x >= 166 && x <= 187 && y >= 194 && y <= 214) {
-      world.player.manualSpellCastSelection = new BloodBarrageSpell()
+      Viewport.viewport.player.manualSpellCastSelection = new BloodBarrageSpell()
     }
   }
 
-  draw (world: World, ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(world, ctrl, x, y);
-    world.viewport.context.fillStyle = '#D1BB7773'
+  draw (ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(ctrl, x, y);
+    Viewport.viewport.context.fillStyle = '#D1BB7773'
 
     const scale = Settings.controlPanelScale;
-    if (world.player.manualSpellCastSelection) {
-      if (world.player.manualSpellCastSelection.itemName === ItemName.ICE_BARRAGE) {
-          world.viewport.context.fillRect(x + 20 * scale, y + 225 * scale, 21 * scale, 21 * scale)
-      }else if (world.player.manualSpellCastSelection.itemName === ItemName.BLOOD_BARRAGE) {
-        world.viewport.context.fillRect(x + 164 * scale, y+ 188 * scale, 21 * scale, 21 * scale)
+    if (Viewport.viewport.player.manualSpellCastSelection) {
+      if (Viewport.viewport.player.manualSpellCastSelection.itemName === ItemName.ICE_BARRAGE) {
+          Viewport.viewport.context.fillRect(x + 20 * scale, y + 225 * scale, 21 * scale, 21 * scale)
+      }else if (Viewport.viewport.player.manualSpellCastSelection.itemName === ItemName.BLOOD_BARRAGE) {
+        Viewport.viewport.context.fillRect(x + 164 * scale, y+ 188 * scale, 21 * scale, 21 * scale)
       }
     }
   }

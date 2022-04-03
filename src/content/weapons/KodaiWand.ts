@@ -7,7 +7,6 @@ import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 import { BarrageSpell } from '../../sdk/weapons/BarrageSpell';
 import { AttackBonuses } from '../../sdk/gear/Weapon';
 import { Unit } from '../../sdk/Unit';
-import { World } from '../../sdk/World';
 import { Player } from '../../sdk/Player';
 import { BloodBarrageSpell } from '../../sdk/weapons/BloodBarrageSpell';
 
@@ -47,14 +46,14 @@ export class KodaiWand extends MeleeWeapon {
   }
 
 
-  attack (world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
 
     if (this.attackStyle() === AttackStyle.AUTOCAST){
 
       if (from.isPlayer) {
         const player: Player = from as Player;
         if (player.autocastDelay === 0) {
-          this.autocastSpell.cast(world, from, to);
+          this.autocastSpell.cast(from, to);
           return true;
         }
         if (player.autocastDelay > 0) {
@@ -64,7 +63,7 @@ export class KodaiWand extends MeleeWeapon {
       }
     }
 
-    return super.attack(world, from, to, bonuses);
+    return super.attack(from, to, bonuses);
   }
   
   

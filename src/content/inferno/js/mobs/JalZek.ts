@@ -36,12 +36,12 @@ export class JalZek extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this.world, this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
 
-    const region = this.world.region as InfernoRegion;
+    const region = this.region as InfernoRegion;
     this.shouldRespawnMobs = (region.wave >= 69);
 
     this.stunned = 1
@@ -127,14 +127,14 @@ export class JalZek extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.rotate(tickPercent * Math.PI * 2)
+    this.region.context.rotate(tickPercent * Math.PI * 2)
   }
 
   respawnLocation (mobToResurrect: Mob) {
     for (let x = 15 + 11; x < 22 + 11; x++) {
       for (let y = 10 + 14; y < 23 + 14; y++) {
-        if (!Collision.collidesWithAnyMobs(this.world, x, y, mobToResurrect.size)) {
-          if (!Collision.collidesWithAnyEntities(this.world, x, y, mobToResurrect.size)) {
+        if (!Collision.collidesWithAnyMobs(this.region, x, y, mobToResurrect.size)) {
+          if (!Collision.collidesWithAnyEntities(this.region, x, y, mobToResurrect.size)) {
             return { x, y }
           }
         }
@@ -163,7 +163,7 @@ export class JalZek extends Mob {
 
     if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
       if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
-        const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.world)
+        const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region)
         if (!mobToResurrect) {
           this.attack()
         } else {
@@ -175,7 +175,7 @@ export class JalZek extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
-          this.world.region.addMob(mobToResurrect)
+          this.region.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
           this.attackCooldownTicks = 8
         }

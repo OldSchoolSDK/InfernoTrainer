@@ -3,7 +3,6 @@
 import BPInventImage from '../../assets/images/weapons/blowpipe.png'
 import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
 import { ItemName } from "../../sdk/ItemName";
-import { World } from '../../sdk/World';
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
@@ -80,10 +79,10 @@ export class Blowpipe extends RangedWeapon {
     return 0.5
   }
 
-  specialAttack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
     
     bonuses.isSpecialAttack = true;
-    super.attack(world, from, to, bonuses)
+    super.attack(from, to, bonuses)
     
     const healAttackerBy = Math.floor(this.damage / 2);
     from.currentStats.hitpoint += healAttackerBy;

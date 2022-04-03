@@ -3,9 +3,9 @@ import { GameObject } from './GameObject'
 import { LineOfSightMask } from './LineOfSight';
 import { Mob } from './Mob';
 import { Pathing } from './Pathing';
+import { Region } from './Region';
 import { Settings } from './Settings';
 import { Unit } from './Unit';
-import { World } from './World'
 
 
 export enum CollisionType {
@@ -22,20 +22,20 @@ export class Collision {
 
   // Mob collision
   
-  static collidesWithMob (world: World, x: number, y: number, s: number, mob: GameObject) {
+  static collidesWithMob (region: Region,  x: number, y: number, s: number, mob: GameObject) {
     return (Collision.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
   }
 
-  static collidesWithAnyMobs (world: World, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
-    for (let i = 0; i < world.region.mobs.length; i++) {
-      if (world.region.mobs[i] === mobToAvoid) {
+  static collidesWithAnyMobs (region: Region, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+    for (let i = 0; i < region.mobs.length; i++) {
+      if (region.mobs[i] === mobToAvoid) {
         continue
       }
 
-      const collidedWithSpecificMob = Collision.collidesWithMob(world, x, y, s, world.region.mobs[i])
+      const collidedWithSpecificMob = Collision.collidesWithMob(region, x, y, s, region.mobs[i])
 
-      if (collidedWithSpecificMob && world.region.mobs[i].consumesSpace) {
-        return world.region.mobs[i]
+      if (collidedWithSpecificMob && region.mobs[i].consumesSpace) {
+        return region.mobs[i]
       }
     }
     return null
@@ -45,14 +45,14 @@ export class Collision {
   // Entity collision
 
   // Same as above but only returns entities with collision enabled.
-  static collideableEntitiesAtPoint(world: World, x: number, y: number, s: number) {
-    return filter(Pathing.entitiesAtPoint(world, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
+  static collideableEntitiesAtPoint(region: Region, x: number, y: number, s: number) {
+    return filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
   }
 
 
-  static collidesWithAnyEntities (world: World, x: number, y: number, s: number) {
-    for (let i = 0; i < world.region.entities.length; i++) {
-      const entity = world.region.entities[i];
+  static collidesWithAnyEntities (region: Region, x: number, y: number, s: number) {
+    for (let i = 0; i < region.entities.length; i++) {
+      const entity = region.entities[i];
       if (entity.collisionType != CollisionType.NONE && Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return true;
       }
@@ -60,9 +60,9 @@ export class Collision {
     return false;
   }
 
-  static collidesWithAnyLoSBlockingEntities (world: World, x: number, y: number, s: number): LineOfSightMask {
-    for (let i = 0; i < world.region.entities.length; i++) {
-      const entity = world.region.entities[i];
+  static collidesWithAnyLoSBlockingEntities (region: Region, x: number, y: number, s: number): LineOfSightMask {
+    for (let i = 0; i < region.entities.length; i++) {
+      const entity = region.entities[i];
       if (Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {
         return entity.lineOfSight
       }
@@ -75,18 +75,18 @@ export class Collision {
 
   // Perceived location works on the viewport size, so be careful as the numbers are a different scale
 
-  static collidesWithAnyMobsAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number): Mob[] {
+  static collidesWithAnyMobsAtPerceivedDisplayLocation (region: Region, x: number, y: number, tickPercent: number): Mob[] {
     const mobs = []
-    for (let i = 0; i < world.region.mobs.length; i++) {
-      const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(world, x, y, tickPercent, world.region.mobs[i])
+    for (let i = 0; i < region.mobs.length; i++) {
+      const collidedWithSpecificMob = Collision.collidesWithMobAtPerceivedDisplayLocation(x, y, tickPercent, region.mobs[i])
       if (collidedWithSpecificMob) {
-        mobs.push(world.region.mobs[i])
+        mobs.push(region.mobs[i])
       }
     }
     return mobs
   }
 
-  static collidesWithMobAtPerceivedDisplayLocation (world: World, x: number, y: number, tickPercent: number, mob: Unit) {
+  static collidesWithMobAtPerceivedDisplayLocation (x: number, y: number, tickPercent: number, mob: Unit) {
     const perceivedX = Pathing.linearInterpolation(mob.perceivedLocation.x * Settings.tileSize, mob.location.x * Settings.tileSize, tickPercent)
     const perceivedY = Pathing.linearInterpolation(mob.perceivedLocation.y * Settings.tileSize, mob.location.y * Settings.tileSize, tickPercent)
 

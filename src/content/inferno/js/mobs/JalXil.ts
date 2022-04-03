@@ -38,7 +38,7 @@ export class JalXil extends Mob {
 
   dead () {
     super.dead()
-    InfernoMobDeathStore.npcDied(this.world, this)
+    InfernoMobDeathStore.npcDied(this)
   }
 
   setStats () {
@@ -127,6 +127,6 @@ export class JalXil extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.rotate(Math.sin(-tickPercent * Math.PI))
+    this.region.context.rotate(Math.sin(-tickPercent * Math.PI))
   }
 }

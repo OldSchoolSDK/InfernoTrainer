@@ -2,9 +2,8 @@
 
 import { Mob } from '../../../../sdk/Mob'
 import ZukImage from '../../assets/images/TzKal-Zuk.png'
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
+import { Unit, UnitBonuses, UnitTypes } from '../../../../sdk/Unit'
 import { MagicWeapon } from '../../../../sdk/weapons/MagicWeapon'
-import { World } from '../../../../sdk/World'
 import { UnitOptions } from '../../../../sdk/Unit'
 import { Location } from "../../../../sdk/Location"
 import { ZukShield } from '../ZukShield'
@@ -17,6 +16,9 @@ import { JalZek } from './JalZek'
 import { JalXil } from './JalXil'
 import { JalMejJak } from './JalMejJak'
 import { JalTokJad } from './JalTokJad'
+import { Viewport } from '../../../../sdk/Viewport'
+import { Region } from '../../../../sdk/Region'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
 
@@ -44,25 +46,25 @@ export class TzKalZuk extends Mob {
   timerPaused = false;
   hasPaused = false;
 
-  constructor (world: World, location: Location, options: UnitOptions) {
-    super(world, location, options)
+  constructor (region: Region, location: Location, options: UnitOptions) {
+    super(region, location, options)
     this.attackCooldownTicks = 14;
 
     // this.currentStats.hitpoint = 80;
 
-    this.shield = find(world.region.mobs, (mob: Unit) => {
+    this.shield = find(region.mobs.concat(region.newMobs), (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
   }
   
 
-  contextActions (world: World, x: number, y: number) {
-    return super.contextActions(world, x, y).concat([
+  contextActions (region: Region, x: number, y: number) {
+    return super.contextActions(region, x, y).concat([
 
       {
         text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: ` Jad`, fillStyle: 'yellow' }],
         action: () => {
-          this.world.viewport.clickController.redClick()
+          Viewport.viewport.clickController.redClick()
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 479;
@@ -76,7 +78,7 @@ export class TzKalZuk extends Mob {
       {
         text: [{ text: 'Spawn ', fillStyle: 'white' },  { text: ` Healers`, fillStyle: 'yellow' }],
         action: () => {
-          this.world.viewport.clickController.redClick()
+          Viewport.viewport.clickController.redClick()
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 239;
@@ -106,10 +108,10 @@ export class TzKalZuk extends Mob {
       if (this.setTimer === 0) {
         this.setTimer = 350;
   
-        const mager = new JalZek(this.world, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 7})
-        this.world.region.addMob(mager);
-        const ranger = new JalXil(this.world, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 9})
-        this.world.region.addMob(ranger);
+        const mager = new JalZek(this.region, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 7})
+        this.region.addMob(mager);
+        const ranger = new JalXil(this.region, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 9})
+        this.region.addMob(ranger);
       }  
     }
 
@@ -128,32 +130,32 @@ export class TzKalZuk extends Mob {
         this.setTimer += 175;
         this.timerPaused = false;
         // Spawn Jad
-        const jad = new JalTokJad(this.world, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
-        this.world.region.addMob(jad)
+        const jad = new JalTokJad(this.region, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
+        this.region.addMob(jad)
       }  
     }
 
     if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
 
-      const healer1 = new JalMejJak(this.world, {x: 16, y: 9}, { aggro: this, spawnDelay: 2 });
-      this.world.region.addMob(healer1);
+      const healer1 = new JalMejJak(this.region, {x: 16, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.region.addMob(healer1);
 
-      const healer2 = new JalMejJak(this.world, {x: 20, y: 9}, { aggro: this, spawnDelay: 2 });
-      this.world.region.addMob(healer2);
+      const healer2 = new JalMejJak(this.region, {x: 20, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.region.addMob(healer2);
 
-      const healer3 = new JalMejJak(this.world, {x: 30, y: 9}, { aggro: this, spawnDelay: 2 });
-      this.world.region.addMob(healer3);
+      const healer3 = new JalMejJak(this.region, {x: 30, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.region.addMob(healer3);
 
-      const healer4 = new JalMejJak(this.world, {x: 34, y: 9}, { aggro: this, spawnDelay: 2 });
-      this.world.region.addMob(healer4);
+      const healer4 = new JalMejJak(this.region, {x: 34, y: 9}, { aggro: this, spawnDelay: 2 });
+      this.region.addMob(healer4);
 
     }
 
     if (this.currentStats.hitpoint <= 0){
-      this.world.region.mobs.forEach((mob: Mob) => {
-        if (mob !== this) {
-          this.world.region.removeMob(mob);
+      this.region.mobs.forEach((mob: Mob) => {
+        if (mob as any !== this) {
+          this.region.removeMob(mob);
         }
       })
   
@@ -164,13 +166,13 @@ export class TzKalZuk extends Mob {
   attack () {
     let shieldOrPlayer: Unit = this.shield;
 
-    if (this.world.player.location.x < this.shield.location.x || this.world.player.location.x >= this.shield.location.x + 5) {
-      shieldOrPlayer = this.world.player;
+    if (this.aggro.location.x < this.shield.location.x || this.aggro.location.x >= this.shield.location.x + 5) {
+      shieldOrPlayer = this.aggro as Unit;
     }
-    if (this.world.player.location.y > 16){
-      shieldOrPlayer = this.world.player;
+    if (this.aggro.location.y > 16){
+      shieldOrPlayer = this.aggro as Unit;
     }
-    this.weapons['typeless'].attack(this.world, this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer === this.world.player ? this.magicMaxHit() : 0 });
+    this.weapons['typeless'].attack(this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer.type === UnitTypes.PLAYER ? this.magicMaxHit() : 0 });
 
     this.attackCooldownTicks = this.cooldown
   }
@@ -264,7 +266,7 @@ export class TzKalZuk extends Mob {
   }
 
   attackAnimation (tickPercent: number) {
-    this.world.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
+    this.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
 
@@ -272,10 +274,10 @@ export class TzKalZuk extends Mob {
     super.drawOverTile(tickPercent);
     // Draw mob
 
-    this.world.region.context.fillStyle = '#FFFF00'
-    this.world.region.context.font = '16px OSRS'
+    this.region.context.fillStyle = '#FFFF00'
+    this.region.context.font = '16px OSRS'
 
-    this.world.region.context.fillText(
+    this.region.context.fillText(
       String(this.currentStats.hitpoint),
       0,
       0

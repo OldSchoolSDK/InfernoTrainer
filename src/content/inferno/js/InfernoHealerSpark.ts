@@ -2,19 +2,15 @@
 'use strict'
 
 import { Settings } from '../../../sdk/Settings'
-
-import { World } from '../../../sdk/World'
 import { Unit } from '../../../sdk/Unit'
 import { Projectile, ProjectileOptions } from '../../../sdk/weapons/Projectile'
 import { Location } from "../../../sdk/Location"
-
-
-
 import { Entity } from "../../../sdk/Entity";
 import { Collision, CollisionType } from '../../../sdk/Collision'
 import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
 import { Random } from '../../../sdk/Random'
+import { Region } from '../../../sdk/Region'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {
@@ -26,7 +22,7 @@ class InfernoSparkWeapon extends Weapon{
     return true;
   }
 
-  attack(world: World, from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
+  attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     this.damage = 5 + Math.floor(Random.get() * 6);
     to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options))
     return true;
@@ -36,13 +32,15 @@ class InfernoSparkWeapon extends Weapon{
 export class InfernoHealerSpark extends Entity {
 
   from: Unit;
+  to: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
   hasSparked = false;
 
-  constructor (world: World, location: Location, from: Unit) {
-    super(world, location);
+  constructor (region: Region, location: Location, from: Unit, to: Unit) {
+    super(region, location);
     this.from = from;
+    this.to = to;
   }
 
   get collisionType() {
@@ -57,16 +55,16 @@ export class InfernoHealerSpark extends Entity {
     if (this.dying === -1) {
       this.dying = 0;
     }
-    if (!this.hasSparked && Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, this.world.player.location.x, this.world.player.location.y, 1)){
-      this.weapon.attack(this.world, this.from, this.world.player, {});
+    if (!this.hasSparked && Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, this.to.location.x, this.to.location.y, 1)){
+      this.weapon.attack(this.from, this.from.aggro as Unit, {});
       this.hasSparked = true;
     }
   }
 
   draw () {
-    this.world.region.context.fillStyle = '#FF0000'
+    this.region.context.fillStyle = '#FF0000'
 
-    this.world.region.context.fillRect(
+    this.region.context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
