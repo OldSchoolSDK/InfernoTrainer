@@ -23,6 +23,8 @@ export interface GroundItems {
 export class Region{
   canvas: OffscreenCanvas;
 
+  players: Player[] = [];
+
   world: World;
 
   newMobs: Mob[] = [];
@@ -39,6 +41,24 @@ export class Region{
       this._serialNumber = String(Math.random())
     }
     return this._serialNumber;
+  }
+
+
+  preTick() {
+    
+    // Override me
+  }
+
+  midTick() {
+    // Override me
+  }
+
+  postTick() {
+    // Override me
+  }
+
+  addPlayer(player: Player) {
+    this.players.push(player);
   }
 
   rightClickActions() {

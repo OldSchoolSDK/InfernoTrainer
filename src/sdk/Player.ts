@@ -10,8 +10,6 @@ import { BasePrayer } from './BasePrayer'
 import { XpDrop, XpDropAggregator } from './XpDrop'
 import { Location } from "./Location"
 import { Mob } from './Mob'
-import { ImageLoader } from './utils/ImageLoader'
-import { MapController } from './MapController'
 import { Equipment } from './Equipment'
 import { SetEffect } from './SetEffect'
 import chebyshev from 'chebyshev'
@@ -68,7 +66,6 @@ export class Player extends Unit {
 
     this.prayerController = new PrayerController(this);
 
-    ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(this.currentStats, this.stats))
 
   }
 
@@ -522,10 +519,6 @@ export class Player extends Unit {
     this.detectDeath();
 
     this.sendXpToController();
-
-    if (MapController.controller) {
-      MapController.controller.updateOrbsMask(this.currentStats, this.stats);
-    }
   }
 
   attackIfPossible() {

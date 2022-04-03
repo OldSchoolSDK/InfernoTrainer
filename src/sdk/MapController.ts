@@ -93,28 +93,6 @@ export class MapController {
 
   }
 
-  cursorMovedTo(event: MouseEvent) {
-    const { width } = Chrome.size();
-
-    const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width)) / scale;
-    const y = event.offsetY / scale;
-
-    this.hovering = MapHover.NONE;
-    if (x > 4 && x < 28 && y > 31 && y < 56) {
-      this.hovering = MapHover.XP;
-    }else if (x > 4 && x < 53 && y > 53 && y < 81){
-      this.hovering = MapHover.HITPOINT;
-    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
-      this.hovering = MapHover.PRAYER;
-    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
-      this.hovering = MapHover.RUN;
-    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
-      this.hovering = MapHover.SPEC;
-    }
-
-  }
-
   updateOrbsMask(currentStats: PlayerStats, stats: PlayerStats) {
 
     if (currentStats){
@@ -240,6 +218,30 @@ export class MapController {
     mapContext.restore()
   }
 
+  
+
+  cursorMovedTo(event: MouseEvent) {
+    const { width } = Chrome.size();
+
+    const scale = Settings.minimapScale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
+    const y = event.offsetY / scale;
+
+    this.hovering = MapHover.NONE;
+    if (x > 4 && x < 28 && y > 31 && y < 56) {
+      this.hovering = MapHover.XP;
+    }else if (x > 4 && x < 53 && y > 53 && y < 81){
+      this.hovering = MapHover.HITPOINT;
+    }else if (x > 4 && x < 53 && y > 90 && y < 113) {
+      this.hovering = MapHover.PRAYER;
+    }else if (x > 15 && x < 67 && y > 122 && y < 149) {
+      this.hovering = MapHover.RUN;
+    }else if (x > 38 && x < 90 && y > 148 && y < 173) {
+      this.hovering = MapHover.SPEC;
+    }
+
+  }
+
   rightClick(event: MouseEvent): boolean {
 
     let menuOptions: MenuOption[] = []
@@ -248,7 +250,7 @@ export class MapController {
 
     let intercepted = false;
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width * scale)) / scale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -342,7 +344,7 @@ export class MapController {
     let intercepted = false;
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width * scale)) / scale;
+    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
     const y = event.offsetY / scale;
     
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -403,7 +405,7 @@ export class MapController {
     Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
 
     const scale = Settings.minimapScale;
-    const offset = width - (this.width * scale);
+    const offset = width - (this.width * scale)  - (Settings.menuVisible ? 232 : 0);
     
     ctx.font = (16 * scale) + 'px Stats_11'
     ctx.textAlign = 'center'

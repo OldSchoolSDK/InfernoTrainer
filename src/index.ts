@@ -26,6 +26,8 @@ import { Wall } from './content/Wall'
 import { EntityName } from './sdk/EntityName'
 import { Mob } from './sdk/Mob'
 import { Location } from './sdk/Location'
+import { MapController } from './sdk/MapController'
+import { XpDropController } from './sdk/XpDropController'
 declare global {
   interface Window {
     newrelic: typeof NewRelicBrowser
@@ -34,17 +36,22 @@ declare global {
 
 Settings.readFromStorage()
 
+
 const selectedRegion = new InfernoRegion();
 
 // Create world
 const world = new World();
+world.getReadyTimer = 6;
 selectedRegion.world = world;
+world.addRegion(selectedRegion);
 
 // create player
 const player = new Player(
   selectedRegion,
   { x: parseInt(BrowserUtils.getQueryVar('x')) || 25, y: parseInt(BrowserUtils.getQueryVar('y')) || 25 }
 )
+
+selectedRegion.addPlayer(player);
 const loadoutType = selectedRegion.initializeAndGetLoadoutType();
 const onTask = selectedRegion.initializeAndGetOnTask();
 const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
@@ -54,6 +61,7 @@ player.setUnitOptions(loadout.getLoadout());
 
 
 Viewport.viewport.setPlayer(player);
+ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(player.currentStats, player.stats))
 
 
 
@@ -205,7 +213,7 @@ if (Settings.tile_markers) {
 if (selectedRegion.wave === 0) {
   // world.getReadyTimer = 0;
   player.location = { x: 28, y: 17 }
-
+  world.getReadyTimer = -1;
 
   InfernoWaves.getRandomSpawns().forEach((spawn: Location) => {
     [2, 3, 4].forEach((size: number) => {
@@ -313,20 +321,14 @@ document.getElementById('playWaveNum').addEventListener('click', () => {
 })
 
 
-document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking(selectedRegion, player) : world.stopTicking())
+document.getElementById('pauseResumeLink').addEventListener('click', () => world.isPaused ? world.startTicking() : world.stopTicking())
 
-
-
-
-
-
-
-world.getReadyTimer = 6;
+ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(Viewport.viewport.player.currentStats, Viewport.viewport.player.stats))
 
 
 ImageLoader.onAllImagesLoaded(() => {
   // Start the engine
-  world.startTicking(selectedRegion, player)
+  world.startTicking()
 })
 
 const interval = setInterval(() => {

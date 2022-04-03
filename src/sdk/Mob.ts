@@ -9,7 +9,6 @@ import { Weapon } from './gear/Weapon'
 import { Unit, UnitBonuses, UnitStats, UnitTypes } from './Unit'
 import { Location } from "./Location"
 import { Collision } from './Collision'
-import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import { SoundCache } from './utils/SoundCache';
 import { Viewport } from './Viewport'
 import { Random } from './Random'
@@ -38,8 +37,8 @@ export class Mob extends Unit {
   hasLOS: boolean;
   weapons: WeaponsMap;
   attackStyle: string;
-
   tcc: Location[];
+  removableWithRightClick = false;
 
   get type () {
     return UnitTypes.MOB
@@ -346,8 +345,7 @@ export class Mob extends Unit {
 
     // hack hack hack
 
-    const infernoRegion = region as InfernoRegion;
-    if (infernoRegion.wave === 0) {
+    if (this.removableWithRightClick) {
       actions.push(
         {
           text: [{ text: 'Remove ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: this.combatLevelColor }],

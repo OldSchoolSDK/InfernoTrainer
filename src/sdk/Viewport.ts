@@ -69,6 +69,13 @@ export class Viewport {
     this.context.fillText(text, x, y - 2)
   }
 
+  tick() {
+    
+    if (MapController.controller && this.player) {
+      MapController.controller.updateOrbsMask(this.player.currentStats, this.player.stats);
+    }
+  }
+
 
   
   drawRegion (world: World) {
@@ -85,14 +92,18 @@ export class Viewport {
       region.mobs.forEach((mob) => mob.draw(world.tickPercent))
       region.newMobs.forEach((mob) => mob.draw(world.tickPercent))
     }
-    this.player.draw(world.tickPercent)
+    
+    region.players.forEach((player: Player) => {
+      player.draw(world.tickPercent)
+    })
 
     region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent))
 
-    if (world.getReadyTimer <= 0) {
+    if (world.getReadyTimer === 0) {
       region.mobs.forEach((mob) => mob.drawUILayer(world.tickPercent))
+      this.player.drawUILayer(world.tickPercent)
+
     }
-    this.player.drawUILayer(world.tickPercent)
 
     region.context.restore();
   }

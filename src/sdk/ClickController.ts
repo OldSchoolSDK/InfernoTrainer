@@ -115,16 +115,10 @@ export class ClickController {
     }
 
     
-    const scale = Settings.minimapScale;
-    const { width } = Chrome.size();
 
-    if (e.offsetX > width - MapController.controller.width * scale) {
-      if (e.offsetY < MapController.controller.height) {
-        const intercepted = MapController.controller.leftClickDown(e);
-        if (intercepted) {
-          return;
-        }
-      }
+    const intercepted = MapController.controller.leftClickDown(e);
+    if (intercepted) {
+      return;
     }
     
 

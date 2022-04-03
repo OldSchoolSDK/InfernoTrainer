@@ -121,5 +121,9 @@ export class Settings {
     }else{
       Settings.menuVisible = (Settings.mobileCheck() === false);
     }
+    if (!Settings.menuVisible){
+      
+      document.getElementById('right_panel').classList.add('hidden');
+    }
   }
 }

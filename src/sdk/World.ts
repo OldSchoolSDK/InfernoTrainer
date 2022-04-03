@@ -5,13 +5,14 @@ import { Player } from './Player'
 import { Region } from './Region'
 import { DelayedAction } from './DelayedAction'
 import { Viewport } from './Viewport'
-import { InfernoRegion } from '../content/inferno/js/InfernoRegion'
 import MetronomeSound from '../assets/sounds/bonk.ogg'
 import { Pathing } from './Pathing'
+import { MapController } from './MapController'
 
 
 export class World {
 
+  regions: Region[] = [];
   tickCounter = 0;
   isPaused = true;
   tickPercent: number;
@@ -24,7 +25,12 @@ export class World {
   startTime: number;
   frameCount = 0;
   tickTimer = 0;
-  startTicking (region: Region, player: Player) {
+
+  addRegion(region: Region) {
+    this.regions.push(region);
+  }
+
+  startTicking () {
     this.isPaused = false;
     if (this.deltaTimeSincePause === -1) {
       this.tickTimer = window.performance.now();
@@ -36,7 +42,7 @@ export class World {
 
       this.deltaTimeSincePause = -1;
     }
-    this.browserLoop(region, player, window.performance.now());
+    this.browserLoop(window.performance.now());
   }
 
   stopTicking() {
@@ -45,18 +51,16 @@ export class World {
     this.isPaused = true;
   }
 
-  browserLoop (region: Region, player: Player, now: number) {
-    window.requestAnimationFrame(this.browserLoop.bind(this, region, player));
-
-
+  browserLoop (now: number) {
+    window.requestAnimationFrame(this.browserLoop.bind(this));
     const elapsed = now - this.then;
-
     const tickElapsed = now - this.tickTimer;
-
     if (tickElapsed >= 600 && this.isPaused === false) {
       this.tickTimer = now;
-      this.getReadyTimer--;
-      this.worldTick(region, player, 1);
+      if (this.getReadyTimer > 0) {
+        this.getReadyTimer--;
+      }
+      this.regions.forEach((region: Region) => this.tickRegion(region, 1))
     }
 
     if (elapsed > this.fpsInterval && this.isPaused === false) {
@@ -66,19 +70,9 @@ export class World {
       this.frameCount ++;
     }
 
-    // TODO: Move out of here.
-    if (Settings.menuVisible !== this.lastMenuVisible) {
-      if (Settings.menuVisible) {
-        document.getElementById('right_panel').classList.remove('hidden');
-      }else{
-        document.getElementById('right_panel').classList.add('hidden');
-      }
-      Viewport.viewport.calculateViewport();
-    }
-    this.lastMenuVisible = Settings.menuVisible;
   }
 
-  worldTick (region: Region, player: Player, n = 1) {
+  tickRegion (region: Region, n = 1) {
     Pathing.purgeTileCache();
     this.tickCounter++;
 
@@ -92,40 +86,46 @@ export class World {
       region.newMobs = [];
     }
 
+    region.preTick();
 
-    player.pretick();
+    region.players.forEach((player: Player) => player.pretick());
     
     region.entities.forEach((entity) => entity.tick())
 
-    if (this.getReadyTimer <=0){
+    if (this.getReadyTimer == 0){
 
-      // hack hack hack
-      const infernoRegion = region as InfernoRegion;
+      region.mobs.forEach((mob) => {
+        mob.ticksAlive++;
+        mob.movementStep()
+      })
+      region.mobs.forEach((mob) => mob.attackStep())
 
-      if (infernoRegion.wave !== 0){
 
-        region.mobs.forEach((mob) => {
-          mob.ticksAlive++;
-          mob.movementStep()
-        })
-        region.mobs.forEach((mob) => mob.attackStep())
-  
-  
-        region.newMobs.forEach((mob) => {
-          mob.ticksAlive++;
-          mob.movementStep()
-        })
-        region.newMobs.forEach((mob) => mob.attackStep())
-  
-      }
+      region.newMobs.forEach((mob) => {
+        mob.ticksAlive++;
+        mob.movementStep()
+      })
+      region.newMobs.forEach((mob) => mob.attackStep())
+
     }
 
-    player.movementStep()
-    player.ticksAlive++;
-    player.attackStep()
+
+    region.players.forEach((player: Player) => {
+        player.movementStep()
+        player.ticksAlive++;
+        if (this.getReadyTimer <=0){
+          player.attackStep()    
+        }
+    });
+
+
+    region.midTick();
     DelayedAction.tick();
     XpDropController.controller.tick();
+    Viewport.viewport.tick();
 
+
+    region.postTick();
 
     // Safely remove the mobs from the world. If we do it while iterating we can cause ticks to be stole'd
     const deadMobs = region.mobs.filter((mob) => mob.dying === 0)
@@ -133,8 +133,10 @@ export class World {
     deadMobs.forEach((mob) => region.removeMob(mob))
     deadEntities.forEach((entity) => region.removeEntity(entity))
 
+
+
     if (n > 1) {
-      return this.worldTick(region, player, n-1);
+      return this.tickRegion(region, n-1);
     }
 
   }

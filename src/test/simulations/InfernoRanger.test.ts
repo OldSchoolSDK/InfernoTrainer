@@ -21,7 +21,9 @@ jest.mock('../../sdk/XpDropController', () => {
 jest.mock('../../sdk/MapController', () => {
   return {
     'MapController': {
-      controller: null
+      controller: {
+        updateOrbsMask: () => true
+      }
     }
   }
 })
@@ -63,16 +65,15 @@ describe('basic combat scenario', () => {
         region,
       { x: 30, y: 60 }
     )
+    region.addPlayer(player);
 
     new TwistedBow().inventoryLeftClick(player);
-
     const jalxil = new JalXil(region, { x: 25, y: 25 }, { aggro: player });
     region.addMob(jalxil)
-
-    world.worldTick(region, player, 30);
+    world.tickRegion(region, 30);
     player.prayerController.findPrayerByName('Protect from Range').activate(player);
     player.setAggro(jalxil)
-    world.worldTick(region, player, 20);
+    world.tickRegion(region, 20);
     expect(player.location).toEqual({ x: 30, y: 54 });
     expect(player.currentStats.hitpoint).toBe(41);
     expect(player.equipment.weapon.itemName).toEqual('Twisted Bow');
@@ -86,12 +87,12 @@ describe('basic combat scenario', () => {
     expect(player.equipment.weapon.itemName).toEqual('Toxic Blowpipe');
     expect(player.aggro).toEqual(null);
 
-    world.worldTick(region, player, 10);
+    world.tickRegion(region,  10);
     player.setAggro(jalxil);
-    world.worldTick(region, player, 5);
+    world.tickRegion(region,  5);
     expect(player.aggro).toEqual(jalxil);
 
-    world.worldTick(region, player, 80);
+    world.tickRegion(region, 80);
     expect(player.location).toEqual({ x: 30, y: 45 });
     expect(player.currentStats.prayer).toEqual(39);
     expect(jalxil.location).toEqual({ x: 30, y: 44 });

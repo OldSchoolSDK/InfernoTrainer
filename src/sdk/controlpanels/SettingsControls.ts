@@ -138,6 +138,13 @@ export class SettingsControls extends BaseControls {
       this.bindingKey = 'combat'
     } else if (x > 140 && x < 180 && y > 220 && y < 260) {
       Settings.menuVisible = !Settings.menuVisible;
+      
+      if (Settings.menuVisible) {
+        document.getElementById('right_panel').classList.remove('hidden');
+      }else{
+        document.getElementById('right_panel').classList.add('hidden');
+      }
+      Viewport.viewport.calculateViewport();
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay)

@@ -18,10 +18,9 @@ import { JalZek } from './mobs/JalZek'
 export class InfernoRegion extends Region {
 
 
-  score = 0;
-  finalScore = -1;
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage)
+  
   getName() {
     return 'Inferno'
   }
@@ -48,7 +47,9 @@ export class InfernoRegion extends Region {
           Viewport.viewport.clickController.yellowClick()
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.addMob(new JalMejRah(this, { x, y }, { aggro: Viewport.viewport.player }))
+          const mob = new JalMejRah(this, { x, y }, { aggro: Viewport.viewport.player });
+          mob.removableWithRightClick = true;
+          this.addMob(mob)
 
         }
       },
@@ -59,8 +60,9 @@ export class InfernoRegion extends Region {
           Viewport.viewport.clickController.yellowClick()
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.addMob(new JalAk(this, { x, y }, { aggro: Viewport.viewport.player }))
-
+          const mob = new JalAk(this, { x, y }, { aggro: Viewport.viewport.player });
+          mob.removableWithRightClick = true;
+          this.addMob(mob)
         }
       },
 
@@ -70,8 +72,9 @@ export class InfernoRegion extends Region {
           Viewport.viewport.clickController.yellowClick()
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.addMob(new JalImKot(this, { x, y }, { aggro: Viewport.viewport.player }))
-
+          const mob = new JalImKot(this, { x, y }, { aggro: Viewport.viewport.player });
+          mob.removableWithRightClick = true;
+          this.addMob(mob)
         }
       },
 
@@ -81,8 +84,9 @@ export class InfernoRegion extends Region {
           Viewport.viewport.clickController.yellowClick()
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.addMob(new JalXil(this, { x, y }, { aggro: Viewport.viewport.player }))
-
+          const mob = new JalXil(this, { x, y }, { aggro: Viewport.viewport.player });
+          mob.removableWithRightClick = true;
+          this.addMob(mob)
         }
       },
 
@@ -92,8 +96,9 @@ export class InfernoRegion extends Region {
           Viewport.viewport.clickController.yellowClick()
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.addMob(new JalZek(this, { x, y }, { aggro: Viewport.viewport.player }))
-
+          const mob = new JalZek(this, { x, y }, { aggro: Viewport.viewport.player });
+          mob.removableWithRightClick = true;
+          this.addMob(mob)
         }
       }
     ];
