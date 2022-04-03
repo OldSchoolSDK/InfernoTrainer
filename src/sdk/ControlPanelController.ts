@@ -47,6 +47,8 @@ export class ControlPanelController {
   width: number;
   height: number;
 
+  isUsingExternalUI = false;
+
   constructor () {
 
     this.width = 33 * 7
@@ -92,9 +94,16 @@ export class ControlPanelController {
 
     this.selectedControl = ControlPanelController.controls.PRAYER
 
-
+    // TODO: Technically a violation of separation of framework and inferno stuff. hmm.
+    const waveInput = document.getElementById('waveinput');
+    waveInput.addEventListener('focus', () => this.isUsingExternalUI = true)
+    waveInput.addEventListener('focusout', () => this.isUsingExternalUI = false)
     document.addEventListener('keydown', (event) => {
       if (Settings.is_keybinding){
+        return;
+      }
+
+      if (this.isUsingExternalUI) {
         return;
       }
       
