@@ -114,7 +114,7 @@ export class JalImKot extends Mob {
   movementStep () {
     super.movementStep()
     if (!this.hasLOS) {
-      if (((this.attackDelay <= -38) && (Random.get() < 0.1)) || (this.attackDelay <= -50)) {
+      if (((this.attackTick - this.region.world.globalTickCounter <= -38) && (Random.get() < 0.1)) || (this.attackTick - this.region.world.globalTickCounter <= -50)) {
         this.dig()
       }
     }
@@ -125,7 +125,7 @@ export class JalImKot extends Mob {
       const player = this.aggro as Player;
       player.interruptCombat();
     }
-    this.attackDelay = 12
+    this.attackTick = this.region.world.globalTickCounter + 12
     if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x - 3, this.aggro.location.y + 3, this.size)) {
       this.location.x = this.aggro.location.x - this.size + 1
       this.location.y = this.aggro.location.y + this.size - 1

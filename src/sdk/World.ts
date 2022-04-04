@@ -74,8 +74,8 @@ export class World {
   }
 
   tickWorld(n = 1) {
-    this.globalTickCounter++;
     this.regions.forEach((region: Region) => this.tickRegion(region))
+    this.globalTickCounter++;
     
     if (n > 1) {
       return this.tickWorld(n-1);

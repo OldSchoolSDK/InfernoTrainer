@@ -25,10 +25,10 @@ const zukWeaponImage = ImageLoader.createImage(ZukAttackImage)
 class ZukWeapon extends MagicWeapon {
 
   get image(): HTMLImageElement {
-    return zukWeaponImage; 
+    return zukWeaponImage;
   }
 
-  isBlockable () {
+  isBlockable() {
     return false;
   }
   registerProjectile(from: Unit, to: Unit) {
@@ -46,9 +46,9 @@ export class TzKalZuk extends Mob {
   timerPaused = false;
   hasPaused = false;
 
-  constructor (region: Region, location: Location, options: UnitOptions) {
+  constructor(region: Region, location: Location, options: UnitOptions) {
     super(region, location, options)
-    this.attackDelay = 14;
+    this.attackTick = region.world.globalTickCounter + 18;
 
     // this.currentStats.hitpoint = 80;
 
@@ -56,9 +56,9 @@ export class TzKalZuk extends Mob {
       return mob.mobName() === EntityName.INFERNO_SHIELD;
     }) as ZukShield;
   }
-  
 
-  contextActions (region: Region, x: number, y: number) {
+
+  contextActions(region: Region, x: number, y: number) {
     return super.contextActions(region, x, y).concat([
 
       {
@@ -72,11 +72,11 @@ export class TzKalZuk extends Mob {
           this.hasPaused = true;
           this.damageTaken();
 
-          
+
         }
       },
       {
-        text: [{ text: 'Spawn ', fillStyle: 'white' },  { text: ` Healers`, fillStyle: 'yellow' }],
+        text: [{ text: 'Spawn ', fillStyle: 'white' }, { text: ` Healers`, fillStyle: 'yellow' }],
         action: () => {
           Viewport.viewport.clickController.redClick()
           this.setTimer = 400;
@@ -86,7 +86,7 @@ export class TzKalZuk extends Mob {
           this.timerPaused = false;
           this.hasPaused = true;
 
-          
+
         }
       }
     ]);
@@ -97,9 +97,7 @@ export class TzKalZuk extends Mob {
     return EntityName.TZ_KAL_ZUK;
   }
 
-  attackIfPossible () {
-    this.attackDelay--
-
+  attackIfPossible() {
     this.attackStyle = this.attackStyleForNewAttack()
 
     if (this.timerPaused === false) {
@@ -107,15 +105,15 @@ export class TzKalZuk extends Mob {
 
       if (this.setTimer === 0) {
         this.setTimer = 350;
-  
-        const mager = new JalZek(this.region, { x: 20, y: 21}, {aggro: this.shield, spawnDelay: 7})
+
+        const mager = new JalZek(this.region, { x: 20, y: 21 }, { aggro: this.shield, spawnDelay: 7 })
         this.region.addMob(mager);
-        const ranger = new JalXil(this.region, { x: 29, y: 21}, {aggro: this.shield, spawnDelay: 9})
+        const ranger = new JalXil(this.region, { x: 29, y: 21 }, { aggro: this.shield, spawnDelay: 9 })
         this.region.addMob(ranger);
-      }  
+      }
     }
 
-    if (this.canAttack() && this.attackDelay <= 0) {
+    if (this.canAttack() && this.attackTick - this.region.world.globalTickCounter <= 0) {
       this.attack()
     }
   }
@@ -125,72 +123,72 @@ export class TzKalZuk extends Mob {
         this.timerPaused = true;
         this.hasPaused = true;
       }
-    }else{
+    } else {
       if (this.currentStats.hitpoint < 480) {
         this.setTimer += 175;
         this.timerPaused = false;
         // Spawn Jad
-        const jad = new JalTokJad(this.region, { x: 24, y: 25}, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
+        const jad = new JalTokJad(this.region, { x: 24, y: 25 }, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
         this.region.addMob(jad)
-      }  
+      }
     }
 
     if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
 
-      const healer1 = new JalMejJak(this.region, {x: 16, y: 9}, { aggro: this, spawnDelay: 2 });
+      const healer1 = new JalMejJak(this.region, { x: 16, y: 9 }, { aggro: this, spawnDelay: 2 });
       this.region.addMob(healer1);
 
-      const healer2 = new JalMejJak(this.region, {x: 20, y: 9}, { aggro: this, spawnDelay: 2 });
+      const healer2 = new JalMejJak(this.region, { x: 20, y: 9 }, { aggro: this, spawnDelay: 2 });
       this.region.addMob(healer2);
 
-      const healer3 = new JalMejJak(this.region, {x: 30, y: 9}, { aggro: this, spawnDelay: 2 });
+      const healer3 = new JalMejJak(this.region, { x: 30, y: 9 }, { aggro: this, spawnDelay: 2 });
       this.region.addMob(healer3);
 
-      const healer4 = new JalMejJak(this.region, {x: 34, y: 9}, { aggro: this, spawnDelay: 2 });
+      const healer4 = new JalMejJak(this.region, { x: 34, y: 9 }, { aggro: this, spawnDelay: 2 });
       this.region.addMob(healer4);
 
     }
 
-    if (this.currentStats.hitpoint <= 0){
+    if (this.currentStats.hitpoint <= 0) {
       this.region.mobs.forEach((mob: Mob) => {
         if (mob as any !== this) {
           this.region.removeMob(mob);
         }
       })
-  
+
     }
-    
+
   }
 
-  attack () {
+  attack() {
     let shieldOrPlayer: Unit = this.shield;
 
     if (this.aggro.location.x < this.shield.location.x || this.aggro.location.x >= this.shield.location.x + 5) {
       shieldOrPlayer = this.aggro as Unit;
     }
-    if (this.aggro.location.y > 16){
+    if (this.aggro.location.y > 16) {
       shieldOrPlayer = this.aggro as Unit;
     }
     this.weapons['typeless'].attack(this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer.type === UnitTypes.PLAYER ? this.magicMaxHit() : 0 });
 
-    this.attackDelay = this.attackSpeed
+    this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
   }
 
-  get combatLevel () {
+  get combatLevel() {
     return 1400
   }
-
+ß
 
   canMove() {
     return false;
   }
 
-  magicMaxHit () {
+  magicMaxHit() {
     return 251
   }
-  
-  setStats () {
+
+  setStats() {
     this.stunned = 8
 
     this.weapons = {
@@ -211,7 +209,7 @@ export class TzKalZuk extends Mob {
     this.currentStats = JSON.parse(JSON.stringify(this.stats))
   }
 
-  get bonuses(): UnitBonuses{ 
+  get bonuses(): UnitBonuses {
     return {
       attack: {
         stab: 0,
@@ -235,34 +233,34 @@ export class TzKalZuk extends Mob {
       }
     };
   }
-  get attackSpeed () {
+  get attackSpeed() {
     if (this.enraged) {
       return 7;
     }
     return 10
   }
 
-  attackStyleForNewAttack () {
+  attackStyleForNewAttack() {
     return 'magic'
   }
 
-  get attackRange () {
+  get attackRange() {
     return 0
   }
 
-  get size () {
+  get size() {
     return 7
   }
 
-  get image () {
+  get image() {
     return ZukImage
   }
 
-  get sound () {
+  get sound() {
     return null
   }
 
-  attackAnimation (tickPercent: number) {
+  attackAnimation(tickPercent: number) {
     this.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0)
   }
 
