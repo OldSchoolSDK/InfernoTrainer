@@ -28,6 +28,15 @@ jest.mock('../../sdk/MapController', () => {
   }
 })
 
+jest.mock('../../sdk/ControlPanelController', () => {
+  return {
+    'ControlPanelController': {
+      controller: {
+      }
+    }
+  }
+})
+
 jest.spyOn(document, 'getElementById').mockImplementation((elementId: string) => {
   const c = document.createElement('canvas');
   c.ariaLabel = elementId;

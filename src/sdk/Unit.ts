@@ -137,6 +137,7 @@ export class Unit extends GameObject {
     return null;
   }
 
+
   get combatLevel () {
     const base = 0.25 * (this.stats.defence + this.stats.hitpoint + Math.floor((this.stats.prayer || 0) * 0.5));
     const melee = (13/40) * (this.stats.attack + this.stats.strength)
@@ -325,6 +326,14 @@ export class Unit extends GameObject {
   }
 
   
+  freeze(ticks: number) {
+    if (ticks < this.frozen) {
+      return;
+    }
+    this.perceivedLocation = this.location;
+    this.frozen = ticks;
+  }
+
   isFrozen() {
     return (this.frozen > 0)
   }

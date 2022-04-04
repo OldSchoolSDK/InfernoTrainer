@@ -13,7 +13,7 @@ export class IceBarrageSpell extends BarrageSpell {
   attack (from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     super.attack(from, to, bonuses, options)    
     if (this.lastHitHit) {
-      to.frozen = 32
+      to.freeze(32);
     }
     return true;
   }

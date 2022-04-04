@@ -250,6 +250,10 @@ export class Player extends Unit {
     if (!XpDropController.controller) {
       return;
     }
+    if (this !== Viewport.viewport.player) {
+      return;
+    }
+
     Object.keys(this.xpDrops).forEach((skill) => {
       XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill]) });
     })
@@ -498,14 +502,13 @@ export class Player extends Unit {
     this.takeSeekingItem();
 
     if (!this.isFrozen()) {
+      
       this.determineDestination()
 
       this.moveTorwardsDestination()  
     }
     this.frozen--;
   }
-
-
 
   damageTaken() {
     if (this.prayerController.isPrayerActiveByName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)) {

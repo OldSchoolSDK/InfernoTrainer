@@ -157,11 +157,5 @@ export class Viewport {
       this.context.textAlign = 'center'
       this.drawText(`GET READY...${world.getReadyTimer}`, width / 2, height / 2 - 50)
     }
-
-
   }
-
-
-
-
 }

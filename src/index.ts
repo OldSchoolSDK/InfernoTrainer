@@ -27,6 +27,9 @@ import { EntityName } from './sdk/EntityName'
 import { Mob } from './sdk/Mob'
 import { Location } from './sdk/Location'
 import { MapController } from './sdk/MapController'
+import { Blowpipe } from './content/weapons/Blowpipe'
+import { NecklaceOfAnguish } from './content/equipment/NecklaceOfAnguish'
+import { PegasianBoots } from './content/equipment/PegasianBoots'
 
 declare global {
   interface Window {
