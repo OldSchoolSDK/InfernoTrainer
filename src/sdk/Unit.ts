@@ -54,7 +54,7 @@ export class UnitEquipment {
 export interface UnitOptions {
   aggro?: Unit;
   equipment?: UnitEquipment;
-  spawnDelay?: number;
+  stallTick?: number;
   cooldown?: number;
   inventory?: Item[];
 }
@@ -118,7 +118,7 @@ export class Unit {
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: typeof SetEffect[] = [];
   autoRetaliate = false;
-  spawnDelay = 0;
+  stallTick = 0;
 
 
   constructor(region: Region, location: Location, options?: UnitOptions) {
@@ -127,7 +127,7 @@ export class Unit {
     this.perceivedLocation = location
     this.location = location
     this.setStats()
-    this.spawnDelay = options.spawnDelay || 0
+    this.stallTick = this.region.world.globalTickCounter + (options.stallTick || 0)
     this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint
 
@@ -438,7 +438,7 @@ export class Unit {
 
 
   addProjectile(projectile: Projectile) {
-    if (this.spawnDelay > 0 && this.autoRetaliate && !this.aggro) {
+    if (this.stallTick > this.region.world.globalTickCounter && this.autoRetaliate && !this.aggro) {
       this.setAggro(projectile.from);
     }
     this.incomingProjectiles.push(projectile)
@@ -503,8 +503,8 @@ export class Unit {
           this.setAggro(projectile.from);
 
           // todo: verify this transpoed correctedly
-          if (this.attackTick - this.region.world.globalTickCounter < this.flinchDelay + 1) {
-            this.attackTick = this.region.world.globalTickCounter + this.flinchDelay + 1;
+          if (this.attackTick - this.region.world.globalTickCounter < this.flinchDelay) {
+            this.attackTick = this.region.world.globalTickCounter + this.flinchDelay;
           }
         }
       }

@@ -103,8 +103,7 @@ export class Mob extends Unit {
     }
     this.processIncomingAttacks()
 
-    this.spawnDelay--;
-    if (this.spawnDelay > 0) {
+    if (this.stallTick > this.region.world.globalTickCounter) {
       return;
     }
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
@@ -238,7 +237,7 @@ export class Mob extends Unit {
   
   attackStep () {
 
-    if (this.spawnDelay > 0) {
+    if (this.stallTick > this.region.world.globalTickCounter) {
       return;
     }
     if (this.dying === 0) {

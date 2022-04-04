@@ -106,9 +106,9 @@ export class TzKalZuk extends Mob {
       if (this.setTimer === 0) {
         this.setTimer = 350;
 
-        const mager = new JalZek(this.region, { x: 20, y: 21 }, { aggro: this.shield, spawnDelay: 7 })
+        const mager = new JalZek(this.region, { x: 20, y: 21 }, { aggro: this.shield, stallTick: 7 })
         this.region.addMob(mager);
-        const ranger = new JalXil(this.region, { x: 29, y: 21 }, { aggro: this.shield, spawnDelay: 9 })
+        const ranger = new JalXil(this.region, { x: 29, y: 21 }, { aggro: this.shield, stallTick: 9 })
         this.region.addMob(ranger);
       }
     }
@@ -128,7 +128,7 @@ export class TzKalZuk extends Mob {
         this.setTimer += 175;
         this.timerPaused = false;
         // Spawn Jad
-        const jad = new JalTokJad(this.region, { x: 24, y: 25 }, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 });
+        const jad = new JalTokJad(this.region, { x: 24, y: 25 }, { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, stallTick: 7 });
         this.region.addMob(jad)
       }
     }
@@ -136,16 +136,16 @@ export class TzKalZuk extends Mob {
     if (this.currentStats.hitpoint < 240 && this.enraged === false) {
       this.enraged = true;
 
-      const healer1 = new JalMejJak(this.region, { x: 16, y: 9 }, { aggro: this, spawnDelay: 2 });
+      const healer1 = new JalMejJak(this.region, { x: 16, y: 9 }, { aggro: this, stallTick: 2 });
       this.region.addMob(healer1);
 
-      const healer2 = new JalMejJak(this.region, { x: 20, y: 9 }, { aggro: this, spawnDelay: 2 });
+      const healer2 = new JalMejJak(this.region, { x: 20, y: 9 }, { aggro: this, stallTick: 2 });
       this.region.addMob(healer2);
 
-      const healer3 = new JalMejJak(this.region, { x: 30, y: 9 }, { aggro: this, spawnDelay: 2 });
+      const healer3 = new JalMejJak(this.region, { x: 30, y: 9 }, { aggro: this, stallTick: 2 });
       this.region.addMob(healer3);
 
-      const healer4 = new JalMejJak(this.region, { x: 34, y: 9 }, { aggro: this, spawnDelay: 2 });
+      const healer4 = new JalMejJak(this.region, { x: 34, y: 9 }, { aggro: this, stallTick: 2 });
       this.region.addMob(healer4);
 
     }
