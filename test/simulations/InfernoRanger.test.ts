@@ -1,13 +1,13 @@
-import { JalXil } from '../../content/inferno/js/mobs/JalXil';
-import { Player } from '../../sdk/Player';
-import { World } from '../../sdk/World';
-import { Blowpipe } from '../../content/weapons/Blowpipe';
-import { TwistedBow } from '../../content/weapons/TwistedBow';
-import { Settings } from '../../sdk/Settings';
-import { Region } from '../../sdk/Region';
-import { Random } from '../../sdk/Random';
+import { JalXil } from '../../src/content/inferno/js/mobs/JalXil';
+import { Player } from '../../src/sdk/Player';
+import { World } from '../../src/sdk/World';
+import { Blowpipe } from '../../src/content/weapons/Blowpipe';
+import { TwistedBow } from '../../src/content/weapons/TwistedBow';
+import { Settings } from '../../src/sdk/Settings';
+import { Region } from '../../src/sdk/Region';
+import { Random } from '../../src/sdk/Random';
 
-jest.mock('../../sdk/XpDropController', () => {
+jest.mock('../../src/sdk/XpDropController', () => {
   return {
     'XpDropController': {
       controller: { 
@@ -18,7 +18,7 @@ jest.mock('../../sdk/XpDropController', () => {
   }
 });
 
-jest.mock('../../sdk/MapController', () => {
+jest.mock('../../src/sdk/MapController', () => {
   return {
     'MapController': {
       controller: {
@@ -28,7 +28,7 @@ jest.mock('../../sdk/MapController', () => {
   }
 })
 
-jest.mock('../../sdk/ControlPanelController', () => {
+jest.mock('../../src/sdk/ControlPanelController', () => {
   return {
     'ControlPanelController': {
       controller: {
@@ -70,6 +70,7 @@ describe('basic combat scenario', () => {
     const region = new TestRegion60x60();
     const world = new World();
     region.world = world;
+    world.addRegion(region);
     const player = new Player(
         region,
       { x: 30, y: 60 }
@@ -79,10 +80,10 @@ describe('basic combat scenario', () => {
     new TwistedBow().inventoryLeftClick(player);
     const jalxil = new JalXil(region, { x: 25, y: 25 }, { aggro: player });
     region.addMob(jalxil)
-    world.tickRegion(region, 30);
+    world.tickWorld(30);
     player.prayerController.findPrayerByName('Protect from Range').activate(player);
     player.setAggro(jalxil)
-    world.tickRegion(region, 20);
+    world.tickWorld(20);
     expect(player.location).toEqual({ x: 30, y: 54 });
     expect(player.currentStats.hitpoint).toBe(41);
     expect(player.equipment.weapon.itemName).toEqual('Twisted Bow');
@@ -96,18 +97,18 @@ describe('basic combat scenario', () => {
     expect(player.equipment.weapon.itemName).toEqual('Toxic Blowpipe');
     expect(player.aggro).toEqual(null);
 
-    world.tickRegion(region,  10);
+    world.tickWorld(10);
     player.setAggro(jalxil);
-    world.tickRegion(region,  5);
+    world.tickWorld(5);
     expect(player.aggro).toEqual(jalxil);
 
-    world.tickRegion(region, 80);
+    world.tickWorld(80);
     expect(player.location).toEqual({ x: 30, y: 45 });
     expect(player.currentStats.prayer).toEqual(39);
     expect(jalxil.location).toEqual({ x: 30, y: 44 });
     expect(jalxil.currentStats.hitpoint).toBe(0);
     expect(player.currentStats.hitpoint).toBe(33);
-    expect(world.tickCounter).toBe(145)
+    expect(world.globalTickCounter).toEqual(145)
     expect(Random.callCount).toEqual(78)
   });
 

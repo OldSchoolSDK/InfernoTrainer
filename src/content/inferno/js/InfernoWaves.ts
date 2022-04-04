@@ -2,7 +2,7 @@
 import { shuffle } from 'lodash'
 import { Entity } from '../../../sdk/Entity'
 import { Mob } from '../../../sdk/Mob'
-import { UnitOptions } from '../../../sdk/Unit'
+import { Unit, UnitOptions } from '../../../sdk/Unit'
 import { JalMejRah } from './mobs/JalMejRah'
 import { JalAk } from './mobs/JalAk'
 import { JalZek } from './mobs/JalZek'
@@ -114,7 +114,10 @@ export class InfernoWaves {
       { x: 10 + 11, y: 11 + 14 }
     ])
 
-    const options: UnitOptions = { aggro: pillar /* TODO: || world.player */ };
+    const unknownPillar = pillar as unknown;
+
+    // hack hack hack
+    const options: UnitOptions = { aggro: unknownPillar as Unit /* TODO: || world.player */ };
 
     Array(n).fill(0).forEach(() => mobs.push(new JalNib(region, nibblerSpawns.shift(), options)))
     return mobs

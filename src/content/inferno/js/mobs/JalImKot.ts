@@ -72,7 +72,7 @@ export class JalImKot extends Mob {
       }
     };
   }
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 
@@ -114,7 +114,7 @@ export class JalImKot extends Mob {
   movementStep () {
     super.movementStep()
     if (!this.hasLOS) {
-      if (((this.attackCooldownTicks <= -38) && (Random.get() < 0.1)) || (this.attackCooldownTicks <= -50)) {
+      if (((this.attackDelay <= -38) && (Random.get() < 0.1)) || (this.attackDelay <= -50)) {
         this.dig()
       }
     }
@@ -125,7 +125,7 @@ export class JalImKot extends Mob {
       const player = this.aggro as Player;
       player.interruptCombat();
     }
-    this.attackCooldownTicks = 12
+    this.attackDelay = 12
     if (!Collision.collidesWithAnyEntities(this.region, this.aggro.location.x - 3, this.aggro.location.y + 3, this.size)) {
       this.location.x = this.aggro.location.x - this.size + 1
       this.location.y = this.aggro.location.y + this.size - 1

@@ -82,7 +82,7 @@ export class JalAk extends Mob {
   // Since blobs attack on a 6 tick cycle, but these mechanics are odd, i set the
   // attack speed to 3. The attack code exits early during a scan, so it always is
   // double the cooldown between actual attacks.
-  get cooldown () {
+  get attackSpeed () {
     return 3
   }
 
@@ -106,7 +106,7 @@ export class JalAk extends Mob {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null
+    return this.attackDelay === this.attackSpeed && this.playerPrayerScan === null
   }
 
   attackStyleForNewAttack () {
@@ -125,7 +125,7 @@ export class JalAk extends Mob {
   }
 
   attackIfPossible () {
-    this.attackCooldownTicks--
+    this.attackDelay--
     this.attackFeedback = AttackIndicators.NONE
 
     this.hadLOS = this.hasLOS
@@ -138,21 +138,21 @@ export class JalAk extends Mob {
     this.attackStyle = this.attackStyleForNewAttack()
     
     // Scan when appropriate
-    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackCooldownTicks <= 0))) {
+    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackDelay <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
       const unit = this.aggro as Unit;
       const overhead = unit.prayerController.overhead()
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       
-      this.attackCooldownTicks = this.cooldown
+      this.attackDelay = this.attackSpeed
       return
     }
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
-    if (this.playerPrayerScan && this.attackCooldownTicks <= 0) {
+    if (this.playerPrayerScan && this.attackDelay <= 0) {
       this.attack()
-      this.attackCooldownTicks = this.cooldown
+      this.attackDelay = this.attackSpeed
       this.playerPrayerScan = null
     }
   }

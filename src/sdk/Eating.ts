@@ -21,7 +21,7 @@ export class Eating {
     this.comboDelay--;
     if (this.currentFood) {
       this.currentFood.eat(player);
-      player.attackCooldownTicks += 3;
+      player.attackDelay += 3;
       this.currentFood = null;
     }
     if (this.currentPotion) {
@@ -30,7 +30,7 @@ export class Eating {
     }
     if (this.currentComboFood) {
       this.currentComboFood.eat(player);
-      player.attackCooldownTicks += 3;
+      player.attackDelay += 3;
       this.currentComboFood = null;
     }
 

@@ -1,9 +1,9 @@
 'use strict'
 import { sortBy, minBy } from 'lodash'
-import { GameObject } from './GameObject'
 import { Location } from "./Location"
 import { Collision } from './Collision'
 import { Region } from './Region'
+import { Unit } from './Unit'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface PathingCache {
@@ -30,7 +30,7 @@ export class Pathing {
 
 
   // TODO: Make this more like entitiesAtPoint
-  static mobsAtAoeOffset (region: Region,  mob: GameObject, point: Location) {
+  static mobsAtAoeOffset (region: Region,  mob: Unit, point: Location) {
     const mobs = []
     for (let i = 0; i < region.mobs.length; i++) {
       const collidedWithSpecificMob = region.mobs[i].location.x === point.x + mob.location.x && region.mobs[i].location.y === point.y + mob.location.y
@@ -40,7 +40,7 @@ export class Pathing {
       }
     }
 
-    return sortBy(mobs, (m: GameObject) => mob !== m)
+    return sortBy(mobs, (m: Unit) => mob !== m)
   }
 
 
@@ -56,7 +56,7 @@ export class Pathing {
   }
 
 
-  static closestPointTo (x: number, y: number, mob: GameObject) {
+  static closestPointTo (x: number, y: number, mob: Unit) {
     const corners = []
     for (let xx = 0; xx < mob.size; xx++) {
       for (let yy = 0; yy < mob.size; yy++) {
@@ -77,7 +77,7 @@ export class Pathing {
   }
 
 
-  static canTileBePathedTo (region: Region, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+  static canTileBePathedTo (region: Region, x: number, y: number, s: number, mobToAvoid: Unit = null) {
     const cache = Pathing.tileCache[`${region.serialNumber}-${x}-${y}-${s}-${mobToAvoid ? mobToAvoid.serialNumber : 0}`];
     if (cache !== undefined){
       return cache;
@@ -204,7 +204,7 @@ export class Pathing {
     return pathTiles
   }
 
-  static path (region: Region, startPoint: Location, endPoint: Location, speed: number, seeking: GameObject) {
+  static path (region: Region, startPoint: Location, endPoint: Location, speed: number, seeking: Unit) {
     let x, y
     const path = Pathing.constructPath(region, startPoint, endPoint)
     if (path.length === 0) {

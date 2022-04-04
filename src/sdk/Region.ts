@@ -43,11 +43,6 @@ export class Region{
     return this._serialNumber;
   }
 
-  preTick() {
-    
-    // Override me
-  }
-
   midTick() {
     // Override me
   }

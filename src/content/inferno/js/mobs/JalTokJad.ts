@@ -174,7 +174,7 @@ export class JalTokJad extends Mob {
     };
   }
   
-  get cooldown () {
+  get attackSpeed () {
     return this.waveCooldown
   }
   
@@ -211,7 +211,7 @@ export class JalTokJad extends Mob {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null
+    return this.attackDelay === this.attackSpeed && this.playerPrayerScan === null
   }
 
   canMeleeIfClose () {

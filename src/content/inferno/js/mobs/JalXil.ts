@@ -84,7 +84,7 @@ export class JalXil extends Mob {
     };
   }
 
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 

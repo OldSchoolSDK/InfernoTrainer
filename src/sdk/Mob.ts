@@ -136,7 +136,7 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      if (this.attackCooldownTicks > this.cooldown) {
+      if (this.attackDelay > this.attackSpeed) {
         // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
         dx = this.location.x
         dy = this.location.y
@@ -258,7 +258,7 @@ export class Mob extends Unit {
   }
 
   attackIfPossible () {
-    this.attackCooldownTicks--
+    this.attackDelay--
 
     this.hadLOS = this.hasLOS
     this.setHasLOS()
@@ -277,7 +277,7 @@ export class Mob extends Unit {
     }
     this.attackFeedback = AttackIndicators.NONE
 
-    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
+    if (!isUnderAggro && this.hasLOS && this.attackDelay <= 0) {
       this.attack()
     }
   }
@@ -305,7 +305,7 @@ export class Mob extends Unit {
 
     this.playAttackSound()
 
-    this.attackCooldownTicks = this.cooldown
+    this.attackDelay = this.attackSpeed
   }
 
   get consumesSpace (): Unit {

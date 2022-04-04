@@ -116,7 +116,7 @@ export class JalMejJak extends Mob {
     };
   }
   
-  get cooldown () {
+  get attackSpeed () {
     return 3
   }
 

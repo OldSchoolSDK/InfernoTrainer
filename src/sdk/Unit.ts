@@ -3,12 +3,11 @@ import HealSplat from '../assets/images/hitsplats/heal.png'
 import MissSplat from '../assets/images/hitsplats/miss.png'
 import DamageSplat from '../assets/images/hitsplats/damage.png'
 import { Settings } from './Settings'
-import { LineOfSight } from './LineOfSight'
-import { remove, filter } from 'lodash'
+import { LineOfSight, LineOfSightMask } from './LineOfSight'
+import { remove, filter, clamp } from 'lodash'
 import { BasePrayer } from './BasePrayer'
 import { Projectile } from './weapons/Projectile'
 import { XpDrop } from './XpDrop'
-import { GameObject } from './GameObject'
 import { Location } from "./Location"
 import { Pathing } from './Pathing'
 import { ImageLoader } from './utils/ImageLoader'
@@ -29,7 +28,7 @@ import { Item } from './Item'
 import { PrayerController } from './PrayerController'
 import { Region } from './Region'
 import { Player } from './Player'
-import ColorScale from 'color-scales'
+import { CollisionType } from './Collision'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -53,7 +52,7 @@ export class UnitEquipment {
 }
 
 export interface UnitOptions {
-  aggro?: GameObject;
+  aggro?: Unit;
   equipment?: UnitEquipment;
   spawnDelay?: number;
   cooldown?: number;
@@ -99,13 +98,13 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
-export class Unit extends GameObject {
+export class Unit {
 
   prayerController: PrayerController;
   lastOverhead?: BasePrayer = null;
-  aggro?: GameObject;
+  aggro?: Unit;
   perceivedLocation: Location;
-  attackCooldownTicks = 0;
+  attackDelay = 0;
   hasLOS = false;
   frozen = 0;
   stunned = 0;
@@ -182,8 +181,6 @@ export class Unit extends GameObject {
   }
 
   constructor (region: Region, location: Location, options?: UnitOptions) {
-    super()
-
     this.region = region;
      this.aggro = options.aggro || null
     this.perceivedLocation = location
@@ -194,7 +191,7 @@ export class Unit extends GameObject {
     this.currentStats.hitpoint = this.stats.hitpoint
 
     if (options.cooldown) { 
-      this.attackCooldownTicks = options.cooldown;
+      this.attackDelay = options.cooldown;
     }
 
   }
@@ -296,12 +293,12 @@ export class Unit extends GameObject {
     return Unit.emptyBonuses();
   }
 
-  get cooldown () {
+  get attackSpeed () {
     return 0
   }
 
   get flinchDelay () {
-    return Math.floor(this.cooldown / 2);
+    return Math.floor(this.attackSpeed / 2);
   }
   
   get attackRange () {
@@ -342,6 +339,46 @@ export class Unit extends GameObject {
     return (this.stunned > 0)
   }
 
+  
+  region: Region;
+  location: Location;
+  dying = -1;
+  _serialNumber: string;
+  get serialNumber(): string {
+    if (!this._serialNumber) {
+      this._serialNumber = String(Math.random())
+    }
+    return this._serialNumber;
+  }
+  
+  get size () {
+    return 1;
+  }
+  isDying () {
+    return (this.dying > 0)
+  }
+
+  get collisionType() {
+    return CollisionType.BLOCK_MOVEMENT;
+  }
+
+  get lineOfSight(): LineOfSightMask {
+    return LineOfSightMask.FULL_MASK
+  }
+
+  // Returns true if this game object is on the specified tile.
+  isOnTile (x: number, y: number) {
+    return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
+  }
+
+  // Returns the closest tile on this mob to the specified point.
+  getClosestTileTo (x: number, y: number) {
+    // We simply clamp the target point to our own boundary box.
+    return [clamp(x, this.location.x, this.location.x + this.size - 1), clamp(y, this.location.y - this.size + 1, this.location.y)]
+  }
+
+
+
   // TODO more modular
   get rangeAttackAnimation () {
     return null
@@ -356,7 +393,7 @@ export class Unit extends GameObject {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackCooldownTicks === this.cooldown && this.dying === -1 && this.isStunned() === false;
+    return this.attackDelay === this.attackSpeed && this.dying === -1 && this.isStunned() === false;
   }
 
   setHasLOS () {
@@ -461,8 +498,8 @@ export class Unit extends GameObject {
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
-          if (this.attackCooldownTicks < this.flinchDelay + 1){
-            this.attackCooldownTicks = this.flinchDelay + 1;
+          if (this.attackDelay < this.flinchDelay + 1){
+            this.attackDelay = this.flinchDelay + 1;
           }
         }
       }

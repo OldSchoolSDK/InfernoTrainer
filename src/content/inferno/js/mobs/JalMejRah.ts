@@ -80,7 +80,7 @@ export class JalMejRah extends Mob {
       }
     };
   }
-  get cooldown () {
+  get attackSpeed () {
     return 3
   }
 
