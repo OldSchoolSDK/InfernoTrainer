@@ -106,7 +106,7 @@ export class JalAk extends Mob {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackDelay === 0 && this.playerPrayerScan === null
+    return this.attackDelay === this.attackSpeed && this.playerPrayerScan === null
   }
 
   attackStyleForNewAttack () {
