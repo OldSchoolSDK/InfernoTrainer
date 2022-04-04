@@ -101,6 +101,7 @@ export class InfernoWaves {
   }
 
   static spawnNibblers (n: number, region: Region, pillar: Entity) {
+    return [];
     const mobs: Mob[] = []
     const nibblerSpawns = shuffle([
       { x: 8 + 11, y: 13 + 14 },

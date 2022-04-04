@@ -54,6 +54,7 @@ export class World {
     window.requestAnimationFrame(this.browserLoop.bind(this));
     const elapsed = now - this.then;
     const tickElapsed = now - this.tickTimer;
+
     if (tickElapsed >= 600 && this.isPaused === false) {
       this.tickTimer = now;
       if (this.getReadyTimer > 0) {

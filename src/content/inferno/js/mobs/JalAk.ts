@@ -125,7 +125,6 @@ export class JalAk extends Mob {
   }
 
   attackIfPossible () {
-    this.attackDelay--
     this.attackFeedback = AttackIndicators.NONE
 
     this.hadLOS = this.hasLOS
@@ -145,14 +144,14 @@ export class JalAk extends Mob {
       this.playerPrayerScan = overhead ? overhead.feature() : 'none'
       this.attackFeedback = AttackIndicators.SCAN
       
-      this.attackDelay = this.attackSpeed
+      this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
       return
     }
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
     if (this.playerPrayerScan && this.attackDelay <= 0) {
       this.attack()
-      this.attackDelay = this.attackSpeed
+      this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
       this.playerPrayerScan = null
     }
   }

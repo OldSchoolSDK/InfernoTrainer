@@ -141,7 +141,6 @@ export class JalZek extends Mob {
   }
 
   attackIfPossible () {
-    this.attackDelay--
     
     this.attackStyle = this.attackStyleForNewAttack()
 
@@ -166,14 +165,14 @@ export class JalZek extends Mob {
           // Set to 50% health
           mobToResurrect.currentStats.hitpoint = Math.floor(mobToResurrect.stats.hitpoint / 2)
           mobToResurrect.dying = -1
-          mobToResurrect.attackDelay = mobToResurrect.attackSpeed;
+          mobToResurrect.attackTick = this.region.world.globalTickCounter + mobToResurrect.attackSpeed;
 
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
           this.region.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
-          this.attackDelay = 8
+          this.attackTick = this.region.world.globalTickCounter + 8
         }
       } else {
         this.attack()

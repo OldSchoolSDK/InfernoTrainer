@@ -103,8 +103,7 @@ export class Mob extends Unit {
     }
     this.processIncomingAttacks()
 
-    this.spawnDelay--;
-    if (this.spawnDelay > 0) {
+    if (this.stallTick > this.region.world.globalTickCounter) {
       return;
     }
     this.perceivedLocation = { x: this.location.x, y: this.location.y }
@@ -238,7 +237,7 @@ export class Mob extends Unit {
   
   attackStep () {
 
-    if (this.spawnDelay > 0) {
+    if (this.stallTick > this.region.world.globalTickCounter) {
       return;
     }
     if (this.dying === 0) {
@@ -258,7 +257,6 @@ export class Mob extends Unit {
   }
 
   attackIfPossible () {
-    this.attackDelay--
 
     this.hadLOS = this.hasLOS
     this.setHasLOS()
@@ -305,7 +303,7 @@ export class Mob extends Unit {
 
     this.playAttackSound()
 
-    this.attackDelay = this.attackSpeed
+    this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
   }
 
   get consumesSpace (): Unit {

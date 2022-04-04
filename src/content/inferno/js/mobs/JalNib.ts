@@ -120,7 +120,6 @@ export class JalNib extends Mob {
   }
 
   attackIfPossible () {
-    this.attackDelay--
     this.attackStyle = this.attackStyleForNewAttack()
 
     if (this.dying === -1 && this.aggro.dying > -1) {
