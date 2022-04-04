@@ -87,7 +87,7 @@ export class JalZek extends Mob {
     };
   }
 
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 
@@ -141,7 +141,7 @@ export class JalZek extends Mob {
   }
 
   attackIfPossible () {
-    this.attackCooldownTicks--
+    this.attackDelay--
     
     this.attackStyle = this.attackStyleForNewAttack()
 
@@ -157,7 +157,7 @@ export class JalZek extends Mob {
     
     const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
-    if (!isUnderAggro && this.hasLOS && this.attackCooldownTicks <= 0) {
+    if (!isUnderAggro && this.hasLOS && this.attackDelay <= 0) {
       if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region)
         if (!mobToResurrect) {
@@ -166,14 +166,14 @@ export class JalZek extends Mob {
           // Set to 50% health
           mobToResurrect.currentStats.hitpoint = Math.floor(mobToResurrect.stats.hitpoint / 2)
           mobToResurrect.dying = -1
-          mobToResurrect.attackCooldownTicks = mobToResurrect.cooldown;
+          mobToResurrect.attackDelay = mobToResurrect.attackSpeed;
 
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect))
 
           mobToResurrect.perceivedLocation = mobToResurrect.location
           this.region.addMob(mobToResurrect)
           // (15, 10) to  (21 , 22)
-          this.attackCooldownTicks = 8
+          this.attackDelay = 8
         }
       } else {
         this.attack()

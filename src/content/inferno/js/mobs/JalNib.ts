@@ -91,7 +91,7 @@ export class JalNib extends Mob {
     return null
   }
 
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 
@@ -120,7 +120,7 @@ export class JalNib extends Mob {
   }
 
   attackIfPossible () {
-    this.attackCooldownTicks--
+    this.attackDelay--
     this.attackStyle = this.attackStyleForNewAttack()
 
     if (this.dying === -1 && this.aggro.dying > -1) {
@@ -133,7 +133,7 @@ export class JalNib extends Mob {
     this.attackFeedback = AttackIndicators.NONE
 
     const aggroPoint = Pathing.closestPointTo(this.location.x, this.location.y, this.aggro)
-    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackCooldownTicks <= 0) {
+    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackDelay <= 0) {
       this.attack()
     }
   }

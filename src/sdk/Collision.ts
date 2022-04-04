@@ -1,5 +1,5 @@
 import { filter } from 'lodash';
-import { GameObject } from './GameObject'
+import { Entity } from './Entity';
 import { LineOfSightMask } from './LineOfSight';
 import { Mob } from './Mob';
 import { Pathing } from './Pathing';
@@ -23,11 +23,11 @@ export class Collision {
 
   // Mob collision
   
-  static collidesWithMob (region: Region,  x: number, y: number, s: number, mob: GameObject) {
+  static collidesWithMob (region: Region,  x: number, y: number, s: number, mob: Unit) {
     return (Collision.collisionMath(x, y, s, mob.location.x, mob.location.y, mob.size))
   }
 
-  static collidesWithAnyMobs (region: Region, x: number, y: number, s: number, mobToAvoid: GameObject = null) {
+  static collidesWithAnyMobs (region: Region, x: number, y: number, s: number, mobToAvoid: Unit = null) {
     for (let i = 0; i < region.mobs.length; i++) {
       if (region.mobs[i] === mobToAvoid) {
         continue
@@ -47,7 +47,7 @@ export class Collision {
 
   // Same as above but only returns entities with collision enabled.
   static collideableEntitiesAtPoint(region: Region, x: number, y: number, s: number) {
-    return filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: GameObject) => entity.collisionType != CollisionType.NONE);
+    return filter(Pathing.entitiesAtPoint(region, x, y, s), (entity: Entity) => entity.collisionType != CollisionType.NONE);
   }
 
 

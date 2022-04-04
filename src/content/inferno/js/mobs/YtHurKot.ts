@@ -107,7 +107,7 @@ export class YtHurKot extends Mob {
       }
     };
   }
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 

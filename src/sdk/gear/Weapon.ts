@@ -1,6 +1,5 @@
 'use strict'
 
-import { GameObject } from "../GameObject";
 import { BasePrayer } from "../BasePrayer";
 import { Unit } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
@@ -123,7 +122,7 @@ export class Weapon extends Equipment{
   }
   
   
-  cast(from: Unit, to: GameObject) {
+  cast(from: Unit, to: Unit) {
     // Override me
   }
 
@@ -207,7 +206,7 @@ export class Weapon extends Equipment{
     return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
   }
 
-  isBlockable (from: Unit, to: GameObject, bonuses: AttackBonuses): boolean {
+  isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses): boolean {
     return false; // weapons implement this at the type tier
   }
 

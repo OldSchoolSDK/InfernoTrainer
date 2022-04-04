@@ -48,7 +48,7 @@ export class TzKalZuk extends Mob {
 
   constructor (region: Region, location: Location, options: UnitOptions) {
     super(region, location, options)
-    this.attackCooldownTicks = 14;
+    this.attackDelay = 14;
 
     // this.currentStats.hitpoint = 80;
 
@@ -98,7 +98,7 @@ export class TzKalZuk extends Mob {
   }
 
   attackIfPossible () {
-    this.attackCooldownTicks--
+    this.attackDelay--
 
     this.attackStyle = this.attackStyleForNewAttack()
 
@@ -115,7 +115,7 @@ export class TzKalZuk extends Mob {
       }  
     }
 
-    if (this.canAttack() && this.attackCooldownTicks <= 0) {
+    if (this.canAttack() && this.attackDelay <= 0) {
       this.attack()
     }
   }
@@ -174,7 +174,7 @@ export class TzKalZuk extends Mob {
     }
     this.weapons['typeless'].attack(this, shieldOrPlayer, { attackStyle: 'typeless', magicBaseSpellDamage: shieldOrPlayer.type === UnitTypes.PLAYER ? this.magicMaxHit() : 0 });
 
-    this.attackCooldownTicks = this.cooldown
+    this.attackDelay = this.attackSpeed
   }
 
   get combatLevel () {
@@ -235,7 +235,7 @@ export class TzKalZuk extends Mob {
       }
     };
   }
-  get cooldown () {
+  get attackSpeed () {
     if (this.enraged) {
       return 7;
     }

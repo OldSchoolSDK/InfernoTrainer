@@ -538,7 +538,7 @@ export class Player extends Unit {
   }
 
   attackIfPossible() {
-    this.attackCooldownTicks--
+    this.attackDelay--
 
     if (this.canAttack() === false) {
       return;
@@ -546,9 +546,9 @@ export class Player extends Unit {
 
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackCooldownTicks <= 0 && this.aggro.isDying() === false) {
+      if (this.hasLOS && this.aggro && this.attackDelay <= 0 && this.aggro.isDying() === false) {
         if (this.attack()) {
-          this.attackCooldownTicks = this.attackSpeed
+          this.attackDelay = this.attackSpeed
         }
       }
     }

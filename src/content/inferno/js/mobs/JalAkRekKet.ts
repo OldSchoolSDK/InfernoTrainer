@@ -80,7 +80,7 @@ export class JalAkRekKet extends Mob {
     };
   }
 
-  get cooldown () {
+  get attackSpeed () {
     return 4
   }
 

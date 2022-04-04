@@ -7,13 +7,12 @@ import { DelayedAction } from './DelayedAction'
 import { Viewport } from './Viewport'
 import MetronomeSound from '../assets/sounds/bonk.ogg'
 import { Pathing } from './Pathing'
-import { MapController } from './MapController'
 
 
 export class World {
 
   regions: Region[] = [];
-  tickCounter = 0;
+  globalTickCounter = 0;
   isPaused = true;
   tickPercent: number;
   getReadyTimer = 0;
@@ -60,7 +59,9 @@ export class World {
       if (this.getReadyTimer > 0) {
         this.getReadyTimer--;
       }
-      this.regions.forEach((region: Region) => this.tickRegion(region, 1))
+
+      this.tickWorld();
+      
     }
 
     if (elapsed > this.fpsInterval && this.isPaused === false) {
@@ -72,9 +73,17 @@ export class World {
 
   }
 
-  tickRegion (region: Region, n = 1) {
+  tickWorld(n = 1) {
+    this.globalTickCounter++;
+    this.regions.forEach((region: Region) => this.tickRegion(region))
+    
+    if (n > 1) {
+      return this.tickWorld(n-1);
+    }
+  }
+
+  tickRegion (region: Region) {
     Pathing.purgeTileCache();
-    this.tickCounter++;
 
     if (Settings.metronome) {
       new Audio(MetronomeSound).play();
@@ -86,7 +95,6 @@ export class World {
       region.newMobs = [];
     }
 
-    region.preTick();
 
     region.players.forEach((player: Player) => player.pretick());
     
@@ -95,14 +103,12 @@ export class World {
     if (this.getReadyTimer == 0){
 
       region.mobs.forEach((mob) => {
-        mob.ticksAlive++;
         mob.movementStep()
       })
       region.mobs.forEach((mob) => mob.attackStep())
 
 
       region.newMobs.forEach((mob) => {
-        mob.ticksAlive++;
         mob.movementStep()
       })
       region.newMobs.forEach((mob) => mob.attackStep())
@@ -112,7 +118,6 @@ export class World {
 
     region.players.forEach((player: Player) => {
         player.movementStep()
-        player.ticksAlive++;
         if (this.getReadyTimer <=0){
           player.attackStep()    
         }
@@ -134,12 +139,6 @@ export class World {
     deadPlayers.forEach((player) => region.removePlayer(player))
     deadMobs.forEach((mob) => region.removeMob(mob))
     deadEntities.forEach((entity) => region.removeEntity(entity))
-
-
-
-    if (n > 1) {
-      return this.tickRegion(region, n-1);
-    }
 
   }
 
