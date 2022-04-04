@@ -13,6 +13,7 @@ import { Viewport } from './Viewport';
 import { Chrome } from './Chrome';
 import { MapController } from './MapController';
 import { ControlPanelController } from './ControlPanelController';
+import { Player } from './Player';
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -129,7 +130,7 @@ export class ClickController {
 
 
     const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
-    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent)
+    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent).filter((player: Player) => player !== Viewport.viewport.player);
     const groundItems = region.groundItemsAtLocation(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
 
     Viewport.viewport.player.interruptCombat();

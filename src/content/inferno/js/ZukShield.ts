@@ -34,7 +34,7 @@ export class ZukShield extends Mob {
   constructor (region: Region, location: Location, options: UnitOptions) {
     super(region, location, options)
 
-    this.frozen = 1;
+    this.freeze(1);
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat)
     this.damageHitsplatImage = ImageLoader.createImage(DamageSplat)
 
@@ -134,11 +134,11 @@ export class ZukShield extends Mob {
         this.location.x--;
       }
       if (this.location.x < 11) {
-        this.frozen = 5;
+        this.freeze(5);
         this.movementDirection = !this.movementDirection;
       }
       if (this.location.x > 35) {
-        this.frozen = 5;
+        this.freeze(5);
         this.movementDirection = !this.movementDirection;
       }      
     }
