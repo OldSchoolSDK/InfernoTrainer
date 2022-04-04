@@ -113,7 +113,7 @@ export class TzKalZuk extends Mob {
       }
     }
 
-    if (this.canAttack() && this.attackTick - this.region.world.globalTickCounter <= 0) {
+    if (this.canAttack() && this.attackDelay <= 0) {
       this.attack()
     }
   }

@@ -132,7 +132,7 @@ export class JalNib extends Mob {
     this.attackFeedback = AttackIndicators.NONE
 
     const aggroPoint = Pathing.closestPointTo(this.location.x, this.location.y, this.aggro)
-    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackTick - this.region.world.globalTickCounter <= 0) {
+    if (!isUnderAggro && Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange && this.attackDelay <= 0) {
       this.attack()
     }
   }

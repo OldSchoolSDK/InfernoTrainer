@@ -135,7 +135,7 @@ export class Mob extends Unit {
         dy = this.location.y
       }
 
-      if (this.attackTick - this.region.world.globalTickCounter > this.attackSpeed) {
+      if (this.attackDelay > this.attackSpeed) {
         // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
         dx = this.location.x
         dy = this.location.y
@@ -275,7 +275,7 @@ export class Mob extends Unit {
     }
     this.attackFeedback = AttackIndicators.NONE
 
-    if (!isUnderAggro && this.hasLOS && this.attackTick - this.region.world.globalTickCounter <= 0) {
+    if (!isUnderAggro && this.hasLOS && this.attackDelay <= 0) {
       this.attack()
     }
   }

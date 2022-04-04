@@ -106,7 +106,7 @@ export class JalAk extends Mob {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackTick - this.region.world.globalTickCounter + 1 === 0 && this.playerPrayerScan === null
+    return this.attackDelay + 1 === 0 && this.playerPrayerScan === null
   }
 
   attackStyleForNewAttack () {
@@ -137,7 +137,7 @@ export class JalAk extends Mob {
     this.attackStyle = this.attackStyleForNewAttack()
     
     // Scan when appropriate
-    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackTick - this.region.world.globalTickCounter <= 0))) {
+    if (this.hasLOS && (!this.hadLOS || (!this.playerPrayerScan && this.attackDelay <= 0))) {
       // we JUST gained LoS, or we are properly queued up for the next scan
       const unit = this.aggro as Unit;
       const overhead = unit.prayerController.overhead()
@@ -149,7 +149,7 @@ export class JalAk extends Mob {
     }
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
-    if (this.playerPrayerScan && this.attackTick - this.region.world.globalTickCounter <= 0) {
+    if (this.playerPrayerScan && this.attackDelay <= 0) {
       this.attack()
       this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
       this.playerPrayerScan = null

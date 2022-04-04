@@ -156,7 +156,7 @@ export class JalZek extends Mob {
     
     const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1)
 
-    if (!isUnderAggro && this.hasLOS && this.attackTick - this.region.world.globalTickCounter <= 0) {
+    if (!isUnderAggro && this.hasLOS && this.attackDelay <= 0) {
       if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region)
         if (!mobToResurrect) {

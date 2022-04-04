@@ -114,7 +114,7 @@ export class JalImKot extends Mob {
   movementStep () {
     super.movementStep()
     if (!this.hasLOS) {
-      if (((this.attackTick - this.region.world.globalTickCounter <= -38) && (Random.get() < 0.1)) || (this.attackTick - this.region.world.globalTickCounter <= -50)) {
+      if (((this.attackDelay <= -38) && (Random.get() < 0.1)) || (this.attackDelay <= -50)) {
         this.dig()
       }
     }

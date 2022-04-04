@@ -211,7 +211,7 @@ export class JalTokJad extends Mob {
   }
 
   shouldShowAttackAnimation () {
-    return this.attackTick - this.region.world.globalTickCounter + 1 === this.attackSpeed && this.playerPrayerScan === null
+    return this.attackDelay + 1 === this.attackSpeed && this.playerPrayerScan === null
   }
 
   canMeleeIfClose () {

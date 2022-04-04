@@ -545,7 +545,7 @@ export class Player extends Unit {
 
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackTick - this.region.world.globalTickCounter <= 0 && this.aggro.isDying() === false) {
+      if (this.hasLOS && this.aggro && this.attackDelay <= 0 && this.aggro.isDying() === false) {
         if (this.attack()) {
           this.attackTick = this.region.world.globalTickCounter + this.attackSpeed
         }

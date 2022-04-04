@@ -503,7 +503,7 @@ export class Unit {
           this.setAggro(projectile.from);
 
           // todo: verify this transpoed correctedly
-          if (this.attackTick - this.region.world.globalTickCounter < this.flinchDelay) {
+          if (this.attackDelay < this.flinchDelay) {
             this.attackTick = this.region.world.globalTickCounter + this.flinchDelay;
           }
         }
@@ -511,6 +511,10 @@ export class Unit {
     })
     this.currentStats.hitpoint = Math.max(0, this.currentStats.hitpoint)
     this.postAttacksEvent();
+  }
+
+  get attackDelay () {
+    return this.attackTick - this.region.world.globalTickCounter;
   }
 
   shouldChangeAggro(projectile: Projectile) {
