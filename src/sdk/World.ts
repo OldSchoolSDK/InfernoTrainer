@@ -54,6 +54,7 @@ export class World {
     window.requestAnimationFrame(this.browserLoop.bind(this));
     const elapsed = now - this.then;
     const tickElapsed = now - this.tickTimer;
+
     if (tickElapsed >= 600 && this.isPaused === false) {
       this.tickTimer = now;
       if (this.getReadyTimer > 0) {
@@ -74,8 +75,8 @@ export class World {
   }
 
   tickWorld(n = 1) {
-    this.regions.forEach((region: Region) => this.tickRegion(region))
     this.globalTickCounter++;
+    this.regions.forEach((region: Region) => this.tickRegion(region))
     
     if (n > 1) {
       return this.tickWorld(n-1);

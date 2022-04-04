@@ -397,7 +397,7 @@ export class Unit {
   }
 
   shouldShowAttackAnimation() {
-    return this.hasLOS && this.attackTick - this.region.world.globalTickCounter + 1 === this.attackSpeed && this.dying === -1 && this.isStunned() === false;
+    return this.hasLOS && this.attackDelay === this.attackSpeed && this.dying === -1 && this.isStunned() === false;
   }
 
   setHasLOS() {
@@ -502,9 +502,8 @@ export class Unit {
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
-          // todo: verify this transpoed correctedly
-          if (this.attackDelay < this.flinchDelay) {
-            this.attackTick = this.region.world.globalTickCounter + this.flinchDelay;
+          if (this.attackDelay < this.flinchDelay + 1) {
+            this.attackTick = this.region.world.globalTickCounter + this.flinchDelay + 1;
           }
         }
       }
