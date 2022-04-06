@@ -10,16 +10,16 @@ export enum CommandStrength {
 }
 
 export interface CommandKwargs {
-  [keyword: string]: string | number
+  [keyword: string]: string | number | object
 }
 
 export class QueueableCommand {
   opcode: CommandOpCodes;
-  delay: number = 0;
+  delay = 0;
   strength: CommandStrength
   kwargs: CommandKwargs
 
-  static create(opcode: CommandOpCodes, strength: CommandStrength, delay: number = 0, kwargs: CommandKwargs = {}) {
+  static create(opcode: CommandOpCodes, strength: CommandStrength, delay = 0, kwargs: CommandKwargs = {}) {
     const queueableCommand = new QueueableCommand();
     queueableCommand.opcode = opcode;
     queueableCommand.delay = delay;
@@ -34,6 +34,7 @@ export class QueueableCommand {
 }
 
 export class CommandQueue {
+  intakeQueue: QueueableCommand[] = [];
   queue: QueueableCommand[] = [];
   owner: Unit;
 
@@ -41,17 +42,15 @@ export class CommandQueue {
     this.owner = owner;
   }
 
-  addCommand(command: QueueableCommand) {
-    this.queue.push(command);
-    this._overpowerWeakCommands();
+  enqueue(...commands: QueueableCommand[]) {
+    this.queue = this.queue.concat(commands);
   }
 
   evaluateQueue() {
+
     this._overpowerWeakCommands();
-    for (let command of filter(this.queue, (cmd: QueueableCommand) => cmd.delay === 0).slice(0, 10)) {
+    for (const command of filter(this.queue, (cmd: QueueableCommand) => cmd.delay === 0).slice(0, 10)) {
       command.evaluate(this.owner)
-    }
-    for (let command of this.queue) {
       command.delay--;
     }
     this.queue = filter(this.queue, (command: QueueableCommand) => command.delay === 0);

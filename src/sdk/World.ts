@@ -101,11 +101,12 @@ export class World {
     region.entities.forEach((entity) => entity.tick())
 
     if (this.getReadyTimer == 0){
-
+      
       region.mobs.forEach((mob) => {
+        mob.commandQueue.evaluateQueue();
         mob.movementStep()
+        mob.attackStep()
       })
-      region.mobs.forEach((mob) => mob.attackStep())
 
 
       region.newMobs.forEach((mob) => {
@@ -117,10 +118,20 @@ export class World {
 
 
     region.players.forEach((player: Player) => {
-        player.movementStep()
-        if (this.getReadyTimer <=0){
-          player.attackStep()    
-        }
+
+      // Stalls
+      // Timers
+      // Queue
+      // Interactions with objects / items
+      // Movement
+      // Interactions with players / npcs
+
+      player.commandQueue.evaluateQueue();
+
+      player.movementStep()
+      if (this.getReadyTimer <=0){
+        player.attackStep()    
+      }
     });
 
 

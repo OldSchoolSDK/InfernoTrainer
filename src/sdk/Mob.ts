@@ -13,6 +13,8 @@ import { SoundCache } from './utils/SoundCache';
 import { Viewport } from './Viewport'
 import { Random } from './Random'
 import { Region } from './Region'
+import { CommandStrength, QueueableCommand } from './CommandQueue'
+import { CommandOpCodes } from './OpcodeBindings'
 
 export enum AttackIndicators {
   NONE = 0,
@@ -334,7 +336,10 @@ export class Mob extends Unit {
         text: [{ text: 'Attack ', fillStyle: 'white' }, { text: this.mobName(), fillStyle: 'yellow' }, { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) }],
         action: () => {
           Viewport.viewport.clickController.redClick()
-          Viewport.viewport.clickController.sendToServer(() => Viewport.viewport.clickController.playerAttackClick(this))
+          
+          Viewport.viewport.player.commandQueue.enqueue(
+            QueueableCommand.create(CommandOpCodes.ATTACK, CommandStrength.STRONG, 0, { target: this }),
+          );  
         }
       }
     ];

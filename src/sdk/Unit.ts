@@ -29,7 +29,7 @@ import { PrayerController } from './PrayerController'
 import { Region } from './Region'
 import { Player } from './Player'
 import { CollisionType } from './Collision'
-import { CommandQueue } from './CommandQueue'
+import { CommandQueue, QueueableCommand } from './CommandQueue'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
