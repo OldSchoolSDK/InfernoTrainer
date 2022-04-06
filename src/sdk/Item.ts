@@ -1,6 +1,10 @@
 import { Location } from "./Location";
 import { ItemName } from "./ItemName";
 import { Player } from "./Player";
+import { ClickController } from "./ClickController";
+import { Viewport } from "./Viewport";
+import { QueueableCommand, CommandStrength } from "./CommandQueue";
+import { CommandOpCodes } from "./OpcodeBindings";
 
 export class Item {
   
@@ -23,7 +27,6 @@ export class Item {
 
   inventoryLeftClick(player: Player) {
     // Override me
-    player;
   }
   
   contextActions (player: Player) {
@@ -38,8 +41,12 @@ export class Item {
         ],
         action: () => 
         {
-          player.region.addGroundItem(player, this, player.location.x, player.location.y)
-          this.consumeItem(player);
+
+          Viewport.viewport.clickController.redClick();
+          player.commandQueue.enqueue(
+            QueueableCommand.create(CommandOpCodes.DROP_ITEM, CommandStrength.STRONG, 0, { item: this }),
+          );
+      
         }
       },
       {

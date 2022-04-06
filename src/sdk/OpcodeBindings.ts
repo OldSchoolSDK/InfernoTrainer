@@ -11,15 +11,13 @@ export enum CommandOpCodes {
   MOVEMENT = 0,
   ATTACK = 1,
   PICKUP_ITEM = 2,
-  DROP_ITEM = 3,
-  EXAMINE_ITEM = 4
+  DROP_ITEM = 3
 }
 
 export const opcodeLookupTable: OpcodeToCommandMap = {
   [CommandOpCodes.MOVEMENT]: (target: Unit, kwargs: CommandKwargs) => {
     const x = kwargs.x as number;
     const y = kwargs.y as number;
-    // Ideally, some validation.
     const player = target as Player; // MOVEMENT can only come from players of course.
     player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize))
   },
@@ -33,9 +31,9 @@ export const opcodeLookupTable: OpcodeToCommandMap = {
     player.setSeekingItem(item);
   },
   [CommandOpCodes.DROP_ITEM]: (target: Unit, kwargs: CommandKwargs) => {
-    //
-  },
-  [CommandOpCodes.EXAMINE_ITEM]: (target: Unit, kwargs: CommandKwargs) => {
-    //
+    const player = target as Player;
+    const item = kwargs.item as Item;
+    target.region.addGroundItem(player, this, target.location.x, target.location.y)
+    item.consumeItem(player);
   },
 };
