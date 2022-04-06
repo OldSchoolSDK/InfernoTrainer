@@ -29,6 +29,7 @@ import { PrayerController } from './PrayerController'
 import { Region } from './Region'
 import { Player } from './Player'
 import { CollisionType } from './Collision'
+import { CommandQueue } from './CommandQueue'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -98,6 +99,10 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
+
+
+
+
 export class Unit {
 
   prayerController: PrayerController;
@@ -120,11 +125,32 @@ export class Unit {
   autoRetaliate = false;
   spawnDelay = 0;
 
+  commandQueue: CommandQueue;
+
+  constructor(region: Region, location: Location, options?: UnitOptions) {
+    this.region = region;
+    this.aggro = options.aggro || null
+    this.perceivedLocation = location
+    this.location = location
+    this.setStats()
+    this.spawnDelay = options.spawnDelay || 0
+    this.autoRetaliate = true;
+    this.currentStats.hitpoint = this.stats.hitpoint
+
+    this.commandQueue = new CommandQueue(this);
+
+    if (options.cooldown) {
+      this.attackDelay = options.cooldown;
+    }
+
+
+  }
+
   get completeSetEffects(): SetEffect[] {
     return null;
   }
 
-  get type(): UnitTypes{
+  get type(): UnitTypes {
     return UnitTypes.MOB;
   }
 
@@ -132,20 +158,20 @@ export class Unit {
     return false;
   }
 
-  mobName(): EntityName { 
+  mobName(): EntityName {
     return null;
   }
 
 
-  get combatLevel () {
+  get combatLevel() {
     const base = 0.25 * (this.stats.defence + this.stats.hitpoint + Math.floor((this.stats.prayer || 0) * 0.5));
-    const melee = (13/40) * (this.stats.attack + this.stats.strength)
-    const range = (13/40) * Math.floor(this.stats.range * (3/2))
-    const mage = (13/40) * Math.floor(this.stats.magic * (3/2))
+    const melee = (13 / 40) * (this.stats.attack + this.stats.strength)
+    const range = (13 / 40) * Math.floor(this.stats.range * (3 / 2))
+    const mage = (13 / 40) * Math.floor(this.stats.magic * (3 / 2))
     return Math.floor(base + Math.max(melee, range, mage));
   }
 
-  combatLevelColor (against: Unit) {
+  combatLevelColor(against: Unit) {
 
     // https://oldschool.runescape.wiki/w/Combat_level#Colours
     const colorScale = [
@@ -180,23 +206,7 @@ export class Unit {
 
   }
 
-  constructor (region: Region, location: Location, options?: UnitOptions) {
-    this.region = region;
-     this.aggro = options.aggro || null
-    this.perceivedLocation = location
-    this.location = location
-    this.setStats()
-    this.spawnDelay = options.spawnDelay || 0
-    this.autoRetaliate = true;
-    this.currentStats.hitpoint = this.stats.hitpoint
-
-    if (options.cooldown) { 
-      this.attackDelay = options.cooldown;
-    }
-
-  }
-
-  contextActions (region: Region, x: number, y: number) {
+  contextActions(region: Region, x: number, y: number) {
     return [];
   }
 
@@ -204,30 +214,30 @@ export class Unit {
     this.aggro = mob;
   }
 
-  
+
   grantXp(xpDrop: XpDrop) {
     // Override me
-   }
-  setStats(){
-    // Override me
-   }
-  movementStep () {
-    // Override me
-   }
-  attackStep () {
-    // Override me
-   }
-  draw(tickPercent: number) {
-    // Override me
-   }
-  drawUILayer(tickPercent: number) { 
+  }
+  setStats() {
     // Override me
   }
-  removedFromWorld () {
+  movementStep() {
     // Override me
-   }
+  }
+  attackStep() {
+    // Override me
+  }
+  draw(tickPercent: number) {
+    // Override me
+  }
+  drawUILayer(tickPercent: number) {
+    // Override me
+  }
+  removedFromWorld() {
+    // Override me
+  }
 
-  static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses{
+  static mergeEquipmentBonuses(firstBonuses: UnitBonuses, secondBonuses: UnitBonuses): UnitBonuses {
     return {
       attack: {
         stab: firstBonuses.attack.stab + secondBonuses.attack.stab,
@@ -293,36 +303,36 @@ export class Unit {
     return Unit.emptyBonuses();
   }
 
-  get attackSpeed () {
+  get attackSpeed() {
     return 0
   }
 
-  get flinchDelay () {
+  get flinchDelay() {
     return Math.floor(this.attackSpeed / 2);
   }
-  
-  get attackRange () {
+
+  get attackRange() {
     return 0
   }
 
-  get maxHit () {
+  get maxHit() {
     return 0
   }
 
-  get image (): string {
+  get image(): string {
     return null
   }
 
   // Returns true if the NPC can move towards the unit it is aggro'd against.
-  canMove () {
+  canMove() {
     return (!this.hasLOS && !this.isFrozen() && !this.isStunned() && !this.isDying())
   }
 
-  canAttack () {
+  canAttack() {
     return !this.isDying() && !this.isStunned();
   }
 
-  
+
   freeze(ticks: number) {
     if (ticks < this.frozen) {
       return;
@@ -335,11 +345,11 @@ export class Unit {
     return (this.frozen > 0)
   }
 
-  isStunned () {
+  isStunned() {
     return (this.stunned > 0)
   }
 
-  
+
   region: Region;
   location: Location;
   dying = -1;
@@ -350,11 +360,11 @@ export class Unit {
     }
     return this._serialNumber;
   }
-  
-  get size () {
+
+  get size() {
     return 1;
   }
-  isDying () {
+  isDying() {
     return (this.dying > 0)
   }
 
@@ -367,12 +377,12 @@ export class Unit {
   }
 
   // Returns true if this game object is on the specified tile.
-  isOnTile (x: number, y: number) {
+  isOnTile(x: number, y: number) {
     return (x >= this.location.x && x <= this.location.x + this.size) && (y <= this.location.y && y >= this.location.y - this.size)
   }
 
   // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo (x: number, y: number) {
+  getClosestTileTo(x: number, y: number) {
     // We simply clamp the target point to our own boundary box.
     return [clamp(x, this.location.x, this.location.x + this.size - 1), clamp(y, this.location.y - this.size + 1, this.location.y)]
   }
@@ -380,23 +390,23 @@ export class Unit {
 
 
   // TODO more modular
-  get rangeAttackAnimation () {
+  get rangeAttackAnimation() {
     return null
   }
 
-  get sound (): string {
+  get sound(): string {
     return null
   }
 
-  get color (): string {
+  get color(): string {
     return '#FFFFFF00'
   }
 
-  shouldShowAttackAnimation () {
+  shouldShowAttackAnimation() {
     return this.attackDelay === this.attackSpeed && this.dying === -1 && this.isStunned() === false;
   }
 
-  setHasLOS () {
+  setHasLOS() {
     if (!this.aggro) {
       this.hasLOS = false;
       return;
@@ -415,7 +425,7 @@ export class Unit {
   }
 
   // Returns true if this mob is in melee range of its target.
-  isWithinMeleeRange () {
+  isWithinMeleeRange() {
     const targetX = this.aggro.location.x
     const targetY = this.aggro.location.y
     let isWithinMeleeRange = false
@@ -433,27 +443,27 @@ export class Unit {
   }
 
 
-  addProjectile (projectile: Projectile) {
-    if (this.spawnDelay > 0 && this.autoRetaliate && !this.aggro){
+  addProjectile(projectile: Projectile) {
+    if (this.spawnDelay > 0 && this.autoRetaliate && !this.aggro) {
       this.setAggro(projectile.from);
     }
     this.incomingProjectiles.push(projectile)
   }
 
-  setLocation (location: Location) {
+  setLocation(location: Location) {
     this.location = location
   }
 
-  attackAnimation (tickPercent: number) {
+  attackAnimation(tickPercent: number) {
     // override pls
   }
 
-  dead () {
+  dead() {
     this.perceivedLocation = this.location
     this.dying = 3
   }
 
-  detectDeath () {
+  detectDeath() {
     if (this.dying === -1 && this.currentStats.hitpoint <= 0) {
       this.dead()
       return
@@ -467,21 +477,21 @@ export class Unit {
     }
   }
 
-  processIncomingAttacks () {
+  processIncomingAttacks() {
     this.incomingProjectiles = filter(this.incomingProjectiles, (projectile: Projectile) => projectile.remainingDelay > -1)
     this.incomingProjectiles.forEach((projectile) => {
-      
+
       projectile.currentLocation = {
         x: Pathing.linearInterpolation(projectile.currentLocation.x, projectile.to.location.x + projectile.to.size / 2, 1 / (projectile.remainingDelay + 1)),
         y: Pathing.linearInterpolation(projectile.currentLocation.y, projectile.to.location.y - projectile.to.size / 2 + 1, 1 / (projectile.remainingDelay + 1)),
-      }        
+      }
       projectile.remainingDelay--
 
       if (projectile.remainingDelay === 0) {
 
         // Some attacks can be nullified if they land after the attackers death.
-        if (projectile.options && projectile.options.cancelOnDeath === true && 
-            projectile.from && projectile.from.isDying() === true) {
+        if (projectile.options && projectile.options.cancelOnDeath === true &&
+          projectile.from && projectile.from.isDying() === true) {
           return;
         }
 
@@ -491,14 +501,14 @@ export class Unit {
             this.currentStats.hitpoint -= projectile.damage
             this.currentStats.hitpoint = Math.min(this.currentStats.hitpoint, this.stats.hitpoint)
           }
-        }else{
+        } else {
           this.currentStats.hitpoint -= projectile.damage
         }
         this.damageTaken();
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
-          if (this.attackDelay < this.flinchDelay + 1){
+          if (this.attackDelay < this.flinchDelay + 1) {
             this.attackDelay = this.flinchDelay + 1;
           }
         }
@@ -520,11 +530,11 @@ export class Unit {
     // Override me
   }
 
-  drawHitsplat(projectile: Projectile): boolean { 
+  drawHitsplat(projectile: Projectile): boolean {
     return true;
   }
 
-  drawHPBar () {
+  drawHPBar() {
     this.region.context.fillStyle = 'red'
     this.region.context.fillRect(
       (-this.size / 2) * Settings.tileSize,
@@ -543,7 +553,7 @@ export class Unit {
     )
   }
 
-  drawHitsplats () {
+  drawHitsplats() {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -566,15 +576,15 @@ export class Unit {
           projectile.offsetX = projectileOffsets[0][0]
           projectile.offsetY = projectileOffsets[0][1]
         }
-  
+
         projectileOffsets = remove(projectileOffsets, (offset) => {
           return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY
         })
-        
+
         if (projectile.damage < 0) {
           image = this.healHitsplatImage;
         }
-  
+
         this.region.context.drawImage(
           image,
           projectile.offsetX - 12,
@@ -596,23 +606,23 @@ export class Unit {
     })
   }
 
-  drawOverheadPrayers () {
+  drawOverheadPrayers() {
 
     if (!this.prayerController) {
       return;
     }
-    
+
     const overhead = this.prayerController.overhead()
     if (overhead) {
       const overheadImg = overhead.overheadImage();
-      if (overheadImg){
+      if (overheadImg) {
         this.region.context.drawImage(
           overheadImg,
           -Settings.tileSize / 2,
           -Settings.tileSize * 3,
           Settings.tileSize,
           Settings.tileSize
-        )  
+        )
       }
     }
   }
@@ -637,37 +647,37 @@ export class Unit {
 
       const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
       const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
-  
+
       this.region.context.save();
       this.region.context.translate(
-        perceivedX * Settings.tileSize, 
+        perceivedX * Settings.tileSize,
         (perceivedY) * Settings.tileSize
       )
-        
+
 
       if (projectile.image) {
         this.region.context.rotate(Math.PI)
         this.region.context.drawImage(
           projectile.image,
-          -Settings.tileSize / 2, 
+          -Settings.tileSize / 2,
           -Settings.tileSize / 2,
           Settings.tileSize,
           Settings.tileSize
         );
-      }else{
+      } else {
         this.region.context.beginPath()
 
         this.region.context.fillStyle = '#D1BB7773'
         if (projectile.attackStyle === 'slash' || projectile.attackStyle === 'crush' || projectile.attackStyle === 'stab') {
           this.region.context.fillStyle = '#FF000073';
-        }else if (projectile.attackStyle === 'range') {
+        } else if (projectile.attackStyle === 'range') {
           this.region.context.fillStyle = '#00FF0073';
 
-        }else if (projectile.attackStyle === 'magic') {
+        } else if (projectile.attackStyle === 'magic') {
           this.region.context.fillStyle = '#0000FF73';
-        }else if (projectile.attackStyle === 'heal') {
+        } else if (projectile.attackStyle === 'heal') {
           this.region.context.fillStyle = '#9813aa73';
-        }else{
+        } else {
           console.log('[WARN] This style is not accounted for in custom coloring: ', projectile.attackStyle);
 
         }
