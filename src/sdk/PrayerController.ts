@@ -41,28 +41,6 @@ export class PrayerController {
 
 
   tick(player: Player) {
-    // "transfer" prayers from client to "server" 
-    this.prayers.forEach((prayer) => prayer.tick());
-
-    // Deactivate any incompatible prayers
-    const conflictingPrayers = {};
-    player.prayerController.prayers.forEach((activePrayer) => {
-      activePrayer.groups.forEach((group) => {
-        if (!conflictingPrayers[group]){
-          conflictingPrayers[group] = [];
-        }
-        conflictingPrayers[group].push(activePrayer);
-      });
-    })
-
-    for (const feature in conflictingPrayers) {
-      conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
-      conflictingPrayers[feature].shift();
-      conflictingPrayers[feature].forEach((prayer: BasePrayer) => {
-        prayer.isLit = false;
-        prayer.isActive = false;
-      })
-    }
 
     // calc prayer drain
 

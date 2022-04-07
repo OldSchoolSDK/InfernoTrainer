@@ -5,6 +5,8 @@ import { BaseControls } from './BaseControls'
 import { Settings } from '../Settings'
 import { ControlPanelController } from '../ControlPanelController'
 import { Viewport } from '../Viewport'
+import { QueueableCommand, CommandStrength } from '../CommandQueue'
+import { CommandOpCodes } from '../OpcodeBindings'
 
 export class PrayerControls extends BaseControls {
 
@@ -24,23 +26,20 @@ export class PrayerControls extends BaseControls {
 
   deactivateAllPrayers() {
 
+    Viewport.viewport.player.commandQueue.enqueue(
+      QueueableCommand.create(CommandOpCodes.DISABLE_QUICK_PRAYERS, CommandStrength.NORMAL, 0, { }),
+    );
+
     this.hasQuickPrayersActivated = false;
-    Viewport.viewport.player.prayerController.activePrayers().forEach((prayer) => prayer.deactivate());
+
   }
 
   activateQuickPrayers(){
     this.hasQuickPrayersActivated = true;
     
-    Viewport.viewport.player.prayerController.prayers.forEach((prayer) => {
-      prayer.deactivate();
-      if (prayer.name === 'Protect from Magic'){
-        prayer.activate(Viewport.viewport.player);
-      }
-      if (prayer.name === 'Rigour'){
-        prayer.activate(Viewport.viewport.player);
-      }
-    });
-
+    Viewport.viewport.player.commandQueue.enqueue(
+      QueueableCommand.create(CommandOpCodes.ACTIVATE_QUICK_PRAYERS, CommandStrength.NORMAL, 0, { }),
+    );
   }
 
   panelClickDown (x: number, y: number) {
@@ -55,7 +54,9 @@ export class PrayerControls extends BaseControls {
     const clickedPrayer = Viewport.viewport.player.prayerController.prayers[Math.floor(gridY / 35) * 5 + Math.floor(gridX / 35)]
     if (clickedPrayer && Viewport.viewport.player.currentStats.prayer > 0) {
 
-      clickedPrayer.toggle(Viewport.viewport.player)
+      Viewport.viewport.player.commandQueue.enqueue(
+        QueueableCommand.create(CommandOpCodes.TOGGLE_PRAYER, CommandStrength.NORMAL, 0, { prayer: clickedPrayer }),
+      );
 
       if (this.hasQuickPrayersActivated && Viewport.viewport.player.prayerController.activePrayers().length === 0) {
         ControlPanelController.controls.PRAYER.hasQuickPrayersActivated = false;
@@ -75,7 +76,7 @@ export class PrayerControls extends BaseControls {
       const x2 = index % 5
       const y2 = Math.floor(index / 5)
 
-      if (prayer.isActive || prayer.isLit) {
+      if (prayer.isActive) {
         Viewport.viewport.context.beginPath()
         Viewport.viewport.context.fillStyle = '#D1BB7773'
         Viewport.viewport.context.arc(x + 10 * scale + (x2 + 0.5) * 36.8 * scale,  y + (16 + (y2 + 0.5) * 37) * scale, 18 * scale, 0, 2 * Math.PI)

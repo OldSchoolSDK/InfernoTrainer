@@ -18,7 +18,6 @@ export class BasePrayer {
 
   lastActivated = 0;
   isActive = false;
-  isLit = false;
   cachedImage: HTMLImageElement;
 
   constructor () {
@@ -27,16 +26,6 @@ export class BasePrayer {
 
   levelRequirement(): number {
     return 99;
-  }
-
-  tick() {
-    if (this.isLit && !this.isActive) {
-      this.isActive = true;
-      this.isLit = true;
-    }else if (!this.isLit && this.isActive){
-      this.isActive = false;
-      this.isLit = false;
-    }
   }
 
   feature (): string {
@@ -60,8 +49,8 @@ export class BasePrayer {
     if (player.stats.prayer < this.levelRequirement()){
       return;
     }
+    
     this.lastActivated = Date.now();
-    this.isLit = true;
   }
 
   toggle(player: Player) {
@@ -69,14 +58,14 @@ export class BasePrayer {
     if (player.stats.prayer < this.levelRequirement()){
       return;
     }
-    this.isLit = !this.isLit;
-    if (this.isLit){
+    this.isActive = !this.isActive;
+    if (this.isActive) {
       this.lastActivated = Date.now();
     }
   }
 
   deactivate () {
-    this.isLit = false;
+    // 
   }
 
   isOverhead () {

@@ -1,3 +1,4 @@
+import { BasePrayer } from "./BasePrayer";
 import { CommandKwargs } from "./CommandQueue";
 import { Item } from "./Item";
 import { MapController } from "./MapController";
@@ -46,12 +47,54 @@ export const opcodeLookupTable: OpcodeToCommandMap = {
   },
   [CommandOpCodes.ACTIVATE_QUICK_PRAYERS]: (target: Unit, kwargs: CommandKwargs) => {
     // 
+    const player = target as Player;
+    
+    player.prayerController.prayers.forEach((prayer) => {
+      prayer.deactivate();
+      if (prayer.name === 'Protect from Magic'){
+        prayer.activate(player);
+      }
+      if (prayer.name === 'Rigour'){
+        prayer.activate(player);
+      }
+    });
+
+
   },
   [CommandOpCodes.DISABLE_QUICK_PRAYERS]: (target: Unit, kwargs: CommandKwargs) => {
     // 
+    const player = target as Player;
+    player.prayerController.activePrayers().forEach((prayer) => prayer.deactivate());
+
+
   },
   [CommandOpCodes.TOGGLE_PRAYER]: (target: Unit, kwargs: CommandKwargs) => {
     // 
+    const player = target as Player;
+    const prayer = kwargs.prayer as BasePrayer;
+    prayer.toggle(player)
+
+    
+    // Deactivate any incompatible prayers
+    const conflictingPrayers = {};
+    player.prayerController.prayers.forEach((activePrayer) => {
+      activePrayer.groups.forEach((group) => {
+        if (!conflictingPrayers[group]){
+          conflictingPrayers[group] = [];
+        }
+        conflictingPrayers[group].push(activePrayer);
+      });
+    })
+
+    for (const feature in conflictingPrayers) {
+      conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
+      conflictingPrayers[feature].shift();
+      conflictingPrayers[feature].forEach((prayer: BasePrayer) => {
+        prayer.isActive = false;
+      })
+    }
+
+    
   },
   [CommandOpCodes.INVENTORY_LEFT_CLICK]: (target: Unit, kwargs: CommandKwargs) => {
     // How to prevent multiple queued events from duplicating items? 
