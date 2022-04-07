@@ -7,7 +7,7 @@ import { QueueableCommand, CommandStrength } from "./CommandQueue";
 import { CommandOpCodes } from "./OpcodeBindings";
 
 export class Item {
-  
+
   groundLocation: Location;
   inventorySprite: HTMLImageElement;
   selected: boolean;
@@ -28,9 +28,9 @@ export class Item {
   inventoryLeftClick(player: Player) {
     // Override me
   }
-  
-  contextActions (player: Player) {
-    
+
+  contextActions(player: Player) {
+
     // use
     // drop
     // examine
@@ -39,14 +39,13 @@ export class Item {
         text: [
           { text: 'Drop ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
         ],
-        action: () => 
-        {
+        action: () => {
 
           Viewport.viewport.clickController.redClick();
           player.commandQueue.enqueue(
             QueueableCommand.create(CommandOpCodes.DROP_ITEM, CommandStrength.STRONG, 0, { item: this }),
           );
-      
+
         }
       },
       {
@@ -65,9 +64,10 @@ export class Item {
           text: [
             { text: this.defaultAction + ' ', fillStyle: 'white' }, { text: this.itemName, fillStyle: '#FF911F' },
           ],
-          action: () => 
-          {
-            this.inventoryLeftClick(player);
+          action: () => {
+            Viewport.viewport.player.commandQueue.enqueue(
+              QueueableCommand.create(CommandOpCodes.INVENTORY_LEFT_CLICK, CommandStrength.STRONG, 0, { item: this }),
+            );
           }
         }
       )
@@ -92,13 +92,13 @@ export class Item {
       return item.serialNumber;
     }).indexOf(this.serialNumber);
   }
-  
-  
+
+
   consumeItem(player: Player) {
     player.inventory[this.inventoryPosition(player)] = null;
   }
 
-  get inventoryImage (): string {
+  get inventoryImage(): string {
     return ''
   }
 }

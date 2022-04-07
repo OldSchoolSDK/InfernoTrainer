@@ -11,6 +11,8 @@ import { Collision } from '../Collision'
 import { MenuOption } from '../ContextMenu'
 import { MapController } from '../MapController'
 import { Viewport } from '../Viewport'
+import { CommandStrength, QueueableCommand } from '../CommandQueue'
+import { CommandOpCodes } from '../OpcodeBindings'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
@@ -104,21 +106,22 @@ export class InventoryControls extends BaseControls {
 
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
-        clickedItem.inventoryLeftClick(Viewport.viewport.player);
-        MapController.controller.updateOrbsMask(null, null)
+        
+        Viewport.viewport.player.commandQueue.enqueue(
+          QueueableCommand.create(CommandOpCodes.INVENTORY_LEFT_CLICK, CommandStrength.STRONG, 0, { item: clickedItem }),
+        );  
+        
       } else {
         clickedItem.selected = true
       }
     }else if (!isPlaceholder && clickedItem){
-      const theItemWereReplacing = clickedItem;
-      const theItemWereReplacingPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
-      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
-      Viewport.viewport.player.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
-      Viewport.viewport.player.inventory[thisPosition] = theItemWereReplacing;
+      Viewport.viewport.player.commandQueue.enqueue(
+        QueueableCommand.create(CommandOpCodes.INVENTORY_SWAP_ITEMS_POSITIONS, CommandStrength.STRONG, 0, { item1: clickedItem, item2: this.clickedDownItem }),
+      );
     }else if (clickedItem){
-      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
-      Viewport.viewport.player.inventory[clickedItem.inventoryPosition(Viewport.viewport.player)] = this.clickedDownItem;
-      Viewport.viewport.player.inventory[thisPosition] = null;
+      Viewport.viewport.player.commandQueue.enqueue(
+        QueueableCommand.create(CommandOpCodes.INVENTORY_MOVE_ITEM, CommandStrength.STRONG, 0, { item: this.clickedDownItem, newPosition: clickedItem.inventoryPosition(Viewport.viewport.player) }),
+      );
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
