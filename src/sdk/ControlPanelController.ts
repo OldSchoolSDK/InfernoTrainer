@@ -155,7 +155,7 @@ export class ControlPanelController {
       const x = i % 7
       const y = Math.floor(i / 7)
       return { 
-        x: width - 231 * scale + x * 33 * scale, 
+        x: width - 231 * scale + x * 33 * scale  - (Settings.menuVisible ? 232 : 0), 
         y: height - 72 * scale + y * 36 * scale 
       }
     }
@@ -301,7 +301,7 @@ export class ControlPanelController {
     }else{
       // desktop compact
       return { 
-        x: width - 188 * scale, 
+        x: width - 188 * scale - (Settings.menuVisible ? 232 : 0), 
         y: height - 72 * scale - 251 * scale
       };
     }
