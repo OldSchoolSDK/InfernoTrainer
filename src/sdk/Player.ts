@@ -618,18 +618,18 @@ export class Player extends Unit {
 
   getPerceivedLocation(tickPercent: number): Location {
 
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
-
-    // if (this.path && this.path.length === 2) {
-    //   if (tickPercent < 0.5) {
-    //     perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
-    //     perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
-    //   }else{
-    //     perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2)
-    //     perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2)
-    //   }
-    // }
+    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
+    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
+    
+    if (this.path && this.path.length === 2) {
+      if (tickPercent < 0.5) {
+        perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
+        perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
+      }else{
+        perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2)
+        perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2)
+      }
+    }
     return {
       x: perceivedX,
       y: perceivedY
