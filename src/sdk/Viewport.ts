@@ -48,6 +48,9 @@ export class Viewport {
   }
 
   getViewport(tickPercent: number) {
+    if (this.player.dying > -1) {
+      tickPercent = 0;
+    }
     const { x, y } = this.player.getPerceivedLocation(tickPercent);
     const viewportX = x + 0.5 - this.width / 2;
     const viewportY = y + 0.5 - this.height / 2;

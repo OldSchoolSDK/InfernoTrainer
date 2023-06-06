@@ -495,7 +495,17 @@ export class Player extends Unit {
     }
   }
 
+  dead() {
+    super.dead();
+    this.perceivedLocation = this.location
+    this.destinationLocation = this.location
+  }
+
   movementStep() {
+
+    if (this.dying > -1) {
+      return;
+    }
 
     this.activatePrayers()
 
@@ -522,6 +532,12 @@ export class Player extends Unit {
 
   attackStep() {
 
+    this.detectDeath();
+
+    if (this.dying > -1) {
+      return;
+    }
+
     this.clearXpDrops();
 
     this.attackIfPossible()
@@ -532,7 +548,6 @@ export class Player extends Unit {
 
     this.regenTimer.regen();
 
-    this.detectDeath();
 
     this.sendXpToController();
   }
@@ -579,21 +594,26 @@ export class Player extends Unit {
 
     // Perceived location
 
-    this.region.context.globalAlpha = 0.7
-    this.region.context.fillStyle = '#FFFF00'
-    this.region.context.fillRect(
-      perceivedX * Settings.tileSize,
-      perceivedY * Settings.tileSize,
-      Settings.tileSize,
-      Settings.tileSize
-    )
-    this.region.context.globalAlpha = 1
+    if (this.dying === -1) {
+      this.region.context.globalAlpha = 0.7
+      this.region.context.fillStyle = '#FFFF00'
+      this.region.context.fillRect(
+        perceivedX * Settings.tileSize,
+        perceivedY * Settings.tileSize,
+        Settings.tileSize,
+        Settings.tileSize
+      )
+      this.region.context.globalAlpha = 1
+    }
 
     // Draw player on true tile
     this.region.context.fillStyle = '#ffffff73'
     // feedback for when you shoot
     if (this.shouldShowAttackAnimation()) {
       this.region.context.fillStyle = '#00FFFF'
+    }
+    if (this.dying > -1) {
+      this.region.context.fillStyle = '#000'
     }
     this.region.context.strokeStyle = '#FFFFFF73'
     this.region.context.lineWidth = 3
@@ -618,10 +638,15 @@ export class Player extends Unit {
 
   getPerceivedLocation(tickPercent: number): Location {
 
+
+    if (this.dying > -1) {
+      tickPercent = 0;
+    }
+
     let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent)
     let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent)
     
-    if (this.path && this.path.length === 2) {
+    if (this.path && this.path.length === 2 && this.dying > -1) {
       if (tickPercent < 0.5) {
         perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2)
         perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2) 
@@ -637,6 +662,10 @@ export class Player extends Unit {
   }
 
   drawUILayer(tickPercent: number) {
+
+    if (this.dying > -1) {
+      return;
+    }
     const perceivedLocation = this.getPerceivedLocation(tickPercent);
     const perceivedX = perceivedLocation.x;
     const perceivedY = perceivedLocation.y;
