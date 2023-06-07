@@ -459,7 +459,7 @@ export class Unit {
       return
     }
 
-    if (this.dying > 1) {
+    if (this.dying > 0) {
       this.dying--
     }
     if (this.dying === 0) {
