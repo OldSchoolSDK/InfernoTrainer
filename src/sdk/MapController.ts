@@ -222,11 +222,11 @@ export class MapController {
 
   cursorMovedTo(event: MouseEvent) {
     const { width } = Chrome.size();
-
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
+    const offset = width - (this.width * scale)  - (Settings.menuVisible ? 232 : 0);
+    const x = event.offsetX - offset; 
     const y = event.offsetY / scale;
-
+    
     this.hovering = MapHover.NONE;
     if (x > 4 && x < 28 && y > 31 && y < 56) {
       this.hovering = MapHover.XP;
@@ -239,18 +239,18 @@ export class MapController {
     }else if (x > 38 && x < 90 && y > 148 && y < 173) {
       this.hovering = MapHover.SPEC;
     }
-
   }
 
   rightClick(event: MouseEvent): boolean {
 
     let menuOptions: MenuOption[] = []
-    const { width } = Chrome.size();
-
 
     let intercepted = false;
+    
+    const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
+    const offset = width - (this.width * scale)  - (Settings.menuVisible ? 232 : 0);
+    const x = event.offsetX - offset; 
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -344,9 +344,10 @@ export class MapController {
     let intercepted = false;
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const x = (event.offsetX - (width - this.width)) / scale  + (Settings.menuVisible ? 232 : 0);
+    const offset = width - (this.width * scale)  - (Settings.menuVisible ? 232 : 0);
+    const x = event.offsetX - offset; 
     const y = event.offsetY / scale;
-    
+
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
       intercepted = true;
@@ -381,6 +382,7 @@ export class MapController {
   canSpecialAttack() {
     return Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
   }
+
   toggleSpecialAttack() {
     if (this.canSpecialAttack()) {
       Viewport.viewport.player.useSpecialAttack = !Viewport.viewport.player.useSpecialAttack;
@@ -480,8 +482,6 @@ export class MapController {
     ctx.fillText( String(this.currentStats.specialAttack), offset + 47 * scale, 166 * scale )
     ctx.fillStyle = this.colorScale.getColor(this.currentStats.specialAttack / 100).toHexString()
     ctx.fillText( String(this.currentStats.specialAttack), offset + 46 * scale, 165 * scale )
-
-    
 
   }
 }
