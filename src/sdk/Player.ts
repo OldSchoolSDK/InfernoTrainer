@@ -524,6 +524,7 @@ export class Player extends Unit {
     if (this.prayerController.isPrayerActiveByName('Redemption') && this.currentStats.hitpoint > 0 && this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)) {
       this.eats.redemptioned = true;
     }
+    this.dying = -1;
   }
 
   pretick() {
@@ -532,11 +533,7 @@ export class Player extends Unit {
 
   attackStep() {
 
-    // this.detectDeath();
-
-    if (this.dying > -1) {
-      return;
-    }
+    this.dying = -1;
 
     this.clearXpDrops();
 
