@@ -496,9 +496,9 @@ export class Player extends Unit {
   }
 
   dead() {
-    super.dead();
-    this.perceivedLocation = this.location
-    this.destinationLocation = this.location
+    // super.dead();
+    // this.perceivedLocation = this.location
+    // this.destinationLocation = this.location
   }
 
   movementStep() {
@@ -532,7 +532,7 @@ export class Player extends Unit {
 
   attackStep() {
 
-    this.detectDeath();
+    // this.detectDeath();
 
     if (this.dying > -1) {
       return;
