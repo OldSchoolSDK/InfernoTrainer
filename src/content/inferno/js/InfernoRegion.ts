@@ -125,7 +125,36 @@ export class InfernoRegion extends Region {
       Settings.persistToStorage();
     })
     return onTaskCheckbox.checked;
+  }
 
+  initializeAndGetSouthPillar() {
+    const southPillarCheckbox = document.getElementById("southPillar") as HTMLInputElement;
+    southPillarCheckbox.checked = Settings.southPillar;
+    southPillarCheckbox.addEventListener('change', () => {
+      Settings.southPillar = southPillarCheckbox.checked;
+      Settings.persistToStorage();
+    })
+    return southPillarCheckbox.checked;
+  }
+
+  initializeAndGetWestPillar() {
+    const westPillarCheckbox = document.getElementById("westPillar") as HTMLInputElement;
+    westPillarCheckbox.checked = Settings.westPillar;
+    westPillarCheckbox.addEventListener('change', () => {
+      Settings.westPillar = westPillarCheckbox.checked;
+      Settings.persistToStorage();
+    })
+    return westPillarCheckbox.checked;
+  }
+
+  initializeAndGetNorthPillar() {
+    const northPillarCheckbox = document.getElementById("northPillar") as HTMLInputElement;
+    northPillarCheckbox.checked = Settings.northPillar;
+    northPillarCheckbox.addEventListener('change', () => {
+      Settings.northPillar = northPillarCheckbox.checked;
+      Settings.persistToStorage();
+    })
+    return northPillarCheckbox.checked;
   }
 
   drawWorldBackground() {

@@ -196,11 +196,15 @@ export class InfernoPillar extends Entity {
     this.incomingProjectiles.push(projectile)
   }
 
-  static addPillarsToWorld (region: Region) {
-    [
-      { x: 11, y: 23 },
-      { x: 28, y: 21 },
-      { x: 21, y: 37 }
-    ].forEach((position) => region.addEntity(new InfernoPillar(region, position)))
+  static addPillarsToWorld (region: Region, southPillar: boolean, westPillar: boolean, northPillar: boolean) {
+    if (southPillar) {
+      region.addEntity(new InfernoPillar(region, { x: 28, y: 21 }))
+    }
+    if (westPillar) {
+      region.addEntity(new InfernoPillar(region, { x: 11, y: 23 }))
+    }
+    if (northPillar) {
+      region.addEntity(new InfernoPillar(region, { x: 21, y: 37 }))
+    }
   }
 }
