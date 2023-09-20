@@ -198,13 +198,13 @@ export class InfernoPillar extends Entity {
 
   static addPillarsToWorld (region: Region, southPillar: boolean, westPillar: boolean, northPillar: boolean) {
     if (southPillar) {
-      region.addEntity(new InfernoPillar(region, { x: 28, y: 21 }))
+      region.addEntity(new InfernoPillar(region, { x: 21, y: 37 }))
     }
     if (westPillar) {
       region.addEntity(new InfernoPillar(region, { x: 11, y: 23 }))
     }
     if (northPillar) {
-      region.addEntity(new InfernoPillar(region, { x: 21, y: 37 }))
+      region.addEntity(new InfernoPillar(region, { x: 28, y: 21 }))
     }
   }
 }
