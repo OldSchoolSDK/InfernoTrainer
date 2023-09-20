@@ -70,6 +70,10 @@ selectedRegion.addPlayer(player);
 
 const loadoutType = selectedRegion.initializeAndGetLoadoutType();
 const onTask = selectedRegion.initializeAndGetOnTask();
+const southPillar = selectedRegion.initializeAndGetSouthPillar();
+const westPillar = selectedRegion.initializeAndGetWestPillar();
+const northPillar = selectedRegion.initializeAndGetNorthPillar();
+
 const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
 
 loadout.setStats(player); // flip this around one day
@@ -95,7 +99,7 @@ if (selectedRegion.wave > InfernoWaves.waves.length + 8) {
 
 if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars
-  InfernoPillar.addPillarsToWorld(selectedRegion)
+  InfernoPillar.addPillarsToWorld(selectedRegion, southPillar, westPillar, northPillar)
 }
 
 const randomPillar = (shuffle(selectedRegion.entities) || [null])[0] // Since we've only added pillars this is safe. Do not move to after movement blockers.
