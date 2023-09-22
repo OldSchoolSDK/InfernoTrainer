@@ -66,7 +66,7 @@ export interface UnitStats {
   range: number;
   magic: number;
   hitpoint: number;
-    prayer?: number;
+  prayer?: number;
 }
 
 export interface UnitBonuses {
@@ -119,7 +119,6 @@ export class Unit {
   setEffects: typeof SetEffect[] = [];
   autoRetaliate = false;
   spawnDelay = 0;
-  
   
   get deathAnimationLength() : number {
     return 3
