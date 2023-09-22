@@ -46,6 +46,7 @@ export class Player extends Unit {
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
   autocastDelay = 1;
+  manualCastHasTarget = false;
 
   eats: Eating = new Eating();
   inventory: Item[];
@@ -353,6 +354,12 @@ export class Player extends Unit {
       this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever
     }
 
+    if (this.manualSpellCastSelection && mob != null) {
+      this.manualCastHasTarget = true
+    } else {
+      this.manualCastHasTarget = false
+    }
+
     this.aggro = mob;
     this.seekingItem = null;
   }
@@ -565,7 +572,7 @@ export class Player extends Unit {
         if (this.attack()) {
           this.attackDelay = attackDelay
         }
-      } else if (this.manualSpellCastSelection && this.hasLOS && this.attackDelay <= 0 && this.aggro.dying == this.aggro.deathAnimationLength) {
+      } else if (this.manualSpellCastSelection && this.manualCastHasTarget && this.hasLOS && this.attackDelay <= 0 && this.aggro.dying == this.aggro.deathAnimationLength) {
         // Phantom/ghost barrage
         const attackDelay = this.attackSpeed
         if (this.attack()) {
