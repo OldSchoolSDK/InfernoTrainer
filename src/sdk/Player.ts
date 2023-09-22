@@ -562,8 +562,9 @@ export class Player extends Unit {
     if (this.aggro) {
       this.setHasLOS()
       if (this.hasLOS && this.aggro && this.attackDelay <= 0 && this.aggro.isDying() === false) {
+        const attackDelay = this.attackSpeed
         if (this.attack()) {
-          this.attackDelay = this.attackSpeed
+          this.attackDelay = attackDelay
         }
       }
     }
