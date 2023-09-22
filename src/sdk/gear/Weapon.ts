@@ -35,6 +35,7 @@ export interface AttackBonuses {
 
 export class Weapon extends Equipment{
   damage: number;
+  damageRoll: number;
   lastHitHit = false;
   selected = false;
   totalDamage = 0;
@@ -127,7 +128,8 @@ export class Weapon extends Equipment{
   }
 
   rollDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
-    this.damage = Math.floor(Math.min(this._rollAttack(from, to, bonuses), to.currentStats.hitpoint))
+    this.damageRoll = Math.floor(this._rollAttack(from, to, bonuses))
+    this.damage = Math.min(this.damageRoll, to.currentStats.hitpoint)
   }
 
 

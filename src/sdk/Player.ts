@@ -364,7 +364,6 @@ export class Player extends Unit {
   determineDestination() {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
-        this.interruptCombat();
         this.destinationLocation = this.location
         return
       }
@@ -561,11 +560,22 @@ export class Player extends Unit {
 
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackDelay <= 0 && this.aggro.isDying() === false) {
+      if (this.hasLOS && this.attackDelay <= 0 && this.aggro.isDying() === false) {
         const attackDelay = this.attackSpeed
         if (this.attack()) {
           this.attackDelay = attackDelay
         }
+      } else if (this.manualSpellCastSelection && this.hasLOS && this.attackDelay <= 0 && this.aggro.dying == this.aggro.deathAnimationLength) {
+        // Phantom/ghost barrage
+        const attackDelay = this.attackSpeed
+        if (this.attack()) {
+          this.attackDelay = attackDelay
+        } 
+      }
+
+      // After allowing ghost barrage, unset aggro if enemy is dead 
+      if (this.aggro && this.aggro.isDying()) {
+        this.interruptCombat()
       }
     }
   }

@@ -66,7 +66,7 @@ export interface UnitStats {
   range: number;
   magic: number;
   hitpoint: number;
-  prayer?: number;
+    prayer?: number;
 }
 
 export interface UnitBonuses {
@@ -119,6 +119,11 @@ export class Unit {
   setEffects: typeof SetEffect[] = [];
   autoRetaliate = false;
   spawnDelay = 0;
+  
+  
+  get deathAnimationLength() : number {
+    return 3
+  }
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -450,7 +455,7 @@ export class Unit {
 
   dead () {
     this.perceivedLocation = this.location
-    this.dying = 3
+    this.dying = this.deathAnimationLength
   }
 
   detectDeath () {
