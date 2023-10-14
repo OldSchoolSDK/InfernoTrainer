@@ -119,6 +119,10 @@ export class Unit {
   setEffects: typeof SetEffect[] = [];
   autoRetaliate = false;
   spawnDelay = 0;
+  
+  get deathAnimationLength() : number {
+    return 3
+  }
 
   get completeSetEffects(): SetEffect[] {
     return null;
@@ -450,7 +454,7 @@ export class Unit {
 
   dead () {
     this.perceivedLocation = this.location
-    this.dying = 3
+    this.dying = this.deathAnimationLength
   }
 
   detectDeath () {

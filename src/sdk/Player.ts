@@ -46,6 +46,7 @@ export class Player extends Unit {
   regenTimer: PlayerRegenTimer = new PlayerRegenTimer(this);
 
   autocastDelay = 1;
+  manualCastHasTarget = false;
 
   eats: Eating = new Eating();
   inventory: Item[];
@@ -353,6 +354,12 @@ export class Player extends Unit {
       this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever
     }
 
+    if (this.manualSpellCastSelection && mob != null) {
+      this.manualCastHasTarget = true
+    } else {
+      this.manualCastHasTarget = false
+    }
+
     this.aggro = mob;
     this.seekingItem = null;
   }
@@ -364,7 +371,6 @@ export class Player extends Unit {
   determineDestination() {
     if (this.aggro) {
       if (this.aggro.dying > -1) {
-        this.interruptCombat();
         this.destinationLocation = this.location
         return
       }
@@ -561,10 +567,22 @@ export class Player extends Unit {
 
     if (this.aggro) {
       this.setHasLOS()
-      if (this.hasLOS && this.aggro && this.attackDelay <= 0 && this.aggro.isDying() === false) {
+      if (this.hasLOS && this.attackDelay <= 0 && this.aggro.isDying() === false) {
+        const attackDelay = this.attackSpeed
         if (this.attack()) {
-          this.attackDelay = this.attackSpeed
+          this.attackDelay = attackDelay
         }
+      } else if (this.manualSpellCastSelection && this.manualCastHasTarget && this.hasLOS && this.attackDelay <= 0 && this.aggro.dying == this.aggro.deathAnimationLength) {
+        // Phantom/ghost barrage
+        const attackDelay = this.attackSpeed
+        if (this.attack()) {
+          this.attackDelay = attackDelay
+        } 
+      }
+
+      // After allowing ghost barrage, unset aggro if enemy is dead 
+      if (this.aggro && this.aggro.isDying()) {
+        this.interruptCombat()
       }
     }
   }
