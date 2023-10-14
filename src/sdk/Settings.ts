@@ -34,6 +34,9 @@ export class Settings {
   static onTask: boolean;
   static player_stats: PlayerStats;
   static is_keybinding = false;
+  static southPillar = true;
+  static westPillar = true;
+  static northPillar = true;
 
   static displayPlayerLoS = false;
   static displayMobLoS = false;
@@ -70,6 +73,9 @@ export class Settings {
     window.localStorage.setItem('stats', SerializePlayerStats(Settings.player_stats))
     window.localStorage.setItem('loadout', Settings.loadout)
     window.localStorage.setItem('onTask', String(Settings.onTask))
+    window.localStorage.setItem('southPillar', String(Settings.southPillar))
+    window.localStorage.setItem('westPillar', String(Settings.westPillar))
+    window.localStorage.setItem('northPillar', String(Settings.northPillar))
     window.localStorage.setItem('displayPlayerLoS', String(Settings.displayPlayerLoS))
     window.localStorage.setItem('displayMobLoS', String(Settings.displayMobLoS))
     window.localStorage.setItem('metronome', String(Settings.metronome))
@@ -97,6 +103,9 @@ export class Settings {
     Settings.rotated = window.localStorage.getItem('rotated') || 'south'
     Settings.loadout = window.localStorage.getItem('loadout') || 'max_tbow';
     Settings.onTask = window.localStorage.getItem('onTask') === 'true' || false;
+    Settings.southPillar = window.localStorage.getItem('southPillar') !== 'false' || false;
+    Settings.westPillar = window.localStorage.getItem('westPillar') !== 'false' || false;
+    Settings.northPillar = window.localStorage.getItem('northPillar') !== 'false' || false;
     Settings.displayPlayerLoS = window.localStorage.getItem('displayPlayerLoS') === 'true' || false;
     Settings.displayMobLoS = window.localStorage.getItem('displayMobLoS') === 'true' || false;
     Settings.lockPOV = false; //window.localStorage.getItem('lockPOV') !== 'false' || false;

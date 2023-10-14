@@ -6,6 +6,7 @@ import { ItemName } from "../../sdk/ItemName";
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
+import { ProjectileOptions } from '../../sdk/weapons/Projectile';
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -79,12 +80,14 @@ export class Blowpipe extends RangedWeapon {
     return 0.5
   }
 
-  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     
     bonuses.isSpecialAttack = true;
+    // BP special attack takes an extra tick to land
+    options.reduceDelay = -1;
     super.attack(from, to, bonuses)
     
-    const healAttackerBy = Math.floor(this.damage / 2);
+    const healAttackerBy = Math.floor(this.damageRoll / 2);
     from.currentStats.hitpoint += healAttackerBy;
     from.currentStats.hitpoint = Math.min(from.currentStats.hitpoint, from.stats.hitpoint);
   }
