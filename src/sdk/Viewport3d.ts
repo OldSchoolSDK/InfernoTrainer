@@ -239,6 +239,7 @@ export class Viewport3d implements ViewportDelegate {
     // highlight selected tile/npc
     if (this.selectedTile) {
       this.selectedTileMesh.position.x = this.selectedTile.x;
+      this.selectedTileMesh.position.y = -0.4;
       this.selectedTileMesh.position.z = this.selectedTile.y;
     }
 
@@ -277,11 +278,21 @@ export class Viewport3d implements ViewportDelegate {
     const mobs = intersections
       .filter((i) => i.object.userData.unit instanceof Mob)
       .map((i) => i.object.userData.unit as Mob);
+
+    if (mobs.length > 0) {
+      return {
+        type: "entities" as const,
+        mobs,
+        players: [],
+        groundItems: [],
+      };
+    }
     return {
-      type: "entities" as const,
-      mobs,
-      players: [],
-      groundItems: [],
+      type: "coordinate" as const,
+      location: {
+        x: this.selectedTile.x * Settings.tileSize,
+        y: (this.selectedTile.y + 1) * Settings.tileSize,
+      },
     };
   }
 }

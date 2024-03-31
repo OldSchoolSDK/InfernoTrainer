@@ -155,8 +155,11 @@ export class ClickController {
     const mobs: Mob[] = [];
     const players: Player[] = [];
     const groundItems: Item[] = [];
+    let x = null,
+      y = null;
     if (clickedOn.type === "coordinate") {
-      const { x, y } = clickedOn.location;
+      x = clickedOn.location.x;
+      y = clickedOn.location.y;
 
       const xAlign =
         Viewport.viewport.contextMenu.location.x -
@@ -227,7 +230,7 @@ export class ClickController {
       this.redClick();
 
       this.sendToServer(() => player.setSeekingItem(groundItems[0]));
-    } else {
+    } else if (x !== null && y !== null) {
       this.yellowClick();
       this.sendToServer(() => this.playerWalkClick(x, y));
     }
