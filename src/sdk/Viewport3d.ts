@@ -1,6 +1,6 @@
 "use strict";
 import { World } from "./World";
-import { ViewportDelegate } from "./Viewport";
+import { Viewport, ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
 
 import * as THREE from "three";
@@ -11,11 +11,12 @@ import { Player } from "./Player";
 import { Mob } from "./Mob";
 import { Entity } from "./Entity";
 import { Renderable } from "./Renderable";
+import { Location } from "./Location";
 
 class Model {
   private geometry: THREE.BoxGeometry;
   private material: THREE.MeshStandardMaterial;
-  private cube: THREE;
+  private cube: THREE.Mesh;
 
   constructor(private unit: Renderable) {
     this.geometry = new THREE.BoxGeometry(unit.size, unit.height, unit.size);
@@ -117,7 +118,7 @@ export class Viewport3d implements ViewportDelegate {
     floorGeometry.translate(0, -0.5, 0);
     const floorMaterial = new THREE.MeshStandardMaterial({
       color: 0x996622,
-      side: THREE.SingleSide,
+      side: THREE.FrontSide,
     });
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
     this.scene.add(plane);
@@ -173,6 +174,27 @@ export class Viewport3d implements ViewportDelegate {
       flip: false,
       offsetX: 0,
       offsetY: 0,
+    };
+  }
+
+  translateClick(offsetX, offsetY, world, viewport): Location {
+    const { viewportX, viewportY } = viewport.getViewport(world.tickPercent);
+    let x = offsetX + viewportX * Settings.tileSize;
+    let y = offsetY + viewportY * Settings.tileSize;
+
+    if (Settings.rotated === "south") {
+      x =
+        viewport.width * Settings.tileSize -
+        offsetX +
+        viewportX * Settings.tileSize;
+      y =
+        viewport.height * Settings.tileSize -
+        offsetY +
+        viewportY * Settings.tileSize;
+    }
+    return {
+      x: viewportX,
+      y: viewportY,
     };
   }
 }

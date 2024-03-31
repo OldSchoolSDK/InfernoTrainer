@@ -12,6 +12,8 @@ import { ImageLoader } from "./utils/ImageLoader";
 import ButtonActiveIcon from "../assets/images/interface/button_active.png";
 import { Region } from "./Region";
 import { Viewport3d } from "./Viewport3d";
+import { Location } from "./Location";
+import { Viewport2d } from "./Viewport2d";
 
 type ViewportDrawResult = {
   canvas: OffscreenCanvas;
@@ -22,10 +24,18 @@ type ViewportDrawResult = {
 
 export interface ViewportDelegate {
   draw(world: World, region: Region): ViewportDrawResult;
+
+  // translate the click (relative to the viewport) to a location in the world
+  translateClick(
+    offsetX: number,
+    offsetY: number,
+    world: World,
+    viewport: Viewport
+  ): Location;
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport3d());
+  static viewport = new Viewport(new Viewport2d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
@@ -38,6 +48,10 @@ export class Viewport {
   height: number;
 
   constructor(private delegate: ViewportDelegate) {}
+
+  translateClick(offsetX: number, offsetY: number, world: World): Location {
+    return this.delegate.translateClick(offsetX, offsetY, world, this);
+  }
 
   get context() {
     return this.canvas.getContext("2d");

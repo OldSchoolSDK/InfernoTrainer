@@ -5,6 +5,7 @@ import { Viewport, ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
 import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
+import { Location } from "./Location";
 
 export class Viewport2d implements ViewportDelegate {
   draw(world: World, region: Region) {
@@ -44,6 +45,27 @@ export class Viewport2d implements ViewportDelegate {
       flip: Settings.rotated === "south",
       offsetX: -viewportX * Settings.tileSize,
       offsetY: -viewportY * Settings.tileSize,
+    };
+  }
+
+  translateClick(offsetX, offsetY, world, viewport): Location {
+    const { viewportX, viewportY } = viewport.getViewport(world.tickPercent);
+    let x = offsetX + viewportX * Settings.tileSize;
+    let y = offsetY + viewportY * Settings.tileSize;
+
+    if (Settings.rotated === "south") {
+      x =
+        viewport.width * Settings.tileSize -
+        offsetX +
+        viewportX * Settings.tileSize;
+      y =
+        viewport.height * Settings.tileSize -
+        offsetY +
+        viewportY * Settings.tileSize;
+    }
+    return {
+      x,
+      y,
     };
   }
 }
