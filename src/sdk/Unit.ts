@@ -241,7 +241,7 @@ export class Unit extends Renderable {
   draw(tickPercent: number) {
     // Override me
   }
-  drawUILayer(tickPercent: number) {
+  drawUILayer(tickPercent: number, screenPosition: Location) {
     // Override me
   }
   removedFromWorld() {

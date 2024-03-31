@@ -31,7 +31,22 @@ export class Viewport2d implements ViewportDelegate {
       region.mobs.forEach((mob) => mob.drawUILayer(world.tickPercent));
 
       region.players.forEach((player: Player) => {
-        player.drawUILayer(world.tickPercent);
+        const perceivedLocation = player.getPerceivedLocation(
+          world.tickPercent
+        );
+        const perceivedX = perceivedLocation.x;
+        const perceivedY = perceivedLocation.y;
+
+        const offset = {
+          x:
+            perceivedX * Settings.tileSize +
+            (player.size * Settings.tileSize) / 2,
+          y:
+            (perceivedY - player.size + 1) * Settings.tileSize +
+            (player.size * Settings.tileSize) / 2,
+        };
+
+        player.drawUILayer(world.tickPercent, offset);
       });
     }
 

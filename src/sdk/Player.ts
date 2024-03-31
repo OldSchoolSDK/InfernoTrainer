@@ -803,21 +803,13 @@ export class Player extends Unit {
     };
   }
 
-  drawUILayer(tickPercent: number) {
+  drawUILayer(tickPercent: number, offset: Location) {
     if (this.dying > -1) {
       return;
     }
-    const perceivedLocation = this.getPerceivedLocation(tickPercent);
-    const perceivedX = perceivedLocation.x;
-    const perceivedY = perceivedLocation.y;
-
     this.region.context.save();
 
-    this.region.context.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize +
-        (this.size * Settings.tileSize) / 2
-    );
+    this.region.context.translate(offset.x, offset.y);
 
     if (Settings.rotated === "south") {
       this.region.context.rotate(Math.PI);
