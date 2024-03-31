@@ -48,10 +48,10 @@ export class Viewport2d implements ViewportDelegate {
     };
   }
 
-  translateClick(offsetX, offsetY, world, viewport): Location {
+  translateClick(offsetX, offsetY, world, viewport) {
     const { viewportX, viewportY } = viewport.getViewport(world.tickPercent);
-    let x = offsetX + viewportX * Settings.tileSize;
-    let y = offsetY + viewportY * Settings.tileSize;
+    let x: number = offsetX + viewportX * Settings.tileSize;
+    let y: number = offsetY + viewportY * Settings.tileSize;
 
     if (Settings.rotated === "south") {
       x =
@@ -64,8 +64,11 @@ export class Viewport2d implements ViewportDelegate {
         viewportY * Settings.tileSize;
     }
     return {
-      x,
-      y,
+      type: "coordinate" as const,
+      location: {
+        x,
+        y,
+      },
     };
   }
 }

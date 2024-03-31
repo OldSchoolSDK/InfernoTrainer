@@ -14,6 +14,7 @@ import { Chrome } from "./Chrome";
 import { MapController } from "./MapController";
 import { ControlPanelController } from "./ControlPanelController";
 import { Player } from "./Player";
+import { Mob } from "./Mob";
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -127,7 +128,6 @@ export class ClickController {
       e.offsetY,
       world
     );
-    console.log(coordinates);
   }
 
   clickDown(e: MouseEvent) {
@@ -143,62 +143,78 @@ export class ClickController {
     const player = Viewport.viewport.player;
 
     Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
-    const coordinates = Viewport.viewport.translateClick(
+    const clickedOn = Viewport.viewport.translateClick(
       e.offsetX,
       e.offsetY,
       world
     );
-    if (!coordinates) {
-      return;
-    }
-    const { x, y } = coordinates;
-
-    const xAlign =
-      Viewport.viewport.contextMenu.location.x -
-        Viewport.viewport.contextMenu.width / 2 <
-        e.offsetX &&
-      e.offsetX <
-        Viewport.viewport.contextMenu.location.x +
-          Viewport.viewport.contextMenu.width / 2;
-    const yAlign =
-      Viewport.viewport.contextMenu.location.y < e.offsetY &&
-      e.offsetY <
-        Viewport.viewport.contextMenu.location.y +
-          Viewport.viewport.contextMenu.height;
-
-    if (Viewport.viewport.contextMenu.isActive && xAlign && yAlign) {
-      Viewport.viewport.contextMenu.clicked(e.offsetX, e.offsetY);
-      Viewport.viewport.contextMenu.setInactive();
+    if (!clickedOn) {
       return;
     }
 
-    const intercepted = MapController.controller.leftClickDown(e);
-    if (intercepted) {
-      return;
-    }
+    const mobs: Mob[] = [];
+    const players: Player[] = [];
+    const groundItems: Item[] = [];
+    if (clickedOn.type === "coordinate") {
+      const { x, y } = clickedOn.location;
 
-    const controlPanelIntercepted =
-      ControlPanelController.controller.controlPanelClickDown(e);
-    if (controlPanelIntercepted) {
-      return;
-    }
+      const xAlign =
+        Viewport.viewport.contextMenu.location.x -
+          Viewport.viewport.contextMenu.width / 2 <
+          e.offsetX &&
+        e.offsetX <
+          Viewport.viewport.contextMenu.location.x +
+            Viewport.viewport.contextMenu.width / 2;
+      const yAlign =
+        Viewport.viewport.contextMenu.location.y < e.offsetY &&
+        e.offsetY <
+          Viewport.viewport.contextMenu.location.y +
+            Viewport.viewport.contextMenu.height;
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(
-      region,
-      x,
-      y,
-      world.tickPercent
-    );
-    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(
-      region,
-      x,
-      y,
-      world.tickPercent
-    ).filter((player: Player) => player !== Viewport.viewport.player);
-    const groundItems = region.groundItemsAtLocation(
-      Math.floor(x / Settings.tileSize),
-      Math.floor(y / Settings.tileSize)
-    );
+      if (Viewport.viewport.contextMenu.isActive && xAlign && yAlign) {
+        Viewport.viewport.contextMenu.clicked(e.offsetX, e.offsetY);
+        Viewport.viewport.contextMenu.setInactive();
+        return;
+      }
+
+      const intercepted = MapController.controller.leftClickDown(e);
+      if (intercepted) {
+        return;
+      }
+
+      const controlPanelIntercepted =
+        ControlPanelController.controller.controlPanelClickDown(e);
+      if (controlPanelIntercepted) {
+        return;
+      }
+
+      mobs.push(
+        ...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(
+          region,
+          x,
+          y,
+          world.tickPercent
+        )
+      );
+      players.push(
+        ...Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(
+          region,
+          x,
+          y,
+          world.tickPercent
+        ).filter((player: Player) => player !== Viewport.viewport.player)
+      );
+      groundItems.push(
+        ...region.groundItemsAtLocation(
+          Math.floor(x / Settings.tileSize),
+          Math.floor(y / Settings.tileSize)
+        )
+      );
+    } else if (clickedOn.type === "entities") {
+      mobs.push(...clickedOn.mobs);
+      players.push(...clickedOn.players);
+      groundItems.push(...clickedOn.groundItems);
+    }
 
     Viewport.viewport.player.interruptCombat();
     if (mobs.length && mobs[0].canBeAttacked()) {

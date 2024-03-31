@@ -13,7 +13,26 @@ import ButtonActiveIcon from "../assets/images/interface/button_active.png";
 import { Region } from "./Region";
 import { Viewport3d } from "./Viewport3d";
 import { Location } from "./Location";
-import { Viewport2d } from "./Viewport2d";
+import { Entity } from "./Entity";
+import { Mob } from "./Mob";
+import { Item } from "./Item";
+
+type ViewportEntitiesClick = {
+  type: "entities";
+  mobs: Mob[];
+  players: Player[];
+  groundItems: Item[];
+};
+
+type ViewportCoordinateClick = {
+  type: "coordinate";
+  location: Location;
+};
+
+type ViewportClickResult =
+  | ViewportEntitiesClick
+  | ViewportCoordinateClick
+  | null;
 
 type ViewportDrawResult = {
   canvas: OffscreenCanvas;
@@ -25,13 +44,13 @@ type ViewportDrawResult = {
 export interface ViewportDelegate {
   draw(world: World, region: Region): ViewportDrawResult;
 
-  // translate the click (relative to the viewport) to a location in the world
+  // translate the click (relative to the viewport) to a location in the world or something that got clicked
   translateClick(
     offsetX: number,
     offsetY: number,
     world: World,
     viewport: Viewport
-  ): Location | null;
+  ): ViewportClickResult;
 }
 
 export class Viewport {
@@ -53,7 +72,7 @@ export class Viewport {
     offsetX: number,
     offsetY: number,
     world: World
-  ): Location | null {
+  ): ViewportClickResult {
     return this.delegate.translateClick(offsetX, offsetY, world, this);
   }
 

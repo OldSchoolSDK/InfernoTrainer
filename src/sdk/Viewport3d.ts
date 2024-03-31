@@ -260,10 +260,6 @@ export class Viewport3d implements ViewportDelegate {
     this.raycaster.setFromCamera(new THREE.Vector2(rayX, rayY), this.camera);
     const intersections = this.raycaster
       .intersectObjects(this.scene.children)
-      .map((i) => {
-        console.log(i);
-        return i;
-      })
       .filter(
         (i) =>
           Object.keys(i.object.userData).length === 0 ||
@@ -275,12 +271,17 @@ export class Viewport3d implements ViewportDelegate {
       return null;
     }
     this.selectedTile = {
-      x: intersection.point.x,
-      y: intersection.point.z,
+      x: Math.floor(intersection.point.x) + 0.5,
+      y: Math.floor(intersection.point.z) + 0.5,
     };
+    const mobs = intersections
+      .filter((i) => i.object.userData.unit instanceof Mob)
+      .map((i) => i.object.userData.unit as Mob);
     return {
-      x: intersection.point.x * Settings.tileSize,
-      y: intersection.point.z * Settings.tileSize,
+      type: "entities" as const,
+      mobs,
+      players: [],
+      groundItems: [],
     };
   }
 }
