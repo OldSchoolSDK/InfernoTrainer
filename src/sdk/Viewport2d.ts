@@ -1,11 +1,13 @@
 "use strict";
 import { Player } from "./Player";
 import { World } from "./World";
-import { ViewportDelegate } from "./Viewport";
+import { Viewport, ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
+import { Chrome } from "./Chrome";
+import { Settings } from "./Settings";
 
 export class Viewport2d implements ViewportDelegate {
-  drawRegion(world: World, region: Region) {
+  draw(world: World, region: Region) {
     region.context.save();
     region.drawWorldBackground();
     region.drawGroundItems(region.context);
@@ -33,5 +35,15 @@ export class Viewport2d implements ViewportDelegate {
     }
 
     region.context.restore();
+
+    const { viewportX, viewportY } = Viewport.viewport.getViewport(
+      world.tickPercent
+    );
+    return {
+      canvas: region.canvas,
+      flip: Settings.rotated === "south",
+      offsetX: -viewportX * Settings.tileSize,
+      offsetY: -viewportY * Settings.tileSize,
+    };
   }
 }

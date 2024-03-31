@@ -13,8 +13,15 @@ import ButtonActiveIcon from "../assets/images/interface/button_active.png";
 import { Region } from "./Region";
 import { Viewport2d } from "./Viewport2d";
 
+type ViewportDrawResult = {
+  canvas: OffscreenCanvas;
+  flip: boolean;
+  offsetX: number;
+  offsetY: number;
+};
+
 export interface ViewportDelegate {
-  drawRegion(world: World, region: Region);
+  draw(world: World, region: Region): ViewportDrawResult;
 }
 
 export class Viewport {
@@ -98,17 +105,15 @@ export class Viewport {
     this.context.fillStyle = "black";
     this.context.fillRect(0, 0, 10000000, 1000000);
     const { width, height } = Chrome.size();
-    if (Settings.rotated === "south") {
+    const { canvas, flip, offsetX, offsetY } = this.delegate.draw(
+      world,
+      this.player.region
+    );
+    if (flip) {
       this.context.rotate(Math.PI);
       this.context.translate(-width, -height);
     }
-    this.delegate.drawRegion(world, this.player.region);
-    const { viewportX, viewportY } = this.getViewport(world.tickPercent);
-    this.context.drawImage(
-      this.player.region.canvas,
-      -viewportX * Settings.tileSize,
-      -viewportY * Settings.tileSize
-    );
+    this.context.drawImage(canvas, offsetX, offsetY);
     this.context.restore();
     this.context.save();
 
