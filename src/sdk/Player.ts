@@ -806,7 +806,8 @@ export class Player extends Unit {
   drawUILayer(
     tickPercent: number,
     offset: Location,
-    context: OffscreenCanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number
   ) {
     if (this.dying > -1) {
       return;
@@ -818,9 +819,9 @@ export class Player extends Unit {
     if (Settings.rotated === "south") {
       this.region.context.rotate(Math.PI);
     }
-    this.drawHPBar();
-    this.drawHitsplats(context);
-    this.drawOverheadPrayers();
+    this.drawHPBar(context, scale);
+    this.drawHitsplats(context, scale);
+    this.drawOverheadPrayers(context, scale);
     context.restore();
     this.drawIncomingProjectiles(tickPercent);
   }

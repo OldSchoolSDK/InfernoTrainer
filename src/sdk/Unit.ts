@@ -244,7 +244,8 @@ export class Unit extends Renderable {
   drawUILayer(
     tickPercent: number,
     screenPosition: Location,
-    context: OffscreenCanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number
   ) {
     // Override me
   }
@@ -633,28 +634,23 @@ export class Unit extends Renderable {
     return true;
   }
 
-  drawHPBar() {
-    this.region.context.fillStyle = "red";
-    this.region.context.fillRect(
-      (-this.size / 2) * Settings.tileSize,
-      (-this.size / 2) * Settings.tileSize,
-      Settings.tileSize * this.size,
+  drawHPBar(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    context.fillStyle = "red";
+    context.fillRect(
+      (-this.size / 2) * scale,
+      (-this.size / 2) * scale,
+      scale * this.size,
       5
     );
 
-    this.region.context.fillStyle = "green";
+    context.fillStyle = "lime";
     const w =
       Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) *
-      (Settings.tileSize * this.size);
-    this.region.context.fillRect(
-      (-this.size / 2) * Settings.tileSize,
-      (-this.size / 2) * Settings.tileSize,
-      w,
-      5
-    );
+      (scale * this.size);
+    context.fillRect((-this.size / 2) * scale, (-this.size / 2) * scale, w, 5);
   }
 
-  drawHitsplats(context: OffscreenCanvasRenderingContext2D) {
+  drawHitsplats(context: OffscreenCanvasRenderingContext2D, scale: number) {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -694,7 +690,7 @@ export class Unit extends Renderable {
         context.drawImage(
           image,
           projectile.offsetX - 12,
-          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
+          -((this.size + 1) * scale) / 2 - projectile.offsetY,
           24,
           23
         );
@@ -704,14 +700,17 @@ export class Unit extends Renderable {
         context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
-          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
+          -((this.size + 1) * scale) / 2 - projectile.offsetY + 15
         );
         context.textAlign = "left";
       }
     });
   }
 
-  drawOverheadPrayers() {
+  drawOverheadPrayers(
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number
+  ) {
     if (!this.prayerController) {
       return;
     }
@@ -720,13 +719,7 @@ export class Unit extends Renderable {
     if (overhead) {
       const overheadImg = overhead.overheadImage();
       if (overheadImg) {
-        this.region.context.drawImage(
-          overheadImg,
-          -Settings.tileSize / 2,
-          -Settings.tileSize * 3,
-          Settings.tileSize,
-          Settings.tileSize
-        );
+        context.drawImage(overheadImg, -scale / 2, -scale * 3, scale, scale);
       }
     }
   }

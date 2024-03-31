@@ -12,6 +12,9 @@ import { Entity } from "./Entity";
 import { Renderable } from "./Renderable";
 import { Location } from "./Location";
 
+// how many pixels wide should 2d elements be scaled to
+const SPRITE_SCALE = 32;
+
 class Model {
   private geometry: THREE.BoxGeometry;
   private material: THREE.MeshStandardMaterial;
@@ -272,7 +275,8 @@ export class Viewport3d implements ViewportDelegate {
       player.drawUILayer(
         world.tickPercent,
         get2dOffset(player),
-        this.uiCanvasContext
+        this.uiCanvasContext,
+        SPRITE_SCALE
       );
     });
 

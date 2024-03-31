@@ -42,14 +42,20 @@ export class Viewport2d implements ViewportDelegate {
         };
       };
       region.mobs.forEach((mob) =>
-        mob.drawUILayer(world.tickPercent, getOffset(mob), mob.region.canvas)
+        mob.drawUILayer(
+          world.tickPercent,
+          getOffset(mob),
+          mob.region.canvas,
+          Settings.tileSize
+        )
       );
 
       region.players.forEach((player: Player) => {
         player.drawUILayer(
           world.tickPercent,
           getOffset(player),
-          player.region.context
+          player.region.context,
+          Settings.tileSize
         );
       });
     }

@@ -576,7 +576,7 @@ export class Mob extends Unit {
       );
     });
   }
-  drawUILayer(tickPercent, offset, context) {
+  drawUILayer(tickPercent, offset, context, scale) {
     const perceivedX = Pathing.linearInterpolation(
       this.perceivedLocation.x,
       this.location.x,
@@ -598,11 +598,9 @@ export class Mob extends Unit {
       this.region.context.rotate(Math.PI);
     }
 
-    this.drawHPBar();
-
-    this.drawHitsplats(context);
-
-    this.drawOverheadPrayers();
+    this.drawHPBar(context, scale);
+    this.drawHitsplats(context, scale);
+    this.drawOverheadPrayers(context, scale);
 
     this.region.context.restore();
 
