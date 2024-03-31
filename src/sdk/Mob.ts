@@ -587,22 +587,23 @@ export class Mob extends Unit {
       this.location.y,
       tickPercent
     );
-    this.region.context.save();
-    this.region.context.translate(
+    context.save();
+    context.translate(offset.x, offset.y);
+    /*
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize +
         (this.size * Settings.tileSize) / 2
-    );
+    );*/
 
     if (Settings.rotated === "south") {
-      this.region.context.rotate(Math.PI);
+      context.rotate(Math.PI);
     }
 
     this.drawHPBar(context, scale);
     this.drawHitsplats(context, scale);
     this.drawOverheadPrayers(context, scale);
 
-    this.region.context.restore();
+    context.restore();
 
     this.drawIncomingProjectiles(tickPercent);
   }

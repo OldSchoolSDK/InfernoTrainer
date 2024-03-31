@@ -14,4 +14,13 @@ export abstract class Renderable {
   get colorHex() {
     return parseInt(this.color.replace("#", ""), 16);
   }
+
+  drawUILayer(
+    tickPercent: number,
+    screenPosition: Location,
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number
+  ) {
+    // Override me
+  }
 }

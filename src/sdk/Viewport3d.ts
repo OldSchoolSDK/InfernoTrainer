@@ -197,8 +197,6 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   draw(world: World, region: Region) {
-    region.context.save();
-
     // update canvas if necessary
     const newDimensions = this.calculateCanvasDimensions();
     if (
@@ -212,6 +210,19 @@ export class Viewport3d implements ViewportDelegate {
       this.canvasDimensions = newDimensions;
     }
 
+    this.draw3dScene(world, region);
+    this.draw2dScene(world, region);
+
+    return {
+      canvas: this.canvas,
+      uiCanvas: this.uiCanvas,
+      flip: false,
+      offsetX: 0,
+      offsetY: 0,
+    };
+  }
+
+  draw3dScene(world: World, region: Region) {
     // draw everthing
     region.entities.forEach((entity: Entity) => {
       let actor = this.knownActors.get(entity);
@@ -251,7 +262,9 @@ export class Viewport3d implements ViewportDelegate {
       this.selectedTileMesh.position.y = -0.4;
       this.selectedTileMesh.position.z = this.selectedTile.y;
     }
+  }
 
+  draw2dScene(world: World, region: Region) {
     // draw UI elements into a separate canvas that gets drawn over the 3d canvas
     this.uiCanvasContext.clearRect(
       0,
@@ -271,23 +284,19 @@ export class Viewport3d implements ViewportDelegate {
       );
       return { x, y };
     };
-    region.players.forEach((player: Player) => {
-      player.drawUILayer(
+
+    const renderables: Renderable[] = ([...region.players] as Renderable[])
+      .concat(region.entities)
+      .concat(region.mobs);
+
+    renderables.forEach((r) => {
+      r.drawUILayer(
         world.tickPercent,
-        get2dOffset(player),
+        get2dOffset(r),
         this.uiCanvasContext,
         SPRITE_SCALE
       );
     });
-
-    region.context.restore();
-    return {
-      canvas: this.canvas,
-      uiCanvas: this.uiCanvas,
-      flip: false,
-      offsetX: 0,
-      offsetY: 0,
-    };
   }
 
   // return canvas coordinates from world coordinates
