@@ -45,6 +45,7 @@
     "chebyshev": "^0.2.1",
     "color-scales": "^3.0.2",
     "madge": "^5.0.1",
-    "source-map-loader": "^3.0.0"
+    "source-map-loader": "^3.0.0",
+    "three": "^0.163.0"
   }
 }
