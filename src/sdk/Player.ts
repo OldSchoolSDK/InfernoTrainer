@@ -803,21 +803,25 @@ export class Player extends Unit {
     };
   }
 
-  drawUILayer(tickPercent: number, offset: Location) {
+  drawUILayer(
+    tickPercent: number,
+    offset: Location,
+    context: OffscreenCanvasRenderingContext2D
+  ) {
     if (this.dying > -1) {
       return;
     }
-    this.region.context.save();
+    context.save();
 
-    this.region.context.translate(offset.x, offset.y);
+    context.translate(offset.x, offset.y);
 
     if (Settings.rotated === "south") {
       this.region.context.rotate(Math.PI);
     }
     this.drawHPBar();
-    this.drawHitsplats();
+    this.drawHitsplats(context);
     this.drawOverheadPrayers();
-    this.region.context.restore();
+    context.restore();
     this.drawIncomingProjectiles(tickPercent);
   }
 }

@@ -576,7 +576,7 @@ export class Mob extends Unit {
       );
     });
   }
-  drawUILayer(tickPercent: number) {
+  drawUILayer(tickPercent, offset, context) {
     const perceivedX = Pathing.linearInterpolation(
       this.perceivedLocation.x,
       this.location.x,
@@ -600,7 +600,7 @@ export class Mob extends Unit {
 
     this.drawHPBar();
 
-    this.drawHitsplats();
+    this.drawHitsplats(context);
 
     this.drawOverheadPrayers();
 

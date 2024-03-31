@@ -6,6 +6,7 @@ import { Region } from "./Region";
 import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
 import { Location } from "./Location";
+import { Renderable } from "./Renderable";
 
 export class Viewport2d implements ViewportDelegate {
   draw(world: World, region: Region) {
@@ -28,25 +29,28 @@ export class Viewport2d implements ViewportDelegate {
     region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));
 
     if (world.getReadyTimer === 0) {
-      region.mobs.forEach((mob) => mob.drawUILayer(world.tickPercent));
-
-      region.players.forEach((player: Player) => {
-        const perceivedLocation = player.getPerceivedLocation(
-          world.tickPercent
-        );
+      const getOffset = (r: Renderable) => {
+        const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
         const perceivedX = perceivedLocation.x;
         const perceivedY = perceivedLocation.y;
 
-        const offset = {
-          x:
-            perceivedX * Settings.tileSize +
-            (player.size * Settings.tileSize) / 2,
+        return {
+          x: perceivedX * Settings.tileSize + (r.size * Settings.tileSize) / 2,
           y:
-            (perceivedY - player.size + 1) * Settings.tileSize +
-            (player.size * Settings.tileSize) / 2,
+            (perceivedY - r.size + 1) * Settings.tileSize +
+            (r.size * Settings.tileSize) / 2,
         };
+      };
+      region.mobs.forEach((mob) =>
+        mob.drawUILayer(world.tickPercent, getOffset(mob), mob.region.canvas)
+      );
 
-        player.drawUILayer(world.tickPercent, offset);
+      region.players.forEach((player: Player) => {
+        player.drawUILayer(
+          world.tickPercent,
+          getOffset(player),
+          player.region.context
+        );
       });
     }
 
@@ -57,6 +61,7 @@ export class Viewport2d implements ViewportDelegate {
     );
     return {
       canvas: region.canvas,
+      uiCanvas: null,
       flip: Settings.rotated === "south",
       offsetX: -viewportX * Settings.tileSize,
       offsetY: -viewportY * Settings.tileSize,

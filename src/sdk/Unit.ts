@@ -241,7 +241,11 @@ export class Unit extends Renderable {
   draw(tickPercent: number) {
     // Override me
   }
-  drawUILayer(tickPercent: number, screenPosition: Location) {
+  drawUILayer(
+    tickPercent: number,
+    screenPosition: Location,
+    context: OffscreenCanvasRenderingContext2D
+  ) {
     // Override me
   }
   removedFromWorld() {
@@ -650,7 +654,7 @@ export class Unit extends Renderable {
     );
   }
 
-  drawHitsplats() {
+  drawHitsplats(context: OffscreenCanvasRenderingContext2D) {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -687,22 +691,22 @@ export class Unit extends Renderable {
           image = this.healHitsplatImage;
         }
 
-        this.region.context.drawImage(
+        context.drawImage(
           image,
           projectile.offsetX - 12,
           -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
           24,
           23
         );
-        this.region.context.fillStyle = "#FFFFFF";
-        this.region.context.font = "16px Stats_11";
-        this.region.context.textAlign = "center";
-        this.region.context.fillText(
+        context.fillStyle = "#FFFFFF";
+        context.font = "16px Stats_11";
+        context.textAlign = "center";
+        context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
           -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15
         );
-        this.region.context.textAlign = "left";
+        context.textAlign = "left";
       }
     });
   }

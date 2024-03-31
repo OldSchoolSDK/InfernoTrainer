@@ -52,6 +52,8 @@ class Model {
 
 export class Viewport3d implements ViewportDelegate {
   private canvas: OffscreenCanvas;
+  private uiCanvas: OffscreenCanvas;
+  private uiCanvasContext: OffscreenCanvasRenderingContext2D;
 
   private canvasDimensions: { width: number; height: number } =
     this.calculateCanvasDimensions();
@@ -82,6 +84,11 @@ export class Viewport3d implements ViewportDelegate {
       this.canvasDimensions.width,
       this.canvasDimensions.height
     );
+    this.uiCanvas = new OffscreenCanvas(
+      this.canvasDimensions.width,
+      this.canvasDimensions.height
+    );
+    this.uiCanvasContext = this.uiCanvas.getContext("2d");
 
     this.initScene();
 
@@ -191,7 +198,10 @@ export class Viewport3d implements ViewportDelegate {
 
     // update canvas if necessary
     const newDimensions = this.calculateCanvasDimensions();
-    if (newDimensions.width !== this.canvasDimensions.width) {
+    if (
+      newDimensions.width !== this.canvasDimensions.width ||
+      newDimensions.height !== this.canvasDimensions.height
+    ) {
       this.canvas.width = newDimensions.width;
       this.canvas.height = newDimensions.height;
       this.camera.aspect = newDimensions.width / newDimensions.height;
@@ -217,11 +227,7 @@ export class Viewport3d implements ViewportDelegate {
       }
       actor.draw(this.scene, world.tickPercent);
 
-      // Move the camera to the player.
-      const { x, y } = player.getPerceivedLocation(world.tickPercent);
-      const newTarget = new THREE.Vector3(x + 0.5, 0, y - 0.5);
-
-      // Update the camera position relative to the mesh
+      // Update the camera position relative to the player's mesh
       const v = new THREE.Vector3();
       actor.getMesh().getWorldPosition(v);
       this.pivot.position.lerp(v, 0.1);
@@ -243,15 +249,56 @@ export class Viewport3d implements ViewportDelegate {
       this.selectedTileMesh.position.z = this.selectedTile.y;
     }
 
+    // draw UI elements into a separate canvas that gets drawn over the 3d canvas
+    this.uiCanvasContext.clearRect(
+      0,
+      0,
+      this.uiCanvas.width,
+      this.uiCanvas.height
+    );
+
+    const get2dOffset = (r: Renderable) => {
+      const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
+      const { x, y } = this.projectToScreen(
+        new THREE.Vector3(
+          perceivedLocation.x + r.size / 2,
+          r.height,
+          perceivedLocation.y - r.size / 2
+        )
+      );
+      return { x, y };
+    };
+    region.players.forEach((player: Player) => {
+      player.drawUILayer(
+        world.tickPercent,
+        get2dOffset(player),
+        this.uiCanvasContext
+      );
+    });
+
     region.context.restore();
     return {
       canvas: this.canvas,
+      uiCanvas: this.uiCanvas,
       flip: false,
       offsetX: 0,
       offsetY: 0,
     };
   }
 
+  // return canvas coordinates from world coordinates
+  projectToScreen(vector: THREE.Vector3) {
+    const newVector = vector.clone();
+    newVector.project(this.camera);
+    // i can't tell you why this shouldn't be the canvas width/height but this works...
+    const { width, height } = Chrome.size();
+    return {
+      x: Math.round((newVector.x + 1) * (width / 2)),
+      y: Math.round((-newVector.y + 1) * (height / 2)),
+    };
+  }
+
+  // return intersection with world object or world coordinates from canvas coordinates
   translateClick(offsetX, offsetY, world, viewport) {
     // i can't tell you why this shouldn't be the canvas width/height but this works...
     const { width, height } = Chrome.size();

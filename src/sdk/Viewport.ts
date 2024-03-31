@@ -36,7 +36,10 @@ type ViewportClickResult =
   | null;
 
 type ViewportDrawResult = {
+  // game canvas
   canvas: OffscreenCanvas;
+  // drawn on top of the game canvas. optional, not used for 2d view
+  uiCanvas: OffscreenCanvas | null;
   flip: boolean;
   offsetX: number;
   offsetY: number;
@@ -55,7 +58,7 @@ export interface ViewportDelegate {
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport2d());
+  static viewport = new Viewport(new Viewport3d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
@@ -141,9 +144,9 @@ export class Viewport {
     this.context.restore();
     this.context.save();
     this.context.fillStyle = "black";
-    this.context.fillRect(0, 0, 10000000, 1000000);
     const { width, height } = Chrome.size();
-    const { canvas, flip, offsetX, offsetY } = this.delegate.draw(
+    this.context.fillRect(0, 0, width, height);
+    const { canvas, uiCanvas, flip, offsetX, offsetY } = this.delegate.draw(
       world,
       this.player.region
     );
@@ -152,6 +155,9 @@ export class Viewport {
       this.context.translate(-width, -height);
     }
     this.context.drawImage(canvas, offsetX, offsetY);
+    if (uiCanvas) {
+      this.context.drawImage(uiCanvas, offsetX, offsetY);
+    }
     this.context.restore();
     this.context.save();
 
