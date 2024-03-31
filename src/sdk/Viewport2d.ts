@@ -45,7 +45,7 @@ export class Viewport2d implements ViewportDelegate {
         mob.drawUILayer(
           world.tickPercent,
           getOffset(mob),
-          mob.region.canvas,
+          mob.region.context,
           Settings.tileSize
         )
       );

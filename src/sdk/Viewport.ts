@@ -13,7 +13,6 @@ import ButtonActiveIcon from "../assets/images/interface/button_active.png";
 import { Region } from "./Region";
 import { Viewport3d } from "./Viewport3d";
 import { Location } from "./Location";
-import { Entity } from "./Entity";
 import { Mob } from "./Mob";
 import { Item } from "./Item";
 import { Viewport2d } from "./Viewport2d";
@@ -58,7 +57,7 @@ export interface ViewportDelegate {
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport3d());
+  static viewport = new Viewport(new Viewport2d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
