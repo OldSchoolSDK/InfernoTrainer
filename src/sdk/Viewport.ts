@@ -31,11 +31,11 @@ export interface ViewportDelegate {
     offsetY: number,
     world: World,
     viewport: Viewport
-  ): Location;
+  ): Location | null;
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport2d());
+  static viewport = new Viewport(new Viewport3d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
@@ -49,7 +49,11 @@ export class Viewport {
 
   constructor(private delegate: ViewportDelegate) {}
 
-  translateClick(offsetX: number, offsetY: number, world: World): Location {
+  translateClick(
+    offsetX: number,
+    offsetY: number,
+    world: World
+  ): Location | null {
     return this.delegate.translateClick(offsetX, offsetY, world, this);
   }
 

@@ -44,6 +44,10 @@ export class ClickController {
       "mousemove",
       this.eventListeners[4]
     );
+    this.viewport.canvas.removeEventListener(
+      "mousemove",
+      this.eventListeners[5]
+    );
     this.viewport.canvas.removeEventListener("wheel", this.eventListeners[6]);
   }
 
@@ -70,6 +74,10 @@ export class ClickController {
       "mousemove",
       (this.eventListeners[4] = (e) =>
         Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY))
+    );
+    this.viewport.canvas.addEventListener(
+      "mousemove",
+      (this.eventListeners[5] = this.mouseMoved.bind(this))
     );
     this.viewport.canvas.addEventListener(
       "wheel",
@@ -112,6 +120,16 @@ export class ClickController {
     }
   }
 
+  mouseMoved(e: MouseEvent) {
+    const world = Viewport.viewport.player.region.world;
+    const coordinates = Viewport.viewport.translateClick(
+      e.offsetX,
+      e.offsetY,
+      world
+    );
+    console.log(coordinates);
+  }
+
   clickDown(e: MouseEvent) {
     if (e.button === 2) {
       this.rightClickDown(e);
@@ -125,11 +143,16 @@ export class ClickController {
     const player = Viewport.viewport.player;
 
     Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
-    const { x, y } = Viewport.viewport.translateClick(
+    const coordinates = Viewport.viewport.translateClick(
       e.offsetX,
       e.offsetY,
       world
     );
+    if (!coordinates) {
+      return;
+    }
+    const { x, y } = coordinates;
+    console.dir({ x, y });
 
     const xAlign =
       Viewport.viewport.contextMenu.location.x -

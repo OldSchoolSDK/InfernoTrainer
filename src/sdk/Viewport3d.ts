@@ -18,20 +18,28 @@ class Model {
   private material: THREE.MeshStandardMaterial;
   private cube: THREE.Mesh;
 
-  constructor(private unit: Renderable) {
+  constructor(
+    private unit: Renderable,
+    userData: { clickable?: boolean } = { clickable: false }
+  ) {
     this.geometry = new THREE.BoxGeometry(unit.size, unit.height, unit.size);
     this.material = new THREE.MeshStandardMaterial({ color: unit.colorHex });
     this.cube = new THREE.Mesh(this.geometry, this.material);
+    this.cube.userData = {
+      unit: this,
+      ...userData,
+    };
   }
 
   draw(scene: THREE.Scene, tickPercent: number) {
     if (this.cube.parent !== scene) {
       scene.add(this.cube);
     }
+    const size = this.unit.size;
     const { x, y } = this.unit.getPerceivedLocation(tickPercent);
 
-    this.cube.position.x = x;
-    this.cube.position.z = y;
+    this.cube.position.x = x + size / 2;
+    this.cube.position.z = y - size / 2;
   }
 
   shouldRemove() {
@@ -49,9 +57,17 @@ export class Viewport3d implements ViewportDelegate {
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
 
+  private raycaster: THREE.Raycaster;
+
   private controls: OrbitControls;
 
   private knownActors: Map<Renderable, Model> = new Map();
+
+  private selectedTile: Location | null = null;
+  private selectedTileMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x000000 })
+  );
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -71,6 +87,9 @@ export class Viewport3d implements ViewportDelegate {
       1000
     );
     this.camera.position.set(20, 30, 20);
+    this.raycaster = new THREE.Raycaster();
+    this.raycaster.params.Points.threshold = 0.1;
+
     const worldCanvas = document.getElementById("world") as HTMLCanvasElement;
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
@@ -122,6 +141,8 @@ export class Viewport3d implements ViewportDelegate {
     });
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
     this.scene.add(plane);
+
+    this.scene.add(this.selectedTileMesh);
   }
 
   draw(world: World, region: Region) {
@@ -150,7 +171,7 @@ export class Viewport3d implements ViewportDelegate {
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
-        actor = new Model(player);
+        actor = new Model(player, { clickable: false });
         this.knownActors.set(player, actor);
       }
       actor.draw(this.scene, world.tickPercent);
@@ -168,6 +189,12 @@ export class Viewport3d implements ViewportDelegate {
       actor.draw(this.scene, world.tickPercent);
     });
 
+    // highlight selected tile/npc
+    if (this.selectedTile) {
+      this.selectedTileMesh.position.x = this.selectedTile.x;
+      this.selectedTileMesh.position.z = this.selectedTile.y;
+    }
+
     region.context.restore();
     return {
       canvas: this.canvas,
@@ -177,24 +204,36 @@ export class Viewport3d implements ViewportDelegate {
     };
   }
 
-  translateClick(offsetX, offsetY, world, viewport): Location {
-    const { viewportX, viewportY } = viewport.getViewport(world.tickPercent);
-    let x = offsetX + viewportX * Settings.tileSize;
-    let y = offsetY + viewportY * Settings.tileSize;
+  translateClick(offsetX, offsetY, world, viewport) {
+    // i can't tell you why this shouldn't be the canvas width/height but this works...
+    const { width, height } = Chrome.size();
+    const rayX = (offsetX / width) * 2 - 1;
+    const rayY = -(offsetY / height) * 2 + 1;
 
-    if (Settings.rotated === "south") {
-      x =
-        viewport.width * Settings.tileSize -
-        offsetX +
-        viewportX * Settings.tileSize;
-      y =
-        viewport.height * Settings.tileSize -
-        offsetY +
-        viewportY * Settings.tileSize;
+    this.raycaster.setFromCamera(new THREE.Vector2(rayX, rayY), this.camera);
+    const intersections = this.raycaster
+      .intersectObjects(this.scene.children)
+      .map((i) => {
+        console.log(i);
+        return i;
+      })
+      .filter(
+        (i) =>
+          Object.keys(i.object.userData).length === 0 ||
+          i.object.userData.clickable === true
+      );
+    const intersection = intersections.length > 0 ? intersections[0] : null;
+
+    if (!intersection) {
+      return null;
     }
+    this.selectedTile = {
+      x: intersection.point.x,
+      y: intersection.point.z,
+    };
     return {
-      x: viewportX,
-      y: viewportY,
+      x: intersection.point.x * Settings.tileSize,
+      y: intersection.point.z * Settings.tileSize,
     };
   }
 }
