@@ -11,7 +11,7 @@ import { XpDropController } from "./XpDropController";
 import { ImageLoader } from "./utils/ImageLoader";
 import ButtonActiveIcon from "../assets/images/interface/button_active.png";
 import { Region } from "./Region";
-import { Viewport2d } from "./Viewport2d";
+import { Viewport3d } from "./Viewport3d";
 
 type ViewportDrawResult = {
   canvas: OffscreenCanvas;
@@ -25,7 +25,7 @@ export interface ViewportDelegate {
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport2d());
+  static viewport = new Viewport(new Viewport3d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
