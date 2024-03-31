@@ -7,25 +7,24 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
-import { floor, update } from "lodash";
 import { Player } from "./Player";
-import { Unit } from "./Unit";
 import { Mob } from "./Mob";
+import { Entity } from "./Entity";
+import { Renderable } from "./Renderable";
 
-class Actor {
+class Model {
   private geometry: THREE.BoxGeometry;
   private material: THREE.MeshStandardMaterial;
   private cube: THREE;
 
-  constructor(private unit: Unit, color: number) {
-    this.geometry = new THREE.BoxGeometry(1, 1, 1);
-    this.material = new THREE.MeshStandardMaterial({ color });
+  constructor(private unit: Renderable) {
+    this.geometry = new THREE.BoxGeometry(unit.size, unit.height, unit.size);
+    this.material = new THREE.MeshStandardMaterial({ color: unit.colorHex });
     this.cube = new THREE.Mesh(this.geometry, this.material);
   }
 
   draw(scene: THREE.Scene, tickPercent: number) {
     if (this.cube.parent !== scene) {
-      console.log("added cube for unit", this.unit.mobName());
       scene.add(this.cube);
     }
     const { x, y } = this.unit.getPerceivedLocation(tickPercent);
@@ -51,7 +50,7 @@ export class Viewport3d implements ViewportDelegate {
 
   private controls: OrbitControls;
 
-  private knownActors: Map<Unit, Actor> = new Map();
+  private knownActors: Map<Renderable, Model> = new Map();
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -70,7 +69,7 @@ export class Viewport3d implements ViewportDelegate {
       0.1,
       1000
     );
-    this.camera.position.set(0.8, 1.4, 1.0);
+    this.camera.position.set(20, 30, 20);
     const worldCanvas = document.getElementById("world") as HTMLCanvasElement;
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
@@ -107,7 +106,7 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   initScene() {
-    const light = new THREE.PointLight(0xffffff, 500);
+    const light = new THREE.PointLight(0xffffff, 1400);
     light.position.set(30, 20, 30);
     this.scene.add(light);
     const ambientLight = new THREE.AmbientLight();
@@ -117,7 +116,7 @@ export class Viewport3d implements ViewportDelegate {
     floorGeometry.rotateX(-Math.PI / 2);
     floorGeometry.translate(0, -0.5, 0);
     const floorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x222222,
+      color: 0x996622,
       side: THREE.SingleSide,
     });
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -138,10 +137,19 @@ export class Viewport3d implements ViewportDelegate {
     }
 
     // draw everthing
+    region.entities.forEach((entity: Entity) => {
+      let actor = this.knownActors.get(entity);
+      if (!actor) {
+        actor = new Model(entity);
+        this.knownActors.set(entity, actor);
+      }
+      actor.draw(this.scene, world.tickPercent);
+    });
+
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
-        actor = new Actor(player, 0x00ff00);
+        actor = new Model(player);
         this.knownActors.set(player, actor);
       }
       actor.draw(this.scene, world.tickPercent);
@@ -153,7 +161,7 @@ export class Viewport3d implements ViewportDelegate {
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {
       let actor = this.knownActors.get(mob);
       if (!actor) {
-        actor = new Actor(mob, 0xff0000);
+        actor = new Model(mob);
         this.knownActors.set(mob, actor);
       }
       actor.draw(this.scene, world.tickPercent);

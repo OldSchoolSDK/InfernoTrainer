@@ -97,6 +97,10 @@ export class Player extends Unit {
     this.setAggro(null);
   }
 
+  get color() {
+    return "#00FF00";
+  }
+
   get isPlayer(): boolean {
     return true;
   }

@@ -28,6 +28,7 @@ import { PrayerController } from "./PrayerController";
 import { Region } from "./Region";
 import { Player } from "./Player";
 import { CollisionType } from "./Collision";
+import { Renderable } from "./Renderable";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -97,7 +98,7 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
-export class Unit {
+export class Unit extends Renderable {
   prayerController: PrayerController;
   lastOverhead?: BasePrayer = null;
   aggro?: Unit;
@@ -187,6 +188,7 @@ export class Unit {
   }
 
   constructor(region: Region, location: Location, options?: UnitOptions) {
+    super();
     this.region = region;
     this.aggro = options.aggro || null;
     this.perceivedLocation = location;
@@ -221,6 +223,7 @@ export class Unit {
   attackStep() {
     // Override me
   }
+
   getPerceivedLocation(tickPercent: number) {
     const perceivedX = Pathing.linearInterpolation(
       this.perceivedLocation.x,
