@@ -1,10 +1,9 @@
 "use strict";
 import { World } from "./World";
-import { Viewport, ViewportDelegate } from "./Viewport";
+import { ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
 
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
 import { Player } from "./Player";
@@ -45,6 +44,10 @@ class Model {
   shouldRemove() {
     return false;
   }
+
+  getMesh() {
+    return this.cube;
+  }
 }
 
 export class Viewport3d implements ViewportDelegate {
@@ -59,7 +62,9 @@ export class Viewport3d implements ViewportDelegate {
 
   private raycaster: THREE.Raycaster;
 
-  private controls: OrbitControls;
+  private pivot = new THREE.Object3D();
+  private yaw = new THREE.Object3D();
+  private pitch = new THREE.Object3D();
 
   private knownActors: Map<Renderable, Model> = new Map();
 
@@ -86,23 +91,61 @@ export class Viewport3d implements ViewportDelegate {
       0.1,
       1000
     );
-    this.camera.position.set(20, 30, 20);
     this.raycaster = new THREE.Raycaster();
     this.raycaster.params.Points.threshold = 0.1;
 
     const worldCanvas = document.getElementById("world") as HTMLCanvasElement;
+    this.initCameraEvents(worldCanvas);
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
-    // TODO
-    // https://stackoverflow.com/questions/53292145/forcing-orbitcontrols-to-navigate-around-a-moving-object-almost-working
-    this.controls = new OrbitControls(this.camera, worldCanvas);
-    this.controls.mouseButtons = {
-      MIDDLE: THREE.MOUSE.ROTATE,
-    };
-    this.controls.enableDamping = true;
-    this.controls.target.set(0, 0, 0);
+
+    // Set up camera positioning
+    this.camera.position.set(0, 3, 5);
+    this.pivot.position.set(0, 0, 10);
+    // Face south
+    this.yaw.rotation.y = Math.PI;
+    // Pitch down slightly
+    this.pitch.rotation.x = -0.7;
+    // Zoom out
+    this.camera.position.z = 15;
+    this.scene.add(this.pivot);
+    this.pivot.add(this.yaw);
+    this.yaw.add(this.pitch);
+    this.pitch.add(this.camera);
 
     this.animate();
+  }
+
+  // implementation from https://codepen.io/seanwasere/pen/BaMBoPd
+  onDocumentMouseMove(e: MouseEvent) {
+    if ((e.buttons & 4) !== 4) return;
+    this.yaw.rotation.y -= e.movementX * 0.002;
+    const v = this.pitch.rotation.x - e.movementY * 0.002;
+    if (v > -1 && v < 0.1) {
+      this.pitch.rotation.x = v;
+    }
+    return false;
+  }
+
+  onDocumentMouseWheel(e: WheelEvent) {
+    const v = this.camera.position.z + e.deltaY * 0.005;
+    if (v >= 2 && v <= 20) {
+      this.camera.position.z = v;
+    }
+    return false;
+  }
+
+  initCameraEvents(canvas) {
+    canvas.addEventListener(
+      "mousemove",
+      this.onDocumentMouseMove.bind(this),
+      false
+    );
+    canvas.addEventListener(
+      "wheel",
+      this.onDocumentMouseWheel.bind(this),
+      false
+    );
   }
 
   calculateCanvasDimensions() {
@@ -119,8 +162,6 @@ export class Viewport3d implements ViewportDelegate {
 
   animate() {
     requestAnimationFrame(() => this.animate());
-
-    this.controls.update();
 
     this.render();
   }
@@ -176,8 +217,14 @@ export class Viewport3d implements ViewportDelegate {
       }
       actor.draw(this.scene, world.tickPercent);
 
+      // Move the camera to the player.
       const { x, y } = player.getPerceivedLocation(world.tickPercent);
-      this.controls.target.set(x, 0, y);
+      const newTarget = new THREE.Vector3(x + 0.5, 0, y - 0.5);
+
+      // Update the camera position relative to the mesh
+      const v = new THREE.Vector3();
+      actor.getMesh().getWorldPosition(v);
+      this.pivot.position.lerp(v, 0.1);
     });
 
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {

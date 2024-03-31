@@ -152,7 +152,6 @@ export class ClickController {
       return;
     }
     const { x, y } = coordinates;
-    console.dir({ x, y });
 
     const xAlign =
       Viewport.viewport.contextMenu.location.x -
