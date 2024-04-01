@@ -57,7 +57,13 @@ export interface ViewportDelegate {
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport3d());
+  static viewport: Viewport;
+  static setupViewport() {
+    // called after Settings have been initialized
+    Viewport.viewport = new Viewport(
+      Settings.use3dView ? new Viewport3d() : new Viewport2d()
+    );
+  }
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);
