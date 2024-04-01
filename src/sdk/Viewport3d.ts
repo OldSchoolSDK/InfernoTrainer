@@ -160,20 +160,27 @@ export class Viewport3d implements ViewportDelegate {
     this.scene.add(this.selectedTileMesh);
   }
 
-  draw(world: World, region: Region) {
+  private updateCanvasSize() {
     // update canvas if necessary
     const newDimensions = this.calculateCanvasDimensions();
     if (
       newDimensions.width !== this.canvasDimensions.width ||
       newDimensions.height !== this.canvasDimensions.height
     ) {
+      console.log("updated canvas dimensions to", newDimensions);
       this.canvas.width = newDimensions.width;
       this.canvas.height = newDimensions.height;
+      this.uiCanvas.width = newDimensions.width;
+      this.uiCanvas.height = newDimensions.height;
       this.camera.aspect = newDimensions.width / newDimensions.height;
       this.camera.updateProjectionMatrix();
+      this.renderer.setSize(newDimensions.width, newDimensions.height, false);
       this.canvasDimensions = newDimensions;
     }
+  }
 
+  draw(world: World, region: Region) {
+    this.updateCanvasSize();
     this.draw3dScene(world, region);
     this.draw2dScene(world, region);
 
@@ -274,7 +281,7 @@ export class Viewport3d implements ViewportDelegate {
     const newVector = vector.clone();
     newVector.project(this.camera);
     // i can't tell you why this shouldn't be the canvas width/height but this works...
-    const { width, height } = Chrome.size();
+    const { width, height } = this.canvasDimensions;
     return {
       x: Math.round((newVector.x + 1) * (width / 2)),
       y: Math.round((-newVector.y + 1) * (height / 2)),
@@ -284,7 +291,7 @@ export class Viewport3d implements ViewportDelegate {
   // return intersection with world object or world coordinates from canvas coordinates
   translateClick(offsetX, offsetY, world, viewport) {
     // i can't tell you why this shouldn't be the canvas width/height but this works...
-    const { width, height } = Chrome.size();
+    const { width, height } = this.canvasDimensions;
     const rayX = (offsetX / width) * 2 - 1;
     const rayY = -(offsetY / height) * 2 + 1;
 
