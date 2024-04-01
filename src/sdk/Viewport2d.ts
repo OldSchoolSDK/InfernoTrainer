@@ -25,7 +25,7 @@ export class Viewport2d implements ViewportDelegate {
     renderables.push(...region.players);
     renderables.forEach((r) => {
       const location = r.getPerceivedLocation(world.tickPercent);
-      r.draw(world.tickPercent, region.context, location);
+      r.draw(world.tickPercent, region.context, location, Settings.tileSize);
     });
 
     region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));
