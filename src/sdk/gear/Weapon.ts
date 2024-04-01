@@ -264,4 +264,9 @@ export class Weapon extends Equipment{
   static isMeleeAttackStyle (style: string) {
     return style === 'crush' || style === 'slash' || style === 'stab'
   }
+
+  get attackSound(): string | null {
+    // Override me
+    return null;
+  }
 }

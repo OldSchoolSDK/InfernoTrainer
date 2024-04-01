@@ -8,6 +8,9 @@ import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
 import { ProjectileOptions } from '../../sdk/weapons/Projectile';
 
+import BPAttackSound from '../../assets/sounds/blowpipe.ogg';
+import { SoundCache } from '../../sdk/utils/SoundCache';
+
 export class Blowpipe extends RangedWeapon {
   constructor() {
     super();
@@ -37,6 +40,7 @@ export class Blowpipe extends RangedWeapon {
         slayer: 0
       }
     }
+    SoundCache.preload(BPAttackSound);
   }
 
 
@@ -118,6 +122,10 @@ export class Blowpipe extends RangedWeapon {
   }
   get inventoryImage () {
     return BPInventImage
+  }
+
+  get attackSound() {
+    return BPAttackSound;
   }
 
 }

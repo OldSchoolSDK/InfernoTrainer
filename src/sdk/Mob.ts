@@ -6,7 +6,7 @@ import { LineOfSight } from "./LineOfSight";
 import { Pathing } from "./Pathing";
 
 import { Weapon } from "./gear/Weapon";
-import { Unit, UnitBonuses, UnitStats, UnitTypes } from "./Unit";
+import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from "./Unit";
 import { Location } from "./Location";
 import { Collision } from "./Collision";
 import { SoundCache } from "./utils/SoundCache";
@@ -40,6 +40,13 @@ export class Mob extends Unit {
   attackStyle: string;
   tcc: Location[];
   removableWithRightClick = false;
+
+  constructor(region: Region, location: Location, options?: UnitOptions) {
+    super(region, location, options);
+    if (this.sound) {
+      SoundCache.preload(this.sound);
+    }
+  }
 
   get type() {
     return UnitTypes.MOB;
@@ -378,21 +385,15 @@ export class Mob extends Unit {
   }
 
   playAttackSound() {
-    if (Settings.playsAudio) {
-      const sound = SoundCache.getCachedSound(this.sound);
-      if (sound) {
-        let attemptedVolume =
-          1 /
-          Pathing.dist(
-            this.location.x,
-            this.location.y,
-            this.aggro.location.x,
-            this.aggro.location.y
-          );
-        attemptedVolume = Math.min(1, Math.max(0, attemptedVolume));
-        sound.volume = attemptedVolume;
-        sound.play();
-      }
+    if (Settings.playsAudio && this.sound) {
+      let attemptedVolume = 1 / Pathing.dist(
+          Viewport.viewport.player.location.x,
+          Viewport.viewport.player.location.y,
+          this.location.x,
+          this.location.y
+        );
+      attemptedVolume = Math.min(1, Math.max(0, Math.sqrt(attemptedVolume)));
+      SoundCache.play(this.sound, attemptedVolume);
     }
   }
 

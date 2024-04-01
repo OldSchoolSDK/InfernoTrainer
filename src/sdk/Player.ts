@@ -23,6 +23,7 @@ import { PrayerController } from "./PrayerController";
 import { AmmoType } from "./gear/Ammo";
 import { Region } from "./Region";
 import { Viewport } from "./Viewport";
+import { SoundCache } from "./utils/SoundCache";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
@@ -373,6 +374,7 @@ export class Player extends Unit {
             bonuses.gearMageMultiplier = 1.15;
           }
 
+          this.playAttackSound();
           return this.equipment.weapon.attack(
             this,
             this.aggro as Unit /* hack */,
@@ -385,7 +387,12 @@ export class Player extends Unit {
     }
 
     return true;
-    // this.playAttackSound();
+  }
+
+  playAttackSound() {
+    if (Settings.playsAudio && this.equipment.weapon?.attackSound) {
+      SoundCache.play(this.equipment.weapon?.attackSound, 0.5);
+    }
   }
 
   activatePrayers() {
