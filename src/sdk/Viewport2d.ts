@@ -3,17 +3,18 @@ import { Player } from "./Player";
 import { World } from "./World";
 import { Viewport, ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
-import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
-import { Location } from "./Location";
 import { Renderable } from "./Renderable";
-import { Pathing } from "./Pathing";
 import { Unit } from "./Unit";
 
 export class Viewport2d implements ViewportDelegate {
+  initialise(world: World, region: Region) {
+    // do nothing, but maybe we should buffer the world background
+  }
+
   draw(world: World, region: Region) {
     region.context.save();
-    region.drawWorldBackground();
+    region.drawWorldBackground(region.context, Settings.tileSize);
     region.drawGroundItems(region.context);
 
     // Draw all things on the map

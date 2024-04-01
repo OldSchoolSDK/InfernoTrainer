@@ -46,6 +46,8 @@ type ViewportDrawResult = {
 };
 
 export interface ViewportDelegate {
+  initialise(world: World, region: Region);
+
   draw(world: World, region: Region): ViewportDrawResult;
 
   // translate the click (relative to the viewport) to a location in the world or something that got clicked
@@ -108,6 +110,8 @@ export class Viewport {
     this.canvas.height = Settings._tileSize * 2 * this.height;
     this.clickController = new ClickController(this);
     this.clickController.registerClickActions();
+
+    this.delegate.initialise(player.region.world, player.region);
   }
 
   calculateViewport() {

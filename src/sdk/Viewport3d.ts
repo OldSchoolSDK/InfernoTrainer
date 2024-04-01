@@ -1,6 +1,6 @@
 "use strict";
 import { World } from "./World";
-import { ViewportDelegate } from "./Viewport";
+import { Viewport, ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
 
 import * as THREE from "three";
@@ -47,7 +47,6 @@ export class Viewport3d implements ViewportDelegate {
 
   constructor(faceCameraSouth = true) {
     this.scene = new THREE.Scene();
-    this.scene.add(new THREE.AxesHelper(5));
 
     this.canvas = new OffscreenCanvas(
       this.canvasDimensions.width,
@@ -58,8 +57,6 @@ export class Viewport3d implements ViewportDelegate {
       this.canvasDimensions.height
     );
     this.uiCanvasContext = this.uiCanvas.getContext("2d");
-
-    this.initScene();
 
     this.camera = new THREE.PerspectiveCamera(
       90,
@@ -145,20 +142,33 @@ export class Viewport3d implements ViewportDelegate {
     this.render();
   }
 
-  initScene() {
-    const light = new THREE.PointLight(0xffffff, 1400);
-    light.position.set(30, 20, 30);
+  initialise(world: World, region: Region) {
+    const light = new THREE.PointLight(0xffffff, 100);
+    light.position.set(region.width / 2, 20, region.height / 2);
     this.scene.add(light);
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
 
-    const floorGeometry = new THREE.PlaneGeometry(2000, 2000, 8, 8);
-    floorGeometry.rotateX(-Math.PI / 2);
-    floorGeometry.translate(0, -0.5, 0);
+    const floorCanvas = new OffscreenCanvas(
+      region.width * SPRITE_SCALE,
+      region.height * SPRITE_SCALE
+    );
+    const floorContext = floorCanvas.getContext("2d");
+
+    region.drawWorldBackground(floorContext, SPRITE_SCALE);
+    
+    const floorTexture = new THREE.Texture(floorCanvas);
+    floorTexture.needsUpdate = true;
+
+    const floorGeometry = new THREE.PlaneGeometry(region.width, region.height, 8, 8);
     const floorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x996622,
+      map: floorTexture,
+      transparent: true,
+      color: 0xFFFFFF,
       side: THREE.FrontSide,
     });
+    floorGeometry.rotateX(-Math.PI / 2);
+    floorGeometry.translate(region.width / 2, -0.5, region.height / 2 - 1);
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
     plane.userData.clickable = true;
     // used for right-click walk here

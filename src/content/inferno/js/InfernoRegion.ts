@@ -211,26 +211,30 @@ export class InfernoRegion extends Region {
     return use3dViewCheckbox.checked;
   }
 
-  drawWorldBackground() {
-    this.context.fillStyle = "black";
-    this.context.fillRect(0, 0, 10000000, 10000000);
+  drawWorldBackground(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    context.fillStyle = "black";
+    context.fillRect(0, 0, 10000000, 10000000);
     if (this.mapImage) {
-      const ctx = this.context as any;
+      const ctx = context as any;
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
-      this.context.imageSmoothingEnabled = false;
+      context.imageSmoothingEnabled = false;
 
-      this.context.drawImage(
+      context.fillStyle = "white";
+
+      context.fillRect(20, 20, 5, 5);
+
+      context.drawImage(
         this.mapImage,
         0,
         0,
-        this.width * Settings.tileSize,
-        this.height * Settings.tileSize
+        this.width * scale,
+        this.height * scale
       );
 
       ctx.webkitImageSmoothingEnabled = true;
       ctx.mozImageSmoothingEnabled = true;
-      this.context.imageSmoothingEnabled = true;
+      context.imageSmoothingEnabled = true;
     }
   }
 }

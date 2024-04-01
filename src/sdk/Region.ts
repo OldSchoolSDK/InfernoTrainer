@@ -128,7 +128,7 @@ export class Region {
     return "";
   }
 
-  drawWorldBackground() {
+  drawWorldBackground(context: OffscreenCanvasRenderingContext2D, scale: number) {
     // Override me
   }
   groundItemsAtLocation(x: number, y: number) {

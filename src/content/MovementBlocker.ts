@@ -3,6 +3,8 @@ import { Entity } from '../sdk/Entity'
 
 import { CollisionType } from '../sdk/Collision'
 import { LineOfSightMask } from '../sdk/LineOfSight';
+import { Model } from '../sdk/rendering/Model';
+import { EmptyModel } from '../sdk/rendering/EmptyModel';
 
 export class InvisibleMovementBlocker extends Entity {
 
@@ -20,5 +22,9 @@ export class InvisibleMovementBlocker extends Entity {
   }
   draw () {
      // force empty draw
+  }
+
+  create3dModel(): Model {
+    return new EmptyModel();
   }
 }

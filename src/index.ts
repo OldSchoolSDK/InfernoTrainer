@@ -91,12 +91,13 @@ loadout.setStats(player); // flip this around one day
 player.setUnitOptions(loadout.getLoadout());
 
 Viewport.setupViewport(selectedRegion);
-
 Viewport.viewport.setPlayer(player);
 
-ImageLoader.onAllImagesLoaded(() =>
-  MapController.controller.updateOrbsMask(player.currentStats, player.stats)
-);
+
+ImageLoader.onAllImagesLoaded(() => {
+  MapController.controller.updateOrbsMask(player.currentStats, player.stats);
+  Viewport.viewport.setPlayer(player);
+});
 if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars
   InfernoPillar.addPillarsToWorld(
