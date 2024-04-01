@@ -394,7 +394,6 @@ export class ClickController {
     Viewport.viewport.player.setAggro(mob);
   }
   playerWalkClick(x: number, y: number) {
-    console.log("playerWalkClick", x, y);
     Viewport.viewport.player.moveTo(Math.floor(x), Math.floor(y));
   }
   redClick() {

@@ -1,26 +1,24 @@
-'use strict'
+"use strict";
 
 import { remove } from "lodash";
 import { Entity } from "./Entity";
-import { Item } from "./Item"
+import { Item } from "./Item";
 import { Mob } from "./Mob";
 import { Player } from "./Player";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
-import { World } from "./World"
-
+import { World } from "./World";
 
 interface GroundYItems {
-  [key: number]: Item[]
+  [key: number]: Item[];
 }
 
 export interface GroundItems {
-  [key: number]: GroundYItems
+  [key: number]: GroundYItems;
 }
 
-
 // Base class for any trainer region.
-export class Region{
+export class Region {
   canvas: OffscreenCanvas;
 
   players: Player[] = [];
@@ -30,15 +28,15 @@ export class Region{
   newMobs: Mob[] = [];
   mobs: Mob[] = [];
   entities: Entity[] = [];
-  
+
   mapImage: HTMLImageElement;
 
-  groundItems: GroundItems = { }
-  
+  groundItems: GroundItems = {};
+
   _serialNumber: string;
   get serialNumber(): string {
     if (!this._serialNumber) {
-      this._serialNumber = String(Math.random())
+      this._serialNumber = String(Math.random());
     }
     return this._serialNumber;
   }
@@ -58,38 +56,39 @@ export class Region{
   rightClickActions() {
     return [];
   }
-  
+
   get context() {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {
         this.canvas = new OffscreenCanvas(2000, 2000);
-      }else{
+      } else {
         this.canvas = new OffscreenCanvas(10000, 10000);
       }
     }
-    return this.canvas.getContext('2d');
+    return this.canvas.getContext("2d");
   }
 
-  addEntity (entity: Entity) {
-    this.entities.push(entity)
+  addEntity(entity: Entity) {
+    this.entities.push(entity);
   }
 
-  removeEntity (entity: Entity) {
-    remove(this.entities, entity)
+  removeEntity(entity: Entity) {
+    entity.dying = 0;
+    remove(this.entities, entity);
   }
 
-  addMob (mob: Mob) {
+  addMob(mob: Mob) {
     if (!mob.region.world) {
-      this.mobs.push(mob)
-    }else{
-      this.newMobs.push(mob)
+      this.mobs.push(mob);
+    } else {
+      this.newMobs.push(mob);
     }
   }
 
-  removeMob (mob: Unit) {
-    remove(this.mobs, mob)
+  removeMob(mob: Unit) {
+    remove(this.mobs, mob);
   }
-  removePlayer (player: Player) {
+  removePlayer(player: Player) {
     remove(this.players, player);
   }
   addGroundItem(player: Player, item: Item, x: number, y: number) {
@@ -100,26 +99,25 @@ export class Region{
       this.groundItems[x][y] = [];
     }
 
-    item.groundLocation = { x: player.location.x, y:  player.location.y };
+    item.groundLocation = { x: player.location.x, y: player.location.y };
     this.groundItems[x][y].push(item);
   }
 
-  getName (): string {
-    return 'My Region'
+  getName(): string {
+    return "My Region";
   }
 
-  get width (): number {
-    return 0
+  get width(): number {
+    return 0;
   }
 
-  get height (): number {
-    return 0
+  get height(): number {
+    return 0;
   }
 
-  mapImagePath (): string {
-    return ''
+  mapImagePath(): string {
+    return "";
   }
-
 
   drawWorldBackground() {
     // Override me
@@ -129,8 +127,8 @@ export class Region{
   }
 
   removeGroundItem(item: Item, x: number, y: number) {
-    if (this.groundItems[x]){
-      if (this.groundItems[x][y]){
+    if (this.groundItems[x]) {
+      if (this.groundItems[x][y]) {
         remove(this.groundItems[x][y], item);
       }
     }
@@ -139,19 +137,21 @@ export class Region{
   drawGroundItems(ctx: OffscreenCanvasRenderingContext2D) {
     Object.entries(this.groundItems).forEach((scope1: [string, string]) => {
       const x = parseInt(scope1[0]);
-      Object.entries(this.groundItems[x]).forEach((scope2: [string, string]) => {
-        const y = parseInt(scope2[0]);
-        const items = this.groundItems[x][y];
-        items.forEach((item: Item) => {
-          ctx.drawImage(
-            item.inventorySprite, 
-            x * Settings.tileSize, 
-            y * Settings.tileSize,
-            Settings.tileSize,
-            Settings.tileSize
-          )
-        })
-      })
-    })
+      Object.entries(this.groundItems[x]).forEach(
+        (scope2: [string, string]) => {
+          const y = parseInt(scope2[0]);
+          const items = this.groundItems[x][y];
+          items.forEach((item: Item) => {
+            ctx.drawImage(
+              item.inventorySprite,
+              x * Settings.tileSize,
+              y * Settings.tileSize,
+              Settings.tileSize,
+              Settings.tileSize
+            );
+          });
+        }
+      );
+    });
   }
 }
