@@ -17,6 +17,10 @@ export abstract class Renderable {
     return parseInt(this.color.replace("#", ""), 16);
   }
 
+  get selectable(): boolean {
+    return true;
+  }
+
   drawUILayer(
     tickPercent: number,
     screenPosition: Location,

@@ -21,6 +21,11 @@ export class Entity extends Renderable {
     return this._serialNumber;
   }
 
+  // entities are not selectable by default
+  get selectable() {
+    return false;
+  }
+
   get size() {
     return 1;
   }

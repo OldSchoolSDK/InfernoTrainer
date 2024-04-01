@@ -7,6 +7,8 @@ import { Location } from "../sdk/Location";
 import { LineOfSightMask } from "../sdk/LineOfSight";
 import { EntityName } from "../sdk/EntityName";
 import { Region } from "../sdk/Region";
+import { Model } from "../sdk/rendering/Model";
+import { TileMarkerModel } from "../sdk/rendering/TileMarkerModel";
 
 export class TileMarker extends Entity {
   private _color = "#00FF00";
@@ -57,5 +59,9 @@ export class TileMarker extends Entity {
       this.size * Settings.tileSize,
       this.size * Settings.tileSize
     );
+  }
+
+  create3dModel(): Model {
+    return TileMarkerModel.forRenderable(this);
   }
 }
