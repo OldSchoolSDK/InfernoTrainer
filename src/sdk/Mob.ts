@@ -502,7 +502,6 @@ export class Mob extends Unit {
     const perceivedX = offset.x;
     const perceivedY = offset.y;
     context.save();
-    context.clearRect(0, 0, 1000, 1000);
     context.translate(
       perceivedX * scale + (this.size * scale) / 2,
       (perceivedY - this.size + 1) * scale + (this.size * scale) / 2
