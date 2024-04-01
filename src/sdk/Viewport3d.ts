@@ -14,6 +14,7 @@ import { Location } from "./Location";
 import { BasicModel } from "./rendering/BasicModel";
 import { Actor } from "./rendering/Actor";
 import _ from "lodash";
+import { Unit } from "./Unit";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -227,9 +228,9 @@ export class Viewport3d implements ViewportDelegate {
       }
     });
 
-    // remove actors
     this.knownActors.forEach((actor, entity) => {
       if (actor.shouldRemove()) {
+        // remove destroyed actors
         actor.destroy(this.scene);
         this.knownActors.delete(entity);
       } else {
@@ -253,20 +254,16 @@ export class Viewport3d implements ViewportDelegate {
       this.uiCanvas.width,
       this.uiCanvas.height
     );
+    const translator = (pos: Location, z = 0) => this.projectToScreen(new THREE.Vector3(pos.x, z, pos.y));
 
     const get2dOffset = (r: Renderable) => {
       const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
-      const { x, y } = this.projectToScreen(
-        new THREE.Vector3(
-          perceivedLocation.x + r.size / 2,
-          r.height,
-          perceivedLocation.y - r.size / 2
-        )
-      );
+      const { x, y } = translator({x: perceivedLocation.x + r.size / 2, y: perceivedLocation.y - r.size / 2}, r.height);
       return { x, y };
     };
+    const units: Unit[] = [...region.players, ...region.mobs];
 
-    const renderables: Renderable[] = ([...region.players] as Renderable[])
+    const renderables: Renderable[] = (units as Renderable[])
       .concat(region.entities)
       .concat(region.mobs);
 
@@ -277,6 +274,9 @@ export class Viewport3d implements ViewportDelegate {
         this.uiCanvasContext,
         SPRITE_SCALE
       );
+    });
+    units.forEach((unit) => {
+      unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator);
     });
   }
 

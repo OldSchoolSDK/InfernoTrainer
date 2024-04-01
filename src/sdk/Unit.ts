@@ -743,15 +743,16 @@ export class Unit extends Renderable {
         tickPercent / (projectile.remainingDelay + 1)
       );
 
-      this.region.context.save();
-      this.region.context.translate(
-        perceivedX * Settings.tileSize,
-        perceivedY * Settings.tileSize
+      const { x: translatedX, y: translatedY } = positionTranslator({x: perceivedX, y: perceivedY});
+      context.save();
+      context.translate(
+        translatedX,
+        translatedY
       );
 
       if (projectile.image) {
-        this.region.context.rotate(Math.PI);
-        this.region.context.drawImage(
+        context.rotate(Math.PI);
+        context.drawImage(
           projectile.image,
           -Settings.tileSize / 2,
           -Settings.tileSize / 2,
@@ -759,31 +760,31 @@ export class Unit extends Renderable {
           Settings.tileSize
         );
       } else {
-        this.region.context.beginPath();
+        context.beginPath();
 
-        this.region.context.fillStyle = "#D1BB7773";
+        context.fillStyle = "#D1BB7773";
         if (
           projectile.attackStyle === "slash" ||
           projectile.attackStyle === "crush" ||
           projectile.attackStyle === "stab"
         ) {
-          this.region.context.fillStyle = "#FF000073";
+          context.fillStyle = "#FF000073";
         } else if (projectile.attackStyle === "range") {
-          this.region.context.fillStyle = "#00FF0073";
+          context.fillStyle = "#00FF0073";
         } else if (projectile.attackStyle === "magic") {
-          this.region.context.fillStyle = "#0000FF73";
+          context.fillStyle = "#0000FF73";
         } else if (projectile.attackStyle === "heal") {
-          this.region.context.fillStyle = "#9813aa73";
+          context.fillStyle = "#9813aa73";
         } else {
           console.log(
             "[WARN] This style is not accounted for in custom coloring: ",
             projectile.attackStyle
           );
         }
-        this.region.context.arc(0, 0, 5, 0, 2 * Math.PI);
-        this.region.context.fill();
+        context.arc(0, 0, 5, 0, 2 * Math.PI);
+        context.fill();
       }
-      this.region.context.restore();
+      context.restore();
 
       // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
       //   this.region.context.strokeStyle = 'red';
