@@ -238,10 +238,6 @@ export class Unit extends Renderable {
     return { x: perceivedX, y: perceivedY };
   }
 
-  draw(tickPercent: number) {
-    // Override me
-  }
-
   removedFromWorld() {
     // Override me
   }
@@ -531,7 +527,10 @@ export class Unit extends Renderable {
     this.location = location;
   }
 
-  attackAnimation(tickPercent: number) {
+  attackAnimation(
+    tickPercent: number,
+    context: OffscreenCanvasRenderingContext2D
+  ) {
     // override pls
   }
 

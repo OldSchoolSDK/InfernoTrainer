@@ -15,15 +15,15 @@ export class Viewport2d implements ViewportDelegate {
     region.drawGroundItems(region.context);
 
     // Draw all things on the map
-    region.entities.forEach((entity) => entity.draw(world.tickPercent));
+    const renderables: Renderable[] = [...region.entities];
 
     if (world.getReadyTimer <= 0) {
-      region.mobs.forEach((mob) => mob.draw(world.tickPercent));
-      region.newMobs.forEach((mob) => mob.draw(world.tickPercent));
+      renderables.push(...region.mobs);
+      renderables.push(...region.newMobs);
     }
-
-    region.players.forEach((player: Player) => {
-      player.draw(world.tickPercent);
+    renderables.push(...region.players);
+    renderables.forEach((r) => {
+      r.draw(world.tickPercent, region.context);
     });
 
     region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));

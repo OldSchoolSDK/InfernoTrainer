@@ -23,4 +23,9 @@ export abstract class Renderable {
   ) {
     // Override me
   }
+
+  // draw in 2d mode
+  draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
+    // Override me
+  }
 }

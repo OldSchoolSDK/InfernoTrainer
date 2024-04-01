@@ -439,29 +439,35 @@ export class Mob extends Unit {
     return actions;
   }
 
-  drawOverTile(tickPercent: number) {
+  drawOverTile(
+    tickPercent: number,
+    context: OffscreenCanvasRenderingContext2D
+  ) {
     // Override me
   }
 
-  drawUnderTile(tickPercent: number) {
-    this.region.context.fillStyle = "#00000000";
+  drawUnderTile(
+    tickPercent: number,
+    context: OffscreenCanvasRenderingContext2D
+  ) {
+    context.fillStyle = "#00000000";
     if (Settings.displayFeedback) {
       if (this.dying > -1) {
-        this.region.context.fillStyle = "#964B0073";
+        context.fillStyle = "#964B0073";
       } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-        this.region.context.fillStyle = "#00FF0073";
+        context.fillStyle = "#00FF0073";
       } else if (this.attackFeedback === AttackIndicators.HIT) {
-        this.region.context.fillStyle = "#FF000073";
+        context.fillStyle = "#FF000073";
       } else if (this.attackFeedback === AttackIndicators.SCAN) {
-        this.region.context.fillStyle = "#FFFF0073";
+        context.fillStyle = "#FFFF0073";
       } else if (this.hasLOS) {
-        this.region.context.fillStyle = "#FF730073";
+        context.fillStyle = "#FF730073";
       } else {
-        this.region.context.fillStyle = this.color;
+        context.fillStyle = this.color;
       }
     }
     // Draw mob
-    this.region.context.fillRect(
+    context.fillRect(
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
@@ -469,7 +475,7 @@ export class Mob extends Unit {
     );
   }
 
-  draw(tickPercent: number) {
+  draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
     if (Settings.displayMobLoS) {
       LineOfSight.drawLOS(
         this.region,
@@ -492,30 +498,30 @@ export class Mob extends Unit {
       this.location.y,
       tickPercent
     );
-    this.region.context.save();
-    this.region.context.translate(
+    context.save();
+    context.translate(
       perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
       (perceivedY - this.size + 1) * Settings.tileSize +
         (this.size * Settings.tileSize) / 2
     );
 
-    this.drawUnderTile(tickPercent);
+    this.drawUnderTile(tickPercent, context);
     const currentImage = this.unitImage;
 
     if (Settings.rotated === "south") {
-      this.region.context.rotate(Math.PI);
+      context.rotate(Math.PI);
     }
     if (Settings.rotated === "south") {
-      this.region.context.scale(-1, 1);
+      context.scale(-1, 1);
     }
 
-    this.region.context.save();
+    context.save();
     if (this.shouldShowAttackAnimation()) {
-      this.attackAnimation(tickPercent);
+      this.attackAnimation(tickPercent, context);
     }
 
     if (currentImage) {
-      this.region.context.drawImage(
+      context.drawImage(
         currentImage,
         -(this.size * Settings.tileSize) / 2,
         -(this.size * Settings.tileSize) / 2,
@@ -524,13 +530,13 @@ export class Mob extends Unit {
       );
     }
 
-    this.region.context.restore();
+    context.restore();
 
     if (Settings.rotated === "south") {
-      this.region.context.scale(-1, 1);
+      context.scale(-1, 1);
     }
 
-    this.drawOverTile(tickPercent);
+    this.drawOverTile(tickPercent, context);
 
     if (this.aggro) {
       const unit = this.aggro as Unit;
@@ -544,9 +550,9 @@ export class Mob extends Unit {
           unit.attackRange
         )
       ) {
-        this.region.context.strokeStyle = "#00FF0073";
-        this.region.context.lineWidth = 1;
-        this.region.context.strokeRect(
+        context.strokeStyle = "#00FF0073";
+        context.lineWidth = 1;
+        context.strokeRect(
           -(this.size * Settings.tileSize) / 2,
           -(this.size * Settings.tileSize) / 2,
           this.size * Settings.tileSize,
@@ -555,7 +561,7 @@ export class Mob extends Unit {
       }
     }
 
-    this.region.context.restore();
+    context.restore();
 
     if (!this.tcc) {
       return;
@@ -567,8 +573,8 @@ export class Mob extends Unit {
     //   return;
     // }
     this.tcc.forEach((location: Location) => {
-      this.region.context.fillStyle = "#00FF0073";
-      this.region.context.fillRect(
+      context.fillStyle = "#00FF0073";
+      context.fillRect(
         location.x * Settings.tileSize,
         location.y * Settings.tileSize,
         Settings.tileSize,
@@ -577,24 +583,8 @@ export class Mob extends Unit {
     });
   }
   drawUILayer(tickPercent, offset, context, scale) {
-    const perceivedX = Pathing.linearInterpolation(
-      this.perceivedLocation.x,
-      this.location.x,
-      tickPercent
-    );
-    const perceivedY = Pathing.linearInterpolation(
-      this.perceivedLocation.y,
-      this.location.y,
-      tickPercent
-    );
     context.save();
     context.translate(offset.x, offset.y);
-    /*
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize +
-        (this.size * Settings.tileSize) / 2
-    );*/
-
     if (Settings.rotated === "south") {
       context.rotate(Math.PI);
     }
