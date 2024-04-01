@@ -123,8 +123,25 @@ export class ClickController {
     }
   }
 
+  private recentlySelectedMobs: Mob[] = [];
+
   mouseMoved(e: MouseEvent) {
     const world = Viewport.viewport.player.region.world;
+    const hoveredOn = Viewport.viewport.translateClick(
+      e.offsetX,
+      e.offsetY,
+      world
+    );
+    this.recentlySelectedMobs.forEach((mob) => {
+      mob.selected = false;
+    });
+    this.recentlySelectedMobs = [];
+    if (hoveredOn && hoveredOn.type === "entities") {
+      hoveredOn.mobs.forEach((mob) => {
+        mob.selected = true;
+        this.recentlySelectedMobs.push(mob);
+      });
+    }
   }
 
   private getClickedOn(e: MouseEvent, world: World, region: Region) {

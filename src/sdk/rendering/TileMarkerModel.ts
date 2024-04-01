@@ -16,6 +16,7 @@ export class TileMarkerModel implements Model {
     const { size } = renderable;
     const lineMaterial = new THREE.LineBasicMaterial({
       color: renderable.colorHex,
+      linewidth: 5,
     });
     const points = [
       new THREE.Vector3(0, 0, 0),
@@ -35,7 +36,6 @@ export class TileMarkerModel implements Model {
     if (this.outline.parent !== scene) {
       scene.add(this.outline);
     }
-    const size = this.renderable.size;
     const { x, y } = location;
     this.outline.position.x = x;
     this.outline.position.y = -0.49;

@@ -3,6 +3,8 @@ import { Location } from "./Location";
 import { Model } from "./rendering/Model";
 
 export abstract class Renderable {
+  private _selected = false;
+
   abstract getPerceivedLocation(tickPercent: number): Location;
 
   abstract get size(): number;
@@ -19,6 +21,14 @@ export abstract class Renderable {
 
   get selectable(): boolean {
     return true;
+  }
+
+  get selected(): boolean {
+    return this._selected;
+  }
+
+  set selected(selected: boolean) {
+    this._selected = selected
   }
 
   drawUILayer(

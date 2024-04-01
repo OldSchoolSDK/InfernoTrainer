@@ -5,6 +5,9 @@ import { Location } from "../Location";
 
 const CANVAS_TILE_SIZE = 20;
 
+const OUTLINE_NORMAL = 0xFFFFFF;
+const OUTLINE_SELECTED = 0xFF0000;
+
 /**
  * Render the model using a sprite derived from the 2d representation of the renderable.
  */
@@ -20,6 +23,7 @@ export class CanvasSpriteModel implements Model {
   private context: OffscreenCanvasRenderingContext2D;
 
   private outline: THREE.LineSegments;
+  private outlineMaterial: THREE.LineBasicMaterial;
 
   constructor(private renderable: Renderable) {
     const { size } = renderable;
@@ -42,7 +46,7 @@ export class CanvasSpriteModel implements Model {
     this.sprite.userData.clickable = renderable.selectable;
     this.sprite.userData.unit = renderable;
 
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+    this.outlineMaterial = new THREE.LineBasicMaterial({ color: OUTLINE_NORMAL });
     const points = [
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(size, 0, 0),
@@ -54,9 +58,7 @@ export class CanvasSpriteModel implements Model {
       new THREE.Vector3(0, 0, 0),
     ];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    this.outline = new THREE.LineSegments(geometry, lineMaterial);
-    this.outline.userData.clickable = renderable.selectable;
-    this.outline.userData.unit = renderable;
+    this.outline = new THREE.LineSegments(geometry, this.outlineMaterial);
   }
 
   draw(scene: THREE.Scene, tickPercent: number, location: Location) {
@@ -73,6 +75,9 @@ export class CanvasSpriteModel implements Model {
       CANVAS_TILE_SIZE
     );
     this.texture.needsUpdate = true;
+
+    this.outlineMaterial.color.setHex(this.renderable.selected ? OUTLINE_SELECTED : OUTLINE_NORMAL);
+
     const { x, y } = location;
     this.outline.position.x = x;
     this.outline.position.y = -0.49;
