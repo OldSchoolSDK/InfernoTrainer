@@ -7,6 +7,7 @@ import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
 import { Location } from "./Location";
 import { Renderable } from "./Renderable";
+import { Pathing } from "./Pathing";
 
 export class Viewport2d implements ViewportDelegate {
   draw(world: World, region: Region) {
@@ -23,7 +24,8 @@ export class Viewport2d implements ViewportDelegate {
     }
     renderables.push(...region.players);
     renderables.forEach((r) => {
-      r.draw(world.tickPercent, region.context);
+      const location = r.getPerceivedLocation(world.tickPercent);
+      r.draw(world.tickPercent, region.context, location);
     });
 
     region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));

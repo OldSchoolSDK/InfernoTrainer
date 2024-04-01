@@ -13,6 +13,7 @@ import { SoundCache } from "./utils/SoundCache";
 import { Viewport } from "./Viewport";
 import { Random } from "./Random";
 import { Region } from "./Region";
+import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -441,14 +442,16 @@ export class Mob extends Unit {
 
   drawOverTile(
     tickPercent: number,
-    context: OffscreenCanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D,
+    scale
   ) {
     // Override me
   }
 
   drawUnderTile(
     tickPercent: number,
-    context: OffscreenCanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D,
+    scale
   ) {
     context.fillStyle = "#00000000";
     if (Settings.displayFeedback) {
@@ -468,14 +471,19 @@ export class Mob extends Unit {
     }
     // Draw mob
     context.fillRect(
-      -(this.size * Settings.tileSize) / 2,
-      -(this.size * Settings.tileSize) / 2,
-      this.size * Settings.tileSize,
-      this.size * Settings.tileSize
+      -(this.size * scale) / 2,
+      -(this.size * scale) / 2,
+      this.size * scale,
+      this.size * scale
     );
   }
 
-  draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
+  draw(
+    tickPercent: number,
+    context: OffscreenCanvasRenderingContext2D,
+    offset: Location,
+    scale: number
+  ) {
     if (Settings.displayMobLoS) {
       LineOfSight.drawLOS(
         this.region,
@@ -488,24 +496,15 @@ export class Mob extends Unit {
       );
     }
 
-    const perceivedX = Pathing.linearInterpolation(
-      this.perceivedLocation.x,
-      this.location.x,
-      tickPercent
-    );
-    const perceivedY = Pathing.linearInterpolation(
-      this.perceivedLocation.y,
-      this.location.y,
-      tickPercent
-    );
+    const perceivedX = offset.x;
+    const perceivedY = offset.y;
     context.save();
     context.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize +
-        (this.size * Settings.tileSize) / 2
+      perceivedX * scale + (this.size * scale) / 2,
+      (perceivedY - this.size + 1) * scale + (this.size * scale) / 2
     );
 
-    this.drawUnderTile(tickPercent, context);
+    this.drawUnderTile(tickPercent, context, scale);
     const currentImage = this.unitImage;
 
     if (Settings.rotated === "south") {
@@ -523,10 +522,10 @@ export class Mob extends Unit {
     if (currentImage) {
       context.drawImage(
         currentImage,
-        -(this.size * Settings.tileSize) / 2,
-        -(this.size * Settings.tileSize) / 2,
-        this.size * Settings.tileSize,
-        this.size * Settings.tileSize
+        -(this.size * scale) / 2,
+        -(this.size * scale) / 2,
+        this.size * scale,
+        this.size * scale
       );
     }
 
@@ -536,7 +535,7 @@ export class Mob extends Unit {
       context.scale(-1, 1);
     }
 
-    this.drawOverTile(tickPercent, context);
+    this.drawOverTile(tickPercent, context, scale);
 
     if (this.aggro) {
       const unit = this.aggro as Unit;
@@ -553,10 +552,10 @@ export class Mob extends Unit {
         context.strokeStyle = "#00FF0073";
         context.lineWidth = 1;
         context.strokeRect(
-          -(this.size * Settings.tileSize) / 2,
-          -(this.size * Settings.tileSize) / 2,
-          this.size * Settings.tileSize,
-          this.size * Settings.tileSize
+          -(this.size * scale) / 2,
+          -(this.size * scale) / 2,
+          this.size * scale,
+          this.size * scale
         );
       }
     }
@@ -574,12 +573,7 @@ export class Mob extends Unit {
     // }
     this.tcc.forEach((location: Location) => {
       context.fillStyle = "#00FF0073";
-      context.fillRect(
-        location.x * Settings.tileSize,
-        location.y * Settings.tileSize,
-        Settings.tileSize,
-        Settings.tileSize
-      );
+      context.fillRect(location.x * scale, location.y * scale, scale, scale);
     });
   }
   drawUILayer(tickPercent, offset, context, scale) {
@@ -596,6 +590,10 @@ export class Mob extends Unit {
     context.restore();
 
     this.drawIncomingProjectiles(tickPercent);
+  }
+
+  create3dModel() {
+    return CanvasSpriteModel.forRenderable(this);
   }
 
   get color() {

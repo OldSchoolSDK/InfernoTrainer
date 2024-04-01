@@ -307,9 +307,10 @@ export class TzKalZuk extends Mob {
 
   drawOverTile(
     tickPercent: number,
-    context: OffscreenCanvasRenderingContext2D
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number
   ) {
-    super.drawOverTile(tickPercent, context);
+    super.drawOverTile(tickPercent, context, scale);
     // Draw mob
 
     context.fillStyle = "#FFFF00";
