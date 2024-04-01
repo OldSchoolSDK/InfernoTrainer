@@ -10,7 +10,7 @@ export abstract class Renderable {
   abstract get size(): number;
 
   get height(): number {
-    return 1;
+    return this.size;
   }
 
   abstract get color(): string;

@@ -571,6 +571,7 @@ export class Unit extends Renderable {
           1 / (projectile.remainingDelay + 1)
         ),
       };
+      projectile.currentHeight = Pathing.linearInterpolation(projectile.currentHeight, projectile.to.height * 0.75, 1 / (projectile.remainingDelay + 1));
       projectile.remainingDelay--;
 
       if (projectile.remainingDelay === 0) {
@@ -717,7 +718,7 @@ export class Unit extends Renderable {
   }
 
   // The rendering context is the world.
-  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location) => Location, scale: number = Settings.tileSize) {
+  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location, height: number) => Location, scale: number = Settings.tileSize) {
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.options.hidden) {
         return;
@@ -729,8 +730,10 @@ export class Unit extends Renderable {
 
       const startX = projectile.currentLocation.x;
       const startY = projectile.currentLocation.y;
+      const startHeight = projectile.currentHeight;
       const endX = projectile.to.location.x + projectile.to.size / 2;
       const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+      const endHeight = projectile.to.height * 0.75;
 
       const perceivedX = Pathing.linearInterpolation(
         startX,
@@ -742,8 +745,13 @@ export class Unit extends Renderable {
         endY,
         tickPercent / (projectile.remainingDelay + 1)
       );
+      const perceivedHeight = (startHeight === endHeight) ? startHeight : Pathing.linearInterpolation(
+        startHeight,
+        endHeight,
+        tickPercent / (projectile.remainingDelay + 1)
+      );
 
-      const { x: translatedX, y: translatedY } = positionTranslator({x: perceivedX, y: perceivedY});
+      const { x: translatedX, y: translatedY } = positionTranslator({x: perceivedX, y: perceivedY}, perceivedHeight);
       context.save();
       context.translate(
         translatedX,

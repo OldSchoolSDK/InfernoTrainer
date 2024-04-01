@@ -22,6 +22,7 @@ export class Projectile {
   options: ProjectileOptions = {};
   remainingDelay: number;
   currentLocation: Location;
+  currentHeight: number;
   attackStyle: string;
 
   offsetX: number;
@@ -44,6 +45,7 @@ export class Projectile {
       x: from.location.x + from.size / 2,
       y: from.location.y - from.size / 2 + 1
     }
+    this.currentHeight = from.height * 0.75; // projectile origin
     this.from = from
     this.to = to
     this.distance = 999999

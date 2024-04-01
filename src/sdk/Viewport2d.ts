@@ -63,6 +63,7 @@ export class Viewport2d implements ViewportDelegate {
         );
       });
     
+      // ignore the 'height' value
       const translator = ({x, y}) => ({x: x * Settings.tileSize, y: y * Settings.tileSize});
       units.forEach((unit) => {
         if (unit.dying === -1) {
