@@ -111,7 +111,11 @@ export class Viewport {
     this.clickController = new ClickController(this);
     this.clickController.registerClickActions();
 
-    this.delegate.initialise(player.region.world, player.region);
+  }
+
+  // called after all graphics have loaded
+  initialise() {
+    this.delegate.initialise(this.player.region.world, this.player.region);
   }
 
   calculateViewport() {

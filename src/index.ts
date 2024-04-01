@@ -96,7 +96,7 @@ Viewport.viewport.setPlayer(player);
 
 ImageLoader.onAllImagesLoaded(() => {
   MapController.controller.updateOrbsMask(player.currentStats, player.stats);
-  Viewport.viewport.setPlayer(player);
+  Viewport.viewport.initialise()
 });
 if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars

@@ -215,6 +215,7 @@ export class InfernoRegion extends Region {
     context.fillStyle = "black";
     context.fillRect(0, 0, 10000000, 10000000);
     if (this.mapImage) {
+      context.save();
       const ctx = context as any;
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
@@ -235,6 +236,7 @@ export class InfernoRegion extends Region {
       ctx.webkitImageSmoothingEnabled = true;
       ctx.mozImageSmoothingEnabled = true;
       context.imageSmoothingEnabled = true;
+      context.restore();
     }
   }
 }
