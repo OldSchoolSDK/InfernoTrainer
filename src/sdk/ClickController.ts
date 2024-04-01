@@ -125,11 +125,6 @@ export class ClickController {
 
   mouseMoved(e: MouseEvent) {
     const world = Viewport.viewport.player.region.world;
-    const coordinates = Viewport.viewport.translateClick(
-      e.offsetX,
-      e.offsetY,
-      world
-    );
   }
 
   private getClickedOn(e: MouseEvent, world: World, region: Region) {
@@ -141,17 +136,12 @@ export class ClickController {
     if (!clickedOn) {
       return null;
     }
+    const { x, y } = clickedOn.location;
 
     const mobs: Mob[] = [];
     const players: Player[] = [];
     const groundItems: Item[] = [];
-    let x = null,
-      y = null;
-    console.log(clickedOn);
     if (clickedOn.type === "coordinate") {
-      x = clickedOn.location.x;
-      y = clickedOn.location.y;
-
       const xAlign =
         Viewport.viewport.contextMenu.location.x -
           Viewport.viewport.contextMenu.width / 2 <
@@ -322,7 +312,7 @@ export class ClickController {
 
     menuOptions.push(
       {
-        text: [{ text: "Walk Here", fillStyle: "white" }],
+        text: [{ text: `Walk Here (${x},${y})`, fillStyle: "white" }],
         action: () => {
           this.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;

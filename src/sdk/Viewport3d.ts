@@ -68,6 +68,7 @@ export class Viewport3d implements ViewportDelegate {
     );
     this.raycaster = new THREE.Raycaster();
     this.raycaster.params.Points.threshold = 0.1;
+    this.raycaster.params.Line.threshold = 0.1;
 
     const worldCanvas = document.getElementById("world") as HTMLCanvasElement;
     this.initCameraEvents(worldCanvas);
@@ -157,6 +158,8 @@ export class Viewport3d implements ViewportDelegate {
     });
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
     plane.userData.clickable = true;
+    // used for right-click walk here
+    plane.userData.isFloor = true;
     this.scene.add(plane);
 
     this.scene.add(this.selectedTileMesh);
@@ -238,7 +241,7 @@ export class Viewport3d implements ViewportDelegate {
     if (this.selectedTile) {
       this.selectedTileMesh.position.x = this.selectedTile.x;
       this.selectedTileMesh.position.y = -0.4;
-      this.selectedTileMesh.position.z = this.selectedTile.y;
+      this.selectedTileMesh.position.z = this.selectedTile.y - 1;
     }
   }
 
@@ -281,7 +284,6 @@ export class Viewport3d implements ViewportDelegate {
   projectToScreen(vector: THREE.Vector3) {
     const newVector = vector.clone();
     newVector.project(this.camera);
-    // i can't tell you why this shouldn't be the canvas width/height but this works...
     const { width, height } = this.canvasDimensions;
     return {
       x: Math.round((newVector.x + 1) * (width / 2)),
@@ -291,7 +293,6 @@ export class Viewport3d implements ViewportDelegate {
 
   // return intersection with world object or world coordinates from canvas coordinates
   translateClick(offsetX, offsetY, world, viewport) {
-    // i can't tell you why this shouldn't be the canvas width/height but this works...
     const { width, height } = this.canvasDimensions;
     const rayX = (offsetX / width) * 2 - 1;
     const rayY = -(offsetY / height) * 2 + 1;
@@ -301,15 +302,19 @@ export class Viewport3d implements ViewportDelegate {
       .intersectObjects(
         this.scene.children.filter((c) => c.userData.clickable === true)
       );
-    const intersection = intersections.length > 0 ? intersections[0] : null;
 
-    if (!intersection) {
+    if (intersections.length === 0) {
       return null;
     }
-    this.selectedTile = {
-      x: Math.floor(intersection.point.x) + 0.5,
-      y: Math.floor(intersection.point.z) + 0.5,
-    };
+    // check intersection of floor
+    const floor = intersections.find((i) => i.object.userData.isFloor);
+
+    if (floor) {
+      this.selectedTile = {
+        x: Math.floor(floor.point.x) + 0.5,
+        y: Math.floor(floor.point.z) + 1.5,
+      };
+    }
     const mobs = intersections
       .filter((i) => i.object.userData.unit instanceof Mob)
       .map((i) => i.object.userData.unit as Mob);
@@ -320,13 +325,17 @@ export class Viewport3d implements ViewportDelegate {
         mobs: _.uniq(mobs),
         players: [],
         groundItems: [],
+        location: {
+          x: this.selectedTile.x,
+          y: this.selectedTile.y,
+        }
       };
     }
     return {
       type: "coordinate" as const,
       location: {
         x: this.selectedTile.x,
-        y: this.selectedTile.y + 1,
+        y: this.selectedTile.y,
       },
     };
   }

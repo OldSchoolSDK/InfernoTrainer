@@ -22,6 +22,7 @@ type ViewportEntitiesClick = {
   mobs: Mob[];
   players: Player[];
   groundItems: Item[];
+  location: Location;
 };
 
 type ViewportCoordinateClick = {

@@ -822,6 +822,8 @@ export class Player extends Unit {
     this.drawHPBar(context, scale);
     this.drawHitsplats(context, scale);
     this.drawOverheadPrayers(context, scale);
+    context.fillStyle = "black";
+    context.fillText(`${this.location.x},${this.location.y}`, 0, 0);
     context.restore();
     this.drawIncomingProjectiles(tickPercent);
   }
