@@ -86,10 +86,10 @@ export class Entity extends Renderable {
     // Override me
   }
 
-  draw(tickPercent: number) {
-    this.region.context.fillStyle = "#000073";
+  draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
+    context.fillStyle = "#000073";
 
-    this.region.context.fillRect(
+    context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
