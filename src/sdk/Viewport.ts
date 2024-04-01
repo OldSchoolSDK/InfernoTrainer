@@ -57,7 +57,7 @@ export interface ViewportDelegate {
 }
 
 export class Viewport {
-  static viewport = new Viewport(new Viewport2d());
+  static viewport = new Viewport(new Viewport3d());
 
   activeButtonImage: HTMLImageElement =
     ImageLoader.createImage(ButtonActiveIcon);

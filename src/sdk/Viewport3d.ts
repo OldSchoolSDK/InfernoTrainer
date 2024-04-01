@@ -11,47 +11,11 @@ import { Mob } from "./Mob";
 import { Entity } from "./Entity";
 import { Renderable } from "./Renderable";
 import { Location } from "./Location";
+import { BasicModel } from "./rendering/BasicModel";
+import { Actor } from "./rendering/Actor";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
-
-class Model {
-  private geometry: THREE.BoxGeometry;
-  private material: THREE.MeshStandardMaterial;
-  private cube: THREE.Mesh;
-
-  constructor(
-    private unit: Renderable,
-    userData: { clickable?: boolean } = { clickable: false }
-  ) {
-    this.geometry = new THREE.BoxGeometry(unit.size, unit.height, unit.size);
-    this.material = new THREE.MeshStandardMaterial({ color: unit.colorHex });
-    this.cube = new THREE.Mesh(this.geometry, this.material);
-    this.cube.userData = {
-      unit: this,
-      ...userData,
-    };
-  }
-
-  draw(scene: THREE.Scene, tickPercent: number) {
-    if (this.cube.parent !== scene) {
-      scene.add(this.cube);
-    }
-    const size = this.unit.size;
-    const { x, y } = this.unit.getPerceivedLocation(tickPercent);
-
-    this.cube.position.x = x + size / 2;
-    this.cube.position.z = y - size / 2;
-  }
-
-  shouldRemove() {
-    return false;
-  }
-
-  getMesh() {
-    return this.cube;
-  }
-}
 
 export class Viewport3d implements ViewportDelegate {
   private canvas: OffscreenCanvas;
@@ -71,7 +35,7 @@ export class Viewport3d implements ViewportDelegate {
   private yaw = new THREE.Object3D();
   private pitch = new THREE.Object3D();
 
-  private knownActors: Map<Renderable, Model> = new Map();
+  private knownActors: Map<Renderable, Actor> = new Map();
 
   private selectedTile: Location | null = null;
   private selectedTileMesh = new THREE.Mesh(
@@ -227,7 +191,8 @@ export class Viewport3d implements ViewportDelegate {
     region.entities.forEach((entity: Entity) => {
       let actor = this.knownActors.get(entity);
       if (!actor) {
-        actor = new Model(entity);
+        // this is not performant
+        actor = new Actor(entity, () => !region.entities.includes(entity));
         this.knownActors.set(entity, actor);
       }
       actor.draw(this.scene, world.tickPercent);
@@ -236,27 +201,34 @@ export class Viewport3d implements ViewportDelegate {
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
-        actor = new Model(player, { clickable: false });
+        actor = new Actor(player, () => !region.players.includes(player));
         this.knownActors.set(player, actor);
       }
       actor.draw(this.scene, world.tickPercent);
 
       // Update the camera position relative to the player's mesh
-      const v = new THREE.Vector3();
-      actor.getMesh().getWorldPosition(v);
+      const v = actor.getModel().getWorldPosition();
       this.pivot.position.lerp(v, 0.1);
     });
 
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {
       let actor = this.knownActors.get(mob);
       if (!actor) {
-        actor = new Model(mob);
+        actor = new Actor(mob, () => !region.mobs.includes(mob));
         this.knownActors.set(mob, actor);
       }
       actor.draw(this.scene, world.tickPercent);
     });
 
-    // highlight selected tile/npc
+    // remove actors
+    this.knownActors.forEach((actor, entity) => {
+      if (actor.shouldRemove()) {
+        actor.destroy(this.scene);
+        this.knownActors.delete(entity);
+      }
+    });
+
+    // highlight selected tile
     if (this.selectedTile) {
       this.selectedTileMesh.position.x = this.selectedTile.x;
       this.selectedTileMesh.position.y = -0.4;

@@ -1,5 +1,7 @@
 import { Location } from "./Location";
 
+import { Model } from "./rendering/Model";
+
 export abstract class Renderable {
   abstract getPerceivedLocation(tickPercent: number): Location;
 
@@ -27,5 +29,13 @@ export abstract class Renderable {
   // draw in 2d mode
   draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
     // Override me
+  }
+
+  /**
+   * Return a new model for this renderable in 3d mode. it will be associated with the Renderable and destroyed when the renderable is
+   * destroyed.
+   */
+  create3dModel(): Model | null {
+    return null;
   }
 }
