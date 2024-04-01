@@ -16,6 +16,7 @@ import { JalXil } from './mobs/JalXil';
 import { Mob } from '../../../sdk/Mob';
 import { Region } from '../../../sdk/Region';
 import { Random } from '../../../sdk/Random';
+import { BasicModel } from '../../../sdk/rendering/BasicModel';
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -194,6 +195,10 @@ export class ZukShield extends Mob {
       3 * Settings.tileSize,
       3 * Settings.tileSize
     )
+  }
+
+  create3dModel() {
+    return new BasicModel(3, 5, 0x333333, this, {x: 1, z: -1});
   }
 
 

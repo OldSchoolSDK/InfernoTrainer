@@ -16,7 +16,8 @@ export class BasicModel implements Model {
     private size: number,
     height: number,
     color: number,
-    unit: Renderable | null
+    unit: Renderable | null,
+    private drawOffset: {x?: number , y?: number, z?: number} = {}
   ) {
     this.geometry = new THREE.BoxGeometry(size, height, size);
     this.material = new THREE.MeshStandardMaterial({ color });
@@ -34,6 +35,7 @@ export class BasicModel implements Model {
 
     this.cube.position.x = x + size / 2;
     this.cube.position.z = y - size / 2;
+    this.cube.position.add({x: this.drawOffset.x || 0, y: this.drawOffset.y || 0, z: this.drawOffset.z || 0});
   }
 
   destroy(scene: THREE.Scene) {

@@ -14,6 +14,7 @@ import { Viewport } from "./Viewport";
 import { Random } from "./Random";
 import { Region } from "./Region";
 import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
+import { Model } from "./rendering/Model";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -590,7 +591,7 @@ export class Mob extends Unit {
     context.restore();
   }
 
-  create3dModel() {
+  create3dModel(): Model {
     return CanvasSpriteModel.forRenderable(this);
   }
 
