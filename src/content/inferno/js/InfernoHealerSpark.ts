@@ -11,6 +11,7 @@ import { Weapon, AttackBonuses } from '../../../sdk/gear/Weapon'
 import { LineOfSightMask } from '../../../sdk/LineOfSight'
 import { Random } from '../../../sdk/Random'
 import { Region } from '../../../sdk/Region'
+import { TileMarkerModel } from '../../../sdk/rendering/TileMarkerModel'
 
 class InfernoSparkWeapon extends Weapon{
   calculateHitDelay(distance: number) {
@@ -41,6 +42,14 @@ export class InfernoHealerSpark extends Entity {
     super(region, location);
     this.from = from;
     this.to = to;
+  }
+
+  create3dModel() {
+    return TileMarkerModel.forRenderable(this);
+  }
+
+  get color() {
+    return "#FFFF00";
   }
 
   get collisionType() {

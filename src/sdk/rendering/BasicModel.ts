@@ -22,7 +22,7 @@ export class BasicModel implements Model {
     this.geometry = new THREE.BoxGeometry(size, height, size);
     this.material = new THREE.MeshStandardMaterial({ color });
     this.cube = new THREE.Mesh(this.geometry, this.material);
-    this.cube.userData.clickable = unit !== null;
+    this.cube.userData.clickable = unit !== null && unit.selectable;
     this.cube.userData.unit = unit;
   }
 
