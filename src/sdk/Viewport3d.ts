@@ -1,9 +1,11 @@
 "use strict";
 import { World } from "./World";
-import { Viewport, ViewportDelegate } from "./Viewport";
+import { ViewportDelegate } from "./Viewport";
 import { Region } from "./Region";
 
 import * as THREE from "three";
+import Stats from 'three/examples/jsm/libs/stats.module'
+
 import { Chrome } from "./Chrome";
 import { Settings } from "./Settings";
 import { Player } from "./Player";
@@ -11,7 +13,6 @@ import { Mob } from "./Mob";
 import { Entity } from "./Entity";
 import { Renderable } from "./Renderable";
 import { Location } from "./Location";
-import { BasicModel } from "./rendering/BasicModel";
 import { Actor } from "./rendering/Actor";
 import _ from "lodash";
 import { Unit } from "./Unit";
@@ -30,12 +31,13 @@ export class Viewport3d implements ViewportDelegate {
   private scene: THREE.Scene;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
-
   private raycaster: THREE.Raycaster;
 
   private pivot = new THREE.Object3D();
   private yaw = new THREE.Object3D();
   private pitch = new THREE.Object3D();
+
+  private stats = new Stats();
 
   private knownActors: Map<Renderable, Actor> = new Map();
 
@@ -140,9 +142,13 @@ export class Viewport3d implements ViewportDelegate {
     requestAnimationFrame(() => this.animate());
 
     this.render();
+    
+    this.stats.update()
   }
 
   initialise(world: World, region: Region) {
+    document.body.appendChild(this.stats.dom);
+
     const light = new THREE.PointLight(0xffffff, 100);
     light.position.set(region.width / 2, 20, region.height / 2);
     this.scene.add(light);
