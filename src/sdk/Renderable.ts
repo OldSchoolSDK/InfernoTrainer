@@ -45,7 +45,8 @@ export abstract class Renderable {
     tickPercent: number,
     context: OffscreenCanvasRenderingContext2D,
     offset: Location = { x: 0, y: 0 },
-    scale = 20
+    scale = 20,
+    drawUnderTile = true,
   ) {
     // Override me
   }

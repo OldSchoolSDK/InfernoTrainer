@@ -627,11 +627,11 @@ export class Unit extends Renderable {
     // Override me
   }
 
-  draw(tickPercent, context, offset, scale) {
+  draw(tickPercent, context, offset, scale, drawUnderTile) {
     if (this.isAnimated) {
       this.unitImage = ImageLoader.imageCache[this.image];
     }
-    super.draw(tickPercent, context, offset, scale);
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
   }
 
   drawHitsplat(projectile: Projectile): boolean {

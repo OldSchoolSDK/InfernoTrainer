@@ -270,7 +270,7 @@ export class JalTokJad extends Mob {
     this.currentAnimationTick = 0;
   }
 
-  draw(tickPercent, context, offset, scale) {
+  draw(tickPercent, context, offset, scale, drawUnderTile) {
     if (this.currentAnimation) {
       this.currentAnimationFrame = (this.currentAnimationTick -1 ) * JAD_FRAMES_PER_TICK + tickPercent * JAD_FRAMES_PER_TICK;
       if (this.currentAnimationFrame >= this.currentAnimation.length) {
@@ -279,6 +279,6 @@ export class JalTokJad extends Mob {
         this.currentAnimationTick = 0;
       }
   }
-    super.draw(tickPercent, context, offset, scale);
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
   }
 }

@@ -93,7 +93,6 @@ export class Entity extends Renderable {
 
   draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
     context.fillStyle = "#000073";
-
     context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,

@@ -483,9 +483,10 @@ export class Mob extends Unit {
     tickPercent: number,
     context: OffscreenCanvasRenderingContext2D,
     offset: Location,
-    scale: number
+    scale: number,
+    drawUnderTile: boolean,
   ) {
-    super.draw(tickPercent, context, offset, scale);
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
     if (Settings.displayMobLoS) {
       LineOfSight.drawLOS(
         this.region,
@@ -501,12 +502,15 @@ export class Mob extends Unit {
     const perceivedX = offset.x;
     const perceivedY = offset.y;
     context.save();
+    context.clearRect(0, 0, 1000, 1000);
     context.translate(
       perceivedX * scale + (this.size * scale) / 2,
       (perceivedY - this.size + 1) * scale + (this.size * scale) / 2
     );
 
-    this.drawUnderTile(tickPercent, context, scale);
+    if (drawUnderTile) {
+      this.drawUnderTile(tickPercent, context, scale);
+    }
     const currentImage = this.unitImage;
 
     if (Settings.rotated === "south") {
@@ -573,10 +577,10 @@ export class Mob extends Unit {
     // if (this.mobId !== 4) {
     //   return;
     // }
-    this.tcc.forEach((location: Location) => {
+    /*this.tcc.forEach((location: Location) => {
       context.fillStyle = "#00FF0073";
       context.fillRect(location.x * scale, location.y * scale, scale, scale);
-    });
+    });*/
   }
   drawUILayer(tickPercent, offset, context, scale) {
     context.save();

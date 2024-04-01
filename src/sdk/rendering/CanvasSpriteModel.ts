@@ -34,7 +34,9 @@ export class CanvasSpriteModel implements Model {
     this.context = this.canvas.getContext("2d");
     this.texture = new THREE.Texture(this.canvas);
     this.texture.needsUpdate = true;
+    this.texture.colorSpace = THREE.LinearSRGBColorSpace;
     const material = new THREE.SpriteMaterial({
+      alphaTest: 0.5,
       map: this.texture,
       transparent: true,
       color: 0xffffff,
@@ -42,7 +44,8 @@ export class CanvasSpriteModel implements Model {
 
     this.sprite = new THREE.Sprite(material);
     this.sprite.scale.set(size, size, size);
-    this.sprite.center.y = 0;
+    // trial and error to get the sprite to sit on top of the tile. could probably be set per-mob
+    this.sprite.center.y = 0.075;
     this.sprite.userData.clickable = renderable.selectable;
     this.sprite.userData.unit = renderable;
 
@@ -67,12 +70,13 @@ export class CanvasSpriteModel implements Model {
       scene.add(this.outline);
     }
     const size = this.renderable.size;
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderable.draw(
       tickPercent,
       this.context,
       { x: 0, y: size - 1 },
-      CANVAS_TILE_SIZE
+      CANVAS_TILE_SIZE,
+      false, // do not draw under-tile
     );
     this.texture.needsUpdate = true;
 

@@ -223,8 +223,6 @@ export class InfernoRegion extends Region {
 
       context.fillStyle = "white";
 
-      context.fillRect(20, 20, 5, 5);
-
       context.drawImage(
         this.mapImage,
         0,

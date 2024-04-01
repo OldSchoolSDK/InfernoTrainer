@@ -137,10 +137,11 @@ export class ClickController {
     });
     this.recentlySelectedMobs = [];
     if (hoveredOn && hoveredOn.type === "entities") {
-      hoveredOn.mobs.forEach((mob) => {
-        mob.selected = true;
-        this.recentlySelectedMobs.push(mob);
-      });
+      const firstMob = hoveredOn.mobs.find(() => true);
+      if (firstMob) {
+        firstMob.selected = true;
+        this.recentlySelectedMobs.push(firstMob);
+      }
     }
   }
 
