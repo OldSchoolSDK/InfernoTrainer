@@ -65,7 +65,9 @@ export class Viewport2d implements ViewportDelegate {
     
       const translator = ({x, y}) => ({x: x * Settings.tileSize, y: y * Settings.tileSize});
       units.forEach((unit) => {
-        unit.drawIncomingProjectiles(unit.region.context, world.tickPercent, translator);
+        if (unit.dying === -1) {
+          unit.drawIncomingProjectiles(unit.region.context, world.tickPercent, translator);
+        }
       });
     }
 

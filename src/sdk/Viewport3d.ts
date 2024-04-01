@@ -45,7 +45,7 @@ export class Viewport3d implements ViewportDelegate {
     new THREE.MeshBasicMaterial({ color: 0x000000 })
   );
 
-  constructor() {
+  constructor(faceCameraSouth = true) {
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AxesHelper(5));
 
@@ -80,7 +80,9 @@ export class Viewport3d implements ViewportDelegate {
     this.camera.position.set(0, 3, 5);
     this.pivot.position.set(0, 0, 10);
     // Face south
-    this.yaw.rotation.y = Math.PI;
+    if (faceCameraSouth) {
+      this.yaw.rotation.y = Math.PI;
+    }
     // Pitch down slightly
     this.pitch.rotation.x = -0.7;
     // Zoom out
@@ -276,7 +278,9 @@ export class Viewport3d implements ViewportDelegate {
       );
     });
     units.forEach((unit) => {
-      unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator, SPRITE_SCALE);
+      if (unit.dying === -1) {
+        unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator, SPRITE_SCALE);
+      }
     });
   }
 

@@ -72,21 +72,8 @@ const westPillar = selectedRegion.initializeAndGetWestPillar();
 const northPillar = selectedRegion.initializeAndGetNorthPillar();
 
 selectedRegion.initializeAndGetUse3dView();
-
-const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
-
-loadout.setStats(player); // flip this around one day
-player.setUnitOptions(loadout.getLoadout());
-
-Viewport.setupViewport();
-
-Viewport.viewport.setPlayer(player);
-
-ImageLoader.onAllImagesLoaded(() =>
-  MapController.controller.updateOrbsMask(player.currentStats, player.stats)
-);
-
 selectedRegion.wave = parseInt(BrowserUtils.getQueryVar("wave"));
+
 if (isNaN(selectedRegion.wave)) {
   selectedRegion.wave = 62;
 }
@@ -97,6 +84,19 @@ if (selectedRegion.wave > InfernoWaves.waves.length + 8) {
   selectedRegion.wave = InfernoWaves.waves.length + 8;
 }
 
+
+const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
+
+loadout.setStats(player); // flip this around one day
+player.setUnitOptions(loadout.getLoadout());
+
+Viewport.setupViewport(selectedRegion);
+
+Viewport.viewport.setPlayer(player);
+
+ImageLoader.onAllImagesLoaded(() =>
+  MapController.controller.updateOrbsMask(player.currentStats, player.stats)
+);
 if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars
   InfernoPillar.addPillarsToWorld(

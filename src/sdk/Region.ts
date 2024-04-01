@@ -17,6 +17,11 @@ export interface GroundItems {
   [key: number]: GroundYItems;
 }
 
+export enum CardinalDirection {
+  NORTH,
+  SOUTH
+}
+
 // Base class for any trainer region.
 export class Region {
   canvas: OffscreenCanvas;
@@ -39,6 +44,10 @@ export class Region {
       this._serialNumber = String(Math.random());
     }
     return this._serialNumber;
+  }
+
+  get initialFacing(): CardinalDirection {
+    return CardinalDirection.SOUTH;
   }
 
   midTick() {

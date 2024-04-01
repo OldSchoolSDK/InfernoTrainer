@@ -2,7 +2,7 @@
 
 import InfernoMapImage from "../assets/images/map.png";
 
-import { Region } from "../../../sdk/Region";
+import { CardinalDirection, Region } from "../../../sdk/Region";
 import { Settings } from "../../../sdk/Settings";
 import { ImageLoader } from "../../../sdk/utils/ImageLoader";
 import { Viewport } from "../../../sdk/Viewport";
@@ -17,6 +17,10 @@ import { JalZek } from "./mobs/JalZek";
 export class InfernoRegion extends Region {
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage);
+
+  get initialFacing() {
+    return (this.wave === 69) ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
+  }
 
   getName() {
     return "Inferno";

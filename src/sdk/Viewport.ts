@@ -10,7 +10,7 @@ import { MapController } from "./MapController";
 import { XpDropController } from "./XpDropController";
 import { ImageLoader } from "./utils/ImageLoader";
 import ButtonActiveIcon from "../assets/images/interface/button_active.png";
-import { Region } from "./Region";
+import { CardinalDirection, Region } from "./Region";
 import { Viewport3d } from "./Viewport3d";
 import { Location } from "./Location";
 import { Mob } from "./Mob";
@@ -59,10 +59,11 @@ export interface ViewportDelegate {
 
 export class Viewport {
   static viewport: Viewport;
-  static setupViewport() {
+  static setupViewport(region: Region) {
+    const faceInitialSouth = region.initialFacing === CardinalDirection.SOUTH;
     // called after Settings have been initialized
     Viewport.viewport = new Viewport(
-      Settings.use3dView ? new Viewport3d() : new Viewport2d()
+      Settings.use3dView ? new Viewport3d(faceInitialSouth) : new Viewport2d()
     );
   }
 
