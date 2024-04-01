@@ -187,25 +187,22 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   draw3dScene(world: World, region: Region) {
-    // draw everthing
+    // create actors
     region.entities.forEach((entity: Entity) => {
       let actor = this.knownActors.get(entity);
       if (!actor) {
         // this is not performant
-        actor = new Actor(entity, () => !region.entities.includes(entity));
+        actor = new Actor(entity, () => entity.dying === 0);
         this.knownActors.set(entity, actor);
       }
-      actor.draw(this.scene, world.tickPercent);
     });
 
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
-        actor = new Actor(player, () => !region.players.includes(player));
+        actor = new Actor(player, () => player.dying === 0);
         this.knownActors.set(player, actor);
       }
-      actor.draw(this.scene, world.tickPercent);
-
       // Update the camera position relative to the player's mesh
       const v = actor.getModel().getWorldPosition();
       this.pivot.position.lerp(v, 0.1);
@@ -214,10 +211,9 @@ export class Viewport3d implements ViewportDelegate {
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {
       let actor = this.knownActors.get(mob);
       if (!actor) {
-        actor = new Actor(mob, () => !region.mobs.includes(mob));
+        actor = new Actor(mob, () => mob.dying === 0);
         this.knownActors.set(mob, actor);
       }
-      actor.draw(this.scene, world.tickPercent);
     });
 
     // remove actors
@@ -225,6 +221,8 @@ export class Viewport3d implements ViewportDelegate {
       if (actor.shouldRemove()) {
         actor.destroy(this.scene);
         this.knownActors.delete(entity);
+      } else {
+        actor.draw(this.scene, world.tickPercent);
       }
     });
 
