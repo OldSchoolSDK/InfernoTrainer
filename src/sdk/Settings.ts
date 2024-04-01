@@ -50,7 +50,7 @@ export class Settings {
 
   static _isMobileResult = null;
 
-  static use3dView: boolean;
+  static use3dView = true;
 
   static mobileCheck() {
     if (Settings._isMobileResult !== null) {
@@ -177,7 +177,7 @@ export class Settings {
       document.getElementById("right_panel").classList.add("hidden");
     }
     Settings.use3dView =
-      window.localStorage.getItem("use3dView") === "true" || false;
+      window.localStorage.getItem("use3dView") !== "false" || false;
     if (Settings.use3dView) {
       Settings.rotated = "north";
     }
