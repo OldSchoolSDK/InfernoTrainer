@@ -147,6 +147,7 @@ export class ClickController {
     const groundItems: Item[] = [];
     let x = null,
       y = null;
+    console.log(clickedOn);
     if (clickedOn.type === "coordinate") {
       x = clickedOn.location.x;
       y = clickedOn.location.y;

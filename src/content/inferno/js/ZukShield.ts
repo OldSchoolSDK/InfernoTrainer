@@ -117,6 +117,9 @@ export class ZukShield extends Mob {
     return EntityName.INFERNO_SHIELD;
   }
 
+  get selectable() {
+    return false;
+  }
 
   canBeAttacked() {
     return false;

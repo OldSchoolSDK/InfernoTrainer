@@ -300,11 +300,6 @@ export class Viewport3d implements ViewportDelegate {
     const intersections = this.raycaster
       .intersectObjects(
         this.scene.children.filter((c) => c.userData.clickable === true)
-      )
-      .filter(
-        (i) =>
-          Object.keys(i.object.userData).length === 0 ||
-          i.object.userData.clickable === true
       );
     const intersection = intersections.length > 0 ? intersections[0] : null;
 
