@@ -343,6 +343,10 @@ export class Unit extends Renderable {
     return null;
   }
 
+  get isAnimated(): boolean {
+    return false;
+  }
+
   // Returns true if the NPC can move towards the unit it is aggro'd against.
   canMove() {
     return (
@@ -621,6 +625,13 @@ export class Unit extends Renderable {
 
   damageTaken() {
     // Override me
+  }
+
+  draw(tickPercent, context, offset, scale) {
+    if (this.isAnimated) {
+      this.unitImage = ImageLoader.imageCache[this.image];
+    }
+    super.draw(tickPercent, context, offset, scale);
   }
 
   drawHitsplat(projectile: Projectile): boolean {

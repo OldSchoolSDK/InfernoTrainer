@@ -4,7 +4,9 @@ import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
 import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { AttackIndicators, Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
-import JadImage from "../../assets/images/JalTok-Jad.png";
+import JadImage from "../../assets/images/jad/jad_mage_1.png";
+import JadMage from "../../assets/images/jad_mage.gif";
+import JadRange from "../../assets/images/jad_range.gif";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
@@ -18,6 +20,8 @@ import MagicSound from "../../assets/sounds/TzTok-Jad-Magic-attack.ogg";
 import RangeSound from "../../assets/sounds/TzTok-Jad-Ranged-attack.ogg";
 import { Random } from "../../../../sdk/Random";
 import { Region } from "../../../../sdk/Region";
+import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
+import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -71,12 +75,19 @@ class JadRangeWeapon extends RangedWeapon {
   }
 }
 
+const jadMageFrames = JAD_MAGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
+const jadRangeFrames = JAD_RANGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
+
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
   waveCooldown: number;
   hasProccedHealers = false;
   healers: number;
   isZukWave: boolean;
+
+  currentAnimationTick = 0;
+  currentAnimationFrame = 0;
+  currentAnimation: string[] | null = null;
 
   constructor(region: Region, location: Location, options: JadUnitOptions) {
     super(region, location, options);
@@ -201,7 +212,15 @@ export class JalTokJad extends Mob {
   }
 
   get image() {
-    return JadImage;
+    if (!this.currentAnimation) {
+      return JadImage;
+    }
+    const animationLength = this.currentAnimation.length;
+    return this.currentAnimation[Math.floor(this.currentAnimationFrame % animationLength)];
+  }
+
+  get isAnimated() {
+    return !!this.currentAnimation;
   }
 
   get sound() {
@@ -233,9 +252,33 @@ export class JalTokJad extends Mob {
   magicMaxHit() {
     return 113;
   }
+  
+  attackStep() {
+    super.attackStep();
+    this.currentAnimationTick++;
+  }
 
   attack() {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE;
+    if (this.attackStyle === "magic") {
+      this.currentAnimation = JAD_MAGE_FRAMES
+    } else if (this.attackStyle === "range") {
+      this.currentAnimation = JAD_RANGE_FRAMES;
+    }
+    this.currentAnimationFrame = 0;
+    this.currentAnimationTick = 0;
+  }
+
+  draw(tickPercent, context, offset, scale) {
+    if (this.currentAnimation) {
+      this.currentAnimationFrame = (this.currentAnimationTick -1 ) * JAD_FRAMES_PER_TICK + tickPercent * JAD_FRAMES_PER_TICK;
+      if (this.currentAnimationFrame >= this.currentAnimation.length) {
+        this.currentAnimation = null;
+        this.currentAnimationFrame = 0;
+        this.currentAnimationTick = 0;
+      }
+  }
+    super.draw(tickPercent, context, offset, scale);
   }
 }

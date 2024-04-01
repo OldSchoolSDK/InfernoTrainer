@@ -485,6 +485,7 @@ export class Mob extends Unit {
     offset: Location,
     scale: number
   ) {
+    super.draw(tickPercent, context, offset, scale);
     if (Settings.displayMobLoS) {
       LineOfSight.drawLOS(
         this.region,
