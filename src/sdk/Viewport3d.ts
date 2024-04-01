@@ -155,6 +155,7 @@ export class Viewport3d implements ViewportDelegate {
       side: THREE.FrontSide,
     });
     const plane = new THREE.Mesh(floorGeometry, floorMaterial);
+    plane.userData.clickable = true;
     this.scene.add(plane);
 
     this.scene.add(this.selectedTileMesh);
@@ -167,7 +168,6 @@ export class Viewport3d implements ViewportDelegate {
       newDimensions.width !== this.canvasDimensions.width ||
       newDimensions.height !== this.canvasDimensions.height
     ) {
-      console.log("updated canvas dimensions to", newDimensions);
       this.canvas.width = newDimensions.width;
       this.canvas.height = newDimensions.height;
       this.uiCanvas.width = newDimensions.width;
@@ -297,7 +297,9 @@ export class Viewport3d implements ViewportDelegate {
 
     this.raycaster.setFromCamera(new THREE.Vector2(rayX, rayY), this.camera);
     const intersections = this.raycaster
-      .intersectObjects(this.scene.children)
+      .intersectObjects(
+        this.scene.children.filter((c) => c.userData.clickable === true)
+      )
       .filter(
         (i) =>
           Object.keys(i.object.userData).length === 0 ||
@@ -327,8 +329,8 @@ export class Viewport3d implements ViewportDelegate {
     return {
       type: "coordinate" as const,
       location: {
-        x: this.selectedTile.x * Settings.tileSize,
-        y: (this.selectedTile.y + 1) * Settings.tileSize,
+        x: this.selectedTile.x,
+        y: this.selectedTile.y + 1,
       },
     };
   }

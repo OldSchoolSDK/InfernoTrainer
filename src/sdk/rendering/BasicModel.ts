@@ -9,13 +9,20 @@ export class BasicModel implements Model {
   private cube: THREE.Mesh;
 
   static forRenderable(r: Renderable) {
-    return new BasicModel(r.size, r.height, r.colorHex);
+    return new BasicModel(r.size, r.height, r.colorHex, r);
   }
 
-  constructor(private size: number, height: number, color: number) {
+  constructor(
+    private size: number,
+    height: number,
+    color: number,
+    unit: Renderable | null
+  ) {
     this.geometry = new THREE.BoxGeometry(size, height, size);
     this.material = new THREE.MeshStandardMaterial({ color });
     this.cube = new THREE.Mesh(this.geometry, this.material);
+    this.cube.userData.clickable = unit !== null;
+    this.cube.userData.unit = unit;
   }
 
   draw(scene: THREE.Scene, tickPercent: number, location: Location) {

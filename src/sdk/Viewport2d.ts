@@ -94,8 +94,8 @@ export class Viewport2d implements ViewportDelegate {
     return {
       type: "coordinate" as const,
       location: {
-        x,
-        y,
+        x: x / Settings.tileSize,
+        y: y / Settings.tileSize,
       },
     };
   }

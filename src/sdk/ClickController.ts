@@ -295,8 +295,8 @@ export class ClickController {
     }
 
     Viewport.viewport.contextMenu.destinationLocation = {
-      x: Math.floor(x / Settings.tileSize),
-      y: Math.floor(y / Settings.tileSize),
+      x: Math.floor(x),
+      y: Math.floor(y),
     };
 
     /* gather options */
@@ -394,10 +394,8 @@ export class ClickController {
     Viewport.viewport.player.setAggro(mob);
   }
   playerWalkClick(x: number, y: number) {
-    Viewport.viewport.player.moveTo(
-      Math.floor(x / Settings.tileSize),
-      Math.floor(y / Settings.tileSize)
-    );
+    console.log("playerWalkClick", x, y);
+    Viewport.viewport.player.moveTo(Math.floor(x), Math.floor(y));
   }
   redClick() {
     this.clickAnimation = new ClickAnimation(

@@ -291,6 +291,7 @@ export class Player extends Unit {
       y,
       1
     );
+    console.log("player moveTo", clickedOnEntities.length, x, y);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
       const clickedOnEntity = clickedOnEntities[0];

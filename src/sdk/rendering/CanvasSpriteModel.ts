@@ -39,6 +39,8 @@ export class CanvasSpriteModel implements Model {
     this.sprite = new THREE.Sprite(material);
     this.sprite.scale.set(size, size, size);
     this.sprite.center.y = 0;
+    this.sprite.userData.clickable = renderable.selectable;
+    this.sprite.userData.unit = renderable;
 
     const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     const points = [
@@ -53,6 +55,8 @@ export class CanvasSpriteModel implements Model {
     ];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     this.outline = new THREE.LineSegments(geometry, lineMaterial);
+    this.outline.userData.clickable = renderable.selectable;
+    this.outline.userData.unit = renderable;
   }
 
   draw(scene: THREE.Scene, tickPercent: number, location: Location) {
