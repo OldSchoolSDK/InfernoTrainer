@@ -13,6 +13,7 @@ import { Renderable } from "./Renderable";
 import { Location } from "./Location";
 import { BasicModel } from "./rendering/BasicModel";
 import { Actor } from "./rendering/Actor";
+import _ from "lodash";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -321,7 +322,7 @@ export class Viewport3d implements ViewportDelegate {
     if (mobs.length > 0) {
       return {
         type: "entities" as const,
-        mobs,
+        mobs: _.uniq(mobs),
         players: [],
         groundItems: [],
       };

@@ -77,6 +77,9 @@ export class Viewport {
 
   constructor(private delegate: ViewportDelegate) {}
 
+  /**
+   * Return all objects or world coordinates at the given position (relative to the top-left of the viewport).
+   */
   translateClick(
     offsetX: number,
     offsetY: number,

@@ -199,8 +199,8 @@ export class ClickController {
       );
       groundItems.push(
         ...region.groundItemsAtLocation(
-          Math.floor(x / Settings.tileSize),
-          Math.floor(y / Settings.tileSize)
+          Math.floor(x),
+          Math.floor(y)
         )
       );
     } else if (clickedOn.type === "entities") {
@@ -254,10 +254,6 @@ export class ClickController {
   rightClickDown(e: MouseEvent) {
     const region = Viewport.viewport.player.region; // TODO: Redo as InfernoRegion;
     const world = Viewport.viewport.player.region.world;
-
-    const { viewportX, viewportY } = Viewport.viewport.getViewport(
-      world.tickPercent
-    );
 
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
 
@@ -331,7 +327,7 @@ export class ClickController {
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
           this.sendToServer(() =>
-            this.playerWalkClick(x * Settings.tileSize, y * Settings.tileSize)
+            this.playerWalkClick(x, y)
           );
         },
       },
