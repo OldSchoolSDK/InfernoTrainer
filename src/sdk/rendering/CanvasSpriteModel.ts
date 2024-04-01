@@ -71,6 +71,7 @@ export class CanvasSpriteModel implements Model {
     this.texture.needsUpdate = true;
     const { x, y } = location;
     this.outline.position.x = x;
+    this.outline.position.y = -0.49;
     this.outline.position.z = y;
     this.sprite.position.x = x + size / 2;
     this.sprite.position.y = 0;
