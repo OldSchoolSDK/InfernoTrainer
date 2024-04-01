@@ -145,6 +145,35 @@ export class ClickController {
   }
 
   private getClickedOn(e: MouseEvent, world: World, region: Region) {
+    const xAlign =
+      Viewport.viewport.contextMenu.location.x -
+        Viewport.viewport.contextMenu.width / 2 <
+        e.offsetX &&
+      e.offsetX <
+        Viewport.viewport.contextMenu.location.x +
+          Viewport.viewport.contextMenu.width / 2;
+    const yAlign =
+      Viewport.viewport.contextMenu.location.y < e.offsetY &&
+      e.offsetY <
+        Viewport.viewport.contextMenu.location.y +
+          Viewport.viewport.contextMenu.height;
+
+    if (Viewport.viewport.contextMenu.isActive && xAlign && yAlign) {
+      Viewport.viewport.contextMenu.clicked(e.offsetX, e.offsetY);
+      Viewport.viewport.contextMenu.setInactive();
+      return;
+    }
+
+    const intercepted = MapController.controller.leftClickDown(e);
+    if (intercepted) {
+      return;
+    }
+
+    const controlPanelIntercepted =
+      ControlPanelController.controller.controlPanelClickDown(e);
+    if (controlPanelIntercepted) {
+      return;
+    }
     const clickedOn = Viewport.viewport.translateClick(
       e.offsetX,
       e.offsetY,
@@ -159,36 +188,6 @@ export class ClickController {
     const players: Player[] = [];
     const groundItems: Item[] = [];
     if (clickedOn.type === "coordinate") {
-      const xAlign =
-        Viewport.viewport.contextMenu.location.x -
-          Viewport.viewport.contextMenu.width / 2 <
-          e.offsetX &&
-        e.offsetX <
-          Viewport.viewport.contextMenu.location.x +
-            Viewport.viewport.contextMenu.width / 2;
-      const yAlign =
-        Viewport.viewport.contextMenu.location.y < e.offsetY &&
-        e.offsetY <
-          Viewport.viewport.contextMenu.location.y +
-            Viewport.viewport.contextMenu.height;
-
-      if (Viewport.viewport.contextMenu.isActive && xAlign && yAlign) {
-        Viewport.viewport.contextMenu.clicked(e.offsetX, e.offsetY);
-        Viewport.viewport.contextMenu.setInactive();
-        return;
-      }
-
-      const intercepted = MapController.controller.leftClickDown(e);
-      if (intercepted) {
-        return;
-      }
-
-      const controlPanelIntercepted =
-        ControlPanelController.controller.controlPanelClickDown(e);
-      if (controlPanelIntercepted) {
-        return;
-      }
-
       mobs.push(
         ...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(
           region,
