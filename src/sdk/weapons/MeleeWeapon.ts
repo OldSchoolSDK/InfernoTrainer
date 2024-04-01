@@ -84,7 +84,7 @@ export class MeleeWeapon extends Weapon {
     return Math.floor(
       Math.floor(
         (this._strengthLevel(from, to, bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640
-      ) * bonuses.gearMultiplier * bonuses.overallMultiplier
+      ) * bonuses.gearMeleeMultiplier * bonuses.overallMultiplier
     )
   }
 
@@ -109,7 +109,7 @@ export class MeleeWeapon extends Weapon {
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack[bonuses.attackStyle] + 64)) * bonuses.gearMultiplier)
+    return Math.floor((this._attackLevel(from, to, bonuses) * (from.bonuses.attack[bonuses.attackStyle] + 64)) * bonuses.gearMeleeMultiplier)
   }
 
   _defenceRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {

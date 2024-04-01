@@ -25,7 +25,9 @@ export interface AttackBonuses {
   styleBonus?: number;
   isAccurate?: boolean;
   voidMultiplier?: number;
-  gearMultiplier?: number;
+  gearMeleeMultiplier?: number;
+  gearMageMultiplier?: number;
+  gearRangeMultiplier?: number;
   attackStyle?: string;
   magicBaseSpellDamage?: number;
   overallMultiplier?: number;
@@ -141,7 +143,9 @@ export class Weapon extends Equipment{
     this._calculatePrayerEffects(from, to, bonuses)
     bonuses.styleBonus = bonuses.styleBonus || 0
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1
+    bonuses.gearMeleeMultiplier = bonuses.gearMeleeMultiplier || 1
+    bonuses.gearMageMultiplier = bonuses.gearMageMultiplier || 1
+    bonuses.gearRangeMultiplier = bonuses.gearRangeMultiplier || 1
     bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0
 
     this.rollDamage(from, to, bonuses);
@@ -199,10 +203,13 @@ export class Weapon extends Equipment{
     return 0; // weapons implement this at the type tier
   }
 
+
   _hitChance (from: Unit, to: Unit, bonuses: AttackBonuses) {
     const attackRoll = this._attackRoll(from, to, bonuses)
     const defenceRoll = this._defenceRoll(from, to, bonuses)
-    return (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1))
+    const hitChance = (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1));
+    //console.log('attack roll', attackRoll, 'defence roll', defenceRoll,  'hitChance', hitChance);
+    return hitChance;
   }
 
   isBlockable (from: Unit, to: Unit, bonuses: AttackBonuses): boolean {

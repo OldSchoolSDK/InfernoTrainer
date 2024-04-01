@@ -91,6 +91,7 @@ export class Player extends Unit {
   setUnitOptions(options: UnitOptions) {
     this.equipment = options.equipment || {};
     this.inventory = options.inventory || new Array(28).fill(null);
+    this.equipmentChanged();
   }
 
   interruptCombat() {
@@ -367,7 +368,9 @@ export class Player extends Unit {
             this.equipment.helmet &&
             this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I
           ) {
-            bonuses.gearMultiplier = 7 / 6;
+            bonuses.gearMeleeMultiplier = 7 / 6;
+            bonuses.gearRangeMultiplier = 1.15;
+            bonuses.gearMageMultiplier = 1.15;
           }
 
           return this.equipment.weapon.attack(

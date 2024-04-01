@@ -237,7 +237,7 @@ export class TzKalZuk extends Mob {
     this.stats = {
       attack: 350,
       strength: 600,
-      defence: 260,
+      defence: 234,
       range: 400,
       magic: 150,
       hitpoint: 1200,

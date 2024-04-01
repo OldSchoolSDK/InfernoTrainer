@@ -77,7 +77,7 @@ export class MagicWeapon extends Weapon {
   }
 
   _attackRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
-    return Math.floor(this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMultiplier)
+    return Math.floor(this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMageMultiplier)
   }
 
   _defenceRoll (from: Unit, to: Unit, bonuses: AttackBonuses) {
