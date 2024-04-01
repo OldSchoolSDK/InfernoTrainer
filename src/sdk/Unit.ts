@@ -717,7 +717,7 @@ export class Unit extends Renderable {
   }
 
   // The rendering context is the world.
-  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location) => Location) {
+  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location) => Location, scale: number = Settings.tileSize) {
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.options.hidden) {
         return;
@@ -754,10 +754,10 @@ export class Unit extends Renderable {
         context.rotate(Math.PI);
         context.drawImage(
           projectile.image,
-          -Settings.tileSize / 2,
-          -Settings.tileSize / 2,
-          Settings.tileSize,
-          Settings.tileSize
+          -scale / 2,
+          -scale / 2,
+          scale,
+          scale
         );
       } else {
         context.beginPath();

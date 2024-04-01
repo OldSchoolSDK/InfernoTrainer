@@ -276,7 +276,7 @@ export class Viewport3d implements ViewportDelegate {
       );
     });
     units.forEach((unit) => {
-      unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator);
+      unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator, SPRITE_SCALE);
     });
   }
 
