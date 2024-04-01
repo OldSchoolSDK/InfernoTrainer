@@ -15,6 +15,8 @@ import { MapController } from "./MapController";
 import { ControlPanelController } from "./ControlPanelController";
 import { Player } from "./Player";
 import { Mob } from "./Mob";
+import { World } from "./World";
+import { Region } from "./Region";
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -130,26 +132,14 @@ export class ClickController {
     );
   }
 
-  clickDown(e: MouseEvent) {
-    if (e.button === 2) {
-      this.rightClickDown(e);
-    }
-
-    if (e.button !== 0) {
-      return;
-    }
-    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
-    const world = Viewport.viewport.player.region.world;
-    const player = Viewport.viewport.player;
-
-    Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
+  private getClickedOn(e: MouseEvent, world: World, region: Region) {
     const clickedOn = Viewport.viewport.translateClick(
       e.offsetX,
       e.offsetY,
       world
     );
     if (!clickedOn) {
-      return;
+      return null;
     }
 
     const mobs: Mob[] = [];
@@ -218,8 +208,32 @@ export class ClickController {
       players.push(...clickedOn.players);
       groundItems.push(...clickedOn.groundItems);
     }
+    return { mobs, players, groundItems, x, y };
+  }
+
+  clickDown(e: MouseEvent) {
+    if (e.button === 2) {
+      this.rightClickDown(e);
+    }
+
+    if (e.button !== 0) {
+      return;
+    }
+    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
+    const world = Viewport.viewport.player.region.world;
+    const player = Viewport.viewport.player;
+
+    Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
+    const clickedOn = this.getClickedOn(e, world, region);
+
+    if (!clickedOn) {
+      return;
+    }
+
+    const { mobs, players, groundItems, x, y } = clickedOn;
 
     Viewport.viewport.player.interruptCombat();
+
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick();
       this.sendToServer(() => this.playerAttackClick(mobs[0]));
@@ -244,20 +258,17 @@ export class ClickController {
     const { viewportX, viewportY } = Viewport.viewport.getViewport(
       world.tickPercent
     );
-    let x = e.offsetX + viewportX * Settings.tileSize;
-    let y = e.offsetY + viewportY * Settings.tileSize;
 
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
-    if (Settings.rotated === "south") {
-      x =
-        this.viewport.width * Settings.tileSize -
-        e.offsetX +
-        viewportX * Settings.tileSize;
-      y =
-        this.viewport.height * Settings.tileSize -
-        e.offsetY +
-        viewportY * Settings.tileSize;
+
+    const clickedOn = this.getClickedOn(e, world, region);
+
+    if (!clickedOn) {
+      return;
     }
+
+    const { mobs, players, groundItems, x, y } = clickedOn;
+
     const { width } = Chrome.size();
 
     if (e.offsetX > width - ControlPanelController.controller.width) {
@@ -291,32 +302,14 @@ export class ClickController {
     /* gather options */
     let menuOptions: MenuOption[] = [];
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(
-      region,
-      x,
-      y,
-      world.tickPercent
-    );
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(region, x, y));
     });
-
-    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(
-      region,
-      x,
-      y,
-      world.tickPercent
-    );
     players.forEach((player) => {
       if (player !== Viewport.viewport.player) {
         menuOptions = menuOptions.concat(player.contextActions(region, x, y));
       }
     });
-
-    const groundItems: Item[] = region.groundItemsAtLocation(
-      Math.floor(x / Settings.tileSize),
-      Math.floor(y / Settings.tileSize)
-    );
     groundItems.forEach((item: Item) => {
       menuOptions.push({
         text: [
