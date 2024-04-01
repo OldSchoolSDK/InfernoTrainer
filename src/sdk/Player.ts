@@ -825,6 +825,5 @@ export class Player extends Unit {
     context.fillStyle = "black";
     context.fillText(`${this.location.x},${this.location.y}`, 0, 0);
     context.restore();
-    this.drawIncomingProjectiles(tickPercent);
   }
 }

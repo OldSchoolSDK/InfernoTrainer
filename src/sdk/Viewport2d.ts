@@ -8,6 +8,7 @@ import { Settings } from "./Settings";
 import { Location } from "./Location";
 import { Renderable } from "./Renderable";
 import { Pathing } from "./Pathing";
+import { Unit } from "./Unit";
 
 export class Viewport2d implements ViewportDelegate {
   draw(world: World, region: Region) {
@@ -17,13 +18,14 @@ export class Viewport2d implements ViewportDelegate {
 
     // Draw all things on the map
     const renderables: Renderable[] = [...region.entities];
+    const units: Unit[] = [];
 
     if (world.getReadyTimer <= 0) {
-      renderables.push(...region.mobs);
-      renderables.push(...region.newMobs);
+      units.push(...region.mobs);
+      units.push(...region.newMobs);
     }
-    renderables.push(...region.players);
-    renderables.forEach((r) => {
+    units.push(...region.players);
+    renderables.concat(units).forEach((r) => {
       const location = r.getPerceivedLocation(world.tickPercent);
       r.draw(world.tickPercent, region.context, location, Settings.tileSize);
     });
@@ -59,6 +61,11 @@ export class Viewport2d implements ViewportDelegate {
           player.region.context,
           Settings.tileSize
         );
+      });
+      
+      const translator = (pos) => pos;
+      units.forEach((unit) => {
+        unit.drawIncomingProjectiles(unit.region.context, world.tickPercent, translator);
       });
     }
 

@@ -588,8 +588,6 @@ export class Mob extends Unit {
     this.drawOverheadPrayers(context, scale);
 
     context.restore();
-
-    this.drawIncomingProjectiles(tickPercent);
   }
 
   create3dModel() {

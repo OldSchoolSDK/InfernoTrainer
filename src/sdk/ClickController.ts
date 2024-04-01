@@ -202,7 +202,7 @@ export class ClickController {
           region,
           x,
           y,
-          world.tickPercent
+          world.tickPercent,
         ).filter((player: Player) => player !== Viewport.viewport.player)
       );
       groundItems.push(

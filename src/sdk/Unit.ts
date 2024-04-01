@@ -717,7 +717,7 @@ export class Unit extends Renderable {
   }
 
   // The rendering context is the world.
-  drawIncomingProjectiles(tickPercent: number) {
+  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location) => Location) {
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.options.hidden) {
         return;
