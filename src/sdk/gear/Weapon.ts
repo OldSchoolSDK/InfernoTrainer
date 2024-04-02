@@ -209,7 +209,6 @@ export class Weapon extends Equipment{
     const attackRoll = this._attackRoll(from, to, bonuses)
     const defenceRoll = this._defenceRoll(from, to, bonuses)
     const hitChance = (attackRoll > defenceRoll) ? (1 - (defenceRoll + 2) / (2 * attackRoll + 1)) : (attackRoll / (2 * defenceRoll + 1));
-    //console.log('attack roll', attackRoll, 'defence roll', defenceRoll,  'hitChance', hitChance);
     return hitChance;
   }
 
