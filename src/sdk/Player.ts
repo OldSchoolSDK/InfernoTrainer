@@ -27,6 +27,8 @@ import { Sound, SoundCache } from "./utils/SoundCache";
 
 import LeatherHit from "../assets/sounds/hit.ogg";
 import HumanHit from "../assets/sounds/human_hit_513.ogg";
+import { Model } from "./rendering/Model";
+import { BasicModel } from "./rendering/BasicModel";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -845,5 +847,9 @@ export class Player extends Unit {
     context.fillStyle = "black";
     context.fillText(`${this.location.x},${this.location.y}`, 0, 0);
     context.restore();
+  }
+
+  create3dModel(): Model {
+    return BasicModel.forRenderable(this);
   }
 }

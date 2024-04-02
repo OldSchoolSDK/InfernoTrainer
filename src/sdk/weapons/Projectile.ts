@@ -58,6 +58,7 @@ export class Projectile extends Renderable {
   */
   constructor (weapon: Weapon, damage: number, from: Unit, to: Unit, attackStyle: string, options: ProjectileOptions = {}, sound: Sound | null = null) {
     super();
+    console.log("new projectile created with type ", attackStyle, options.hidden);
     this.attackStyle = attackStyle;
     this.damage = Math.floor(damage)
     if (this.damage > to.currentStats.hitpoint) {

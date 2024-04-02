@@ -2,17 +2,16 @@ import * as THREE from "three";
 
 import { Renderable } from "../Renderable";
 import { Model } from "./Model";
-import { BasicModel } from "./BasicModel";
 
 export class Actor {
   private model: Model;
 
   constructor(private unit: Renderable) {
-    this.model = unit.create3dModel() || BasicModel.forRenderable(unit);
+    this.model = unit.create3dModel();
   }
 
   draw(scene: THREE.Scene, tickPercent: number) {
-    if (!this.unit.visible) {
+    if (!this.unit.visible || !this.model) {
       return;
     }
     const worldLocation = this.unit.getPerceivedLocation(tickPercent);
@@ -23,11 +22,11 @@ export class Actor {
     return this.unit.shouldDestroy();
   }
 
-  getModel() {
+  getModel() : Model | null {
     return this.model;
   }
 
   destroy(scene: THREE.Scene) {
-    this.model.destroy(scene);
+    this.model?.destroy(scene);
   }
 }
