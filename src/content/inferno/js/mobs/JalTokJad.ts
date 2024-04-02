@@ -38,8 +38,8 @@ interface JadUnitOptions extends UnitOptions {
 }
 
 const MageStartSound = { src: FireBreath, volume: 0.1 };
-const RangeProjectileSound = { src: FireWaveHit, volume: 0.1 };
-const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.1 };
+const RangeProjectileSound = { src: FireWaveHit, volume: 0.075 };
+const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.075 };
 
 const JAD_PROJECTILE_DELAY = 3;
 
