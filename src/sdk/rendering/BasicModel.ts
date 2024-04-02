@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Model } from "./Model";
 import { Renderable } from "../Renderable";
-import { Location } from "../Location";
+import { Location, Location3 } from "../Location";
 
 export enum BasicModelShape {
   BOX,
@@ -36,14 +36,16 @@ export class BasicModel implements Model {
     this.mesh.userData.unit = unit;
   }
 
-  draw(scene: THREE.Scene, tickPercent: number, location: Location) {
+  draw(scene: THREE.Scene, tickPercent: number, location: Location3) {
     if (this.mesh.parent !== scene) {
       scene.add(this.mesh);
     }
     const size = this.size;
-    const { x, y } = location;
+    const { x, y, z } = location;
 
+    // conversion from Location3 to Vector3
     this.mesh.position.x = x + size / 2;
+    this.mesh.position.y = z;
     this.mesh.position.z = y - size / 2;
     this.mesh.position.add({x: this.drawOffset.x || 0, y: this.drawOffset.y || 0, z: this.drawOffset.z || 0});
   }

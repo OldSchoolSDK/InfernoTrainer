@@ -8,7 +8,7 @@ import JadImage from "../../assets/images/jad/jad_mage_1.png";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
+import { ArcProjectionMotionInterpolator, Projectile } from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { YtHurKot } from "./YtHurKot";
 import { Collision } from "../../../../sdk/Collision";
@@ -35,8 +35,8 @@ interface JadUnitOptions extends UnitOptions {
 }
 
 const MageStartSound = { src: FireBreath, volume: 0.1 };
-const RangeProjectileSound = { src: FireWaveCastAndFire, volume: 0.1 };
-const MageProjectileSound = { src: FireWaveHit, volume: 0.1 };
+const RangeProjectileSound = { src: FireWaveHit, volume: 0.1 };
+const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.1 };
 
 const JAD_PROJECTILE_DELAY = 3;
 
@@ -57,7 +57,7 @@ class JadMagicWeapon extends MagicWeapon {
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: 3 }, RangeProjectileSound)
+      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: JAD_PROJECTILE_DELAY, motionInterpolator: new ArcProjectionMotionInterpolator(1) }, MageProjectileSound)
     );
   }
 }
@@ -72,14 +72,14 @@ class JadRangeWeapon extends RangedWeapon {
         }
 
         super.attack(from, to, bonuses);
-      }, 3)
+      }, JAD_PROJECTILE_DELAY)
     );
     return true;
   }
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 3 }, MageProjectileSound)
+      new Projectile(this, this.damage, from, to, "range", { reduceDelay: JAD_PROJECTILE_DELAY}, RangeProjectileSound)
     );
   }
 }
@@ -234,7 +234,7 @@ export class JalTokJad extends Mob {
     ];
   }
 
-  override get isAnimated() {
+  get isAnimated() {
     return !!this.currentAnimation;
   }
 
@@ -242,30 +242,30 @@ export class JalTokJad extends Mob {
     return this.attackStyle === "magic" ? MageStartSound : null;
   }
 
-  override attackStyleForNewAttack() {
+  attackStyleForNewAttack() {
     return Random.get() < 0.5 ? "range" : "magic";
   }
 
-  override shouldShowAttackAnimation() {
+  shouldShowAttackAnimation() {
     return (
       this.attackDelay === this.attackSpeed && this.playerPrayerScan === null
     );
   }
 
-  override canMeleeIfClose() {
+  canMeleeIfClose() {
     return "stab";
   }
 
-  override magicMaxHit() {
+  magicMaxHit() {
     return 113;
   }
 
-  override attackStep() {
+  attackStep() {
     super.attackStep();
     this.currentAnimationTick++;
   }
 
-  override attack() {
+  attack() {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE;
     if (this.attackStyle === "magic") {
@@ -277,7 +277,7 @@ export class JalTokJad extends Mob {
     this.currentAnimationTick = 0;
   }
 
-  override draw(tickPercent, context, offset, scale, drawUnderTile) {
+  draw(tickPercent, context, offset, scale, drawUnderTile) {
     if (this.currentAnimation) {
       this.currentAnimationFrame =
         (this.currentAnimationTick - 1) * JAD_FRAMES_PER_TICK +

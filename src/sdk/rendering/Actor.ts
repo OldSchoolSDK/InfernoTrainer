@@ -5,25 +5,22 @@ import { Model } from "./Model";
 import { BasicModel } from "./BasicModel";
 
 export class Actor {
-  private _shouldRemove = false;
-
   private model: Model;
 
-  constructor(private unit: Renderable, private lifecycleCheck: () => boolean) {
+  constructor(private unit: Renderable) {
     this.model = unit.create3dModel() || BasicModel.forRenderable(unit);
   }
 
   draw(scene: THREE.Scene, tickPercent: number) {
-    if (this._shouldRemove) {
+    if (!this.unit.visible) {
       return;
     }
     const worldLocation = this.unit.getPerceivedLocation(tickPercent);
     this.model.draw(scene, tickPercent, worldLocation);
-    this._shouldRemove = this.lifecycleCheck();
   }
 
   shouldRemove() {
-    return this._shouldRemove;
+    return this.unit.shouldDestroy();
   }
 
   getModel() {

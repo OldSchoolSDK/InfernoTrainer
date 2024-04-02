@@ -186,7 +186,6 @@ export class ZukShield extends Mob {
 
   
   drawUnderTile() {
-
     this.region.context.fillStyle = this.color;
     // Draw mob
     this.region.context.fillRect(

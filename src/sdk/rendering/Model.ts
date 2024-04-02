@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import { Location } from "../Location";
+import { Location3 } from "../Location";
 
 export interface Model {
-  draw(scene: THREE.Scene, tickPercent: number, location: Location);
+  draw(scene: THREE.Scene, tickPercent: number, location: Location3);
 
   destroy(scene: THREE.Scene);
 

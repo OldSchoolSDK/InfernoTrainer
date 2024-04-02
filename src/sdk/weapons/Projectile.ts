@@ -11,7 +11,7 @@ import { Pathing } from '../Pathing'
 import { BasicModel } from '../rendering/BasicModel'
 
 export interface ProjectileMotionInterpolator {
-  getPerceivedLocation(from: Location3, to: Location3, percent: number): Location3;
+  interpolate(from: Location3, to: Location3, percent: number): Location3;
 }
 
 export interface ProjectileOptions {
@@ -30,6 +30,9 @@ export class Projectile extends Renderable {
   distance: number;
   options: ProjectileOptions = {};
   remainingDelay: number;
+  totalDelay: number;
+  age = 0;
+  startLocation: Location;
   currentLocation: Location;
   currentHeight: number;
   attackStyle: string;
@@ -54,10 +57,11 @@ export class Projectile extends Renderable {
     }
     this.options = options;
 
-    this.currentLocation = {
+    this.startLocation = {
       x: from.location.x + from.size / 2,
       y: from.location.y - from.size / 2 + 1
     }
+    this.currentLocation = {...this.startLocation};
     this.currentHeight = from.height * 0.75; // projectile origin
     this.from = from
     this.to = to
@@ -66,31 +70,31 @@ export class Projectile extends Renderable {
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0
       this.remainingDelay = 1
-      return
-    }
-
-    if (weapon.image){
-      this.image = weapon.image
-    }
-
-    if (options.forceSWTile) {
-      // Things like ice barrage calculate distance to SW tile only
-      this.distance = chebyshev([this.from.location.x, this.from.location.y], [this.to.location.x, this.to.location.y])
     } else {
-      const closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);      
-      this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
-    }
-    
-    this.remainingDelay = weapon.calculateHitDelay(this.distance);
-    if (from.isPlayer) {
-      this.remainingDelay++;
-    }
-    if (this.options.reduceDelay) { 
-      this.remainingDelay -= this.options.reduceDelay;
-      if (this.remainingDelay < 1) {
-        this.remainingDelay = 1;
+      if (weapon.image){
+        this.image = weapon.image
+      }
+
+      if (options.forceSWTile) {
+        // Things like ice barrage calculate distance to SW tile only
+        this.distance = chebyshev([this.from.location.x, this.from.location.y], [this.to.location.x, this.to.location.y])
+      } else {
+        const closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);      
+        this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);  
+      }
+      
+      this.remainingDelay = weapon.calculateHitDelay(this.distance);
+      if (from.isPlayer) {
+        this.remainingDelay++;
+      }
+      if (this.options.reduceDelay) { 
+        this.remainingDelay -= this.options.reduceDelay;
+        if (this.remainingDelay < 1) {
+          this.remainingDelay = 1;
+        }
       }
     }
+    this.totalDelay = this.remainingDelay;
     if (sound) {
       SoundCache.play(sound);
     }
@@ -118,30 +122,39 @@ export class Projectile extends Renderable {
       return "#9813aa";
     } else if (this.attackStyle === "recoil") {
       return "#000000";
-    } else {
-      console.log("[WARN] This style is not accounted for in custom coloring: ", this.attackStyle);
-      return "#000000";
     }
+    console.log("[WARN] This style is not accounted for in custom coloring: ", this.attackStyle);
+    return "#000000";
   }
 
   onTick() {
     //
+    this.remainingDelay--;
+    this.age++;
   }
 
   onHit() {
     //
   }
 
+  shouldDestroy() {
+    return this.age >= this.totalDelay
+  }
+
+  get visible() {
+    return this.age < this.totalDelay;
+  }
+
   getPerceivedLocation(tickPercent: number) {
     // default linear
-    const startX = this.currentLocation.x;
-    const startY = this.currentLocation.y;
+    const startX = this.startLocation.x;
+    const startY = this.startLocation.y;
     const startHeight = this.currentHeight;
     const endX = this.to.location.x + this.to.size / 2;
     const endY = this.to.location.y - this.to.size / 2 + 1;
     const endHeight = this.to.height * 0.75;
-    const percent = tickPercent / (this.remainingDelay + 1);
-    return this.interpolator.getPerceivedLocation({x: startX, y: startY, z: startHeight}, {x: endX, y: endY, z: endHeight}, percent);
+    const percent = (this.age + tickPercent) / this.totalDelay;
+    return this.interpolator.interpolate({x: startX, y: startY, z: startHeight}, {x: endX, y: endY, z: endHeight}, percent);
   }
 
   get size(): number {
@@ -153,36 +166,64 @@ export class Projectile extends Renderable {
   }
 
   create3dModel() {
+    if (this.color === "#000000") {
+      return null;
+    }
     return BasicModel.sphereForRenderable(this);
   }
 }
 
 export class LinearProjectionMotionInterpolator implements ProjectileMotionInterpolator {
-    getPerceivedLocation(from: Location3, to: Location3, percent: number): Location3 {
-      // default linear
-      const startX = from.x;
-      const startY = from.y;
-      const startHeight = from.z;
-      const endX = to.x;
-      const endY = to.y;
-      const endHeight = to.z;
-  
-      const perceivedX = Pathing.linearInterpolation(
-        startX,
-        endX,
-        percent
-      );
-      const perceivedY = Pathing.linearInterpolation(
-        startY,
-        endY,
-        percent
-      );
-      const perceivedHeight = (startHeight === endHeight) ? startHeight : Pathing.linearInterpolation(
-        startHeight,
-        endHeight,
-        percent
-      );
-      return { x: perceivedX, y: perceivedY, z: perceivedHeight }
-    }
-  
+  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+    // default linear
+    const startX = from.x;
+    const startY = from.y;
+    const startHeight = from.z;
+    const endX = to.x;
+    const endY = to.y;
+    const endHeight = to.z;
+
+    const perceivedX = Pathing.linearInterpolation(
+      startX,
+      endX,
+      percent
+    );
+    const perceivedY = Pathing.linearInterpolation(
+      startY,
+      endY,
+      percent
+    );
+    const perceivedHeight = (startHeight === endHeight) ? startHeight : Pathing.linearInterpolation(
+      startHeight,
+      endHeight,
+      percent
+    );
+    return { x: perceivedX, y: perceivedY, z: perceivedHeight }
+  }
+}
+
+export class ArcProjectionMotionInterpolator implements ProjectileMotionInterpolator {
+  constructor(private height: number) {}
+
+  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+    const startX = from.x;
+    const startY = from.y;
+    const startHeight = from.z;
+    const endX = to.x;
+    const endY = to.y;
+    const endHeight = to.z;
+
+    const perceivedX = Pathing.linearInterpolation(
+      startX,
+      endX,
+      percent
+    );
+    const perceivedY = Pathing.linearInterpolation(
+      startY,
+      endY,
+      percent
+    );
+    const perceivedHeight = Math.sin(percent * Math.PI) * this.height + (endHeight - startHeight) + startHeight;
+    return { x: perceivedX, y: perceivedY, z: perceivedHeight }
+  }
 }

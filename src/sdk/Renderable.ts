@@ -23,6 +23,15 @@ export abstract class Renderable {
     return true;
   }
 
+  get visible(): boolean {
+    return true;
+  }
+
+  /**
+   * Should remove from the scene
+   */
+  abstract shouldDestroy(): boolean;
+
   get selected(): boolean {
     return this._selected;
   }

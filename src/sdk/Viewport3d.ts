@@ -222,7 +222,7 @@ export class Viewport3d implements ViewportDelegate {
     region.entities.forEach((entity: Entity) => {
       let actor = this.knownActors.get(entity);
       if (!actor) {
-        actor = new Actor(entity, () => entity.dying === 0);
+        actor = new Actor(entity);
         this.knownActors.set(entity, actor);
       }
     });
@@ -231,7 +231,7 @@ export class Viewport3d implements ViewportDelegate {
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
-        actor = new Actor(player, () => player.dying === 0);
+        actor = new Actor(player);
         this.knownActors.set(player, actor);
       }
       // Update the camera position relative to the player's mesh
@@ -244,17 +244,17 @@ export class Viewport3d implements ViewportDelegate {
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {
       let actor = this.knownActors.get(mob);
       if (!actor) {
-        actor = new Actor(mob, () => mob.dying === 0);
+        actor = new Actor(mob);
         this.knownActors.set(mob, actor);
-        // Add all projectiles to scene
-        projectiles.push(...mob.incomingProjectiles);
       }
+      // Add all projectiles to scene
+      projectiles.push(...mob.incomingProjectiles);
     });
 
     projectiles.forEach((projectile) => {
       let actor = this.knownActors.get(projectile);
       if (!actor) {
-        actor = new Actor(projectile, () => projectile.remainingDelay < 0);
+        actor = new Actor(projectile);
         this.knownActors.set(projectile, actor);
       }
     });

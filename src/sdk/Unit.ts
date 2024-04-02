@@ -433,6 +433,11 @@ export class Unit extends Renderable {
     return "#FFFFFF00";
   }
 
+  shouldDestroy() {
+    // this is -1 for a living npc.
+    return this.dying === 0;
+  }
+
   shouldShowAttackAnimation() {
     return (
       this.attackDelay === this.attackSpeed &&
@@ -576,9 +581,6 @@ export class Unit extends Renderable {
           1 / (projectile.remainingDelay + 1)
         ),
       };
-      projectile.currentHeight = Pathing.linearInterpolation(projectile.currentHeight, projectile.to.height * 0.75, 1 / (projectile.remainingDelay + 1));
-      projectile.remainingDelay--;
-
       projectile.onTick();
 
       if (projectile.remainingDelay === 0) {
