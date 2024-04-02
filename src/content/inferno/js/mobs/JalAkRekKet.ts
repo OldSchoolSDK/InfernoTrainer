@@ -93,7 +93,7 @@ export class JalAkRekKet extends Mob {
     return JalAkRekKetImage;
   }
 
-  get sound(): string {
+  get sound() {
     return null;
   }
 

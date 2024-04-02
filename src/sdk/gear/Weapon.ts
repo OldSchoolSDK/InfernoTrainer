@@ -11,6 +11,7 @@ import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Random } from "../Random";
+import { Sound } from "../utils/SoundCache";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -39,8 +40,8 @@ export class Weapon extends Equipment{
   damage: number;
   damageRoll: number;
   lastHitHit = false;
-  selected = false;
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+  override selected = false;
+  override inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
 
 
 
@@ -65,15 +66,15 @@ export class Weapon extends Equipment{
     return AttackStylesController.controller.getAttackStyleForType(this.attackStyleCategory(), this);
   }
 
-  assignToPlayer(player: Player) {
+  override assignToPlayer(player: Player) {
     player.equipment.weapon = this;
     player.interruptCombat();
   }
 
-  unassignToPlayer(player: Player) {
+  override unassignToPlayer(player: Player) {
     player.equipment.weapon = null;
   }
-  currentEquipment(player: Player): Equipment {
+  override currentEquipment(player: Player): Equipment {
     return player.equipment.weapon;
   }
 
@@ -87,7 +88,7 @@ export class Weapon extends Equipment{
     // Override me
   }
   
-  inventoryLeftClick(player: Player) {
+  override inventoryLeftClick(player: Player) {
 
     const currentWeapon = player.equipment.weapon || null;
     const currentOffhand = player.equipment.offhand || null;
@@ -265,7 +266,7 @@ export class Weapon extends Equipment{
     return style === 'crush' || style === 'slash' || style === 'stab'
   }
 
-  get attackSound(): string | null {
+  get attackSound(): Sound | null {
     // Override me
     return null;
   }

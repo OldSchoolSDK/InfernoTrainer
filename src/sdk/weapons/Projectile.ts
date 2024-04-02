@@ -5,6 +5,7 @@ import chebyshev from 'chebyshev'
 import { Location } from "../Location"
 import { Unit } from '../Unit'
 import { Weapon } from '../gear/Weapon'
+import { Sound, SoundCache } from '../utils/SoundCache'
 
 export interface ProjectileOptions {
   forceSWTile?: boolean;
@@ -32,7 +33,7 @@ export class Projectile {
   /*
     This should take the player and mob object, and do chebyshev on the size of them
   */
-  constructor (weapon: Weapon, damage: number, from: Unit, to: Unit, attackStyle: string, options: ProjectileOptions = {}) {
+  constructor (weapon: Weapon, damage: number, from: Unit, to: Unit, attackStyle: string, options: ProjectileOptions = {}, sound: Sound | null = null) {
 
     this.attackStyle = attackStyle;
     this.damage = Math.floor(damage)
@@ -78,6 +79,16 @@ export class Projectile {
         this.remainingDelay = 1;
       }
     }
+    if (sound) {
+      SoundCache.play(sound);
+    }
+  }
 
+  onTick() {
+    //
+  }
+
+  onHit() {
+    //
   }
 }

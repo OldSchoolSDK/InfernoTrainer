@@ -29,6 +29,7 @@ import { Region } from "./Region";
 import { Player } from "./Player";
 import { CollisionType } from "./Collision";
 import { Renderable } from "./Renderable";
+import { Sound } from "./utils/SoundCache";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -424,7 +425,7 @@ export class Unit extends Renderable {
     return null;
   }
 
-  get sound(): string {
+  get sound(): Sound | null {
     return null;
   }
 
@@ -578,7 +579,10 @@ export class Unit extends Renderable {
       projectile.currentHeight = Pathing.linearInterpolation(projectile.currentHeight, projectile.to.height * 0.75, 1 / (projectile.remainingDelay + 1));
       projectile.remainingDelay--;
 
+      projectile.onTick();
+
       if (projectile.remainingDelay === 0) {
+        projectile.onHit();
         // Some attacks can be nullified if they land after the attackers death.
         if (
           projectile.options &&
@@ -627,7 +631,7 @@ export class Unit extends Renderable {
     // Override me
   }
 
-  draw(tickPercent, context, offset, scale, drawUnderTile) {
+  override draw(tickPercent, context, offset, scale, drawUnderTile) {
     if (this.isAnimated) {
       this.unitImage = ImageLoader.imageCache[this.image];
     }

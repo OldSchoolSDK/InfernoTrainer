@@ -10,6 +10,7 @@ import { Collision } from "../../../../sdk/Collision";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
 import { Player } from "../../../../sdk/Player";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 
 export class JalImKot extends Mob {
   mobName(): EntityName {
@@ -91,7 +92,7 @@ export class JalImKot extends Mob {
   }
 
   get sound() {
-    return MeleerSound;
+    return new Sound(MeleerSound, 0.75);
   }
 
   get color() {

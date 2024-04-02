@@ -12,6 +12,7 @@ import { EntityName } from "../../../../sdk/EntityName";
 import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { InfernoRegion } from "../InfernoRegion";
 import { Random } from "../../../../sdk/Random";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
@@ -100,7 +101,7 @@ export class JalZek extends Mob {
   }
 
   get sound() {
-    return MagerSound;
+    return new Sound(MagerSound);
   }
   attackStyleForNewAttack() {
     return "magic";

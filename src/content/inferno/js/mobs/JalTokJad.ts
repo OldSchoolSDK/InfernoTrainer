@@ -5,8 +5,6 @@ import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { AttackIndicators, Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import JadImage from "../../assets/images/jad/jad_mage_1.png";
-import JadMage from "../../assets/images/jad_mage.gif";
-import JadRange from "../../assets/images/jad_range.gif";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
@@ -16,8 +14,10 @@ import { YtHurKot } from "./YtHurKot";
 import { Collision } from "../../../../sdk/Collision";
 import { EntityName } from "../../../../sdk/EntityName";
 
-import MagicSound from "../../assets/sounds/TzTok-Jad-Magic-attack.ogg";
-import RangeSound from "../../assets/sounds/TzTok-Jad-Ranged-attack.ogg";
+import FireBreath from "../../assets/sounds/firebreath_159.ogg";
+import FireWaveCastAndFire from "../../assets/sounds/firewave_cast_and_fire_162.ogg";
+import FireWaveHit from "../../assets/sounds/firewave_hit_163.ogg";
+
 import { Random } from "../../../../sdk/Random";
 import { Region } from "../../../../sdk/Region";
 import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
@@ -34,6 +34,12 @@ interface JadUnitOptions extends UnitOptions {
   isZukWave: boolean;
 }
 
+const MageStartSound = { src: FireBreath, volume: 0.1 };
+const RangeProjectileSound = { src: FireWaveCastAndFire, volume: 0.1 };
+const MageProjectileSound = { src: FireWaveHit, volume: 0.1 };
+
+const JAD_PROJECTILE_DELAY = 3;
+
 class JadMagicWeapon extends MagicWeapon {
   attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(
@@ -43,16 +49,15 @@ class JadMagicWeapon extends MagicWeapon {
         if (overhead) {
           from.attackFeedback = AttackIndicators.BLOCKED;
         }
-
         super.attack(from, to, bonuses);
-      }, 3)
+      }, JAD_PROJECTILE_DELAY)
     );
     return true;
   }
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: 3 })
+      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: 3 }, RangeProjectileSound)
     );
   }
 }
@@ -74,7 +79,7 @@ class JadRangeWeapon extends RangedWeapon {
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 3 })
+      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 3 }, MageProjectileSound)
     );
   }
 }
@@ -229,38 +234,38 @@ export class JalTokJad extends Mob {
     ];
   }
 
-  get isAnimated() {
+  override get isAnimated() {
     return !!this.currentAnimation;
   }
 
-  get sound() {
-    return this.attackStyle === "magic" ? MagicSound : RangeSound;
+  override get sound() {
+    return this.attackStyle === "magic" ? MageStartSound : null;
   }
 
-  attackStyleForNewAttack() {
+  override attackStyleForNewAttack() {
     return Random.get() < 0.5 ? "range" : "magic";
   }
 
-  shouldShowAttackAnimation() {
+  override shouldShowAttackAnimation() {
     return (
       this.attackDelay === this.attackSpeed && this.playerPrayerScan === null
     );
   }
 
-  canMeleeIfClose() {
+  override canMeleeIfClose() {
     return "stab";
   }
 
-  magicMaxHit() {
+  override magicMaxHit() {
     return 113;
   }
 
-  attackStep() {
+  override attackStep() {
     super.attackStep();
     this.currentAnimationTick++;
   }
 
-  attack() {
+  override attack() {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE;
     if (this.attackStyle === "magic") {
@@ -272,7 +277,7 @@ export class JalTokJad extends Mob {
     this.currentAnimationTick = 0;
   }
 
-  draw(tickPercent, context, offset, scale, drawUnderTile) {
+  override draw(tickPercent, context, offset, scale, drawUnderTile) {
     if (this.currentAnimation) {
       this.currentAnimationFrame =
         (this.currentAnimationTick - 1) * JAD_FRAMES_PER_TICK +

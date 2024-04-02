@@ -5,6 +5,7 @@ import { AttackBonuses } from "../../../../sdk/gear/Weapon";
 import { Mob } from "../../../../sdk/Mob";
 import { Player } from "../../../../sdk/Player";
 import { Unit, UnitBonuses } from "../../../../sdk/Unit";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 import { ProjectileOptions } from "../../../../sdk/weapons/Projectile";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
@@ -100,7 +101,7 @@ export class JalMejRah extends Mob {
   }
 
   get sound() {
-    return BatSound;
+    return new Sound(BatSound, 0.75);
   }
 
   attackStyleForNewAttack() {

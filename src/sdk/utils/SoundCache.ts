@@ -1,5 +1,9 @@
 const LOADING_SOUND = null;
 
+export class Sound {
+  constructor(public src, public volume = 1) {}
+}
+
 export class SoundCache {
 
   static soundCache = {};
@@ -19,7 +23,7 @@ export class SoundCache {
     return this.soundCache[src] = new Audio(src);
   }
 
-  static async preload(src: string) {
+  static async preload(src: string): Promise<AudioBuffer> {
     if (SoundCache.cachedSounds[src] === LOADING_SOUND) {
       return null;
     }
@@ -28,11 +32,18 @@ export class SoundCache {
     const buffer = await response.arrayBuffer();
     const audioBuffer = await SoundCache.context.decodeAudioData(buffer);
     SoundCache.cachedSounds[src] = audioBuffer;
+    return audioBuffer;
   }
 
-  static play(src: string, volume = 1) {
+  static play({src, volume}: Sound) {
     if (this.cachedSounds[src] === undefined) {
-      new Promise(() => SoundCache.preload(src));
+      (async () => {
+        const sound = await this.preload(src);
+        // play after loading
+        if (sound) {
+          SoundCache.play({src, volume});
+        }
+      })();
       return;
     }
     if (!this.cachedSounds[src]) {
@@ -50,6 +61,5 @@ export class SoundCache {
     }
     source.connect(connect);
     source.start();
-
   }
 }

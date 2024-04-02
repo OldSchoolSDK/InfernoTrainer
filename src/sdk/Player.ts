@@ -391,7 +391,7 @@ export class Player extends Unit {
 
   playAttackSound() {
     if (Settings.playsAudio && this.equipment.weapon?.attackSound) {
-      SoundCache.play(this.equipment.weapon?.attackSound, 0.5);
+      SoundCache.play(this.equipment.weapon?.attackSound);
     }
   }
 

@@ -43,9 +43,6 @@ export class Mob extends Unit {
 
   constructor(region: Region, location: Location, options?: UnitOptions) {
     super(region, location, options);
-    if (this.sound) {
-      SoundCache.preload(this.sound);
-    }
   }
 
   get type() {
@@ -393,7 +390,7 @@ export class Mob extends Unit {
           this.location.y
         );
       attemptedVolume = Math.min(1, Math.max(0, Math.sqrt(attemptedVolume)));
-      SoundCache.play(this.sound, attemptedVolume);
+      SoundCache.play({src: this.sound.src, volume: attemptedVolume * this.sound.volume});
     }
   }
 

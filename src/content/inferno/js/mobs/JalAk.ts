@@ -14,6 +14,7 @@ import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { Unit, UnitBonuses } from "../../../../sdk/Unit";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -98,7 +99,7 @@ export class JalAk extends Mob {
   }
 
   get sound() {
-    return BlobSound;
+    return new Sound(BlobSound);
   }
   attackAnimation(tickPercent: number, context) {
     context.scale(

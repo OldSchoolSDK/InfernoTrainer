@@ -17,6 +17,7 @@ import { Location } from "../../../../sdk/Location";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
 import { Region } from "../../../../sdk/Region";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 
 class NibblerWeapon extends MeleeWeapon {
   attack(
@@ -115,7 +116,7 @@ export class JalNib extends Mob {
   }
 
   get sound() {
-    return NibblerSound;
+    return new Sound(NibblerSound, 0.15);
   }
 
   attackStyleForNewAttack() {
