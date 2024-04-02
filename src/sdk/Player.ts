@@ -766,7 +766,7 @@ export class Player extends Unit {
     return { x: perceivedX, y: perceivedY };
   }
 
-  getPerceivedLocation(tickPercent: number): Location {
+  getPerceivedLocation(tickPercent: number) {
     if (this.dying > -1) {
       tickPercent = 0;
     }
@@ -810,6 +810,7 @@ export class Player extends Unit {
     return {
       x: perceivedX,
       y: perceivedY,
+      z: 0,
     };
   }
 

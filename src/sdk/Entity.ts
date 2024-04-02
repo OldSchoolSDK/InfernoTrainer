@@ -72,7 +72,10 @@ export class Entity extends Renderable {
   }
 
   getPerceivedLocation() {
-    return this.location;
+    return {
+      ...this.location,
+      z: 0
+    };
   }
   get color() {
     return "#000073";

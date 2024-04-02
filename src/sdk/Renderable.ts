@@ -1,11 +1,11 @@
-import { Location } from "./Location";
+import { Location, Location3 } from "./Location";
 
 import { Model } from "./rendering/Model";
 
 export abstract class Renderable {
   private _selected = false;
 
-  abstract getPerceivedLocation(tickPercent: number): Location;
+  abstract getPerceivedLocation(tickPercent: number): Location3;
 
   abstract get size(): number;
 

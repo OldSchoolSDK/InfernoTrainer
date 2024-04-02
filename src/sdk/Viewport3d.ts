@@ -16,6 +16,7 @@ import { Location } from "./Location";
 import { Actor } from "./rendering/Actor";
 import _ from "lodash";
 import { Unit } from "./Unit";
+import { Projectile } from "./weapons/Projectile";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -221,12 +222,12 @@ export class Viewport3d implements ViewportDelegate {
     region.entities.forEach((entity: Entity) => {
       let actor = this.knownActors.get(entity);
       if (!actor) {
-        // this is not performant
         actor = new Actor(entity, () => entity.dying === 0);
         this.knownActors.set(entity, actor);
       }
     });
 
+    const projectiles: Projectile[] = [];
     region.players.forEach((player: Player) => {
       let actor = this.knownActors.get(player);
       if (!actor) {
@@ -236,6 +237,8 @@ export class Viewport3d implements ViewportDelegate {
       // Update the camera position relative to the player's mesh
       const v = actor.getModel().getWorldPosition();
       this.pivot.position.lerp(v, 0.1);
+      // Add all projectiles to scene
+      projectiles.push(...player.incomingProjectiles);
     });
 
     region.mobs.concat(region.newMobs).forEach((mob: Mob) => {
@@ -243,6 +246,16 @@ export class Viewport3d implements ViewportDelegate {
       if (!actor) {
         actor = new Actor(mob, () => mob.dying === 0);
         this.knownActors.set(mob, actor);
+        // Add all projectiles to scene
+        projectiles.push(...mob.incomingProjectiles);
+      }
+    });
+
+    projectiles.forEach((projectile) => {
+      let actor = this.knownActors.get(projectile);
+      if (!actor) {
+        actor = new Actor(projectile, () => projectile.remainingDelay < 0);
+        this.knownActors.set(projectile, actor);
       }
     });
 
@@ -292,11 +305,6 @@ export class Viewport3d implements ViewportDelegate {
         this.uiCanvasContext,
         SPRITE_SCALE
       );
-    });
-    units.forEach((unit) => {
-      if (unit.dying === -1) {
-        unit.drawIncomingProjectiles(this.uiCanvasContext, world.tickPercent, translator, SPRITE_SCALE);
-      }
     });
   }
 

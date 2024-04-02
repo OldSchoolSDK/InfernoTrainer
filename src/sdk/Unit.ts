@@ -236,7 +236,7 @@ export class Unit extends Renderable {
       this.location.y,
       tickPercent
     );
-    return { x: perceivedX, y: perceivedY };
+    return { x: perceivedX, y: perceivedY, z: 0 };
   }
 
   removedFromWorld() {
@@ -730,89 +730,5 @@ export class Unit extends Renderable {
         context.drawImage(overheadImg, -scale / 2, -scale * 3, scale, scale);
       }
     }
-  }
-
-  // The rendering context is the world.
-  drawIncomingProjectiles(context: OffscreenCanvasRenderingContext2D, tickPercent: number, positionTranslator: (location: Location, height: number) => Location, scale: number = Settings.tileSize) {
-    this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.options.hidden) {
-        return;
-      }
-
-      if (projectile.remainingDelay < 0) {
-        return;
-      }
-
-      const startX = projectile.currentLocation.x;
-      const startY = projectile.currentLocation.y;
-      const startHeight = projectile.currentHeight;
-      const endX = projectile.to.location.x + projectile.to.size / 2;
-      const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
-      const endHeight = projectile.to.height * 0.75;
-
-      const perceivedX = Pathing.linearInterpolation(
-        startX,
-        endX,
-        tickPercent / (projectile.remainingDelay + 1)
-      );
-      const perceivedY = Pathing.linearInterpolation(
-        startY,
-        endY,
-        tickPercent / (projectile.remainingDelay + 1)
-      );
-      const perceivedHeight = (startHeight === endHeight) ? startHeight : Pathing.linearInterpolation(
-        startHeight,
-        endHeight,
-        tickPercent / (projectile.remainingDelay + 1)
-      );
-
-      const { x: translatedX, y: translatedY } = positionTranslator({x: perceivedX, y: perceivedY}, perceivedHeight);
-      context.save();
-      context.translate(
-        translatedX,
-        translatedY
-      );
-
-      if (projectile.image) {
-        context.rotate(Math.PI);
-        context.drawImage(
-          projectile.image,
-          -scale / 2,
-          -scale / 2,
-          scale,
-          scale
-        );
-      } else {
-        context.beginPath();
-
-        context.fillStyle = "#D1BB7773";
-        if (
-          projectile.attackStyle === "slash" ||
-          projectile.attackStyle === "crush" ||
-          projectile.attackStyle === "stab"
-        ) {
-          context.fillStyle = "#FF000073";
-        } else if (projectile.attackStyle === "range") {
-          context.fillStyle = "#00FF0073";
-        } else if (projectile.attackStyle === "magic") {
-          context.fillStyle = "#0000FF73";
-        } else if (projectile.attackStyle === "heal") {
-          context.fillStyle = "#9813aa73";
-        } else {
-          console.log(
-            "[WARN] This style is not accounted for in custom coloring: ",
-            projectile.attackStyle
-          );
-        }
-        context.arc(0, 0, 5, 0, 2 * Math.PI);
-        context.fill();
-      }
-      context.restore();
-
-      // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
-      //   this.region.context.strokeStyle = 'red';
-      //   this.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
-      // }
-    });
   }
 }
