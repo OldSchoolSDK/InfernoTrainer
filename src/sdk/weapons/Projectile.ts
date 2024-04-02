@@ -20,6 +20,8 @@ export interface ProjectileOptions {
   reduceDelay?: number;
   cancelOnDeath?: boolean;
   motionInterpolator?: ProjectileMotionInterpolator;
+  // ticks until the projectile appears
+  visualDelayTicks?: number;
 }
 
 export class Projectile extends Renderable {
@@ -32,6 +34,7 @@ export class Projectile extends Renderable {
   remainingDelay: number;
   totalDelay: number;
   age = 0;
+  visualDelayTicks: number;
   startLocation: Location;
   currentLocation: Location;
   currentHeight: number;
@@ -66,6 +69,8 @@ export class Projectile extends Renderable {
     this.from = from
     this.to = to
     this.distance = 999999
+    
+    this.visualDelayTicks = options.visualDelayTicks || 0;
 
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0
@@ -142,7 +147,7 @@ export class Projectile extends Renderable {
   }
 
   get visible() {
-    return this.age < this.totalDelay;
+    return this.age >= this.visualDelayTicks && this.age < this.totalDelay;
   }
 
   getPerceivedLocation(tickPercent: number) {
@@ -153,7 +158,7 @@ export class Projectile extends Renderable {
     const endX = this.to.location.x + this.to.size / 2;
     const endY = this.to.location.y - this.to.size / 2 + 1;
     const endHeight = this.to.height * 0.75;
-    const percent = (this.age + tickPercent) / this.totalDelay;
+    const percent = ((this.age - this.visualDelayTicks) + tickPercent) / (this.totalDelay - this.visualDelayTicks);
     return this.interpolator.interpolate({x: startX, y: startY, z: startHeight}, {x: endX, y: endY, z: endHeight}, percent);
   }
 
@@ -166,7 +171,7 @@ export class Projectile extends Renderable {
   }
 
   create3dModel() {
-    if (this.color === "#000000") {
+    if (this.options.hidden || this.color === "#000000") {
       return null;
     }
     return BasicModel.sphereForRenderable(this);

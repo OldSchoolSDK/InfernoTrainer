@@ -6,9 +6,9 @@ import { ItemName } from "../../sdk/ItemName";
 import { Unit } from '../../sdk/Unit';
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController';
-import { ProjectileOptions } from '../../sdk/weapons/Projectile';
+import { Projectile, ProjectileOptions } from '../../sdk/weapons/Projectile';
 
-import BPAttackSound from '../../assets/sounds/blowpipe.ogg';
+import BPAttackSound from '../../assets/sounds/dart_2696.ogg';
 import { Sound, SoundCache } from '../../sdk/utils/SoundCache';
 
 export class Blowpipe extends RangedWeapon {
@@ -40,14 +40,12 @@ export class Blowpipe extends RangedWeapon {
         slayer: 0
       }
     }
-    SoundCache.preload(BPAttackSound);
+    SoundCache.preload(this.attackSound.src);
   }
-
 
   calculateHitDelay(distance: number) {
     return Math.floor(distance / 6) + 1;
   }
-
 
   attackStyles() {
     return [
@@ -125,7 +123,12 @@ export class Blowpipe extends RangedWeapon {
   }
 
   get attackSound() {
-    return new Sound(BPAttackSound, 0.5);
+    return new Sound(BPAttackSound, 0.15);
   }
 
+  registerProjectile(from: Unit, to: Unit) {
+    to.addProjectile(
+      new Projectile(this, this.damage, from, to, "range", { visualDelayTicks: 1 }, this.attackSound)
+    );
+  }
 }

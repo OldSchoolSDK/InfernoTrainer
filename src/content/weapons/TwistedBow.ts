@@ -7,6 +7,9 @@ import { ItemName } from "../../sdk/ItemName"
 import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
 import { AttackBonuses } from '../../sdk/gear/Weapon'
 
+import TwistedBowAttackSound from '../../assets/sounds/shortbow_2702.ogg';
+import { Sound, SoundCache } from '../../sdk/utils/SoundCache'
+
 export class TwistedBow extends RangedWeapon {
   constructor() {
     super();
@@ -36,6 +39,7 @@ export class TwistedBow extends RangedWeapon {
         slayer: 0
       }
     }
+    SoundCache.preload(this.attackSound.src);
   }
 
 
@@ -68,6 +72,9 @@ export class TwistedBow extends RangedWeapon {
     return 5
   }
   
+  get attackSound() {
+    return new Sound(TwistedBowAttackSound, 0.1);
+  }
   
 
   get weight(): number {
