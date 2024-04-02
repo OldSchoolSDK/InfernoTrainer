@@ -12,6 +12,7 @@ import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 class JalXilWeapon extends RangedWeapon {
   registerProjectile(from: Unit, to: Unit) {
@@ -106,6 +107,10 @@ export class JalXil extends Mob {
 
   get sound() {
     return new Sound(RangerSound);
+  }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
   }
 
   shouldChangeAggro(projectile: Projectile) {

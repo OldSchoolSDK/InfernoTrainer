@@ -13,6 +13,7 @@ import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { InfernoRegion } from "../InfernoRegion";
 import { Random } from "../../../../sdk/Random";
 import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
@@ -103,6 +104,11 @@ export class JalZek extends Mob {
   get sound() {
     return new Sound(MagerSound);
   }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
+  }
+
   attackStyleForNewAttack() {
     return "magic";
   }

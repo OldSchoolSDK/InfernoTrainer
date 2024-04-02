@@ -29,7 +29,7 @@ import { Region } from "./Region";
 import { Player } from "./Player";
 import { CollisionType } from "./Collision";
 import { Renderable } from "./Renderable";
-import { Sound } from "./utils/SoundCache";
+import { Sound, SoundCache } from "./utils/SoundCache";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -425,8 +425,14 @@ export class Unit extends Renderable {
     return null;
   }
 
+  /** Sounds **/
+
   get sound(): Sound | null {
     return null;
+  }
+
+  hitSound(damaged: boolean): Sound | null {
+    return null; 
   }
 
   get color(): string {
@@ -606,6 +612,10 @@ export class Unit extends Renderable {
           }
         } else {
           this.currentStats.hitpoint -= projectile.damage;
+        }
+        const sound = this.hitSound(projectile.damage > 0);
+        if (sound) {
+          SoundCache.play(sound);
         }
         this.damageTaken();
         if (this.shouldChangeAggro(projectile)) {

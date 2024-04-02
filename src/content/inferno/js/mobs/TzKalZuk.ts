@@ -18,6 +18,12 @@ import { JalMejJak } from "./JalMejJak";
 import { JalTokJad } from "./JalTokJad";
 import { Viewport } from "../../../../sdk/Viewport";
 import { Region } from "../../../../sdk/Region";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+
+
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage);
@@ -31,8 +37,13 @@ class ZukWeapon extends MagicWeapon {
     return false;
   }
   registerProjectile(from: Unit, to: Unit) {
+    const sound: Sound = new Sound(ZukAttackSound, 0.0025);
+    if (to.isPlayer) {
+      // louder!
+      sound.volume = 0.1;
+    }
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 })
+      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 }, sound)
     );
   }
 }
@@ -296,6 +307,10 @@ export class TzKalZuk extends Mob {
 
   get sound() {
     return null;
+  }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
   }
 
   attackAnimation(
