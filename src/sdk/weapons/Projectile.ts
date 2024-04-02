@@ -17,6 +17,8 @@ export interface ProjectileMotionInterpolator {
 export interface ProjectileOptions {
   forceSWTile?: boolean;
   hidden?: boolean;
+  // overriddes reduceDelay
+  setDelay?: number;
   reduceDelay?: number;
   cancelOnDeath?: boolean;
   motionInterpolator?: ProjectileMotionInterpolator;
@@ -99,6 +101,7 @@ export class Projectile extends Renderable {
         }
       }
     }
+    this.remainingDelay = options.setDelay || this.remainingDelay;
     this.totalDelay = this.remainingDelay;
     if (sound) {
       SoundCache.play(sound);
@@ -152,13 +155,14 @@ export class Projectile extends Renderable {
 
   getPerceivedLocation(tickPercent: number) {
     // default linear
-    const startX = this.startLocation.x;
-    const startY = this.startLocation.y;
+    const startX = this.startLocation.x + this.size / 2;
+    const startY = this.startLocation.y - this.size / 2;
     const startHeight = this.currentHeight;
-    const endX = this.to.location.x + this.to.size / 2;
-    const endY = this.to.location.y - this.to.size / 2 + 1;
+    const endX = this.to.location.x + this.size / 2;
+    const endY = this.to.location.y - this.size / 2 + 1;
     const endHeight = this.to.height * 0.75;
     const percent = ((this.age - this.visualDelayTicks) + tickPercent) / (this.totalDelay - this.visualDelayTicks);
+    console.log(percent);
     return this.interpolator.interpolate({x: startX, y: startY, z: startHeight}, {x: endX, y: endY, z: endHeight}, percent);
   }
 

@@ -11,7 +11,7 @@ import { find } from "lodash";
 import { EntityName } from "../../../../sdk/EntityName";
 import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import ZukAttackImage from "../../assets/images/zuk_attack.png";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
+import { Projectile, ProjectileOptions } from "../../../../sdk/weapons/Projectile";
 import { JalZek } from "./JalZek";
 import { JalXil } from "./JalXil";
 import { JalMejJak } from "./JalMejJak";
@@ -43,9 +43,32 @@ class ZukWeapon extends MagicWeapon {
       sound.volume = 0.1;
     }
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 }, sound)
+      new ZukProjectile(this, this.damage, from, to, "range", { setDelay: 3, visualDelayTicks: 1 }, sound)
     );
   }
+}
+
+class ZukProjectile extends Projectile {
+  constructor(
+    weapon: ZukWeapon,
+    damage: number,
+    from: Unit,
+    to: Unit,
+    attackStyle: string,
+    options: ProjectileOptions,
+    sound: Sound
+  ) {
+    super(weapon, damage, from, to, attackStyle, options, sound);
+  }
+
+  get size() {
+    return 2;
+  }
+
+  get color() {
+    return "#FFAA00";
+  }
+
 }
 
 export class TzKalZuk extends Mob {
