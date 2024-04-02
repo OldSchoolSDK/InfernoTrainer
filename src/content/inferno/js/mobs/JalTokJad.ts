@@ -27,6 +27,8 @@ import {
   JAD_RANGE_FRAMES,
 } from "./JalTokJadAnim";
 import { BasicModel } from "../../../../sdk/rendering/BasicModel";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -279,6 +281,11 @@ export class JalTokJad extends Mob {
     super.attackStep();
     this.currentAnimationTick++;
   }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
+  }
+
 
   attack() {
     super.attack();
