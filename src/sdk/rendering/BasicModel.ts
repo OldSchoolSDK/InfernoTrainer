@@ -17,8 +17,13 @@ export class BasicModel implements Model {
     return new BasicModel(r.size, r.height, r.colorHex, r);
   }
 
+  static forRenderableCentered(r: Renderable) {
+    return new BasicModel(r.size, r.height, r.colorHex, r, {x: r.size / 2, z: -r.size / 2});
+  }
+
+  // centered sphere
   static sphereForRenderable(r: Renderable) {
-    return new BasicModel(r.size, r.height, r.colorHex, r, {x: 0, z: -r.size / 2}, BasicModelShape.SPHERE);
+    return new BasicModel(r.size, r.height, r.colorHex, r, {}, BasicModelShape.SPHERE);
   }
 
   constructor(

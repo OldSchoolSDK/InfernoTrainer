@@ -24,6 +24,8 @@ export interface ProjectileOptions {
   motionInterpolator?: ProjectileMotionInterpolator;
   // ticks until the projectile appears
   visualDelayTicks?: number;
+  color?: string;
+  size?: number;
 }
 
 export class Projectile extends Renderable {
@@ -49,6 +51,7 @@ export class Projectile extends Renderable {
   interpolator: ProjectileMotionInterpolator;
 
   _color: string;
+  _size: number;
 
   /*
     This should take the player and mob object, and do chebyshev on the size of them
@@ -106,7 +109,9 @@ export class Projectile extends Renderable {
     if (sound) {
       SoundCache.play(sound);
     }
-    this._color = this.getColor();
+
+    this._color = this.options.color || this.getColor();
+    this._size = this.options.size || 0.5;
 
     if (this.options.motionInterpolator) {
       this.interpolator = this.options.motionInterpolator;
@@ -154,20 +159,19 @@ export class Projectile extends Renderable {
   }
 
   getPerceivedLocation(tickPercent: number) {
-    // default linear
-    const startX = this.startLocation.x + this.size / 2;
-    const startY = this.startLocation.y - this.size / 2;
+    // pass in the CENTERED position of the projectile
+    const startX = this.startLocation.x
+    const startY = this.startLocation.y;
     const startHeight = this.currentHeight;
-    const endX = this.to.location.x + this.size / 2;
-    const endY = this.to.location.y - this.size / 2 + 1;
+    const endX = this.to.location.x + this.to.size / 2 - 1; // why? 2am me doesn't know
+    const endY = this.to.location.y - this.to.size / 2 + 1;
     const endHeight = this.to.height * 0.75;
     const percent = ((this.age - this.visualDelayTicks) + tickPercent) / (this.totalDelay - this.visualDelayTicks);
-    console.log(percent);
     return this.interpolator.interpolate({x: startX, y: startY, z: startHeight}, {x: endX, y: endY, z: endHeight}, percent);
   }
 
   get size(): number {
-    return 0.5;
+    return this._size;
   }
 
   get color(): string {
@@ -175,7 +179,7 @@ export class Projectile extends Renderable {
   }
 
   create3dModel() {
-    if (this.options.hidden|| !this.attackStyle || this.color === "#000000" ) {
+    if (this.options.hidden || !this.attackStyle || this.color === "#000000" ) {
       return null;
     }
     return BasicModel.sphereForRenderable(this);
@@ -233,6 +237,24 @@ export class ArcProjectionMotionInterpolator implements ProjectileMotionInterpol
       percent
     );
     const perceivedHeight = Math.sin(percent * Math.PI) * this.height + (endHeight - startHeight) + startHeight;
+    return { x: perceivedX, y: perceivedY, z: perceivedHeight }
+  }
+}
+
+
+export class CeilingFallMotionInterpolator implements ProjectileMotionInterpolator {
+  constructor(private height: number) {}
+
+  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+    const startHeight = to.z + this.height;
+    const endX = to.x;
+    const endY = to.y;
+    const endHeight = to.z;
+
+    const perceivedX = endX;
+    const perceivedY = endY;
+    // Round to make it a bit jerky
+    const perceivedHeight = (Math.round(percent * 10) / 10) * (endHeight - startHeight) + startHeight;
     return { x: perceivedX, y: perceivedY, z: perceivedHeight }
   }
 }

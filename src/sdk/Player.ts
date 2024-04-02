@@ -23,7 +23,11 @@ import { PrayerController } from "./PrayerController";
 import { AmmoType } from "./gear/Ammo";
 import { Region } from "./Region";
 import { Viewport } from "./Viewport";
-import { SoundCache } from "./utils/SoundCache";
+import { Sound, SoundCache } from "./utils/SoundCache";
+
+import LeatherHit from "../assets/sounds/hit.ogg";
+import HumanHit from "../assets/sounds/human_hit_513.ogg";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
@@ -618,6 +622,10 @@ export class Player extends Unit {
       this.moveTorwardsDestination();
     }
     this.frozen--;
+  }
+
+  hitSound(damaged: boolean): Sound | null {
+    return damaged ? new Sound(HumanHit, 0.10) : new Sound(LeatherHit, 0.15); 
   }
 
   damageTaken() {

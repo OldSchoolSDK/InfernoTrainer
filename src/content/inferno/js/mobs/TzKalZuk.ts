@@ -49,18 +49,6 @@ class ZukWeapon extends MagicWeapon {
 }
 
 class ZukProjectile extends Projectile {
-  constructor(
-    weapon: ZukWeapon,
-    damage: number,
-    from: Unit,
-    to: Unit,
-    attackStyle: string,
-    options: ProjectileOptions,
-    sound: Sound
-  ) {
-    super(weapon, damage, from, to, attackStyle, options, sound);
-  }
-
   get size() {
     return 2;
   }
@@ -68,7 +56,6 @@ class ZukProjectile extends Projectile {
   get color() {
     return "#FFAA00";
   }
-
 }
 
 export class TzKalZuk extends Mob {

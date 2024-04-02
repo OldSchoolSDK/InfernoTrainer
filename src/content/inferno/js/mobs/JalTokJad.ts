@@ -8,7 +8,7 @@ import JadImage from "../../assets/images/jad/jad_mage_1.png";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { ArcProjectionMotionInterpolator, Projectile } from "../../../../sdk/weapons/Projectile";
+import { ArcProjectionMotionInterpolator, CeilingFallMotionInterpolator, Projectile } from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { YtHurKot } from "./YtHurKot";
 import { Collision } from "../../../../sdk/Collision";
@@ -26,6 +26,7 @@ import {
   JAD_MAGE_FRAMES,
   JAD_RANGE_FRAMES,
 } from "./JalTokJadAnim";
+import { BasicModel } from "../../../../sdk/rendering/BasicModel";
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -57,7 +58,7 @@ class JadMagicWeapon extends MagicWeapon {
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: JAD_PROJECTILE_DELAY, motionInterpolator: new ArcProjectionMotionInterpolator(1) }, MageProjectileSound)
+      new Projectile(this, this.damage, from, to, "magic", { reduceDelay: JAD_PROJECTILE_DELAY, motionInterpolator: new ArcProjectionMotionInterpolator(1), color: "#FFAA00", size: 2 }, MageProjectileSound)
     );
   }
 }
@@ -79,8 +80,22 @@ class JadRangeWeapon extends RangedWeapon {
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", { reduceDelay: JAD_PROJECTILE_DELAY}, RangeProjectileSound)
+      new JadRangeProjectile(this, this.damage, from, to, "range", { reduceDelay: JAD_PROJECTILE_DELAY, motionInterpolator: new CeilingFallMotionInterpolator(8) }, RangeProjectileSound)
     );
+  }
+}
+
+class JadRangeProjectile extends Projectile {
+  get color() {
+    return "#333333";
+  }
+
+  get size() {
+    return 1;
+  }
+
+  create3dModel() {
+    return BasicModel.forRenderableCentered(this);
   }
 }
 
