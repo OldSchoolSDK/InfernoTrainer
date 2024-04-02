@@ -826,7 +826,8 @@ export class Player extends Unit {
     tickPercent: number,
     offset: Location,
     context: OffscreenCanvasRenderingContext2D,
-    scale: number
+    scale: number,
+    hitsplatsAbove: boolean
   ) {
     if (this.dying > -1) {
       return;
@@ -839,7 +840,7 @@ export class Player extends Unit {
       this.region.context.rotate(Math.PI);
     }
     this.drawHPBar(context, scale);
-    this.drawHitsplats(context, scale);
+    this.drawHitsplats(context, scale, hitsplatsAbove);
     this.drawOverheadPrayers(context, scale);
     context.fillStyle = "black";
     context.fillText(`${this.location.x},${this.location.y}`, 0, 0);

@@ -303,7 +303,8 @@ export class Viewport3d implements ViewportDelegate {
         world.tickPercent,
         get2dOffset(r),
         this.uiCanvasContext,
-        SPRITE_SCALE
+        SPRITE_SCALE,
+        false,
       );
     });
   }

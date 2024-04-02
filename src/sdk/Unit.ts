@@ -658,7 +658,7 @@ export class Unit extends Renderable {
     context.fillStyle = "red";
     context.fillRect(
       (-this.size / 2) * scale,
-      (-this.size / 2) * scale,
+      -(this.size / 2) * scale,
       scale * this.size,
       5
     );
@@ -670,7 +670,7 @@ export class Unit extends Renderable {
     context.fillRect((-this.size / 2) * scale, (-this.size / 2) * scale, w, 5);
   }
 
-  drawHitsplats(context: OffscreenCanvasRenderingContext2D, scale: number) {
+  drawHitsplats(context: OffscreenCanvasRenderingContext2D, scale: number, above: boolean) {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -679,6 +679,10 @@ export class Unit extends Renderable {
     ];
 
     let projectileCounter = 0;
+    let verticalOffset = -((this.size + 1) * scale) / 2;
+    if (!above) {
+      verticalOffset *= -1;
+    }
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.remainingDelay > 0) {
         return;
@@ -710,7 +714,7 @@ export class Unit extends Renderable {
         context.drawImage(
           image,
           projectile.offsetX - 12,
-          -((this.size + 1) * scale) / 2 - projectile.offsetY,
+          verticalOffset - projectile.offsetY,
           24,
           23
         );
@@ -720,7 +724,7 @@ export class Unit extends Renderable {
         context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
-          -((this.size + 1) * scale) / 2 - projectile.offsetY + 15
+          verticalOffset - projectile.offsetY + 15
         );
         context.textAlign = "left";
       }

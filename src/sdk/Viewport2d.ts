@@ -52,7 +52,8 @@ export class Viewport2d implements ViewportDelegate {
           world.tickPercent,
           getOffset(mob),
           mob.region.context,
-          Settings.tileSize
+          Settings.tileSize,
+          true,
         )
       );
 
@@ -61,7 +62,8 @@ export class Viewport2d implements ViewportDelegate {
           world.tickPercent,
           getOffset(player),
           player.region.context,
-          Settings.tileSize
+          Settings.tileSize,
+          true,
         );
       });
     

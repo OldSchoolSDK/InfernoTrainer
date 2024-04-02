@@ -44,7 +44,8 @@ export abstract class Renderable {
     tickPercent: number,
     screenPosition: Location,
     context: OffscreenCanvasRenderingContext2D,
-    scale: number
+    scale: number,
+    hitsplatAbove = true,
   ) {
     // Override me
   }

@@ -45,7 +45,7 @@ export class Mob extends Unit {
     super(region, location, options);
   }
 
-  get type() {
+  override get type() {
     return UnitTypes.MOB;
   }
 
@@ -53,7 +53,7 @@ export class Mob extends Unit {
     return true;
   }
 
-  setStats() {
+  override setStats() {
     // non boosted numbers
     this.stats = {
       attack: 99,
@@ -75,7 +75,7 @@ export class Mob extends Unit {
     };
   }
 
-  get bonuses(): UnitBonuses {
+  override get bonuses(): UnitBonuses {
     return {
       attack: {
         stab: 0,
@@ -100,7 +100,7 @@ export class Mob extends Unit {
     };
   }
 
-  movementStep() {
+  override movementStep() {
     if (this.dying === 0) {
       return;
     }
@@ -294,7 +294,7 @@ export class Mob extends Unit {
     return "";
   }
 
-  attackStep() {
+  override attackStep() {
     if (this.spawnDelay > 0) {
       return;
     }
@@ -394,11 +394,11 @@ export class Mob extends Unit {
     }
   }
 
-  get combatLevel() {
+  override get combatLevel() {
     return 99;
   }
 
-  contextActions(region: Region, x: number, y: number) {
+  override contextActions(region: Region, x: number, y: number) {
     const actions = [
       {
         text: [
@@ -477,7 +477,7 @@ export class Mob extends Unit {
     );
   }
 
-  draw(
+  override draw(
     tickPercent: number,
     context: OffscreenCanvasRenderingContext2D,
     offset: Location,
@@ -579,7 +579,7 @@ export class Mob extends Unit {
       context.fillRect(location.x * scale, location.y * scale, scale, scale);
     });*/
   }
-  drawUILayer(tickPercent, offset, context, scale) {
+  override drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove) {
     context.save();
     context.translate(offset.x, offset.y);
     if (Settings.rotated === "south") {
@@ -587,17 +587,17 @@ export class Mob extends Unit {
     }
 
     this.drawHPBar(context, scale);
-    this.drawHitsplats(context, scale);
+    this.drawHitsplats(context, scale, hitsplatsAbove);
     this.drawOverheadPrayers(context, scale);
 
     context.restore();
   }
 
-  create3dModel(): Model {
+  override create3dModel(): Model {
     return CanvasSpriteModel.forRenderable(this);
   }
 
-  get color() {
+  override get color() {
     return "#FF0000";
   }
 }
