@@ -60,7 +60,7 @@ export class Viewport3d implements ViewportDelegate {
     this.uiCanvasContext = this.uiCanvas.getContext("2d");
 
     this.camera = new THREE.PerspectiveCamera(
-      90,
+      70,
       this.canvasDimensions.width / this.canvasDimensions.height,
       0.1,
       1000
