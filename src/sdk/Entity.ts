@@ -27,7 +27,7 @@ export class Entity extends Renderable {
   }
 
   shouldDestroy() {
-    return false;
+    return this.dying === 0;
   }
 
   get size() {

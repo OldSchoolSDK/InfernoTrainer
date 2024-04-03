@@ -29,6 +29,7 @@ import LeatherHit from "../assets/sounds/hit.ogg";
 import HumanHit from "../assets/sounds/human_hit_513.ogg";
 import { Model } from "./rendering/Model";
 import { BasicModel } from "./rendering/BasicModel";
+import { TileMarker } from "../content/TileMarker";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -62,6 +63,9 @@ export class Player extends Unit {
 
   path: any;
 
+  clickMarker: ClickMarker | null = null;
+  trueTileMarker: ClickMarker;
+
   constructor(region: Region, location: Location, options: UnitOptions = {}) {
     super(region, location, options);
 
@@ -74,6 +78,8 @@ export class Player extends Unit {
     this.setUnitOptions(options);
 
     this.prayerController = new PrayerController(this);
+    this.trueTileMarker = new ClickMarker(this.region, this.location);
+    this.region.addEntity(this.trueTileMarker);
   }
 
   contextActions(region: Region, x: number, y: number) {
@@ -343,6 +349,11 @@ export class Player extends Unit {
     } else {
       this.destinationLocation = { x, y };
     }
+    if (!this.clickMarker) {
+      this.clickMarker = new ClickMarker(this.region, this.destinationLocation);
+      this.region.addEntity(this.clickMarker);
+    }
+    this.clickMarker.location = this.destinationLocation;
   }
 
   attack(): boolean {
@@ -537,7 +548,7 @@ export class Player extends Unit {
     }
   }
 
-  moveTorwardsDestination() {
+  moveTowardsDestination() {
     // Actually move the player
 
     this.perceivedLocation = this.location;
@@ -578,8 +589,16 @@ export class Player extends Unit {
       this.aggro
     );
     this.location = { x: path.x, y: path.y };
+    if (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y) {
+      if (this.clickMarker) {
+        this.clickMarker.remove();
+        this.region.removeEntity(this.clickMarker);
+        this.clickMarker = null;
+      }
+    }
 
     this.path = path.path;
+    this.trueTileMarker.location = this.location;
   }
 
   takeSeekingItem() {
@@ -621,7 +640,7 @@ export class Player extends Unit {
     if (!this.isFrozen()) {
       this.determineDestination();
 
-      this.moveTorwardsDestination();
+      this.moveTowardsDestination();
     }
     this.frozen--;
   }
@@ -844,12 +863,20 @@ export class Player extends Unit {
     this.drawHPBar(context, scale);
     this.drawHitsplats(context, scale, hitsplatsAbove);
     this.drawOverheadPrayers(context, scale);
-    context.fillStyle = "black";
-    context.fillText(`${this.location.x},${this.location.y}`, 0, 0);
     context.restore();
   }
 
   create3dModel(): Model {
     return BasicModel.forRenderable(this);
+  }
+}
+
+
+class ClickMarker extends TileMarker {
+  constructor(region: Region, location: Location) {
+    super(region, location, "#FFFFFF", 1, false);
+  }
+  remove() {
+    this.dying = 0;
   }
 }
