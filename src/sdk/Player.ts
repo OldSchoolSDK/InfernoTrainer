@@ -64,6 +64,7 @@ export class Player extends Unit {
   path: any;
 
   clickMarker: ClickMarker | null = null;
+  aggroMarker: ClickMarker | null = null;
   trueTileMarker: ClickMarker;
 
   constructor(region: Region, location: Location, options: UnitOptions = {}) {
@@ -349,11 +350,6 @@ export class Player extends Unit {
     } else {
       this.destinationLocation = { x, y };
     }
-    if (!this.clickMarker) {
-      this.clickMarker = new ClickMarker(this.region, this.destinationLocation);
-      this.region.addEntity(this.clickMarker);
-    }
-    this.clickMarker.location = this.destinationLocation;
   }
 
   attack(): boolean {
@@ -394,7 +390,7 @@ export class Player extends Unit {
           this.playAttackSound();
           return this.equipment.weapon.attack(
             this,
-            this.aggro as Unit /* hack */,
+            this.aggro /* hack */,
             bonuses
           );
         }
@@ -541,6 +537,7 @@ export class Player extends Unit {
           Pathing.dist(this.location.x, this.location.y, point.x, point.y)
         );
       } else {
+        // stop moving
         this.destinationLocation = this.location;
       }
     } else if (this.seekingItem) {
@@ -589,14 +586,18 @@ export class Player extends Unit {
       this.aggro
     );
     this.location = { x: path.x, y: path.y };
-    if (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y) {
-      if (this.clickMarker) {
-        this.clickMarker.remove();
-        this.region.removeEntity(this.clickMarker);
-        this.clickMarker = null;
-      }
+    if (this.clickMarker && this.location.x === path.destination.x && this.location.y === path.destination.y) {
+      this.clickMarker.remove();
+      this.region.removeEntity(this.clickMarker);
+      this.clickMarker = null;
+    } else if (!this.clickMarker) {
+      this.clickMarker = new ClickMarker(this.region, path.destination);
+      this.region.addEntity(this.clickMarker);
+    } else {
+        this.clickMarker.location = this.aggro ? path.destination : this.destinationLocation;
     }
 
+    // save the next 2 steps for interpolation purposes
     this.path = path.path;
     this.trueTileMarker.location = this.location;
   }

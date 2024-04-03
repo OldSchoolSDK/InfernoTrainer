@@ -93,23 +93,23 @@ export class Pathing {
     return !collision
   }
 
-  static constructPath (region: Region, startPoint: Location, endPoint: Location) {
+  static constructPath (region: Region, startPoint: Location, endPoint: Location): Location[] {
     // if (endPoint === -1) {
     //   return []
     // }
 
-    const x = startPoint.x
-    const y = startPoint.y
-    const toX = endPoint.x
-    const toY = endPoint.y
+    const x = startPoint.x;
+    const y = startPoint.y;
+    const toX = endPoint.x;
+    const toY = endPoint.y;
     if (!Pathing.canTileBePathedTo(region, toX, toY, 1)) {
       return []
     }
 
-    const pathTiles = []
+    const pathTiles = [];
 
-    let pathX = x
-    let pathY = y
+    let pathX = x;
+    let pathY = y;
 
     const nodes: PathingNode[] = [
       { x, y, parent: null }
@@ -199,10 +199,10 @@ export class Pathing {
   }
 
   static path (region: Region, startPoint: Location, endPoint: Location, speed: number, seeking: Unit) {
-    let x, y
+    let x: number, y: number;
     const path = Pathing.constructPath(region, startPoint, endPoint)
     if (path.length === 0) {
-      return { x: startPoint.x, y: startPoint.y,  path: [] }
+      return { x: startPoint.x, y: startPoint.y, path: [] }
     }
     if (seeking && Collision.collidesWithMob(region, path[0].x, path[0].y, 1, seeking)) {
       path.shift()
@@ -218,13 +218,15 @@ export class Pathing {
 
     if (path.length <= speed) {
       // Step to the destination
-      x = path[0].x
-      y = path[0].y
+      x = path[0].x;
+      y = path[0].y;
     } else {
       // Move two steps forward
-      x = path[path.length - speed - 1].x
-      y = path[path.length - speed - 1].y
+      x = path[path.length - speed - 1].x;
+      y = path[path.length - speed - 1].y;
     }
-    return { x, y, path: path.reverse().slice(1, 3) }
+    const destination = path[0];
+    path.reverse();
+    return { x, y, path: path.slice(1, 3), destination }
   }
 }

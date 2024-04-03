@@ -108,7 +108,7 @@ if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   );
 }
 
-const randomPillar = (shuffle(selectedRegion.entities) || [null])[0]; // Since we've only added pillars this is safe. Do not move to after movement blockers.
+const randomPillar = (shuffle(selectedRegion.entities.filter((entity) => entity.entityName() === EntityName.PILLAR)) || [null])[0]; // Since we've only added pillars this is safe. Do not move to after movement blockers.
 
 for (let x = 10; x < 41; x++) {
   selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 13 }));

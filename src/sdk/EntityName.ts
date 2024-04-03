@@ -15,5 +15,6 @@ export enum EntityName {
   JAL_AK_REK_XIL = 'Jal-AkRek-Xil',
   JAL_AK_REK_MEJ = 'Jal-AkRek-Mej',
   JAL_AK_REK_KET = 'Jal-AkRek-Ket',
-  JAL_AK = 'Jal-Ak'
+  JAL_AK = 'Jal-Ak',
+  PILLAR = 'Pillar',
 }
