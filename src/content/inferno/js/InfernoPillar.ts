@@ -11,6 +11,8 @@ import { Location } from "../../../sdk/Location";
 import { ImageLoader } from "../../../sdk/utils/ImageLoader";
 import { DelayedAction } from "../../../sdk/DelayedAction";
 import { Region } from "../../../sdk/Region";
+import { Model } from "../../../sdk/rendering/Model";
+import { BasicModel } from "../../../sdk/rendering/BasicModel";
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -228,5 +230,9 @@ export class InfernoPillar extends Entity {
     if (northPillar) {
       region.addEntity(new InfernoPillar(region, { x: 28, y: 21 }));
     }
+  }
+
+  create3dModel(): Model {
+    return BasicModel.forRenderable(this);
   }
 }
