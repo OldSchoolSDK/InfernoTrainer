@@ -3,8 +3,6 @@ import { Model } from "./Model";
 import { Renderable } from "../Renderable";
 import { Location } from "../Location";
 
-const CANVAS_TILE_SIZE = 20;
-
 export class TileMarkerModel implements Model {
   static forRenderable(r: Renderable) {
     return new TileMarkerModel(r);
@@ -16,7 +14,7 @@ export class TileMarkerModel implements Model {
     const { size } = renderable;
     const lineMaterial = new THREE.LineBasicMaterial({
       color: renderable.colorHex,
-      linewidth: 5,
+      linewidth: 3,
     });
     const points = [
       new THREE.Vector3(0, 0, 0),

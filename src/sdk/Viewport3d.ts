@@ -17,6 +17,7 @@ import { Actor } from "./rendering/Actor";
 import _ from "lodash";
 import { Unit } from "./Unit";
 import { Projectile } from "./weapons/Projectile";
+import { TileMarkerModel } from "./rendering/TileMarkerModel";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -43,10 +44,7 @@ export class Viewport3d implements ViewportDelegate {
   private knownActors: Map<Renderable, Actor> = new Map();
 
   private selectedTile: Location | null = null;
-  private selectedTileMesh = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 0.1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x000000 })
-  );
+  private selectedTileMesh: THREE.LineSegments;
 
   constructor(faceCameraSouth = true) {
     this.scene = new THREE.Scene();
@@ -91,6 +89,25 @@ export class Viewport3d implements ViewportDelegate {
     this.pivot.add(this.yaw);
     this.yaw.add(this.pitch);
     this.pitch.add(this.camera);
+
+
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: "#FFFFFF",
+      linewidth: 2,
+    });
+    const points = [
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(1, 0, -1),
+      new THREE.Vector3(1, 0, -1),
+      new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(0, 0, 0),
+    ];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.selectedTileMesh = new THREE.LineSegments(geometry, lineMaterial);
+    this.scene.add(this.selectedTileMesh);
 
     this.animate();
   }
@@ -271,9 +288,9 @@ export class Viewport3d implements ViewportDelegate {
 
     // highlight selected tile
     if (this.selectedTile) {
-      this.selectedTileMesh.position.x = this.selectedTile.x;
-      this.selectedTileMesh.position.y = -0.4;
-      this.selectedTileMesh.position.z = this.selectedTile.y - 1;
+      this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
+      this.selectedTileMesh.position.y = -0.49;
+      this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;
     }
   }
 
