@@ -15,7 +15,8 @@ export class Actor {
       return;
     }
     const worldLocation = this.unit.getPerceivedLocation(tickPercent);
-    this.model.draw(scene, tickPercent, worldLocation);
+    const rotationRadians = this.unit.getPerceivedRotation(tickPercent);
+    this.model.draw(scene, tickPercent, worldLocation, rotationRadians);
   }
 
   shouldRemove() {

@@ -81,6 +81,11 @@ export class Entity extends Renderable {
       z: 0
     };
   }
+
+  getPerceivedRotation() {
+    return 0;
+  }
+
   get color() {
     return "#000073";
   }

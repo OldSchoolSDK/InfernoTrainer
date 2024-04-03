@@ -7,6 +7,12 @@ export abstract class Renderable {
 
   abstract getPerceivedLocation(tickPercent: number): Location3;
 
+  /**
+   * return the angle of this renderable in radians.
+   * West is zero degrees, and increasing values represent clockwise rotation.
+   */
+  abstract getPerceivedRotation(tickPercent: number): number;
+
   abstract get size(): number;
 
   get height(): number {

@@ -41,7 +41,7 @@ export class BasicModel implements Model {
     this.mesh.userData.unit = unit;
   }
 
-  draw(scene: THREE.Scene, tickPercent: number, location: Location3) {
+  draw(scene: THREE.Scene, tickPercent: number, location: Location3, rotation: number) {
     if (this.mesh.parent !== scene) {
       scene.add(this.mesh);
     }
@@ -53,6 +53,8 @@ export class BasicModel implements Model {
     this.mesh.position.y = z;
     this.mesh.position.z = y - size / 2;
     this.mesh.position.add({x: this.drawOffset.x || 0, y: this.drawOffset.y || 0, z: this.drawOffset.z || 0});
+
+    this.mesh.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0), rotation);
   }
 
   destroy(scene: THREE.Scene) {

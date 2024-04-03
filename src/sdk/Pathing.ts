@@ -55,6 +55,10 @@ export class Pathing {
     return Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2))
   }
 
+  static angle(x: number, y: number, x2: number, y2: number) {
+    return Math.atan2(y2 - y, x2 - x);
+  }
+
 
   static closestPointTo (x: number, y: number, mob: Unit) {
     const corners = []

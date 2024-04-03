@@ -140,6 +140,10 @@ export class Projectile extends Renderable {
     return "#000000";
   }
 
+  getPerceivedRotation() {
+    return 0;
+  }
+
   onTick() {
     //
     this.remainingDelay--;

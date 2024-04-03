@@ -239,6 +239,10 @@ export class Unit extends Renderable {
     return { x: perceivedX, y: perceivedY, z: 0 };
   }
 
+  getPerceivedRotation(tickPercent) {
+    return 0;
+  }
+
   removedFromWorld() {
     // Override me
   }

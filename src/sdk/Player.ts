@@ -30,6 +30,7 @@ import HumanHit from "../assets/sounds/human_hit_513.ogg";
 import { Model } from "./rendering/Model";
 import { BasicModel } from "./rendering/BasicModel";
 import { TileMarker } from "../content/TileMarker";
+import { PointingModel } from "./rendering/PlayerModel";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -61,7 +62,7 @@ export class Player extends Unit {
 
   seekingItem: Item = null;
 
-  path: any;
+  path: Location[] | null;
 
   clickMarker: ClickMarker | null = null;
   aggroMarker: ClickMarker | null = null;
@@ -546,8 +547,8 @@ export class Player extends Unit {
   }
 
   moveTowardsDestination() {
+    this.restingAngle = this.nextAngle;
     // Actually move the player
-
     this.perceivedLocation = this.location;
 
     // Calculate run energy
@@ -586,6 +587,7 @@ export class Player extends Unit {
       this.aggro
     );
     this.location = { x: path.x, y: path.y };
+
     if (this.clickMarker && this.location.x === path.destination.x && this.location.y === path.destination.y) {
       this.clickMarker.remove();
       this.region.removeEntity(this.clickMarker);
@@ -600,6 +602,7 @@ export class Player extends Unit {
     // save the next 2 steps for interpolation purposes
     this.path = path.path;
     this.trueTileMarker.location = this.location;
+    this.nextAngle = this.getTargetAngle();
   }
 
   takeSeekingItem() {
@@ -627,6 +630,61 @@ export class Player extends Unit {
     super.dead();
     this.perceivedLocation = this.location;
     this.destinationLocation = this.location;
+  }
+
+  // Rotation Code
+  private restingAngle = 0;
+  private nextAngle = 0;
+
+  private _angle = 0;
+
+  private lastTickPercent = 0;
+
+  getPerceivedRotation(tickPercent) {
+    // https://gist.github.com/shaunlebron/8832585
+    function shortAngleDist(a0, a1) {
+      const da = (a1 - a0) % (Math.PI * 2);
+      return 2 * da % (Math.PI * 2) - da;
+    }
+    // player can rotate this many JAUs per client tick
+    const JAU_PER_CLIENT_TICK = 48;
+    const CLIENT_TICKS_PER_SECOND = 50;
+    const JAU_PER_RADIAN = 512;
+    const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * JAU_PER_CLIENT_TICK) / JAU_PER_RADIAN) * 0.6; 
+    //
+    const turnAmount = (RADIANS_PER_TICK * Math.max(0, (tickPercent - this.lastTickPercent)));
+    this.lastTickPercent = tickPercent;
+    const diff = ((this.nextAngle - this._angle + Math.PI * 2) % (Math.PI * 2));
+    const direction = diff - Math.PI > 0 ? -1 : 1;
+    if (diff >= turnAmount) {
+      this._angle += turnAmount * direction; 
+    } else {
+      this._angle = this.nextAngle;
+    }
+    return this._angle;
+    //return this.restingAngle + shortAngleDist(this.restingAngle, this.nextAngle) * Math.min(tickPercent * 2, 1);
+  }
+
+  getTargetAngle() {
+    if (this.aggro) {
+      const angle = Pathing.angle(
+        this.perceivedLocation.x + this.size / 2,
+        this.perceivedLocation.y - this.size / 2,
+        this.aggro.location.x + this.aggro.size / 2,
+        this.aggro.location.y - this.aggro.size / 2
+      );
+      return -angle;
+    }
+    if (this.path?.length > 0) {
+      const angle = Pathing.angle(
+        this.perceivedLocation.x,
+        this.perceivedLocation.y,
+        this.path[this.path.length - 1].x,
+        this.path[this.path.length - 1].y
+      );
+      return -angle;
+    }
+    return this.restingAngle;
   }
 
   movementStep() {
@@ -868,7 +926,7 @@ export class Player extends Unit {
   }
 
   create3dModel(): Model {
-    return BasicModel.forRenderable(this);
+    return PointingModel.forRenderable(this);
   }
 }
 
