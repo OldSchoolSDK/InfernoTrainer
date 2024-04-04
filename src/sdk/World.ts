@@ -24,6 +24,7 @@ export class World {
   startTime: number;
   frameCount = 0;
   tickTimer = 0;
+  clientTickTimer = 0;
 
   addRegion(region: Region) {
     this.regions.push(region);
@@ -52,20 +53,28 @@ export class World {
 
   browserLoop (now: number) {
     window.requestAnimationFrame(this.browserLoop.bind(this));
+    if (this.isPaused) {
+      return;
+    }
     const elapsed = now - this.then;
     const tickElapsed = now - this.tickTimer;
-    if (tickElapsed >= 600 && this.isPaused === false) {
+    const clientTickElapsed = now - this.clientTickTimer;
+    if (tickElapsed >= 600) {
       this.tickTimer = now;
       if (this.getReadyTimer > 0) {
         this.getReadyTimer--;
       }
-
-      this.tickWorld();
-      
+      this.tickWorld()
+    }
+    this.tickPercent = (window.performance.now() - this.tickTimer) / Settings.tickMs;
+    // client tick every 20ms, doing multiple if missed
+    const clientTicksElapsed = Math.min(50, Math.floor(clientTickElapsed / 20))
+    for (let i = 0; i < clientTicksElapsed; i++) {
+      this.tickClient(this.tickPercent);
+      this.clientTickTimer = now;
     }
 
-    if (elapsed > this.fpsInterval && this.isPaused === false) {
-      this.tickPercent = (window.performance.now() - this.tickTimer) / Settings.tickMs;
+    if (elapsed > this.fpsInterval) {
       this.then = now - (elapsed % this.fpsInterval);
       Viewport.viewport.draw(this);
       this.frameCount ++;
@@ -80,6 +89,10 @@ export class World {
     if (n > 1) {
       return this.tickWorld(n-1);
     }
+  }
+
+  tickClient(tickPercent: number) {
+    this.regions.forEach((region: Region) => this.clientTick(region, tickPercent))
   }
 
   tickRegion (region: Region) {
@@ -139,9 +152,11 @@ export class World {
     deadPlayers.forEach((player) => region.removePlayer(player))
     deadMobs.forEach((mob) => region.removeMob(mob))
     deadEntities.forEach((entity) => region.removeEntity(entity))
-
   }
 
-
-
+  clientTick(region: Region, tickPercent: number) {
+      region.players.forEach((player: Player) => {
+        player.clientTick(tickPercent);
+    });
+  }
 }

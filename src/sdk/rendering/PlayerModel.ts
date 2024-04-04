@@ -41,10 +41,9 @@ export class PointingModel implements Model {
     const { x, y, z } = location;
 
     // conversion from Location3 to Vector3
-    this.mainMesh.position.x = x + size / 2;
-    this.mainMesh.position.y = z;
-    this.mainMesh.position.z = y - size / 2;
-    this.mainMesh.position.add({x: this.drawOffset.x || 0, y: this.drawOffset.y || 0, z: this.drawOffset.z || 0});
+    // lerp because we only move the perceived location in client ticks
+    const targetPosition = new THREE.Vector3(x + size / 2, z, y - size / 2).add({x: this.drawOffset.x || 0, y: this.drawOffset.y || 0, z: this.drawOffset.z || 0});
+    this.mainMesh.position.lerp(targetPosition, 0.25);
 
     this.mainMesh.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0), rotation);
   }

@@ -31,6 +31,7 @@ import { Model } from "./rendering/Model";
 import { BasicModel } from "./rendering/BasicModel";
 import { TileMarker } from "../content/TileMarker";
 import { PointingModel } from "./rendering/PlayerModel";
+import _ from "lodash";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -39,6 +40,16 @@ class PlayerEffects {
   venomed = 0;
   stamina = 0;
 }
+
+// player can rotate this many JAUs per client tick
+const PLAYER_ROTATION_RATE_JAU = 64;
+const CLIENT_TICKS_PER_SECOND = 50;
+const JAU_PER_RADIAN = 512;
+const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * PLAYER_ROTATION_RATE_JAU) / JAU_PER_RADIAN) * 0.6; 
+const LOCAL_POINTS_PER_CELL = 128;
+
+// position that is "close enough"
+const EPSILON = 0.1;
 
 export class Player extends Unit {
   manualSpellCastSelection: Weapon;
@@ -62,11 +73,13 @@ export class Player extends Unit {
 
   seekingItem: Item = null;
 
-  path: Location[] | null;
+  path: (Location & {run: boolean})[] = [];
 
   clickMarker: ClickMarker | null = null;
   aggroMarker: ClickMarker | null = null;
   trueTileMarker: ClickMarker;
+
+  pathMarkers: ClickMarker[] = [];
 
   constructor(region: Region, location: Location, options: UnitOptions = {}) {
     super(region, location, options);
@@ -80,7 +93,7 @@ export class Player extends Unit {
     this.setUnitOptions(options);
 
     this.prayerController = new PrayerController(this);
-    this.trueTileMarker = new ClickMarker(this.region, this.location);
+    this.trueTileMarker = new ClickMarker(this.region, this.location, "#00FFFF");
     this.region.addEntity(this.trueTileMarker);
   }
 
@@ -546,11 +559,68 @@ export class Player extends Unit {
     }
   }
 
-  moveTowardsDestination() {
-    this.restingAngle = this.nextAngle;
-    // Actually move the player
-    this.perceivedLocation = this.location;
+  clientTick(tickPercent) {
+    // based on https://github.com/dennisdev/rs-map-viewer/blob/master/src/mapviewer/webgl/npc/Npc.ts#L115
+    if (this.path.length === 0) {
+      return;
+    }
+    let { x, y } = this.perceivedLocation;
+    const { x: nextX, y: nextY, run } = this.path[0];
 
+    const currentAngle = this.getPerceivedRotation(tickPercent);
+    
+    // 30 client ticks per tick and we want to walk 1 tile per tick so 
+    const baseMovementSpeed = 1/30;
+    let movementSpeed = baseMovementSpeed;
+    const canRotate = true;
+    if (currentAngle !== this.nextAngle && canRotate) {
+      console.log('must rotate', this.path.length, run, x, y);
+      movementSpeed = baseMovementSpeed / 2;
+    }
+    if (this.path.length === 3) {
+      console.log('path length medium', this.path.length, run, x, y);
+      movementSpeed = baseMovementSpeed * 1.5;
+    }
+    if (this.path.length > 3) {
+      console.log('path length warp', this.path.length, run, x, y);
+      movementSpeed = baseMovementSpeed * 2;
+    }
+    if (run) {
+      movementSpeed *= 2;
+    }
+    let diffX = Math.abs(x - nextX);
+    let diffY = Math.abs(y - nextY);
+    if (diffX > EPSILON || diffY > EPSILON) {
+      if (x < nextX) {
+        x = Math.min(x + movementSpeed, nextX);
+      } else if (x > nextX) {
+        x = Math.max(x - movementSpeed, nextX);
+      }
+      if (y < nextY) {
+        y = Math.min(y + movementSpeed, nextY);
+      } else if (y > nextY) {
+        y = Math.max(y - movementSpeed, nextY);
+      }
+    }
+    this.perceivedLocation = { x, y };
+    diffX = Math.abs(x - nextX);
+    diffY = Math.abs(y - nextY);
+    if (diffX < EPSILON && diffY < EPSILON) {
+      const reached = this.path.shift();
+      console.log('reached', reached);
+      const headTile = this.pathMarkers.shift();
+      this.region.removeEntity(headTile);
+      if (this.path.length === 0) {
+        this.restingAngle = this.nextAngle;
+      } else {
+        this.nextAngle = this.getTargetAngle();
+      }
+    }
+  }
+
+  moveTowardsDestination() {
+    this.trueTileMarker.location = this.location;
+    this.nextAngle = this.getTargetAngle();
     // Calculate run energy
     const dist = chebyshev(
       [this.location.x, this.location.y],
@@ -579,28 +649,51 @@ export class Player extends Unit {
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
-    const path = Pathing.path(
+    // Path to next position if not already there.
+    if (!this.destinationLocation || (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)) {
+      return;
+    }
+
+    const speed = this.running ? 2 : 1;
+    const { path, destination } = Pathing.path(
       this.region,
       this.location,
       this.destinationLocation,
-      this.running ? 2 : 1,
+      speed,
       this.aggro
     );
-    this.location = { x: path.x, y: path.y };
+    if (!path.length || !destination) {
+      return;
+    }
+    if (path.length < speed) {
+      // Step to the destination
+      this.location = path[path.length - 1];
+    } else {
+      // Move one or two steps forward
+      this.location = path[speed - 1];
+    }
 
-    if (this.clickMarker && this.location.x === path.destination.x && this.location.y === path.destination.y) {
+    if (this.clickMarker && this.location.x === destination.x && this.location.y === destination.y) {
       this.clickMarker.remove();
       this.region.removeEntity(this.clickMarker);
       this.clickMarker = null;
     } else if (!this.clickMarker) {
-      this.clickMarker = new ClickMarker(this.region, path.destination);
+      this.clickMarker = new ClickMarker(this.region, destination);
       this.region.addEntity(this.clickMarker);
     } else {
-        this.clickMarker.location = this.aggro ? path.destination : this.destinationLocation;
+        this.clickMarker.location = this.aggro ? destination : this.destinationLocation;
     }
 
     // save the next 2 steps for interpolation purposes
-    this.path = path.path;
+    const newTiles = path.map((pos) => ({...pos, run: path.length >= 2}));
+    newTiles.forEach((tile) => {
+      const marker = new ClickMarker(this.region, tile, "#FF0000");
+      this.pathMarkers.push(marker);
+      this.region.addEntity(marker)
+    })
+    this.path.push(...newTiles);
+    console.log(this.location, path, [...this.path]);
+    
     this.trueTileMarker.location = this.location;
     this.nextAngle = this.getTargetAngle();
   }
@@ -646,11 +739,6 @@ export class Player extends Unit {
       const da = (a1 - a0) % (Math.PI * 2);
       return 2 * da % (Math.PI * 2) - da;
     }
-    // player can rotate this many JAUs per client tick
-    const JAU_PER_CLIENT_TICK = 48;
-    const CLIENT_TICKS_PER_SECOND = 50;
-    const JAU_PER_RADIAN = 512;
-    const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * JAU_PER_CLIENT_TICK) / JAU_PER_RADIAN) * 0.6; 
     //
     const turnAmount = (RADIANS_PER_TICK * Math.max(0, (tickPercent - this.lastTickPercent)));
     this.lastTickPercent = tickPercent;
@@ -662,7 +750,6 @@ export class Player extends Unit {
       this._angle = this.nextAngle;
     }
     return this._angle;
-    //return this.restingAngle + shortAngleDist(this.restingAngle, this.nextAngle) * Math.min(tickPercent * 2, 1);
   }
 
   getTargetAngle() {
@@ -675,12 +762,12 @@ export class Player extends Unit {
       );
       return -angle;
     }
-    if (this.path?.length > 0) {
+    if (this.path.length > 0) {
       const angle = Pathing.angle(
         this.perceivedLocation.x,
         this.perceivedLocation.y,
-        this.path[this.path.length - 1].x,
-        this.path[this.path.length - 1].y
+        this.path[0].x,
+        this.path[0].y
       );
       return -angle;
     }
@@ -698,7 +785,6 @@ export class Player extends Unit {
 
     if (!this.isFrozen()) {
       this.determineDestination();
-
       this.moveTowardsDestination();
     }
     this.frozen--;
@@ -855,51 +941,7 @@ export class Player extends Unit {
   }
 
   getPerceivedLocation(tickPercent: number) {
-    if (this.dying > -1) {
-      tickPercent = 0;
-    }
-
-    let perceivedX = Pathing.linearInterpolation(
-      this.perceivedLocation.x,
-      this.location.x,
-      tickPercent
-    );
-    let perceivedY = Pathing.linearInterpolation(
-      this.perceivedLocation.y,
-      this.location.y,
-      tickPercent
-    );
-
-    if (this.path && this.path.length === 2 && this.dying === -1) {
-      if (tickPercent < 0.5) {
-        perceivedX = Pathing.linearInterpolation(
-          this.perceivedLocation.x,
-          this.path[0].x,
-          tickPercent * 2
-        );
-        perceivedY = Pathing.linearInterpolation(
-          this.perceivedLocation.y,
-          this.path[0].y,
-          tickPercent * 2
-        );
-      } else {
-        perceivedX = Pathing.linearInterpolation(
-          this.path[0].x,
-          this.location.x,
-          (tickPercent - 0.5) * 2
-        );
-        perceivedY = Pathing.linearInterpolation(
-          this.path[0].y,
-          this.location.y,
-          (tickPercent - 0.5) * 2
-        );
-      }
-    }
-    return {
-      x: perceivedX,
-      y: perceivedY,
-      z: 0,
-    };
+    return { ...this.perceivedLocation, z: 0 };
   }
 
   drawUILayer(
@@ -932,8 +974,8 @@ export class Player extends Unit {
 
 
 class ClickMarker extends TileMarker {
-  constructor(region: Region, location: Location) {
-    super(region, location, "#FFFFFF", 1, false);
+  constructor(region: Region, location: Location, color = "#FFFFFF") {
+    super(region, location, color, 1, false);
   }
   remove() {
     this.dying = 0;
