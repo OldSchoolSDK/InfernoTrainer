@@ -48,6 +48,8 @@ const JAU_PER_RADIAN = 512;
 const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * PLAYER_ROTATION_RATE_JAU) / JAU_PER_RADIAN) * 0.6; 
 const LOCAL_POINTS_PER_CELL = 128;
 
+const ENABLE_DEBUG_TILE_MARKERS = false;
+
 // position that is "close enough"
 const EPSILON = 0.1;
 
@@ -585,6 +587,9 @@ export class Player extends Unit {
       console.log('path length warp', this.path.length, run, x, y);
       movementSpeed = baseMovementSpeed * 2;
     }
+    if (this.path.length < 3) {
+      console.log('normal speed', this.path.length, run, x, y);
+    }
     if (run) {
       movementSpeed *= 2;
     }
@@ -608,8 +613,10 @@ export class Player extends Unit {
     if (diffX < EPSILON && diffY < EPSILON) {
       const reached = this.path.shift();
       console.log('reached', reached);
-      const headTile = this.pathMarkers.shift();
-      this.region.removeEntity(headTile);
+      if (ENABLE_DEBUG_TILE_MARKERS) {
+        const headTile = this.pathMarkers.shift();
+        this.region.removeEntity(headTile);
+      }
       if (this.path.length === 0) {
         this.restingAngle = this.nextAngle;
       } else {
@@ -686,11 +693,13 @@ export class Player extends Unit {
 
     // save the next 2 steps for interpolation purposes
     const newTiles = path.map((pos) => ({...pos, run: path.length >= 2}));
-    newTiles.forEach((tile) => {
-      const marker = new ClickMarker(this.region, tile, "#FF0000");
-      this.pathMarkers.push(marker);
-      this.region.addEntity(marker)
-    })
+    if (ENABLE_DEBUG_TILE_MARKERS) {
+        newTiles.forEach((tile) => {
+        const marker = new ClickMarker(this.region, tile, "#FF0000");
+        this.pathMarkers.push(marker);
+        this.region.addEntity(marker)
+      });
+    }
     this.path.push(...newTiles);
     console.log(this.location, path, [...this.path]);
     
