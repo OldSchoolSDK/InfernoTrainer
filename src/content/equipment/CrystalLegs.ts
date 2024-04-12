@@ -1,16 +1,16 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Crystal_legs.png';
+import InventImage from "../../assets/images/equipment/Crystal_legs.png";
 import { Legs } from "../../sdk/gear/Legs";
 import { ItemName } from "../../sdk/ItemName";
 
-export class CrystalLegs extends Legs{
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+export class CrystalLegs extends Legs {
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
-  get inventoryImage () {
-    return InventImage
+  get inventoryImage() {
+    return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.CRYSTAL_LEGS
+    return ItemName.CRYSTAL_LEGS;
   }
 
   get weight(): number {
@@ -25,14 +25,14 @@ export class CrystalLegs extends Legs{
         slash: 0,
         crush: 0,
         magic: -12,
-        range: 18
+        range: 18,
       },
       defence: {
         stab: 26,
         slash: 21,
         crush: 30,
         magic: 34,
-        range: 38
+        range: 38,
       },
       other: {
         meleeStrength: 0,
@@ -40,12 +40,12 @@ export class CrystalLegs extends Legs{
         magicDamage: 0,
         prayer: 2,
         crystalAccuracy: 0.1,
-        crystalDamage: 0.05
+        crystalDamage: 0.05,
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 }

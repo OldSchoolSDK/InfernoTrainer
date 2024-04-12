@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class MysticMight extends BasePrayer {
-  get name () {
-    return 'Mystic Might'
+  get name() {
+    return "Mystic Might";
   }
 
-  get groups () {
-    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
+  get groups() {
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH];
   }
 
   levelRequirement(): number {
@@ -19,21 +19,21 @@ export class MysticMight extends BasePrayer {
     return 12;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveMagic'
+  feature() {
+    return "offensiveMagic";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

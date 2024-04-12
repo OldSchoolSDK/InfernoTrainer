@@ -1,11 +1,11 @@
 export enum SetEffectTypes {
-  JUSTICIAR = 'JUSTICIAR'
+  JUSTICIAR = "JUSTICIAR",
 }
 export class SetEffect {
   static effectName(): string {
-    return '';
+    return "";
   }
   static itemsInSet(): string[] {
-    return [ ]
+    return [];
   }
 }

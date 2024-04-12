@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import { Player } from "./Player";
 
@@ -10,18 +10,18 @@ export class PlayerRegenTimer {
   constructor(player: Player) {
     this.player = player;
     this.spec = 50;
-    this.hitpoint = 100;    
+    this.hitpoint = 100;
   }
 
   specUsed() {
-    if (this.spec <=0) {
+    if (this.spec <= 0) {
       this.spec = 50;
     }
   }
 
   regen() {
     this.specRegen();
-    this.hitpointRegen()
+    this.hitpointRegen();
   }
 
   specRegen() {
@@ -41,8 +41,4 @@ export class PlayerRegenTimer {
       this.player.currentStats.hitpoint = Math.min(this.player.stats.hitpoint, this.player.currentStats.hitpoint);
     }
   }
-
-
 }
-
-

@@ -7,7 +7,6 @@ export enum AmmoType {
 }
 
 export class Ammo extends Equipment {
-
   ammoType(): AmmoType {
     return AmmoType.AMMO;
   }

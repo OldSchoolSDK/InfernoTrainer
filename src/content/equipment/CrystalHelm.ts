@@ -1,20 +1,20 @@
 import { Helmet } from "../../sdk/gear/Helmet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Crystal_helm.png';
+import InventImage from "../../assets/images/equipment/Crystal_helm.png";
 import { ItemName } from "../../sdk/ItemName";
 
-export class CrystalHelm extends Helmet{
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+export class CrystalHelm extends Helmet {
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   get itemName(): ItemName {
-    return ItemName.CRYSTAL_HELM
+    return ItemName.CRYSTAL_HELM;
   }
   get weight(): number {
     return 0.5;
   }
-  
-  get inventoryImage () {
-    return InventImage
+
+  get inventoryImage() {
+    return InventImage;
   }
   constructor() {
     super();
@@ -24,14 +24,14 @@ export class CrystalHelm extends Helmet{
         slash: 0,
         crush: 0,
         magic: -10,
-        range: 9
+        range: 9,
       },
       defence: {
         stab: 12,
         slash: 8,
         crush: 14,
         magic: 10,
-        range: 18
+        range: 18,
       },
       other: {
         meleeStrength: 0,
@@ -43,8 +43,8 @@ export class CrystalHelm extends Helmet{
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 }

@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class Smite extends BasePrayer {
-  get name () {
-    return 'Smite'
+  get name() {
+    return "Smite";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS] 
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS];
   }
 
   levelRequirement(): number {
@@ -18,22 +18,22 @@ export class Smite extends BasePrayer {
   drainRate(): number {
     return 18;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'smite'
+  feature() {
+    return "smite";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

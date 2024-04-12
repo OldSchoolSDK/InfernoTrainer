@@ -1,9 +1,7 @@
-
 export class SoundCache {
-
   static soundCache = {};
-  
-  static getCachedSound (src: string): HTMLAudioElement {
+
+  static getCachedSound(src: string): HTMLAudioElement {
     if (!src) {
       return null;
     }
@@ -11,7 +9,7 @@ export class SoundCache {
     if (this.soundCache[src]) {
       return this.soundCache[src];
     }
-    
-    return this.soundCache[src] = new Audio(src);
+
+    return (this.soundCache[src] = new Audio(src));
   }
 }

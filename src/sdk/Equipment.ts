@@ -1,26 +1,26 @@
 import { Item } from "./Item";
 import { UnitBonuses } from "./Unit";
-import { SetEffect } from "./SetEffect"
+import { SetEffect } from "./SetEffect";
 import { Player } from "./Player";
 
 export enum EquipmentTypes {
-  HELMET ='helmet',
-  CHEST = 'chest',
-  LEGS = 'legs',
-  FEET = 'feet',
-  GLOVES = 'gloves',
-  WEAPON = 'weapon',
-  OFFHAND = 'offhand',
-  AMMO = 'ammo',
-  BACK = 'back'
+  HELMET = "helmet",
+  CHEST = "chest",
+  LEGS = "legs",
+  FEET = "feet",
+  GLOVES = "gloves",
+  WEAPON = "weapon",
+  OFFHAND = "offhand",
+  AMMO = "ammo",
+  BACK = "back",
 }
 
 export class Equipment extends Item {
   bonuses: UnitBonuses;
 
   constructor() {
-    super()
-    this.defaultAction = 'Equip';
+    super();
+    this.defaultAction = "Equip";
     this.setStats();
   }
 
@@ -29,15 +29,15 @@ export class Equipment extends Item {
   }
 
   inventoryLeftClick(player: Player) {
-    const currentItem = this.currentEquipment(player) || null; 
-    const openInventorySlots = player.openInventorySlots()
-    openInventorySlots.unshift(player.inventory.indexOf(this))
+    const currentItem = this.currentEquipment(player) || null;
+    const openInventorySlots = player.openInventorySlots();
+    openInventorySlots.unshift(player.inventory.indexOf(this));
     this.assignToPlayer(player);
     player.inventory[openInventorySlots.shift()] = currentItem;
-    player.equipmentChanged()
+    player.equipmentChanged();
   }
 
-  get equipmentSetEffect(): typeof SetEffect{
+  get equipmentSetEffect(): typeof SetEffect {
     return null;
   }
 
@@ -50,25 +50,24 @@ export class Equipment extends Item {
   }
 
   assignToPlayer(player: Player) {
-    throw new Error('not able to assign to unit equipment')
+    throw new Error("not able to assign to unit equipment");
   }
 
   unassignToPlayer(player: Player) {
-    throw new Error('not able to unassign to unit equipment')
+    throw new Error("not able to unassign to unit equipment");
   }
 
   unequip(player: Player) {
-    const openInventorySlots = player.openInventorySlots()
+    const openInventorySlots = player.openInventorySlots();
     if (openInventorySlots.length === 0) {
       return;
     }
-    this.unassignToPlayer(player)
-    
+    this.unassignToPlayer(player);
+
     player.inventory[openInventorySlots.shift()] = this;
   }
 
   get type(): EquipmentTypes {
-    throw new Error('equipment must have a type');
+    throw new Error("equipment must have a type");
   }
-
 }

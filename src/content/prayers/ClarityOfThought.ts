@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class ClarityOfThought extends BasePrayer {
-  get name () {
-    return 'Clarity of Thought'
+  get name() {
+    return "Clarity of Thought";
   }
 
-  get groups () {
-    return [PrayerGroups.ACCURACY]
+  get groups() {
+    return [PrayerGroups.ACCURACY];
   }
 
   levelRequirement(): number {
@@ -18,22 +18,22 @@ export class ClarityOfThought extends BasePrayer {
   drainRate(): number {
     return 3;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveAttack'
+  feature() {
+    return "offensiveAttack";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

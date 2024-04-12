@@ -1,17 +1,16 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class ThickSkin extends BasePrayer {
-  get name () {
-    return 'Thick Skin'
+  get name() {
+    return "Thick Skin";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.DEFENCE]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.DEFENCE];
   }
-
 
   levelRequirement(): number {
     return 1;
@@ -19,22 +18,22 @@ export class ThickSkin extends BasePrayer {
   drainRate(): number {
     return 3;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'defensive'
+  feature() {
+    return "defensive";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

@@ -1,16 +1,16 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Ahrims_robetop.png';
+import InventImage from "../../assets/images/equipment/Ahrims_robetop.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
-export class AhrimsRobetop extends Chest{
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+export class AhrimsRobetop extends Chest {
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
-  get inventoryImage () {
-    return InventImage
+  get inventoryImage() {
+    return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.AHRIMS_ROBETOP
+    return ItemName.AHRIMS_ROBETOP;
   }
 
   get weight(): number {
@@ -25,25 +25,25 @@ export class AhrimsRobetop extends Chest{
         slash: 0,
         crush: 0,
         magic: +22,
-        range: -7
+        range: -7,
       },
       defence: {
         stab: 33,
         slash: 30,
         crush: 36,
         magic: 22,
-        range: 0
+        range: 0,
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
         magicDamage: 0,
-        prayer: 0
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 }

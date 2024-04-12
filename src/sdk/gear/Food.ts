@@ -4,19 +4,19 @@ import { Player } from "../Player";
 
 export class Food extends Item {
   healAmount = 0;
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   constructor() {
     super();
 
-    this.defaultAction = 'Eat';
+    this.defaultAction = "Eat";
   }
 
   eat(player: Player) {
     player.interruptCombat();
     if (player.currentStats.hitpoint < player.stats.hitpoint) {
       player.currentStats.hitpoint += this.healAmount;
-      player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint)
+      player.currentStats.hitpoint = Math.min(player.currentStats.hitpoint, player.stats.hitpoint);
     }
   }
 
@@ -27,7 +27,6 @@ export class Food extends Item {
   updateInventorySprite() {
     // Override me
   }
-
 
   get hasInventoryLeftClick(): boolean {
     return true;
