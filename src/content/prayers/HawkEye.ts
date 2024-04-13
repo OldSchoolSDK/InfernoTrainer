@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class HawkEye extends BasePrayer {
-  get name () {
-    return 'Hawk Eye'
+  get name() {
+    return "Hawk Eye";
   }
 
-  get groups () {
-    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
+  get groups() {
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH];
   }
 
   levelRequirement(): number {
@@ -19,21 +19,21 @@ export class HawkEye extends BasePrayer {
     return 6;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveRange'
+  feature() {
+    return "offensiveRange";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

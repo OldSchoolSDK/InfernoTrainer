@@ -1,39 +1,39 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class Retribution extends BasePrayer {
-  get name () {
-    return 'Retribution'
+  get name() {
+    return "Retribution";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS] // TODO: Incorrect
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS]; // TODO: Incorrect
   }
-  
+
   levelRequirement(): number {
     return 100;
   }
   drainRate(): number {
     return 3;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return ''
+  feature() {
+    return "";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

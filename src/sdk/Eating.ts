@@ -1,8 +1,8 @@
-'use strict';
-import { Potion } from './gear/Potion';
-import { Food } from './gear/Food';
-import { Karambwan } from '../content/items/Karambwan';
-import { Player } from './Player';
+"use strict";
+import { Potion } from "./gear/Potion";
+import { Food } from "./gear/Food";
+import { Karambwan } from "../content/items/Karambwan";
+import { Player } from "./Player";
 
 export class Eating {
   player: Player;
@@ -33,7 +33,6 @@ export class Eating {
       player.attackDelay += 3;
       this.currentComboFood = null;
     }
-
   }
 
   checkRedemption(player: Player) {

@@ -1,0 +1,9 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "printWidth": 120,
+  "bracketSpacing": true,
+  "semi": true,
+  "endOfLine": "auto"
+}

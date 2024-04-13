@@ -1,11 +1,11 @@
-'use strict'
+"use strict";
 
-import InventImage from '../../assets/images/equipment/Bow_of_faerdhinen.png'
-import { RangedWeapon } from '../../sdk/weapons/RangedWeapon'
-import { AttackBonuses } from '../../sdk/gear/Weapon'
-import { ItemName } from "../../sdk/ItemName"
-import { Unit } from '../../sdk/Unit'
-import { AttackStyle, AttackStyleTypes } from '../../sdk/AttackStylesController'
+import InventImage from "../../assets/images/equipment/Bow_of_faerdhinen.png";
+import { RangedWeapon } from "../../sdk/weapons/RangedWeapon";
+import { AttackBonuses } from "../../sdk/gear/Weapon";
+import { ItemName } from "../../sdk/ItemName";
+import { Unit } from "../../sdk/Unit";
+import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
 
 export class BowOfFaerdhinen extends RangedWeapon {
   constructor() {
@@ -16,35 +16,30 @@ export class BowOfFaerdhinen extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 128
+        range: 128,
       },
       defence: {
         stab: 0,
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 0
+        range: 0,
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 106, // TODO: This will stack with dragon arrows if both equipped 
+        rangedStrength: 106, // TODO: This will stack with dragon arrows if both equipped
         magicDamage: 0,
-        prayer: 0
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 
-
   attackStyles() {
-    return [
-      AttackStyle.ACCURATE,
-      AttackStyle.RAPID,
-      AttackStyle.LONGRANGE,
-    ]
+    return [AttackStyle.ACCURATE, AttackStyle.RAPID, AttackStyle.LONGRANGE];
   }
 
   attackStyleCategory(): AttackStyleTypes {
@@ -55,38 +50,38 @@ export class BowOfFaerdhinen extends RangedWeapon {
     return AttackStyle.RAPID;
   }
 
-  get attackSpeed () {
-    if (this.attackStyle() === AttackStyle.LONGRANGE){
+  get attackSpeed() {
+    if (this.attackStyle() === AttackStyle.LONGRANGE) {
       return 5;
     }
-    return 4
+    return 4;
   }
-  
+
   get weight(): number {
-    return 1.5
+    return 1.5;
   }
 
   get itemName(): ItemName {
-    return ItemName.BOWFA
+    return ItemName.BOWFA;
   }
 
   get isTwoHander(): boolean {
     return true;
   }
 
-  get attackRange () {
-    return 10
+  get attackRange() {
+    return 10;
   }
 
-  get inventoryImage () {
-    return InventImage
+  get inventoryImage() {
+    return InventImage;
   }
 
-  _accuracyMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
+  _accuracyMultiplier(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return from.bonuses.other.crystalAccuracy || 1;
   }
 
-  _damageMultiplier (from: Unit, to: Unit, bonuses: AttackBonuses) {
+  _damageMultiplier(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return from.bonuses.other.crystalDamage || 1;
   }
 }

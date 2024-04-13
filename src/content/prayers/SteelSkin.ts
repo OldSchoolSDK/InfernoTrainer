@@ -1,17 +1,17 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class SteelSkin extends BasePrayer {
-  get name () {
-    return 'Steel Skin'
+  get name() {
+    return "Steel Skin";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.DEFENCE]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.DEFENCE];
   }
-  
+
   levelRequirement(): number {
     return 28;
   }
@@ -19,21 +19,21 @@ export class SteelSkin extends BasePrayer {
     return 12;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'defensive'
+  feature() {
+    return "defensive";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

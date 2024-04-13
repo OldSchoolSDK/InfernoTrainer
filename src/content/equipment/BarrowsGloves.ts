@@ -1,22 +1,21 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from '../../assets/images/equipment/Barrows_gloves.png';
+import InventImage from "../../assets/images/equipment/Barrows_gloves.png";
 import { Gloves } from "../../sdk/gear/Gloves";
 import { ItemName } from "../../sdk/ItemName";
 
-export class BarrowsGloves extends Gloves{
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+export class BarrowsGloves extends Gloves {
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
-  get inventoryImage () {
-    return InventImage
+  get inventoryImage() {
+    return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.BARROWS_GLOVES
+    return ItemName.BARROWS_GLOVES;
   }
   get weight(): number {
     return 0.226;
   }
-  
-  
+
   constructor() {
     super();
     this.bonuses = {
@@ -25,25 +24,25 @@ export class BarrowsGloves extends Gloves{
         slash: 12,
         crush: 12,
         magic: 6,
-        range: 12
+        range: 12,
       },
       defence: {
         stab: 12,
         slash: 12,
         crush: 12,
         magic: 6,
-        range: 12
+        range: 12,
       },
       other: {
         meleeStrength: 12,
         rangedStrength: 0,
         magicDamage: 0,
-        prayer: 0
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 }

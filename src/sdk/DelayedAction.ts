@@ -5,7 +5,7 @@ export class DelayedAction {
   action: () => void;
   delay: number;
   identifier: number;
-  constructor(action: () => void, delay: number){
+  constructor(action: () => void, delay: number) {
     this.action = action;
     this.delay = delay + 1;
     this.identifier = Math.random() * 1000000;
@@ -28,6 +28,6 @@ export class DelayedAction {
 
     executedActions.forEach((executedActions: DelayedAction) => {
       remove(DelayedAction.delayedActions, executedActions);
-    })
+    });
   }
 }

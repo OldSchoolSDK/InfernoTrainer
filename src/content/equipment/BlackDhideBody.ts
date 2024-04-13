@@ -1,23 +1,21 @@
-
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Black_d'hide_body.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
-export class BlackDhideBody extends Chest{
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
+export class BlackDhideBody extends Chest {
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
-  get inventoryImage () {
-    return InventImage
+  get inventoryImage() {
+    return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.BLACK_D_HIDE_BODY
+    return ItemName.BLACK_D_HIDE_BODY;
   }
 
   get weight(): number {
     return 6.803;
   }
-
 
   constructor() {
     super();
@@ -27,25 +25,25 @@ export class BlackDhideBody extends Chest{
         slash: 0,
         crush: 0,
         magic: -15,
-        range: 30
+        range: 30,
       },
       defence: {
         stab: 55,
         slash: 47,
         crush: 60,
         magic: 50,
-        range: 55
+        range: 55,
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 0,
         magicDamage: 0,
-        prayer: 0
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
-        slayer: 0
-      }
-    }
+        slayer: 0,
+      },
+    };
   }
 }

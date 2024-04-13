@@ -1,16 +1,16 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
-import OverheadImg from '../../assets/images/prayers/redemptionOver.png'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
+import OverheadImg from "../../assets/images/prayers/redemptionOver.png";
 
 export class Redemption extends BasePrayer {
-  get name () {
-    return 'Redemption'
+  get name() {
+    return "Redemption";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.OVERHEADS]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.OVERHEADS];
   }
 
   levelRequirement(): number {
@@ -20,25 +20,24 @@ export class Redemption extends BasePrayer {
     return 6;
   }
 
-  isOverhead () {
-    return true
+  isOverhead() {
+    return true;
   }
 
-
-  overheadImageReference () {
-    return OverheadImg
+  overheadImageReference() {
+    return OverheadImg;
   }
-  feature () {
-    return ''
+  feature() {
+    return "";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

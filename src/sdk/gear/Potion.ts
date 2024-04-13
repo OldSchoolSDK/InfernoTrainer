@@ -1,17 +1,16 @@
 import { Item } from "../Item";
 import { ImageLoader } from "../utils/ImageLoader";
-import Vial from '../../assets/images/potions/Vial.png';
+import Vial from "../../assets/images/potions/Vial.png";
 import { Player } from "../Player";
 
 export class Potion extends Item {
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage)
-  vial: HTMLImageElement = ImageLoader.createImage(Vial)
+  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+  vial: HTMLImageElement = ImageLoader.createImage(Vial);
   doses = 4;
-
 
   constructor() {
     super();
-    this.defaultAction = 'Drink';
+    this.defaultAction = "Drink";
   }
   drink(player: Player) {
     player.interruptCombat();
@@ -20,11 +19,10 @@ export class Potion extends Item {
   get weight(): number {
     return 0.226;
   }
-  
+
   updateInventorySprite() {
     // Override me
   }
-
 
   get hasInventoryLeftClick(): boolean {
     return true;
@@ -33,13 +31,9 @@ export class Potion extends Item {
     if (this.doses > 0) {
       player.eats.drinkPotion(this);
     }
-    if (this.doses === 0){
+    if (this.doses === 0) {
       this.consumeItem(player);
     }
     this.updateInventorySprite();
   }
-
-  
-
-
 }

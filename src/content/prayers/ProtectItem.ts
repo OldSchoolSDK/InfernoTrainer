@@ -1,40 +1,39 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class ProtectItem extends BasePrayer {
-  get name () {
-    return 'Protect Item'
+  get name() {
+    return "Protect Item";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.PROTECTITEM] // TODO: Incorrect
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.PROTECTITEM]; // TODO: Incorrect
   }
 
-  
   levelRequirement(): number {
     return 100;
   }
   drainRate(): number {
     return 2;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return ''
+  feature() {
+    return "";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

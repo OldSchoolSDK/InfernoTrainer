@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class Rigour extends BasePrayer {
-  get name () {
-    return 'Rigour'
+  get name() {
+    return "Rigour";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH, PrayerGroups.DEFENCE];
   }
 
   levelRequirement(): number {
@@ -18,22 +18,22 @@ export class Rigour extends BasePrayer {
   drainRate(): number {
     return 24;
   }
-  
-  isOverhead () {
-    return false
+
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveRange'
+  feature() {
+    return "offensiveRange";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

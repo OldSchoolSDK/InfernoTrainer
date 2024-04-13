@@ -4,49 +4,49 @@ import { Settings } from "../Settings";
 import { Viewport } from "../Viewport";
 
 export class BaseControls {
-  panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference)
-  tabImage: HTMLImageElement = ImageLoader.createImage(this.tabImageReference)
+  panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference);
+  tabImage: HTMLImageElement = ImageLoader.createImage(this.tabImageReference);
   selected = false;
 
-  get keyBinding (): string {
-    return '';
+  get keyBinding(): string {
+    return "";
   }
 
-  get isAvailable (): boolean {
+  get isAvailable(): boolean {
     return false;
   }
 
-  get panelImageReference (): string {
-    return ''
+  get panelImageReference(): string {
+    return "";
   }
 
-  get tabImageReference (): string {
-    return ''
+  get tabImageReference(): string {
+    return "";
   }
 
-  get appearsOnLeftInMobile (): boolean {
+  get appearsOnLeftInMobile(): boolean {
     return true;
   }
-  
+
   cursorMovedto(x: number, y: number) {
     // Override me
   }
 
-  panelRightClick (x: number, y: number) {
+  panelRightClick(x: number, y: number) {
     // Override me
   }
 
-  panelClickDown (x: number, y: number) {
-    console.log(x, y)
+  panelClickDown(x: number, y: number) {
+    console.log(x, y);
   }
-  panelClickUp (x: number, y: number) {
-    console.log(x, y)
+  panelClickUp(x: number, y: number) {
+    console.log(x, y);
   }
 
-  draw ( ctrl: ControlPanelController, x: number, y: number) {
+  draw(ctrl: ControlPanelController, x: number, y: number) {
     const scale = Settings.controlPanelScale;
     if (this.panelImage) {
-      Viewport.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale)
+      Viewport.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale);
     }
   }
 }

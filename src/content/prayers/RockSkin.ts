@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class RockSkin extends BasePrayer {
-  get name () {
-    return 'Rock Skin'
+  get name() {
+    return "Rock Skin";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.DEFENCE]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.DEFENCE];
   }
 
   levelRequirement(): number {
@@ -19,21 +19,21 @@ export class RockSkin extends BasePrayer {
     return 6;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'defensive'
+  feature() {
+    return "defensive";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

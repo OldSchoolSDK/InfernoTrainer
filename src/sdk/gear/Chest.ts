@@ -2,7 +2,6 @@ import { Equipment } from "../Equipment";
 import { Player } from "../Player";
 
 export class Chest extends Equipment {
-  
   assignToPlayer(player: Player) {
     player.equipment.chest = this;
   }

@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class UltimateStrength extends BasePrayer {
-  get name () {
-    return 'Ultimate Strength'
+  get name() {
+    return "Ultimate Strength";
   }
 
-  get groups () {
-    return [PrayerGroups.STRENGTH]
+  get groups() {
+    return [PrayerGroups.STRENGTH];
   }
 
   levelRequirement(): number {
@@ -19,21 +19,21 @@ export class UltimateStrength extends BasePrayer {
     return 12;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveStrength'
+  feature() {
+    return "offensiveStrength";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }

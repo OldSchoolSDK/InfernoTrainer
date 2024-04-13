@@ -1,15 +1,15 @@
-'use strict'
+"use strict";
 
-import { BasePrayer, PrayerGroups } from '../../sdk/BasePrayer'
-import { Settings } from '../../sdk/Settings'
+import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
+import { Settings } from "../../sdk/Settings";
 
 export class SharpEye extends BasePrayer {
-  get name () {
-    return 'Sharp Eye'
+  get name() {
+    return "Sharp Eye";
   }
 
-  get groups (): PrayerGroups[] {
-    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH]
+  get groups(): PrayerGroups[] {
+    return [PrayerGroups.ACCURACY, PrayerGroups.STRENGTH];
   }
 
   levelRequirement(): number {
@@ -19,21 +19,21 @@ export class SharpEye extends BasePrayer {
     return 3;
   }
 
-  isOverhead () {
-    return false
+  isOverhead() {
+    return false;
   }
 
-  feature () {
-    return 'offensiveRange'
+  feature() {
+    return "offensiveRange";
   }
 
-  playOnSound () {
+  playOnSound() {
     if (Settings.playsAudio) {
       // new Audio(OnSound).play();
     }
   }
 
-  playOffSound () {
+  playOffSound() {
     if (Settings.playsAudio) {
       // new Audio(OffSound).play();
     }
