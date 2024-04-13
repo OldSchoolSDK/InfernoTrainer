@@ -4,5 +4,6 @@
   "arrowParens": "always",
   "printWidth": 120,
   "bracketSpacing": true,
-  "semi": true
+  "semi": true,
+  "endOfLine": "auto"
 }
