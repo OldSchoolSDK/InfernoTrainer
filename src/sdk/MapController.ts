@@ -236,7 +236,7 @@ export class MapController {
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
     const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
 
     this.hovering = MapHover.NONE;
@@ -261,7 +261,7 @@ export class MapController {
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
     const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -332,7 +332,7 @@ export class MapController {
           },
         },
       ];
-    } else if (x > 38 && x < 79 && y > 148 && y < 175) {
+    } else if (x > 38 && x < 90 && y > 148 && y < 175) {
       if (this.canSpecialAttack()) {
         intercepted = true;
         // special attack
@@ -361,8 +361,9 @@ export class MapController {
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
     const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
+    console.log(x, y);
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;
@@ -370,7 +371,6 @@ export class MapController {
       Settings.persistToStorage();
     } else if (x > 33 && x < 64 && y > 5 && y < 36) {
       intercepted = true;
-
       if (Viewport.viewport.getMapRotation() === 0) {
         Viewport.viewport.rotateSouth();
       } else {
@@ -386,7 +386,7 @@ export class MapController {
     } else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
       Viewport.viewport.player.running = !Viewport.viewport.player.running;
-    } else if (x > 38 && x < 79 && y > 148 && y < 175) {
+    } else if (x > 38 && x < 90 && y > 148 && y < 175) {
       intercepted = true;
       this.toggleSpecialAttack();
     }
