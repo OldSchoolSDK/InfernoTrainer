@@ -433,9 +433,7 @@ export class MapController {
     // draw compass
     ctx.save();
     ctx.translate(offset + 50.5 * scale, 23.5 * scale);
-    if (Settings.rotated === "south") {
-      ctx.rotate(Math.PI);
-    }
+    ctx.rotate(Viewport.viewport.getMapRotation());
     ctx.translate(-50.5 * scale, -23.5 * scale);
     if (this.compassImage) {
       ctx.drawImage(this.compassImage, 25 * scale, -2, 51 * scale, 51 * scale);
