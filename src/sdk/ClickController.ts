@@ -14,6 +14,9 @@ import { Chrome } from "./Chrome";
 import { MapController } from "./MapController";
 import { ControlPanelController } from "./ControlPanelController";
 import { Player } from "./Player";
+import { Mob } from "./Mob";
+import { World } from "./World";
+import { Region } from "./Region";
 
 export class ClickController {
   inputDelay?: NodeJS.Timeout = null;
@@ -32,6 +35,7 @@ export class ClickController {
     this.viewport.canvas.removeEventListener("mousemove", this.eventListeners[2]);
     this.viewport.canvas.removeEventListener("mousemove", this.eventListeners[3]);
     this.viewport.canvas.removeEventListener("mousemove", this.eventListeners[4]);
+    this.viewport.canvas.removeEventListener("mousemove", this.eventListeners[5]);
     this.viewport.canvas.removeEventListener("wheel", this.eventListeners[6]);
   }
 
@@ -50,6 +54,7 @@ export class ClickController {
       "mousemove",
       (this.eventListeners[4] = (e) => Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY)),
     );
+    this.viewport.canvas.addEventListener("mousemove", (this.eventListeners[5] = this.mouseMoved.bind(this)));
     this.viewport.canvas.addEventListener("wheel", (this.eventListeners[6] = this.wheel.bind(this)));
   }
 
@@ -87,28 +92,25 @@ export class ClickController {
     }
   }
 
-  clickDown(e: MouseEvent) {
-    if (e.button === 2) {
-      this.rightClickDown(e);
-    }
+  private recentlySelectedMobs: Mob[] = [];
 
-    if (e.button !== 0) {
-      return;
-    }
-    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
+  mouseMoved(e: MouseEvent) {
     const world = Viewport.viewport.player.region.world;
-    const player = Viewport.viewport.player;
-
-    Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
-    const { viewportX, viewportY } = Viewport.viewport.getViewport(world.tickPercent);
-    let x = e.offsetX + viewportX * Settings.tileSize;
-    let y = e.offsetY + viewportY * Settings.tileSize;
-
-    if (Settings.rotated === "south") {
-      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize;
-      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize;
+    const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
+    this.recentlySelectedMobs.forEach((mob) => {
+      mob.selected = false;
+    });
+    this.recentlySelectedMobs = [];
+    if (hoveredOn && hoveredOn.type === "entities") {
+      const firstMob = hoveredOn.mobs.find(() => true);
+      if (firstMob) {
+        firstMob.selected = true;
+        this.recentlySelectedMobs.push(firstMob);
+      }
     }
+  }
 
+  private getClickedOn(e: MouseEvent, world: World, region: Region) {
     const xAlign =
       Viewport.viewport.contextMenu.location.x - Viewport.viewport.contextMenu.width / 2 < e.offsetX &&
       e.offsetX < Viewport.viewport.contextMenu.location.x + Viewport.viewport.contextMenu.width / 2;
@@ -131,17 +133,54 @@ export class ClickController {
     if (controlPanelIntercepted) {
       return;
     }
+    const clickedOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
+    if (!clickedOn) {
+      return null;
+    }
+    const { x, y } = clickedOn.location;
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent);
-    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent).filter(
-      (player: Player) => player !== Viewport.viewport.player,
-    );
-    const groundItems = region.groundItemsAtLocation(
-      Math.floor(x / Settings.tileSize),
-      Math.floor(y / Settings.tileSize),
-    );
+    const mobs: Mob[] = [];
+    const players: Player[] = [];
+    const groundItems: Item[] = [];
+    if (clickedOn.type === "coordinate") {
+      mobs.push(...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent));
+      players.push(
+        ...Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent).filter(
+          (player: Player) => player !== Viewport.viewport.player,
+        ),
+      );
+      groundItems.push(...region.groundItemsAtLocation(Math.floor(x), Math.floor(y)));
+    } else if (clickedOn.type === "entities") {
+      mobs.push(...clickedOn.mobs);
+      players.push(...clickedOn.players);
+      groundItems.push(...clickedOn.groundItems);
+    }
+    return { mobs, players, groundItems, x, y };
+  }
+
+  clickDown(e: MouseEvent) {
+    if (e.button === 2) {
+      this.rightClickDown(e);
+    }
+
+    if (e.button !== 0) {
+      return;
+    }
+    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
+    const world = Viewport.viewport.player.region.world;
+    const player = Viewport.viewport.player;
+
+    Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
+    const clickedOn = this.getClickedOn(e, world, region);
+
+    if (!clickedOn) {
+      return;
+    }
+
+    const { mobs, players, groundItems, x, y } = clickedOn;
 
     Viewport.viewport.player.interruptCombat();
+
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick();
       this.sendToServer(() => this.playerAttackClick(mobs[0]));
@@ -152,7 +191,7 @@ export class ClickController {
       this.redClick();
 
       this.sendToServer(() => player.setSeekingItem(groundItems[0]));
-    } else {
+    } else if (x !== null && y !== null) {
       this.yellowClick();
       this.sendToServer(() => this.playerWalkClick(x, y));
     }
@@ -163,15 +202,16 @@ export class ClickController {
     const region = Viewport.viewport.player.region; // TODO: Redo as InfernoRegion;
     const world = Viewport.viewport.player.region.world;
 
-    const { viewportX, viewportY } = Viewport.viewport.getViewport(world.tickPercent);
-    let x = e.offsetX + viewportX * Settings.tileSize;
-    let y = e.offsetY + viewportY * Settings.tileSize;
-
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
-    if (Settings.rotated === "south") {
-      x = this.viewport.width * Settings.tileSize - e.offsetX + viewportX * Settings.tileSize;
-      y = this.viewport.height * Settings.tileSize - e.offsetY + viewportY * Settings.tileSize;
+
+    const clickedOn = this.getClickedOn(e, world, region);
+
+    if (!clickedOn) {
+      return;
     }
+
+    const { mobs, players, groundItems, x, y } = clickedOn;
+
     const { width } = Chrome.size();
 
     if (e.offsetX > width - ControlPanelController.controller.width) {
@@ -193,29 +233,21 @@ export class ClickController {
     }
 
     Viewport.viewport.contextMenu.destinationLocation = {
-      x: Math.floor(x / Settings.tileSize),
-      y: Math.floor(y / Settings.tileSize),
+      x: Math.floor(x),
+      y: Math.floor(y),
     };
 
     /* gather options */
     let menuOptions: MenuOption[] = [];
 
-    const mobs = Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent);
     mobs.forEach((mob) => {
       menuOptions = menuOptions.concat(mob.contextActions(region, x, y));
     });
-
-    const players = Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent);
     players.forEach((player) => {
       if (player !== Viewport.viewport.player) {
         menuOptions = menuOptions.concat(player.contextActions(region, x, y));
       }
     });
-
-    const groundItems: Item[] = region.groundItemsAtLocation(
-      Math.floor(x / Settings.tileSize),
-      Math.floor(y / Settings.tileSize),
-    );
     groundItems.forEach((item: Item) => {
       menuOptions.push({
         text: [
@@ -228,12 +260,12 @@ export class ClickController {
 
     menuOptions.push(
       {
-        text: [{ text: "Walk Here", fillStyle: "white" }],
+        text: [{ text: `Walk Here (${x},${y})`, fillStyle: "white" }],
         action: () => {
           this.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          this.sendToServer(() => this.playerWalkClick(x * Settings.tileSize, y * Settings.tileSize));
+          this.sendToServer(() => this.playerWalkClick(x, y));
         },
       },
       {
@@ -283,7 +315,7 @@ export class ClickController {
     Viewport.viewport.player.setAggro(mob);
   }
   playerWalkClick(x: number, y: number) {
-    Viewport.viewport.player.moveTo(Math.floor(x / Settings.tileSize), Math.floor(y / Settings.tileSize));
+    Viewport.viewport.player.moveTo(Math.floor(x), Math.floor(y));
   }
   redClick() {
     this.clickAnimation = new ClickAnimation(

@@ -78,6 +78,8 @@ export class XpDropController {
     if (!Settings.displayXpDrops) {
       return;
     }
+    this.canvas.width = 110 * Settings.maxUiScale * 2;
+    this.canvas.height = 200 * Settings.maxUiScale * 2;
 
     const skillInfo = find(XpDropController.skills, { type: this.lastDropSkill });
 
@@ -109,11 +111,12 @@ export class XpDropController {
     }
 
     const xpDropYOffset = 85;
+    const dropFontSize = Math.floor(16 * (Settings.maxUiScale * 2));
     this.ctx.fillStyle = "#FFFFFF";
-    this.ctx.font = "16px Stats_11";
+    this.ctx.font = `${dropFontSize}px Stats_11`;
     this.ctx.textAlign = "right";
     this.drops.forEach((drop, index) => {
-      const textSize = 20;
+      const textSize = dropFontSize + 4;
       if (!drop.skill) {
         return;
       }
@@ -127,7 +130,9 @@ export class XpDropController {
           (index - tickPercent) * textSize - 13 + xpDropYOffset,
           16,
           16,
-        );
+        ),
+          skillInfo.image.width * Settings.maxUiScale * 2,
+          skillInfo.image.height * Settings.maxUiScale * 2;
       }
 
       this.ctx.fillText(String(drop.xp), 110, (index - tickPercent) * textSize + xpDropYOffset);

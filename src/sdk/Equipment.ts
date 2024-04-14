@@ -13,6 +13,8 @@ export enum EquipmentTypes {
   OFFHAND = "offhand",
   AMMO = "ammo",
   BACK = "back",
+  NECK = "neck",
+  RING = "ring",
 }
 
 export class Equipment extends Item {
@@ -69,5 +71,23 @@ export class Equipment extends Item {
 
   get type(): EquipmentTypes {
     throw new Error("equipment must have a type");
+  }
+
+  updateBonuses(gear: Item[]) {
+    // update bonuses based on other items that have been equipped
+  }
+
+  /**
+   * name of the model to render for this item
+   */
+  get model(): string | null {
+    return null;
+  }
+
+  /**
+   * index of animation to use for attacks if possible
+   */
+  get attackAnimationId(): number | null {
+    return null;
   }
 }

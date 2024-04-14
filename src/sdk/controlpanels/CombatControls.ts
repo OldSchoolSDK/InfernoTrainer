@@ -7,18 +7,23 @@ import SelectedCombatStyleButtonImage from "../../assets/images/attackstyles/int
 import CombatStyleButtonImage from "../../assets/images/attackstyles/interface/attack_style_button.png";
 import SelectedAutoRetaliateButtonImage from "../../assets/images/attackstyles/interface/auto_retal_button_highlighted.png";
 import AutoRetaliateButtonImage from "../../assets/images/attackstyles/interface/auto_retal_button.png";
+import SpecialAttackBarBackground from "../../assets/images/attackstyles/interface/special_attack_background.png";
 import { AttackStyle, AttackStylesController } from "../AttackStylesController";
 import { Weapon } from "../gear/Weapon";
 import { Location } from "../../sdk/Location";
 import { startCase, toLower } from "lodash";
 import { Settings } from "../Settings";
 import { Viewport } from "../Viewport";
+import { PlayerStats } from "../PlayerStats";
 
 export class CombatControls extends BaseControls {
+  private playerStats: PlayerStats;
+
   selectedCombatStyleButtonImage: HTMLImageElement = ImageLoader.createImage(SelectedCombatStyleButtonImage);
   combatStyleButtonImage: HTMLImageElement = ImageLoader.createImage(CombatStyleButtonImage);
   autoRetailButtonImage: HTMLImageElement = ImageLoader.createImage(AutoRetaliateButtonImage);
   selectedAutoRetailButtonImage: HTMLImageElement = ImageLoader.createImage(SelectedAutoRetaliateButtonImage);
+  specialAttackBarBackground: HTMLImageElement = ImageLoader.createImage(SpecialAttackBarBackground);
 
   get panelImageReference() {
     return InventoryPanel;
@@ -30,6 +35,10 @@ export class CombatControls extends BaseControls {
 
   get keyBinding() {
     return Settings.combat_key;
+  }
+
+  updateStats(playerStats: PlayerStats) {
+    this.playerStats = playerStats;
   }
 
   panelClickDown(x: number, y: number) {
@@ -56,6 +65,18 @@ export class CombatControls extends BaseControls {
     if (x > 28 && x < 175 && y > 160 && y < 200) {
       Viewport.viewport.player.autoRetaliate = !Viewport.viewport.player.autoRetaliate;
     }
+    if (
+      x > 25 &&
+      y > 210 &&
+      x < 25 + this.specialAttackBarBackground.width &&
+      y < 210 + this.specialAttackBarBackground.height
+    ) {
+      const canSpec =
+        Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
+      if (canSpec) {
+        Viewport.viewport.player.useSpecialAttack = !Viewport.viewport.player.useSpecialAttack;
+      }
+    }
   }
 
   get isAvailable(): boolean {
@@ -63,6 +84,7 @@ export class CombatControls extends BaseControls {
   }
 
   drawAttackStyleButton(
+    context: CanvasRenderingContext2D,
     weapon: Weapon,
     attackStyle: AttackStyle,
     attackStyleImage: HTMLImageElement,
@@ -74,7 +96,7 @@ export class CombatControls extends BaseControls {
 
     const currentAttackStyleImage =
       currentAttackStyle === attackStyle ? this.selectedCombatStyleButtonImage : this.combatStyleButtonImage;
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       currentAttackStyleImage,
       x,
       y,
@@ -82,7 +104,7 @@ export class CombatControls extends BaseControls {
       currentAttackStyleImage.height * scale,
     );
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       attackStyleImage,
       x + (35 - Math.floor(attackStyleImage.width / 2)) * scale,
       y + 5 * scale,
@@ -90,18 +112,18 @@ export class CombatControls extends BaseControls {
       attackStyleImage.height * scale,
     );
 
-    Viewport.viewport.context.font = 16 * scale + "px Stats_11";
-    Viewport.viewport.context.textAlign = "center";
+    context.font = 16 * scale + "px Stats_11";
+    context.textAlign = "center";
 
-    Viewport.viewport.context.fillStyle = "#000";
-    Viewport.viewport.context.fillText(startCase(toLower(attackStyle)), x + 36 * scale, y + 41 * scale);
+    context.fillStyle = "#000";
+    context.fillText(startCase(toLower(attackStyle)), x + 36 * scale, y + 41 * scale);
 
-    Viewport.viewport.context.fillStyle = "#FF9700";
-    Viewport.viewport.context.fillText(startCase(toLower(attackStyle)), x + 35 * scale, y + 40 * scale);
+    context.fillStyle = "#FF9700";
+    context.fillText(startCase(toLower(attackStyle)), x + 35 * scale, y + 40 * scale);
   }
 
-  draw(ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(ctrl, x, y);
+  draw(context: CanvasRenderingContext2D, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(context, ctrl, x, y);
 
     const scale = Settings.controlPanelScale;
 
@@ -111,14 +133,14 @@ export class CombatControls extends BaseControls {
       return;
     }
 
-    Viewport.viewport.context.font = 21 * scale + "px Stats_11";
-    Viewport.viewport.context.textAlign = "center";
+    context.font = 21 * scale + "px Stats_11";
+    context.textAlign = "center";
 
-    Viewport.viewport.context.fillStyle = "#000";
-    Viewport.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 101 * scale, y + 31 * scale);
+    context.fillStyle = "#000";
+    context.fillText(startCase(toLower(weapon.itemName)), x + 101 * scale, y + 31 * scale);
 
-    Viewport.viewport.context.fillStyle = "#FF9700";
-    Viewport.viewport.context.fillText(startCase(toLower(weapon.itemName)), x + 100 * scale, y + 30 * scale);
+    context.fillStyle = "#FF9700";
+    context.fillText(startCase(toLower(weapon.itemName)), x + 100 * scale, y + 30 * scale);
 
     const attackStyleOffsets = [
       { x: 25, y: 45 },
@@ -137,6 +159,7 @@ export class CombatControls extends BaseControls {
         const attackStyleImage = imageMap[weapon.attackStyles()[index]];
         if (attackStyleImage) {
           this.drawAttackStyleButton(
+            context,
             weapon,
             weapon.attackStyles()[index],
             attackStyleImage,
@@ -150,7 +173,7 @@ export class CombatControls extends BaseControls {
     const autoRetailateImage = Viewport.viewport.player.autoRetaliate
       ? this.selectedAutoRetailButtonImage
       : this.autoRetailButtonImage;
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       autoRetailateImage,
       x + 25 * scale,
       y + 155 * scale,
@@ -158,13 +181,41 @@ export class CombatControls extends BaseControls {
       autoRetailateImage.height * scale,
     );
 
-    Viewport.viewport.context.font = 19 * scale + "px Stats_11";
-    Viewport.viewport.context.textAlign = "center";
+    context.font = 19 * scale + "px Stats_11";
+    context.textAlign = "center";
 
-    Viewport.viewport.context.fillStyle = "#000";
-    Viewport.viewport.context.fillText("Auto Retaliate", x + 116 * scale, y + 183 * scale);
+    context.fillStyle = "#000";
+    context.fillText("Auto Retaliate", x + 116 * scale, y + 183 * scale);
 
-    Viewport.viewport.context.fillStyle = "#FF9700";
-    Viewport.viewport.context.fillText("Auto Retaliate", x + 115 * scale, y + 182 * scale);
+    context.fillStyle = "#FF9700";
+    context.fillText("Auto Retaliate", x + 115 * scale, y + 182 * scale);
+
+    const canSpec =
+      Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
+    const isUsingSpec = canSpec && Viewport.viewport.player.useSpecialAttack;
+
+    if (canSpec) {
+      const specAmount = (Viewport.viewport.player?.currentStats.specialAttack ?? 0.0) / 100.0;
+      context.drawImage(
+        this.specialAttackBarBackground,
+        x + 25 * scale,
+        y + 210 * scale,
+        this.specialAttackBarBackground.width * scale,
+        this.specialAttackBarBackground.height * scale,
+      );
+
+      context.fillStyle = "#730606";
+      context.fillRect(x + 28 * scale, y + 216 * scale, 144 * scale, 14 * scale);
+      context.fillStyle = "#397d3b";
+      context.fillRect(x + 28 * scale, y + 216 * scale, 144 * scale * specAmount, 14 * scale);
+      context.fillStyle = "#000000";
+      context.globalAlpha = 0.5;
+      context.strokeRect(x + 28 * scale, y + 216 * scale, 144 * scale, 14 * scale);
+      context.globalAlpha = 1;
+      context.font = `${16 * scale}px Stats_11`;
+      context.textAlign = "center";
+      context.fillStyle = isUsingSpec ? "#FFFF00" : "#000000";
+      context.fillText(`Special Attack: ${Math.round(specAmount * 100)}%`, x + 100 * scale, y + 227 * scale);
+    }
   }
 }

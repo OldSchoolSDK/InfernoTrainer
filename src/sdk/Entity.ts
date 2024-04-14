@@ -7,8 +7,9 @@ import { Region } from "./Region";
 import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
 import { LineOfSightMask } from "./LineOfSight";
+import { Renderable } from "./Renderable";
 
-export class Entity {
+export class Entity extends Renderable {
   region: Region;
   location: Location;
   dying = -1;
@@ -18,6 +19,15 @@ export class Entity {
       this._serialNumber = String(Math.random());
     }
     return this._serialNumber;
+  }
+
+  // entities are not selectable by default
+  get selectable() {
+    return false;
+  }
+
+  shouldDestroy() {
+    return this.dying === 0;
   }
 
   get size() {
@@ -60,8 +70,24 @@ export class Entity {
   }
 
   constructor(region: Region, location: Location) {
+    super();
     this.location = location;
     this.region = region;
+  }
+
+  getPerceivedLocation() {
+    return {
+      ...this.location,
+      z: 0,
+    };
+  }
+
+  getPerceivedRotation() {
+    return 0;
+  }
+
+  get color() {
+    return "#000073";
   }
 
   get type() {
@@ -77,14 +103,17 @@ export class Entity {
     // Override me
   }
 
-  draw(tickPercent: number) {
-    this.region.context.fillStyle = "#000073";
-
-    this.region.context.fillRect(
+  draw(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
+    context.fillStyle = "#000073";
+    context.fillRect(
       this.location.x * Settings.tileSize,
       (this.location.y - this.size + 1) * Settings.tileSize,
       this.size * Settings.tileSize,
       this.size * Settings.tileSize,
     );
+  }
+
+  get animationIndex() {
+    return -1;
   }
 }

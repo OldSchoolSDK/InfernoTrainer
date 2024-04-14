@@ -2,7 +2,7 @@
 
 import InfernoMapImage from "../assets/images/map.png";
 
-import { Region } from "../../../sdk/Region";
+import { CardinalDirection, Region } from "../../../sdk/Region";
 import { Settings } from "../../../sdk/Settings";
 import { ImageLoader } from "../../../sdk/utils/ImageLoader";
 import { Viewport } from "../../../sdk/Viewport";
@@ -17,6 +17,10 @@ import { JalZek } from "./mobs/JalZek";
 export class InfernoRegion extends Region {
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage);
+
+  get initialFacing() {
+    return this.wave === 69 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
+  }
 
   getName() {
     return "Inferno";
@@ -164,20 +168,38 @@ export class InfernoRegion extends Region {
     return northPillarCheckbox.checked;
   }
 
-  drawWorldBackground() {
-    this.context.fillStyle = "black";
-    this.context.fillRect(0, 0, 10000000, 10000000);
+  initializeAndGetUse3dView() {
+    const use3dViewCheckbox = document.getElementById("use3dView") as HTMLInputElement;
+    use3dViewCheckbox.checked = Settings.use3dView;
+    use3dViewCheckbox.addEventListener("change", () => {
+      Settings.use3dView = use3dViewCheckbox.checked;
+      Settings.persistToStorage();
+      window.location.reload();
+    });
+    return use3dViewCheckbox.checked;
+  }
+
+  drawWorldBackground(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    context.fillStyle = "black";
+    context.fillRect(0, 0, 10000000, 10000000);
     if (this.mapImage) {
-      const ctx = this.context as any;
+      const ctx = context as any;
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
-      this.context.imageSmoothingEnabled = false;
+      context.imageSmoothingEnabled = false;
 
-      this.context.drawImage(this.mapImage, 0, 0, this.width * Settings.tileSize, this.height * Settings.tileSize);
+      context.fillStyle = "white";
+
+      context.drawImage(this.mapImage, 0, 0, this.width * scale, this.height * scale);
 
       ctx.webkitImageSmoothingEnabled = true;
       ctx.mozImageSmoothingEnabled = true;
-      this.context.imageSmoothingEnabled = true;
+      context.imageSmoothingEnabled = true;
     }
+  }
+
+  drawDefaultFloor() {
+    // replaced by an Entity in 3d view
+    return !Settings.use3dView;
   }
 }

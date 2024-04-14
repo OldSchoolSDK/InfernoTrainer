@@ -2,8 +2,13 @@ import { Unit, UnitTypes } from "../Unit";
 import { XpDrop } from "../XpDrop";
 import { ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
+import { EquipmentTypes } from "../Equipment";
 
 export class MagicWeapon extends Weapon {
+  get type() {
+    return EquipmentTypes.WEAPON;
+  }
+
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
     return super.attack(from, to, bonuses, options);
   }
@@ -80,7 +85,7 @@ export class MagicWeapon extends Weapon {
 
   _attackRoll(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(
-      this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMultiplier,
+      this._magicLevel(from, to, bonuses) * (this._equipmentBonus(from, to, bonuses) + 64) * bonuses.gearMageMultiplier,
     );
   }
 

@@ -3,8 +3,10 @@ import { BaseControls } from "./BaseControls";
 import InventoryPanel from "../../assets/images/panels/inventory.png";
 import SettingsTab from "../../assets/images/tabs/settings.png";
 
-import MusicOnIcon from "../../assets/images/interface/button_music_on.png";
-import MusicOffIcon from "../../assets/images/interface/button_music_off.png";
+import AudioButton from "../../assets/images/interface/sound_effect_volume.png";
+import AreaAudioButton from "../../assets/images/interface/area_sound_volume.png";
+
+import DisabledOverlay from "../../assets/images/interface/disabled_option_overlay.png";
 
 import ButtonRedUpIcon from "../../assets/images/interface/button_red_up.png";
 import ButtonGreenDownIcon from "../../assets/images/interface/button_green_down.png";
@@ -36,8 +38,9 @@ export class SettingsControls extends BaseControls {
     return SettingsTab;
   }
 
-  musicOnImage: HTMLImageElement = ImageLoader.createImage(MusicOnIcon);
-  musicOffImage: HTMLImageElement = ImageLoader.createImage(MusicOffIcon);
+  soundImage: HTMLImageElement = ImageLoader.createImage(AudioButton);
+  areaSoundImage: HTMLImageElement = ImageLoader.createImage(AreaAudioButton);
+  disabledOverlay: HTMLImageElement = ImageLoader.createImage(DisabledOverlay);
   redUpImage: HTMLImageElement = ImageLoader.createImage(ButtonRedUpIcon);
   greenDownImage: HTMLImageElement = ImageLoader.createImage(ButtonGreenDownIcon);
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon);
@@ -102,9 +105,15 @@ export class SettingsControls extends BaseControls {
 
     if (x > 20 && x < 56 && y > 20 && y < 56) {
       Settings.playsAudio = !Settings.playsAudio;
-    } else if (x > 90 && x < 105 && y > 20 && y < 36) {
+    } else if (x > 20 && x < 56 && y > 60 && y < 86) {
+      Settings.playsAreaAudio = !Settings.playsAreaAudio;
+    } else if (x > 74 && x < 89 && y > 20 && y < 36) {
+      Settings.maxUiScale += 0.05;
+    } else if (x > 75 && x < 89 && y > 51 && y < 67) {
+      Settings.maxUiScale -= 0.05;
+    } else if (x > 100 && x < 115 && y > 20 && y < 36) {
       Settings.inputDelay += 20;
-    } else if (x > 90 && x < 105 && y > 51 && y < 67) {
+    } else if (x > 100 && x < 115 && y > 51 && y < 67) {
       Settings.inputDelay -= 20;
     } else if (x > 20 && x < 60 && y > 100 && y < 140) {
       Settings.displayPlayerLoS = !Settings.displayPlayerLoS;
@@ -143,173 +152,202 @@ export class SettingsControls extends BaseControls {
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay);
+    Settings.maxUiScale = Math.max(0.5, Math.min(1.5, Settings.maxUiScale));
     Settings.persistToStorage();
   }
 
-  draw(ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(ctrl, x, y);
+  drawToggle(context: CanvasRenderingContext2D, x, y, image: HTMLImageElement, value: boolean) {
+    context.drawImage(image, x, y, image.width * Settings.controlPanelScale, image.height * Settings.controlPanelScale);
+    if (!value) {
+      context.drawImage(
+        this.disabledOverlay,
+        x,
+        y,
+        image.width * Settings.controlPanelScale,
+        image.height * Settings.controlPanelScale,
+      );
+    }
+  }
+
+  draw(context, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(context, ctrl, x, y);
     const scale = Settings.controlPanelScale;
 
-    Viewport.viewport.context.drawImage(
-      Settings.playsAudio ? this.musicOnImage : this.musicOffImage,
-      x + 20 * scale,
-      y + 20 * scale,
-      this.musicOffImage.width * scale,
-      this.musicOffImage.height * scale,
-    );
+    this.drawToggle(context, x + 20 * scale, y + 20 * scale, this.soundImage, Settings.playsAudio);
+    this.drawToggle(context, x + 20 * scale, y + 60 * scale, this.areaSoundImage, Settings.playsAreaAudio);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.redUpImage,
-      x + 90 * scale,
+      x + 74 * scale,
       y + 20 * scale,
       this.redUpImage.width * scale,
       this.redUpImage.height * scale,
     );
-    Viewport.viewport.context.fillStyle = "#FFFF00";
-    Viewport.viewport.context.font = 16 * scale + "px OSRS";
-    Viewport.viewport.context.textAlign = "center";
-    Viewport.viewport.context.fillText(String(Settings.inputDelay), x + 96 * scale, y + 48 * scale);
-    Viewport.viewport.context.drawImage(
+    context.fillStyle = "#FFFF00";
+    context.font = 16 * scale + "px OSRS";
+    context.textAlign = "center";
+    context.fillText(String(Math.round((Settings.maxUiScale - 1.0) * 100)) + "%", x + 79 * scale, y + 48 * scale);
+    context.drawImage(
       this.greenDownImage,
-      x + 90 * scale,
+      x + 74 * scale,
       y + 51 * scale,
       this.greenDownImage.width * scale,
       this.greenDownImage.height * scale,
     );
-    Viewport.viewport.context.fillText("Lag", x + 97 * scale, y + 81 * scale);
+    context.fillText("UI", x + 80 * scale, y + 81 * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
+      this.redUpImage,
+      x + 100 * scale,
+      y + 20 * scale,
+      this.redUpImage.width * scale,
+      this.redUpImage.height * scale,
+    );
+    context.fillStyle = "#FFFF00";
+    context.font = 16 * scale + "px OSRS";
+    context.textAlign = "center";
+    context.fillText(String(Settings.inputDelay), x + 106 * scale, y + 48 * scale);
+    context.drawImage(
+      this.greenDownImage,
+      x + 100 * scale,
+      y + 51 * scale,
+      this.greenDownImage.width * scale,
+      this.greenDownImage.height * scale,
+    );
+    context.fillText("Lag", x + 107 * scale, y + 81 * scale);
+
+    context.drawImage(
       Settings.displayPlayerLoS ? this.activeButtonImage : this.inactiveButtonImage,
       x + 20 * scale,
       y + 100 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.fillText("P LoS", x + 40 * scale, y + 125 * scale);
+    context.fillText("P LoS", x + 40 * scale, y + 125 * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage,
       x + 80 * scale,
       y + 100 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.fillText("M LoS", x + 100 * scale, y + 125 * scale);
+    context.fillText("M LoS", x + 100 * scale, y + 125 * scale);
 
-    // Viewport.viewport.context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    // Viewport.viewport.context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
+    // context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
+    // context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage,
       x + 140 * scale,
       y + 70 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.fillText("Pray Ind.", x + 160 * scale, y + 95 * scale);
+    context.fillText("Pray Ind.", x + 160 * scale, y + 95 * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       Settings.metronome ? this.activeButtonImage : this.inactiveButtonImage,
       x + 140 * scale,
       y + 20 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.fillText("Metronome", x + 160 * scale, y + 45 * scale);
+    context.fillText("Metronome", x + 160 * scale, y + 45 * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.bindingKey === "inventory" ? this.activeButtonImage : this.inactiveButtonImage,
       x + 22 * scale,
       y + 170 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.inventoryImage,
       x + 25 * scale,
       y + 172 * scale,
       this.inventoryImage.width * scale,
       this.inventoryImage.height * scale,
     );
-    Viewport.viewport.context.fillText(Settings.inventory_key, x + (25 + 30) * scale, y + (172 + 30) * scale);
+    context.fillText(Settings.inventory_key, x + (25 + 30) * scale, y + (172 + 30) * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.bindingKey === "spellbook" ? this.activeButtonImage : this.inactiveButtonImage,
       x + 82 * scale,
       y + 170 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.spellbookImage,
       x + 85 * scale,
       y + 172 * scale,
       this.spellbookImage.width * scale,
       this.spellbookImage.height * scale,
     );
-    Viewport.viewport.context.fillText(Settings.spellbook_key, x + (85 + 30) * scale, y + (172 + 30) * scale);
+    context.fillText(Settings.spellbook_key, x + (85 + 30) * scale, y + (172 + 30) * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.bindingKey === "prayer" ? this.activeButtonImage : this.inactiveButtonImage,
       x + 142 * scale,
       y + 170 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.prayerImage,
       x + 145 * scale,
       y + 172 * scale,
       this.prayerImage.width * scale,
       this.prayerImage.height * scale,
     );
-    Viewport.viewport.context.fillText(Settings.prayer_key, x + (145 + 30) * scale, y + (172 + 30) * scale);
+    context.fillText(Settings.prayer_key, x + (145 + 30) * scale, y + (172 + 30) * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.bindingKey === "equipment" ? this.activeButtonImage : this.inactiveButtonImage,
       x + 22 * scale,
       y + 220 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.equipmentImage,
       x + 25 * scale,
       y + 222 * scale,
       this.equipmentImage.width * scale,
       this.equipmentImage.height * scale,
     );
-    Viewport.viewport.context.fillText(Settings.equipment_key, x + (25 + 30) * scale, y + (222 + 30) * scale);
+    context.fillText(Settings.equipment_key, x + (25 + 30) * scale, y + (222 + 30) * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.bindingKey === "combat" ? this.activeButtonImage : this.inactiveButtonImage,
       x + 82 * scale,
       y + 220 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       this.combatImage,
       x + 85 * scale,
       y + 222 * scale,
       this.combatImage.width * scale,
       this.combatImage.height * scale,
     );
-    Viewport.viewport.context.fillText(Settings.combat_key, x + (85 + 30) * scale, y + (222 + 30) * scale);
+    context.fillText(Settings.combat_key, x + (85 + 30) * scale, y + (222 + 30) * scale);
 
-    Viewport.viewport.context.drawImage(
+    context.drawImage(
       Settings.menuVisible ? this.activeButtonImage : this.inactiveButtonImage,
       x + 142 * scale,
       y + 220 * scale,
       this.activeButtonImage.width * scale,
       this.activeButtonImage.height * scale,
     );
-    Viewport.viewport.context.fillText("Menu", x + 163 * scale, y + 241 * scale);
+    context.fillText("Menu", x + 163 * scale, y + 241 * scale);
 
     if (this.bindingKey === null) {
-      Viewport.viewport.context.fillText("Key Bindings", x + 100 * scale, y + (133 + 30) * scale);
+      context.fillText("Key Bindings", x + 100 * scale, y + (133 + 30) * scale);
     } else {
-      Viewport.viewport.context.fillText("Press Key To Bind", x + 100 * scale, y + (133 + 30) * scale);
+      context.fillText("Press Key To Bind", x + 100 * scale, y + (133 + 30) * scale);
     }
   }
 }

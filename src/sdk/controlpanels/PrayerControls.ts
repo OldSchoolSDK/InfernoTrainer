@@ -63,8 +63,8 @@ export class PrayerControls extends BaseControls {
     return true;
   }
 
-  draw(ctrl: ControlPanelController, x: number, y: number) {
-    super.draw(ctrl, x, y);
+  draw(context, ctrl: ControlPanelController, x: number, y: number) {
+    super.draw(context, ctrl, x, y);
     const scale = Settings.controlPanelScale;
 
     Viewport.viewport.player.prayerController.prayers.forEach((prayer, index) => {

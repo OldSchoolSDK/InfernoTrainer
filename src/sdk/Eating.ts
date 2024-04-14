@@ -69,7 +69,7 @@ export class Eating {
 
   drinkPotion(potion: Potion) {
     if (!this.canDrinkPotion()) {
-      return;
+      return false;
     }
     this.currentPotion = potion || null;
     this.foodDelay = 3;
@@ -77,6 +77,7 @@ export class Eating {
     if (this.currentPotion) {
       this.currentPotion.doses--;
     }
+    return true;
   }
 
   eatComboFood(karambwan: Karambwan) {

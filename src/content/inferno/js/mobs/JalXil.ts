@@ -11,12 +11,22 @@ import { Unit, UnitBonuses } from "../../../../sdk/Unit";
 import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { EntityName } from "../../../../sdk/EntityName";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+import { Assets } from "../../../../sdk/utils/Assets";
+
+export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
 
 class JalXilWeapon extends RangedWeapon {
   registerProjectile(from: Unit, to: Unit) {
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
-        to.addProjectile(new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 }));
+        to.addProjectile(
+          new Projectile(this, this.damage, from, to, "range", {
+            reduceDelay: 2,
+          }),
+        );
       }, 2),
     );
   }
@@ -29,6 +39,10 @@ export class JalXil extends Mob {
 
   get combatLevel() {
     return 370;
+  }
+
+  override get height() {
+    return 4;
   }
 
   dead() {
@@ -100,7 +114,11 @@ export class JalXil extends Mob {
   }
 
   get sound() {
-    return RangerSound;
+    return new Sound(RangerSound);
+  }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
   }
 
   shouldChangeAggro(projectile: Projectile) {
@@ -112,7 +130,7 @@ export class JalXil extends Mob {
   }
 
   canMeleeIfClose() {
-    return "crush";
+    return "crush" as const;
   }
 
   playAttackSound() {
@@ -121,7 +139,19 @@ export class JalXil extends Mob {
     }, 1.75 * Settings.tickMs);
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.rotate(Math.sin(-tickPercent * Math.PI));
+  attackAnimation(tickPercent: number, context) {
+    context.rotate(Math.sin(-tickPercent * Math.PI));
+  }
+
+  override create3dModel() {
+    return GLTFModel.forRenderable(this, RangerModel, 0.0075);
+  }
+
+  override get deathAnimationLength() {
+    return 5;
+  }
+
+  override get attackAnimationId() {
+    return 2;
   }
 }

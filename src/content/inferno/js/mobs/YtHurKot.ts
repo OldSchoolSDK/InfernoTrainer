@@ -127,7 +127,7 @@ export class YtHurKot extends Mob {
     return "#ACFF5633";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
+  attackAnimation(tickPercent: number, context) {
+    context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
   }
 }

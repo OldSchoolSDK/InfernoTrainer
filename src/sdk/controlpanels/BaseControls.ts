@@ -37,16 +37,16 @@ export class BaseControls {
   }
 
   panelClickDown(x: number, y: number) {
-    console.log(x, y);
+    //
   }
   panelClickUp(x: number, y: number) {
-    console.log(x, y);
+    //
   }
 
-  draw(ctrl: ControlPanelController, x: number, y: number) {
+  draw(context: CanvasRenderingContext2D, ctrl: ControlPanelController, x: number, y: number) {
     const scale = Settings.controlPanelScale;
     if (this.panelImage) {
-      Viewport.viewport.context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale);
+      context.drawImage(this.panelImage, x, y, 204 * scale, 275 * scale);
     }
   }
 }

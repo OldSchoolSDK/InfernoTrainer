@@ -6,7 +6,14 @@ import { ItemName } from "../../sdk/ItemName";
 import { Unit } from "../../sdk/Unit";
 import { AttackBonuses } from "../../sdk/gear/Weapon";
 import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
-import { ProjectileOptions } from "../../sdk/weapons/Projectile";
+import { Projectile, ProjectileOptions } from "../../sdk/weapons/Projectile";
+
+import BPAttackSound from "../../assets/sounds/dart_2696.ogg";
+import BPSpecSound from "../../assets/sounds/snake_hit_800.ogg";
+import { Sound, SoundCache } from "../../sdk/utils/SoundCache";
+
+import { PlayerAnimationIndices } from "../../sdk/rendering/GLTFAnimationConstants";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
@@ -37,6 +44,7 @@ export class Blowpipe extends RangedWeapon {
         slayer: 0,
       },
     };
+    SoundCache.preload(this.attackSound.src);
   }
 
   calculateHitDelay(distance: number) {
@@ -74,6 +82,7 @@ export class Blowpipe extends RangedWeapon {
   }
 
   specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
+    super.specialAttack(from, to, bonuses, options);
     bonuses.isSpecialAttack = true;
     // BP special attack takes an extra tick to land
     options.reduceDelay = -1;
@@ -110,5 +119,31 @@ export class Blowpipe extends RangedWeapon {
   }
   get inventoryImage() {
     return BPInventImage;
+  }
+
+  get attackSound() {
+    return new Sound(BPAttackSound, 0.1);
+  }
+
+  get specialAttackSound() {
+    return new Sound(BPSpecSound, 0.5);
+  }
+
+  registerProjectile(from: Unit, to: Unit) {
+    to.addProjectile(
+      new Projectile(this, this.damage, from, to, "range", {
+        visualDelayTicks: 1,
+        sound: this.attackSound,
+      }),
+    );
+  }
+
+  Model = Assets.getAssetUrl("models/player_toxic_blowpipe.glb");
+  override get model() {
+    return this.Model;
+  }
+
+  get attackAnimationId() {
+    return PlayerAnimationIndices.FireBlowpipe;
   }
 }

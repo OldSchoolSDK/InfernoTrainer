@@ -4,12 +4,17 @@ import { EntityName } from "../../../../sdk/EntityName";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
 import { Mob } from "../../../../sdk/Mob";
 import { Player } from "../../../../sdk/Player";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 import { Unit, UnitBonuses } from "../../../../sdk/Unit";
+import { Assets } from "../../../../sdk/utils/Assets";
+import { Sound } from "../../../../sdk/utils/SoundCache";
 import { ProjectileOptions } from "../../../../sdk/weapons/Projectile";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
+
+const BatModel = Assets.getAssetUrl("models/7692_33018.glb");
 
 class JalMejRahWeapon extends RangedWeapon {
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
@@ -95,14 +100,22 @@ export class JalMejRah extends Mob {
   }
 
   get sound() {
-    return BatSound;
+    return new Sound(BatSound, 0.75);
   }
 
   attackStyleForNewAttack() {
     return "range";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, BatModel, 0.0075);
+  }
+
+  override get attackAnimationId() {
+    return 1;
   }
 }

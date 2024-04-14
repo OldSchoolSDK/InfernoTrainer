@@ -2,6 +2,7 @@
 import { Entity } from "../sdk/Entity";
 
 import { CollisionType } from "../sdk/Collision";
+import { Model } from "../sdk/rendering/Model";
 
 export class Wall extends Entity {
   get collisionType() {
@@ -13,5 +14,9 @@ export class Wall extends Entity {
   }
   draw() {
     // force empty draw
+  }
+
+  get color() {
+    return "#222222";
   }
 }

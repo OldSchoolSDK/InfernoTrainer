@@ -2,6 +2,7 @@ import { Necklace } from "../../sdk/gear/Necklace";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Necklace_of_anguish.png";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class NecklaceOfAnguish extends Necklace {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -44,5 +45,10 @@ export class NecklaceOfAnguish extends Necklace {
         slayer: 0,
       },
     };
+  }
+
+  Model = Assets.getAssetUrl("models/player_necklace_of_anguish__or_.glb");
+  override get model() {
+    return this.Model;
   }
 }

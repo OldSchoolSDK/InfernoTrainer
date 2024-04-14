@@ -1,8 +1,13 @@
+import { EquipmentTypes } from "../Equipment";
 import { Weapon, AttackBonuses } from "../gear/Weapon";
 import { Unit, UnitTypes } from "../Unit";
 import { XpDrop } from "../XpDrop";
 
 export class MeleeWeapon extends Weapon {
+  get type() {
+    return EquipmentTypes.WEAPON;
+  }
+
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}): boolean {
     bonuses.attackStyle = bonuses.attackStyle || "slash";
     return super.attack(from, to, bonuses);
@@ -81,7 +86,7 @@ export class MeleeWeapon extends Weapon {
   _maxHit(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(
       Math.floor((this._strengthLevel(from, to, bonuses) * (from.bonuses.other.meleeStrength + 64) + 320) / 640) *
-        bonuses.gearMultiplier *
+        bonuses.gearMeleeMultiplier *
         bonuses.overallMultiplier,
     );
   }
@@ -110,7 +115,9 @@ export class MeleeWeapon extends Weapon {
 
   _attackRoll(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(
-      this._attackLevel(from, to, bonuses) * (from.bonuses.attack[bonuses.attackStyle] + 64) * bonuses.gearMultiplier,
+      this._attackLevel(from, to, bonuses) *
+        (from.bonuses.attack[bonuses.attackStyle] + 64) *
+        bonuses.gearMeleeMultiplier,
     );
   }
 

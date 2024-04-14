@@ -42,6 +42,9 @@ enum MapHover {
   XP = 5,
 }
 
+const INITIAL_WIDTH = 210;
+const INITIAL_HEIGHT = 180;
+
 export class MapController {
   static controller = new MapController();
 
@@ -83,8 +86,8 @@ export class MapController {
   width: number;
   height: number;
   constructor() {
-    this.width = 210;
-    this.height = 180;
+    this.width = INITIAL_WIDTH;
+    this.height = INITIAL_HEIGHT;
 
     this.hovering = MapHover.NONE;
     this.loadImages();
@@ -234,7 +237,7 @@ export class MapController {
   cursorMovedTo(event: MouseEvent) {
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
     const x = event.offsetX - offset;
     const y = event.offsetY / scale;
 
@@ -259,7 +262,7 @@ export class MapController {
 
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
     const x = event.offsetX - offset;
     const y = event.offsetY / scale;
 
@@ -359,7 +362,7 @@ export class MapController {
     let intercepted = false;
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
     const x = event.offsetX - offset;
     const y = event.offsetY / scale;
 
@@ -416,10 +419,12 @@ export class MapController {
     const { width } = Chrome.size();
 
     const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
+    Settings.minimapScale = (gameHeight / 500 > 1 ? 1 : gameHeight / 500) * Settings.maxUiScale;
 
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
+    this.width = INITIAL_WIDTH * scale;
+    this.height = INITIAL_HEIGHT * scale;
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
 
     ctx.font = 16 * scale + "px Stats_11";
     ctx.textAlign = "center";
