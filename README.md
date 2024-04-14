@@ -28,10 +28,20 @@ Sure. Right now the code is undergoing rapid development and the API is not stab
 
 ## Development notes
 
-Use Node 16 for now. There's an SSL error on version >= 18.
+Node 16 is required. It does not run on Node 18+ yet.
+
+To install dependencies:
+
+    npm install
+
+To start the dev server (https://localhost:8000):
 
     npm run start
 
-Running test
+Running tests
 
     npx jest
+
+To reformat all files with Prettier (please do this before submitting a PR):
+
+    npm run prettier

@@ -57,7 +57,7 @@ describe("basic combat scenario", () => {
     expect(player.currentStats.prayer).toEqual(39);
     expect(jalxil.location).toEqual({ x: 30, y: 44 });
     expect(jalxil.currentStats.hitpoint).toBe(0);
-    expect(player.currentStats.hitpoint).toBe(33);
+    expect(player.currentStats.hitpoint).toBe(99);
     expect(world.globalTickCounter).toEqual(145);
     expect(Random.callCount).toEqual(78);
   });

@@ -491,42 +491,10 @@ export class Player extends Unit {
     }
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
+    const path = Pathing.path(this.region, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
+    this.location = { x: path.x, y: path.y };
 
-    // Path to next position if not already there.
-    if (
-      !this.destinationLocation ||
-      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)
-    ) {
-      this.pathTargetLocation = null;
-      return;
-    }
-
-    const speed = this.running ? 2 : 1;
-
-    const { path, destination } = Pathing.path(this.region, this.location, this.destinationLocation, speed, this.aggro);
-    this.pathTargetLocation = destination;
-    if (!path.length || !destination) {
-      return;
-    }
-    if (path.length < speed) {
-      // Step to the destination
-      this.location = path[path.length - 1];
-    } else {
-      // Move one or two steps forward
-      this.location = path[speed - 1];
-    }
-    // postprocess the path to corners only
-    // save the next 2 steps for interpolation purposes
-    let newTiles = path.map((pos) => ({
-      ...pos,
-      run: path.length >= 2,
-    }));
-    // only add corners to the path (and the last point)
-    newTiles = newTiles.filter((v, idx) => idx === path.length - 1 || v.direction !== newTiles[idx + 1].direction);
-    if (newTiles.length > 1 && newTiles[1].direction === newTiles[0].direction) {
-      newTiles.shift();
-    }
-    this.path.push(...newTiles);
+    this.path = path.path;
   }
 
   takeSeekingItem() {
