@@ -10,8 +10,6 @@ import { Viewport } from "../Viewport";
 import { Viewport3d } from "../Viewport3d";
 import { drawLineNormally, drawLineOnTop } from "./RenderUtils";
 
-const CANVAS_TILE_SIZE = 20;
-
 const OUTLINE_NORMAL = 0xffffff;
 const OUTLINE_SELECTED = 0xff0000;
 
