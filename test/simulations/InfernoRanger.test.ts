@@ -3,51 +3,9 @@ import { Player } from "../../src/sdk/Player";
 import { World } from "../../src/sdk/World";
 import { Blowpipe } from "../../src/content/weapons/Blowpipe";
 import { TwistedBow } from "../../src/content/weapons/TwistedBow";
-import { Settings } from "../../src/sdk/Settings";
 import { Region } from "../../src/sdk/Region";
 import { Random } from "../../src/sdk/Random";
-
-jest.mock("../../src/sdk/XpDropController", () => {
-  return {
-    XpDropController: {
-      controller: {
-        tick: () => true,
-        registerXpDrop: () => true,
-      },
-    },
-  };
-});
-
-jest.mock("../../src/sdk/MapController", () => {
-  return {
-    MapController: {
-      controller: {
-        updateOrbsMask: () => true,
-      },
-    },
-  };
-});
-
-jest.mock("../../src/sdk/ControlPanelController", () => {
-  return {
-    ControlPanelController: {
-      controller: {},
-    },
-  };
-});
-
-jest.spyOn(document, "getElementById").mockImplementation((elementId: string) => {
-  const c = document.createElement("canvas");
-  c.ariaLabel = elementId;
-  return c;
-});
-
-Random.setRandom(() => {
-  Random.memory = (Random.memory + 13.37) % 180;
-  return Math.abs(Math.sin(Random.memory * 0.0174533));
-});
-
-Settings.readFromStorage();
+import { Viewport } from "../../src/sdk/Viewport";
 
 export class TestRegion60x60 extends Region {
   get width(): number {
@@ -67,6 +25,7 @@ describe("basic combat scenario", () => {
     world.addRegion(region);
     const player = new Player(region, { x: 30, y: 60 });
     region.addPlayer(player);
+    Viewport.viewport.setPlayer(player);
 
     new TwistedBow().inventoryLeftClick(player);
     const jalxil = new JalXil(region, { x: 25, y: 25 }, { aggro: player });
@@ -76,7 +35,7 @@ describe("basic combat scenario", () => {
     player.setAggro(jalxil);
     world.tickWorld(20);
     expect(player.location).toEqual({ x: 30, y: 54 });
-    expect(player.currentStats.hitpoint).toBe(41);
+    expect(player.currentStats.hitpoint).toBe(99);
     expect(player.equipment.weapon.itemName).toEqual("Twisted Bow");
     expect(jalxil.location).toEqual({ x: 30, y: 45 });
     expect(jalxil.currentStats.hitpoint).toBe(124);

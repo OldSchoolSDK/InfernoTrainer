@@ -1,8 +1,10 @@
 "use strict";
+import _ from "lodash";
+
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
 import { LineOfSight } from "./LineOfSight";
-import { minBy, range, filter, find, map, min, uniq, sumBy } from "lodash";
+import { minBy, range, filter, find, map, min, uniq, sumBy, flatMap } from "lodash";
 import { Unit, UnitTypes, UnitBonuses, UnitOptions } from "./Unit";
 import { XpDropController } from "./XpDropController";
 import { AttackBonuses, Weapon } from "./gear/Weapon";
@@ -33,7 +35,11 @@ class PlayerEffects {
 
 export class Player extends Unit {
   manualSpellCastSelection: Weapon;
+
+  // this is the actual location that we want to move to (ignoring pathing)
   destinationLocation?: Location;
+  // this is the location we are actually pathing towards
+  pathTargetLocation?: Location;
 
   stats: PlayerStats;
   currentStats: PlayerStats;
@@ -53,12 +59,13 @@ export class Player extends Unit {
 
   seekingItem: Item = null;
 
-  path: any;
+  path: any[] = [];
 
   constructor(region: Region, location: Location, options: UnitOptions = {}) {
     super(region, location, options);
 
     this.destinationLocation = location;
+    this.pathTargetLocation = location;
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
@@ -256,7 +263,10 @@ export class Player extends Unit {
     }
 
     Object.keys(this.xpDrops).forEach((skill) => {
-      XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill]) });
+      XpDropController.controller.registerXpDrop({
+        skill,
+        xp: Math.ceil(this.xpDrops[skill]),
+      });
     });
 
     this.clearXpDrops();
@@ -286,7 +296,11 @@ export class Player extends Unit {
                 bestDistance = distance;
                 bestDistances = [];
               }
-              bestDistances.push({ x: potentialX, y: potentialY, bestDistance });
+              bestDistances.push({
+                x: potentialX,
+                y: potentialY,
+                bestDistance,
+              });
             }
           }
         }
@@ -438,21 +452,10 @@ export class Player extends Unit {
           });
         });
         // Create paths to all npc tiles
-        const potentialPaths = map(seekingTiles, (point) =>
-          Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }),
-        );
-        const potentialPathLengths = map(potentialPaths, (path) => path.length);
-        // Figure out what the min distance is
-        const shortestPathLength = min(potentialPathLengths);
-        // Get all of the paths of the same minimum distance (can be more than 1)
-        const shortestPaths = filter(
-          map(potentialPathLengths, (length, index) => (length === shortestPathLength ? seekingTiles[index] : null)),
-        );
-        // Take the path that is the shortest absolute distance from player
-        this.destinationLocation = minBy(shortestPaths, (point) =>
-          Pathing.dist(this.location.x, this.location.y, point.x, point.y),
-        );
+        const path = Pathing.constructPaths(this.region, this.location, seekingTiles);
+        this.destinationLocation = path.destination ?? this.location;
       } else {
+        // stop moving
         this.destinationLocation = this.location;
       }
     } else if (this.seekingItem) {
@@ -489,10 +492,41 @@ export class Player extends Unit {
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
-    const path = Pathing.path(this.region, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
-    this.location = { x: path.x, y: path.y };
+    // Path to next position if not already there.
+    if (
+      !this.destinationLocation ||
+      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)
+    ) {
+      this.pathTargetLocation = null;
+      return;
+    }
 
-    this.path = path.path;
+    const speed = this.running ? 2 : 1;
+
+    const { path, destination } = Pathing.path(this.region, this.location, this.destinationLocation, speed, this.aggro);
+    this.pathTargetLocation = destination;
+    if (!path.length || !destination) {
+      return;
+    }
+    if (path.length < speed) {
+      // Step to the destination
+      this.location = path[path.length - 1];
+    } else {
+      // Move one or two steps forward
+      this.location = path[speed - 1];
+    }
+    // postprocess the path to corners only
+    // save the next 2 steps for interpolation purposes
+    let newTiles = path.map((pos) => ({
+      ...pos,
+      run: path.length >= 2,
+    }));
+    // only add corners to the path (and the last point)
+    newTiles = newTiles.filter((v, idx) => idx === path.length - 1 || v.direction !== newTiles[idx + 1].direction);
+    if (newTiles.length > 1 && newTiles[1].direction === newTiles[0].direction) {
+      newTiles.shift();
+    }
+    this.path.push(...newTiles);
   }
 
   takeSeekingItem() {
@@ -559,8 +593,6 @@ export class Player extends Unit {
     this.clearXpDrops();
 
     this.attackIfPossible();
-
-    this.processIncomingAttacks();
 
     this.eats.tickFood(this);
 
