@@ -108,6 +108,10 @@ export class Viewport {
     Settings._tileSize = width / this.player.region.width;
     this.width = width / Settings.tileSize;
     this.height = height / Settings.tileSize;
+    if (width !== this.canvas.width || height !== this.canvas.height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
   }
 
   getViewport(tickPercent: number) {

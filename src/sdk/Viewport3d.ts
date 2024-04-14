@@ -22,6 +22,9 @@ import { TileMarkerModel } from "./rendering/TileMarkerModel";
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
 
+const MIN_PITCH = -1;
+const MAX_PITCH = 0.1;
+
 export class Viewport3d implements ViewportDelegate {
   private canvas: OffscreenCanvas;
   private uiCanvas: OffscreenCanvas;
@@ -37,6 +40,9 @@ export class Viewport3d implements ViewportDelegate {
   private pivot = new THREE.Object3D();
   private yaw = new THREE.Object3D();
   private pitch = new THREE.Object3D();
+
+  private yawDelta = 0;
+  private pitchDelta = 0;
 
   private stats = new Stats();
 
@@ -61,17 +67,18 @@ export class Viewport3d implements ViewportDelegate {
 
     const worldCanvas = document.getElementById("world") as HTMLCanvasElement;
     this.initCameraEvents(worldCanvas);
+    window.addEventListener("resize", () => this.updateCanvasSize());
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       logarithmicDepthBuffer: true,
       antialias: true,
-      precision: "lowp",
+      //precision: "lowp", // is this making everything purple on mobile?
     });
 
     // Set up camera positioning
-    this.camera.position.set(0, 3, 5);
-    this.pivot.position.set(0, 0, 10);
+    this.camera.position.set(0, 1, 0);
+    this.pivot.position.set(0, 0, 0);
     // Face south
     if (faceCameraSouth) {
       this.yaw.rotation.y = Math.PI;
@@ -79,7 +86,7 @@ export class Viewport3d implements ViewportDelegate {
     // Pitch down slightly
     this.pitch.rotation.x = -0.7;
     // Zoom out
-    this.camera.position.z = 15;
+    this.camera.position.z = 12;
     this.scene.add(this.pivot);
     this.pivot.add(this.yaw);
     this.yaw.add(this.pitch);
@@ -111,7 +118,7 @@ export class Viewport3d implements ViewportDelegate {
     if ((e.buttons & 4) !== 4) return;
     this.yaw.rotation.y -= e.movementX * 0.002;
     const v = this.pitch.rotation.x - e.movementY * 0.002;
-    if (v > -1 && v < 0.1) {
+    if (v > MIN_PITCH && v < MAX_PITCH) {
       this.pitch.rotation.x = v;
     }
     return false;
@@ -122,12 +129,46 @@ export class Viewport3d implements ViewportDelegate {
     if (v >= 2 && v <= 20) {
       this.camera.position.z = v;
     }
+    e.preventDefault();
     return false;
+  }
+
+  onKeyDown(e: KeyboardEvent) {
+    // values are desired change per second
+    switch (e.key) {
+      case "ArrowLeft":
+        this.yawDelta = -2;
+        break;
+      case "ArrowRight":
+        this.yawDelta = 2;
+        break;
+      case "ArrowUp":
+        this.pitchDelta = -1;
+        break;
+      case "ArrowDown":
+        this.pitchDelta = 1;
+        break;
+    }
+  }
+
+  onKeyUp(e: KeyboardEvent) {
+    switch (e.key) {
+      case "ArrowLeft":
+      case "ArrowRight":
+        this.yawDelta = 0;
+        break;
+      case "ArrowUp":
+      case "ArrowDown":
+        this.pitchDelta = 0;
+        break;
+    }
   }
 
   initCameraEvents(canvas) {
     canvas.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
     canvas.addEventListener("wheel", this.onDocumentMouseWheel.bind(this), false);
+    window.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    window.addEventListener("keyup", this.onKeyUp.bind(this), false);
   }
 
   calculateCanvasDimensions() {
@@ -222,6 +263,11 @@ export class Viewport3d implements ViewportDelegate {
     };
   }
 
+  updateCamera(delta: number) {
+    this.yaw.rotation.y += this.yawDelta * delta;
+    this.pitch.rotation.x = Math.max(Math.min(this.pitch.rotation.x + this.pitchDelta * delta, MAX_PITCH), MIN_PITCH);
+  }
+
   draw3dScene(world: World, region: Region) {
     // create actors
     region.entities.forEach((entity: Entity) => {
@@ -240,7 +286,8 @@ export class Viewport3d implements ViewportDelegate {
         this.knownActors.set(player, actor);
       }
       // Update the camera position relative to the player's mesh
-      const v = actor.getModel().getWorldPosition();
+      const v = new THREE.Vector3(0.5, 0, -0.5);
+      v.add(actor.getModel().getWorldPosition());
       this.pivot.position.lerp(v, 0.1);
       // Add all projectiles to scene
       projectiles.push(...player.incomingProjectiles);
@@ -265,6 +312,7 @@ export class Viewport3d implements ViewportDelegate {
     });
 
     const delta = this.clock.getDelta();
+    this.updateCamera(delta);
 
     this.knownActors.forEach((actor, entity) => {
       if (actor.shouldRemove()) {
