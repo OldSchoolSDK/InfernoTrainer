@@ -465,7 +465,6 @@ export class Player extends Unit {
 
   moveTorwardsDestination() {
     // Actually move the player
-
     this.perceivedLocation = this.location;
 
     // Calculate run energy
@@ -491,10 +490,13 @@ export class Player extends Unit {
     }
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
-    const path = Pathing.path(this.region, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
-    this.location = { x: path.x, y: path.y };
 
-    this.path = path.path;
+    const speed = this.running ? 2 : 1;
+    const { x, y, path, destination } = Pathing.path(this.region, this.location, this.destinationLocation, speed, this.aggro);
+    this.pathTargetLocation = destination;
+    this.location.x = x;
+    this.location.y = y;
+    this.path = path;
   }
 
   takeSeekingItem() {
