@@ -50,6 +50,10 @@ export interface ViewportDelegate {
 
   // translate the click (relative to the viewport) to a location in the world or something that got clicked
   translateClick(offsetX: number, offsetY: number, world: World, viewport: Viewport): ViewportClickResult;
+
+  getMapRotation(): number;
+
+  setMapRotation(direction: CardinalDirection);
 }
 
 export class Viewport {
@@ -140,6 +144,18 @@ export class Viewport {
     if (MapController.controller && this.player) {
       MapController.controller.updateOrbsMask(this.player.currentStats, this.player.stats);
     }
+  }
+
+  getMapRotation() {
+    return this.delegate.getMapRotation();
+  }
+
+  rotateSouth() {
+    this.delegate.setMapRotation(CardinalDirection.SOUTH);
+  }
+
+  rotateNorth() {
+    this.delegate.setMapRotation(CardinalDirection.NORTH);
   }
 
   getDelegate() {

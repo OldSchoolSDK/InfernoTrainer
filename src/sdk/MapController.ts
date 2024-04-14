@@ -212,9 +212,7 @@ export class MapController {
 
     mapContext.save();
     mapContext.translate(76, 76);
-    if (Settings.rotated === "south") {
-      mapContext.rotate(Math.PI);
-    }
+    mapContext.rotate(Viewport.viewport.getMapRotation());
     mapContext.translate(-76, -76);
 
     if (Viewport.viewport.player.region.mapImage) {
@@ -299,13 +297,13 @@ export class MapController {
         {
           text: [{ text: "Look North", fillStyle: "white" }],
           action: () => {
-            Settings.rotated = "north";
+            Viewport.viewport.rotateNorth();
           },
         },
         {
           text: [{ text: "Look South", fillStyle: "white" }],
           action: () => {
-            Settings.rotated = "south";
+            Viewport.viewport.rotateSouth();
           },
         },
       ];
@@ -373,10 +371,10 @@ export class MapController {
     } else if (x > 33 && x < 64 && y > 5 && y < 36) {
       intercepted = true;
 
-      if (Settings.rotated === "south") {
-        Settings.rotated = "north";
+      if (Viewport.viewport.getMapRotation() === 0) {
+        Viewport.viewport.rotateSouth();
       } else {
-        Settings.rotated = "south";
+        Viewport.viewport.rotateNorth();
       }
       Settings.persistToStorage();
     } else if (x > 4 && x < 52 && y > 53 && y < 73) {

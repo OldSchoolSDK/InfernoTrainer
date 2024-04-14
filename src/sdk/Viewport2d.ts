@@ -2,7 +2,7 @@
 import { Player } from "./Player";
 import { World } from "./World";
 import { Viewport, ViewportDelegate } from "./Viewport";
-import { Region } from "./Region";
+import { CardinalDirection, Region } from "./Region";
 import { Settings } from "./Settings";
 import { Renderable } from "./Renderable";
 import { Unit } from "./Unit";
@@ -145,5 +145,17 @@ export class Viewport2d implements ViewportDelegate {
       }
       context.restore();
     });
+  }
+  
+  setMapRotation(direction: CardinalDirection) {
+    if (direction === CardinalDirection.SOUTH) {
+      Settings.rotated = "south";
+    } else if (direction === CardinalDirection.NORTH) {
+      Settings.rotated = "north";
+    }
+  }
+  
+  getMapRotation(): number {
+    return Settings.rotated === "south" ? Math.PI : 0;  
   }
 }

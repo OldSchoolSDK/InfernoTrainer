@@ -1,7 +1,7 @@
 "use strict";
 import { World } from "./World";
 import { Viewport, ViewportDelegate } from "./Viewport";
-import { Region } from "./Region";
+import { CardinalDirection, Region } from "./Region";
 
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -414,5 +414,17 @@ export class Viewport3d implements ViewportDelegate {
         y: this.selectedTile.y,
       },
     };
+  }
+  
+  setMapRotation(direction: CardinalDirection) {
+    if (direction === CardinalDirection.SOUTH) {
+      this.yaw.rotation.y = Math.PI;
+    } else if (direction === CardinalDirection.NORTH) {
+      this.yaw.rotation.y = 0;
+    }
+  }
+
+  getMapRotation(): number {
+    return this.yaw.rotation.y;
   }
 }
