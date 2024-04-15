@@ -415,7 +415,7 @@ export class Viewport3d implements ViewportDelegate {
       },
     };
   }
-  
+
   setMapRotation(direction: CardinalDirection) {
     if (direction === CardinalDirection.SOUTH) {
       this.yaw.rotation.y = Math.PI;

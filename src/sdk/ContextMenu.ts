@@ -30,7 +30,7 @@ export class ContextMenu {
   setActive() {
     this.isActive = true;
   }
-  
+
   setInactive() {
     this.isActive = false;
   }

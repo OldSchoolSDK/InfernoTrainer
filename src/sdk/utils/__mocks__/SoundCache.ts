@@ -6,10 +6,10 @@ export class Sound {
 }
 
 export class SoundCache {
-    static preload() {
-        return;
-    }
-    static play() {
-        return;
-    }
+  static preload() {
+    return;
+  }
+  static play() {
+    return;
+  }
 }

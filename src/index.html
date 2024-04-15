@@ -152,6 +152,7 @@
       <button id="pauseResumeLink">Pause Wave</button>
 
       <select name="loadouts" id="loadouts">
+        <option value="max_tbow_speed">Max Tbow + Chins</option>
         <option value="max_tbow">Max Tbow</option>
         <option value="max_fbow">Max Fbow</option>
         <!-- <option value="budget_fbow">Budget Fbow</option>-->
@@ -181,8 +182,16 @@
       <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank">Join Our Discord</a>
       <a href="https://oldschool.runescape.wiki/w/Inferno">Mob Explanations</a>
       Configure key bindings in the settings tab.
+      <div style="
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      ">
+        <input type="checkbox" id="use3dView" name="use3dView">
+        <label for="use3dView">Use 3D View (Experimental)</label>
+      </div>
     </div>
-
     <!-- lazy set timer -->
     <script>
       window.timer_mode = 'Start Set Timer';

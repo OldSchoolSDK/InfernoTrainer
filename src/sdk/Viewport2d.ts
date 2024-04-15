@@ -146,7 +146,7 @@ export class Viewport2d implements ViewportDelegate {
       context.restore();
     });
   }
-  
+
   setMapRotation(direction: CardinalDirection) {
     if (direction === CardinalDirection.SOUTH) {
       Settings.rotated = "south";
@@ -154,8 +154,8 @@ export class Viewport2d implements ViewportDelegate {
       Settings.rotated = "north";
     }
   }
-  
+
   getMapRotation(): number {
-    return Settings.rotated === "south" ? Math.PI : 0;  
+    return Settings.rotated === "south" ? Math.PI : 0;
   }
 }
