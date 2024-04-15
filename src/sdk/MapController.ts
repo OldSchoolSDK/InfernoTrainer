@@ -363,7 +363,6 @@ export class MapController {
     const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
     const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
-    console.log(x, y);
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
       Settings.displayXpDrops = !Settings.displayXpDrops;

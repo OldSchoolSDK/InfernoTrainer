@@ -291,6 +291,10 @@ export class TzKalZuk extends Mob {
     return 7;
   }
 
+  get height() {
+    return 4;
+  }
+
   get image() {
     return ZukImage;
   }
@@ -325,9 +329,9 @@ export class TzKalZuk extends Mob {
     super.drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove);
 
     context.fillStyle = "#FFFF00";
-    context.font = "16px OSRS";
+    context.font = "24px OSRS";
 
-    context.fillText(String(this.currentStats.hitpoint), offset.x, offset.y + 20);
+    context.fillText(String(this.currentStats.hitpoint), offset.x, offset.y + 120);
   }
 
   async preload() {
