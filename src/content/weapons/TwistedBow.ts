@@ -14,7 +14,7 @@ import { PlayerAnimationIndices } from "../../sdk/rendering/GLTFAnimationConstan
 import { Assets } from "../../sdk/utils/Assets";
 
 export class TwistedBow extends RangedWeapon {
-  constructor() {
+  constructor(geno = false) {
     super();
     this.bonuses = {
       attack: {
@@ -22,7 +22,7 @@ export class TwistedBow extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 70,
+        range: geno ? 10000 : 70,
       },
       defence: {
         stab: 0,
@@ -33,7 +33,7 @@ export class TwistedBow extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 20,
+        rangedStrength: geno ? 80 : 20,
         magicDamage: 0,
         prayer: 0,
       },

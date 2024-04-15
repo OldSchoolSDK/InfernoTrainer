@@ -32,6 +32,7 @@ import { Chrome } from "./sdk/Chrome";
 
 import SpecialAttackBarBackground from "./assets/images/attackstyles/interface/special_attack_background.png";
 import { InfernoScene } from "./content/InfernoScene";
+import { TwistedBow } from "./content/weapons/TwistedBow";
 
 declare global {
   interface Window {

@@ -58,6 +58,7 @@ import { Chest } from "../../../sdk/gear/Chest";
 import { Legs } from "../../../sdk/gear/Legs";
 import { Player } from "../../../sdk/Player";
 import { BlackChinchompa } from "../../weapons/BlackChinchompa";
+import { BrowserUtils } from "../../../sdk/utils/BrowserUtils";
 
 export class InfernoLoadout {
   wave: number;
@@ -77,7 +78,7 @@ export class InfernoLoadout {
         new BlackChinchompa(),
         new Blowpipe(),
         new MasoriBodyF(),
-        new TwistedBow(),
+        new TwistedBow(!!BrowserUtils.getQueryVar("geno")),
         new BastionPotion(),
         new NecklaceOfAnguish(),
         new MasoriChapsF(),
