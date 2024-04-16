@@ -531,7 +531,7 @@ export class Player extends Unit {
     const currentAngle = this.getPerceivedRotation(tickPercent);
 
     // 30 client ticks per tick and we want to walk 1 tile per tick so
-    const baseMovementSpeed = 1 / 25;
+    const baseMovementSpeed = 1 / 30;
     let movementSpeed = baseMovementSpeed;
 
     this.currentPoseAnimation = PlayerAnimationIndices.Walk;
@@ -646,7 +646,7 @@ export class Player extends Unit {
     // save the next 2 steps for interpolation purposes
     let newTiles = path.map((pos, idx) => ({
       ...pos,
-      run: path.length >= 2,
+      run: this.running && path.length >= 2,
       direction: Pathing.angle(
         idx === 0 ? originalLocation.x : path[idx - 1].x,
         idx === 0 ? originalLocation.y : path[idx - 1].y,
