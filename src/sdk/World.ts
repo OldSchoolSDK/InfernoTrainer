@@ -8,11 +8,14 @@ import { Viewport } from "./Viewport";
 import MetronomeSound from "../assets/sounds/bonk.ogg";
 import { Pathing } from "./Pathing";
 
+const CLIENT_TICK_MS = 20;
+
 export class World {
   regions: Region[] = [];
   globalTickCounter = 0;
   isPaused = true;
   tickPercent: number;
+  clientTickPercent: number;
   getReadyTimer = 0;
   deltaTimeSincePause = -1;
   deltaTimeSinceLastTick = -1;
@@ -65,8 +68,9 @@ export class World {
       this.tickWorld();
     }
     this.tickPercent = (window.performance.now() - this.tickTimer) / Settings.tickMs;
+    this.clientTickPercent  = (window.performance.now() - this.clientTickTimer) / CLIENT_TICK_MS;
     // client tick every 20ms, doing multiple if missed
-    const clientTicksElapsed = Math.min(50, Math.floor(clientTickElapsed / 20));
+    const clientTicksElapsed = Math.min(50, Math.floor(clientTickElapsed / CLIENT_TICK_MS));
     for (let i = 0; i < clientTicksElapsed; i++) {
       this.tickClient(this.tickPercent);
       this.clientTickTimer = now;
