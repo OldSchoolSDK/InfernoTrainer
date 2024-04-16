@@ -25,6 +25,9 @@ interface TabPosition {
   y: number;
 }
 
+const BASE_WIDTH = 33 * 7;
+const BASE_HEIGHT = 36 * 2 + 275;
+
 export class ControlPanelController {
   static controls = Object.freeze({
     COMBAT: new CombatControls(),
@@ -42,14 +45,14 @@ export class ControlPanelController {
   controls: BaseControls[];
   selectedControl: BaseControls;
 
-  width: number;
-  height: number;
+  public width: number;
+  public height: number;
 
   isUsingExternalUI = false;
 
   constructor() {
-    this.width = 33 * 7;
-    this.height = 36 * 2 + 275;
+    this.width = BASE_WIDTH;
+    this.height = BASE_HEIGHT;
 
     this.desktopControls = [
       ControlPanelController.controls.COMBAT,
@@ -127,7 +130,10 @@ export class ControlPanelController {
       scaleRatio = maxScaleRatio;
     }
 
+    // not the best place for these setters...
     Settings.controlPanelScale = scaleRatio * 0.915;
+    this.width = BASE_WIDTH * scaleRatio;
+    this.height = BASE_HEIGHT * scaleRatio;
 
     return scaleRatio;
   }

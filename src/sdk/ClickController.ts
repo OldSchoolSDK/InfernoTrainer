@@ -204,6 +204,14 @@ export class ClickController {
 
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
 
+    if (ControlPanelController.controller.controlPanelRightClick(e)) {
+      return;
+    }
+
+    if (MapController.controller.rightClick(e)) {
+      return;
+    }
+    
     const clickedOn = this.getClickedOn(e, world, region);
 
     if (!clickedOn) {
@@ -211,26 +219,6 @@ export class ClickController {
     }
 
     const { mobs, players, groundItems, x, y } = clickedOn;
-
-    const { width } = Chrome.size();
-
-    if (e.offsetX > width - ControlPanelController.controller.width) {
-      if (e.offsetY > this.viewport.height * Settings.tileSize - ControlPanelController.controller.height) {
-        const intercepted = ControlPanelController.controller.controlPanelRightClick(e);
-        if (intercepted) {
-          return;
-        }
-      }
-    }
-
-    if (e.offsetX > width - MapController.controller.width) {
-      if (e.offsetY < MapController.controller.height) {
-        const intercepted = MapController.controller.rightClick(e);
-        if (intercepted) {
-          return;
-        }
-      }
-    }
 
     Viewport.viewport.contextMenu.destinationLocation = {
       x: Math.floor(x),
@@ -260,7 +248,7 @@ export class ClickController {
 
     menuOptions.push(
       {
-        text: [{ text: `Walk Here (${x},${y})`, fillStyle: "white" }],
+        text: [{ text: `Walk Here`, fillStyle: "white" }],
         action: () => {
           this.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
