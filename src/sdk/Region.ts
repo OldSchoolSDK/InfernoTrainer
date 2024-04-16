@@ -169,7 +169,6 @@ export class Region {
 
   // calls preload on all renderable children
   async preload() {
-    console.log("preloading region", this.entities, this.mobs, this.players);
     await Promise.all(this.entities.map((entity) => entity.preload()));
     await Promise.all(this.mobs.map((mob) => mob.preload()));
     await Promise.all(this.newMobs.map((mob) => mob.preload()));

@@ -1,11 +1,8 @@
 import { Player } from "../../src/sdk/Player";
 import { World } from "../../src/sdk/World";
-import { TwistedBow } from "../../src/content/weapons/TwistedBow";
 import { Region } from "../../src/sdk/Region";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
-import { TzKalZuk } from "../../src/content/inferno/js/mobs/TzKalZuk";
-import { Mob } from "../../src/sdk/Mob";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
 import { InfernoPillar } from "../../src/content/inferno/js/InfernoPillar";
 

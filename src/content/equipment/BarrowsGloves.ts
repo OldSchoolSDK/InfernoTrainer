@@ -2,6 +2,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Barrows_gloves.png";
 import { Gloves } from "../../sdk/gear/Gloves";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class BarrowsGloves extends Gloves {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -44,5 +45,10 @@ export class BarrowsGloves extends Gloves {
         slayer: 0,
       },
     };
+  }
+  
+  Model = Assets.getAssetUrl("models/player_barrows_gloves.glb");
+  override get model() {
+    return this.Model;
   }
 }

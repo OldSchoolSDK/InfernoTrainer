@@ -2,6 +2,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Crystal_body.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class CrystalBody extends Chest {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -47,5 +48,10 @@ export class CrystalBody extends Chest {
         slayer: 0,
       },
     };
+  }
+  
+  Model = Assets.getAssetUrl("models/player_crystal_body.glb");
+  override get model() {
+    return this.Model;
   }
 }

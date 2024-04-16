@@ -28,7 +28,7 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
 
 ### Player models
 
-    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959 maleModel0 anim 808,819,824,820,822,821,426,5061,7618 name player split
+    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959,25865,23975,23979,23971,7462,22109,21021,21024 maleModel0,maleModel1 anim 808,819,824,820,822,821,426,5061,7618 name player split
 
     where:
 
@@ -43,6 +43,15 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
         - 20997 # twisted bow
         - 12926 # toxic blowpipe
         - 11959 # black chinchompa
+        - 25865 # bow of faerdhinen
+        - 23975 # crystal body
+        - 23979 # crystal legs
+        - 23971 # crystal helm
+        - 7462 # barrows gloves
+        - 22109 # ava's assembler
+        - 21021 # ancestral top (buggy)
+        - 21024 # ancestral bottom (buggy)
+
 
       - 808 # idle
       - 819 # walk
