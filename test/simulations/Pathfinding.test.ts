@@ -131,4 +131,23 @@ describe("pathfinding tests", () => {
     expect(player.location).toEqual({ x: 14, y: 14 });
     expect(player.pathTargetLocation).toEqual({ x: 14, y: 14 });
   });
+
+  test("does not path back and forth on the west side", () => {
+    const player = new Player(region, { x: 12, y: 20 });
+    region.addPlayer(player);
+    Viewport.viewport.setPlayer(player);
+
+    player.moveTo(8, 20);
+
+    // Player used to oscillate back and forth on the edges
+    expect(player.location).toEqual({ x: 12, y: 20 });
+    world.tickWorld();
+    expect(player.location).toEqual({ x: 11, y: 20 });
+    world.tickWorld();
+    expect(player.location).toEqual({ x: 11, y: 20 });
+    world.tickWorld();
+    expect(player.location).toEqual({ x: 11, y: 20 });
+    world.tickWorld();
+    expect(player.location).toEqual({ x: 11, y: 20 });
+  });
 });

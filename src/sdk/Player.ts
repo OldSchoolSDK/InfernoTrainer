@@ -328,7 +328,7 @@ export class Player extends Unit {
     this.manualSpellCastSelection = null;
 
     this.pathTargetLocation = null;
-    
+
     const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.region, x, y, 1);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
@@ -625,8 +625,8 @@ export class Player extends Unit {
     // Path to next position if not already there.
     if (
       !this.destinationLocation ||
-      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y) ||
-      (this.pathTargetLocation && (this.location.x === this.pathTargetLocation.x && this.location.y === this.pathTargetLocation.y))
+      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)/* ||
+      (this.pathTargetLocation && (this.location.x === this.pathTargetLocation.x && this.location.y === this.pathTargetLocation.y))*/
     ) {
       this.pathTargetLocation = null;
       return;
