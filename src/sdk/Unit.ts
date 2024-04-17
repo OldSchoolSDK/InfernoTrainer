@@ -235,7 +235,7 @@ export abstract class Unit extends Renderable {
 
   playAttackAnimation() {
     if (this.attackAnimationId) {
-      this.playAnimation(this.attackAnimationId);
+      this.playAnimation(this.attackAnimationId, this.canBlendAttackAnimation);
     }
   }
 
@@ -728,5 +728,9 @@ export abstract class Unit extends Renderable {
 
   get attackAnimationId(): number | null {
     return null;
+  }
+
+  get canBlendAttackAnimation(): boolean {
+    return false;
   }
 }
