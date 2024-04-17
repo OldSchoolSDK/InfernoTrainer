@@ -126,13 +126,12 @@ export class GLTFModel implements Model, RenderableListener {
   startPlayingAnimation(id: number, blend = false) {
     if (!blend) {
       this.stopCurrentAnimation();
-
       this.animations.forEach((animationsForModel) => {
         animationsForModel.forEach((animation) => animation.setEffectiveWeight(1.0));
       });
     } else {
       this.animations.forEach((animationsForModel) => {
-        animationsForModel.forEach((animation) => animation.setEffectiveWeight(1));
+        animationsForModel.forEach((animation) => animation.setEffectiveWeight(0.5));
       });
     }
     this.playingAnimationId = id;

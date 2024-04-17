@@ -235,7 +235,9 @@ export abstract class Unit extends Renderable {
 
   playAttackAnimation() {
     if (this.attackAnimationId) {
-      this.playAnimation(this.attackAnimationId, this.canBlendAttackAnimation);
+      // only blend if not idle
+      const doBlend = this.animationIndex !== this.idlePoseId  && this.canBlendAttackAnimation;
+      this.playAnimation(this.attackAnimationId, doBlend);
     }
   }
 
