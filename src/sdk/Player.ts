@@ -327,6 +327,8 @@ export class Player extends Unit {
 
     this.manualSpellCastSelection = null;
 
+    this.pathTargetLocation = null;
+    
     const clickedOnEntities = Collision.collideableEntitiesAtPoint(this.region, x, y, 1);
     if (clickedOnEntities.length) {
       // Clicked on an entity, scan around to find the best spot to actually path to
