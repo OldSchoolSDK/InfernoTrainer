@@ -32,14 +32,6 @@ import HumanHit from "../assets/sounds/human_hit_513.ogg";
 import { Model } from "./rendering/Model";
 import { TileMarker } from "../content/TileMarker";
 
-import SlayerHelmetModel from "../assets/models/male_Tzkal_slayer helmet (i).gltf";
-import TwistedBowModel from "../assets/models/male_Twisted_bow.gltf";
-import ToxicBlowpipeModel from "../assets/models/male_Toxic_blowpipe.gltf";
-import MasoriBodyModel from "../assets/models/male_Masori_body (f).gltf";
-import MasoriChapsModel from "../assets/models/male_Masori_chaps (f).gltf";
-import PegasianBootsModel from "../assets/models/male_Pegasian_boots.gltf";
-import DizanasMaxCapeModel from "../assets/models/male_Dizana's_max cape.gltf";
-
 import { GLTFModel } from "./rendering/GLTFModel";
 import { PlayerAnimationIndices } from "./rendering/GLTFAnimationConstants";
 
@@ -625,8 +617,7 @@ export class Player extends Unit {
     // Path to next position if not already there.
     if (
       !this.destinationLocation ||
-      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)/* ||
-      (this.pathTargetLocation && (this.location.x === this.pathTargetLocation.x && this.location.y === this.pathTargetLocation.y))*/
+      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)
     ) {
       this.pathTargetLocation = null;
       return;
@@ -978,6 +969,10 @@ export class Player extends Unit {
 
   override get attackAnimationId() {
     return this.equipment.weapon?.attackAnimationId;
+  }
+
+  get canBlendAttackAnimation() {
+    return true;
   }
 }
 

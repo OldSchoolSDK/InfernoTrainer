@@ -4,7 +4,7 @@ import { Location, Location3 } from "./Location";
 import { Model } from "./rendering/Model";
 
 export interface RenderableListener {
-  animationChanged(id: number);
+  animationChanged(id: number, blend: boolean);
   modelChanged();
 }
 
@@ -97,9 +97,9 @@ export abstract class Renderable {
    */
   abstract get animationIndex();
 
-  playAnimation(index: number) {
+  playAnimation(index: number, blend = false) {
     if (this.animationChangeListener) {
-      this.animationChangeListener.animationChanged(index);
+      this.animationChangeListener.animationChanged(index, blend);
     }
   }
 

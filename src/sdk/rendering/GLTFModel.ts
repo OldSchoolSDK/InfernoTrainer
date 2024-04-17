@@ -56,6 +56,7 @@ export class GLTFModel implements Model, RenderableListener {
 
   private lastPoseId = -1;
   private playingAnimationId = -1;
+  private playingAnimationCanBlend = false;
   // first index is the model ID, second index is the animation ID.
   private animations: THREE.AnimationAction[][] = [];
 
@@ -95,8 +96,8 @@ export class GLTFModel implements Model, RenderableListener {
     this.clickHull.visible = false;
   }
 
-  animationChanged(id: number) {
-    this.startPlayingAnimation(id);
+  animationChanged(id, blend) {
+    this.startPlayingAnimation(id, blend);
   }
 
   modelChanged() {
@@ -117,11 +118,29 @@ export class GLTFModel implements Model, RenderableListener {
     this.mixers.forEach((mixer) => mixer.stopAllAction());
   }
 
-  startPlayingAnimation(id: number) {
-    this.stopCurrentAnimation();
+  /**
+   * 
+   * @param id id (in the animation file) to play
+   * @param blend blend the new animation with the pose animation
+   */
+  startPlayingAnimation(id: number, blend = false) {
+    if (!blend) {
+      this.stopCurrentAnimation();
+
+      this.animations.forEach((animationsForModel) => {
+        animationsForModel.forEach((animation) => animation.setEffectiveWeight(1.0));
+      });
+    } else {
+      this.animations.forEach((animationsForModel) => {
+        animationsForModel.forEach((animation) => animation.setEffectiveWeight(1));
+      });
+    }
     this.playingAnimationId = id;
-    this.animations.forEach((animationsForModel, i) => {
+    this.playingAnimationCanBlend = blend;
+    this.animations.forEach((animationsForModel) => {
+      // play the animation for each part of the body
       const newAnimation = animationsForModel[id];
+      newAnimation.setEffectiveWeight(blend ? 1 : 1.0);
       newAnimation.stop().setLoop(THREE.LoopOnce, 1).play();
     });
     // reset the timer of the mixers because it seems to bug out and show the first frame sometimes
@@ -129,14 +148,28 @@ export class GLTFModel implements Model, RenderableListener {
     this.mixers.forEach((mixerForModel) => mixerForModel.setTime(0));
   }
 
-  onAnimationFinished() {
+  onAnimationFinished(action?: THREE.AnimationAction) {
     this.stopCurrentAnimation();
     const nextAnimIndex = this.renderable.animationIndex;
-    this.lastPoseId = nextAnimIndex;
     this.playingAnimationId = -1;
+    this.playingAnimationCanBlend = false;
 
     this.animations.forEach((animationsForModel, i) => {
       const newAnimation = animationsForModel[nextAnimIndex];
+      // play the fallback/pose animation
+      newAnimation.stop().setLoop(THREE.LoopRepeat, Number.POSITIVE_INFINITY).play();
+    });
+  }
+
+  onPoseChanged(newPoseId) {
+    console.log('pose changed', newPoseId)
+    this.animations.forEach((animationsForModel, i) => {
+      const lastAnimation = animationsForModel[this.lastPoseId];
+      lastAnimation.stop();
+      if (this.playingAnimationId >= 0 && !this.playingAnimationCanBlend) {
+        return;
+      }
+      const newAnimation = animationsForModel[newPoseId];
       // play the fallback/pose animation
       newAnimation.stop().setLoop(THREE.LoopRepeat, Number.POSITIVE_INFINITY).play();
     });
@@ -178,7 +211,7 @@ export class GLTFModel implements Model, RenderableListener {
       // add listener to first mixer only
       if (this.mixers.length === 1) {
         mixer.addEventListener("finished", (e) => {
-          this.onAnimationFinished();
+          this.onAnimationFinished(e.action);
         });
       }
     });
@@ -210,9 +243,10 @@ export class GLTFModel implements Model, RenderableListener {
     } else {
       drawLineNormally(this.outline);
     }
-    if (this.renderable.animationIndex !== this.lastPoseId && this.playingAnimationId < 0) {
+    if (this.renderable.animationIndex !== this.lastPoseId) {
       // start a new pose if the pose index changes and we're not currently playing an animation
-      this.onAnimationFinished();
+      this.onPoseChanged(this.renderable.animationIndex);
+      this.lastPoseId = this.renderable.animationIndex;
     }
 
     const { x, y } = location;
