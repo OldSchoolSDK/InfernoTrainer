@@ -597,10 +597,9 @@ export class Player extends Unit {
     this.trueTileMarker.location = this.location;
     this.nextAngle = this.getTargetAngle();
     // Calculate run energy
-    const dist = chebyshev(
-      [this.location.x, this.location.y],
-      [this.destinationLocation.x, this.destinationLocation.y],
-    );
+    const dist = this.pathTargetLocation
+      ? chebyshev([this.location.x, this.location.y], [this.pathTargetLocation.x, this.pathTargetLocation.y])
+      : 0;
     if (this.running && dist > 1) {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
@@ -617,13 +616,15 @@ export class Player extends Unit {
     if (this.currentStats.run === 0) {
       this.running = false;
     }
+    // Tick down stamina
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
     // Path to next position if not already there.
     if (
       !this.destinationLocation ||
-      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y)
+      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y) ||
+      (this.pathTargetLocation && (this.location.x === this.pathTargetLocation.x && this.location.y === this.pathTargetLocation.y))
     ) {
       this.pathTargetLocation = null;
       return;
