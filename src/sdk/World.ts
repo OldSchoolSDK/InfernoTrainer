@@ -27,6 +27,8 @@ export class World {
   tickTimer = 0;
   clientTickTimer = 0;
 
+  clientTickHandle: ReturnType<typeof setTimeout> | null = null;
+
   addRegion(region: Region) {
     this.regions.push(region);
   }
@@ -44,12 +46,25 @@ export class World {
       this.deltaTimeSincePause = -1;
     }
     this.browserLoop(window.performance.now());
+    this.clientTickHandle = setInterval(() => this.doClientTick(), CLIENT_TICK_MS);
   }
 
   stopTicking() {
     this.deltaTimeSincePause = window.performance.now() - this.then;
     this.deltaTimeSinceLastTick = window.performance.now() - this.tickTimer;
     this.isPaused = true;
+  }
+
+  doClientTick() {
+    const now = window.performance.now();
+    const clientTickElapsed = now - this.clientTickTimer;
+    // client tick every 20ms, doing multiple if missed
+    const tickPercent = (now - this.tickTimer) / Settings.tickMs;
+    const clientTicksElapsed = Math.min(50, Math.max(1, Math.floor(clientTickElapsed / CLIENT_TICK_MS)));
+    for (let i = 0; i < clientTicksElapsed; i++) {
+      this.tickClient(tickPercent);
+      this.clientTickTimer = now;
+    }
   }
 
   browserLoop(now: number) {
@@ -59,7 +74,6 @@ export class World {
     }
     const elapsed = now - this.then;
     const tickElapsed = now - this.tickTimer;
-    const clientTickElapsed = now - this.clientTickTimer;
     if (tickElapsed >= 600) {
       this.tickTimer = now;
       if (this.getReadyTimer > 0) {
@@ -68,13 +82,6 @@ export class World {
       this.tickWorld();
     }
     this.tickPercent = (window.performance.now() - this.tickTimer) / Settings.tickMs;
-    this.clientTickPercent  = (window.performance.now() - this.clientTickTimer) / CLIENT_TICK_MS;
-    // client tick every 20ms, doing multiple if missed
-    const clientTicksElapsed = Math.min(50, Math.floor(clientTickElapsed / CLIENT_TICK_MS));
-    for (let i = 0; i < clientTicksElapsed; i++) {
-      this.tickClient(this.tickPercent);
-      this.clientTickTimer = now;
-    }
 
     if (elapsed > this.fpsInterval) {
       this.then = now - (elapsed % this.fpsInterval);

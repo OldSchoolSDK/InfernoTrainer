@@ -520,6 +520,8 @@ export class Player extends Unit {
     }
   }
 
+  // WARNING: client ticks do NOT happen in line with render or logic ticks. Do not use this for anything other than
+  // visual logic.
   clientTick(tickPercent) {
     // based on https://github.com/dennisdev/rs-map-viewer/blob/master/src/mapviewer/webgl/npc/Npc.ts#L115
     if (this.path.length === 0) {
