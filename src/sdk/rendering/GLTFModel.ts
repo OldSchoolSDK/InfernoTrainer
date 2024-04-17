@@ -150,14 +150,17 @@ export class GLTFModel implements Model, RenderableListener {
   onAnimationFinished(action?: THREE.AnimationAction) {
     this.stopCurrentAnimation();
     const nextAnimIndex = this.renderable.animationIndex;
-    this.playingAnimationId = -1;
-    this.playingAnimationCanBlend = false;
 
     this.animations.forEach((animationsForModel, i) => {
       const newAnimation = animationsForModel[nextAnimIndex];
+      if (this.playingAnimationCanBlend) {
+        newAnimation.setEffectiveWeight(1.0);
+      }
       // play the fallback/pose animation
       newAnimation.stop().setLoop(THREE.LoopRepeat, Number.POSITIVE_INFINITY).play();
     });
+    this.playingAnimationId = -1;
+    this.playingAnimationCanBlend = false;
   }
 
   onPoseChanged(newPoseId) {
