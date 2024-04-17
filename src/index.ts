@@ -449,3 +449,9 @@ function checkStart() {
 /// /////////////////////////////////////////////////////////
 
 window.newrelic.addRelease("inferno-trainer", process.env.COMMIT_REF);
+
+// UI disclaimer
+const topHeaderContainer = document.getElementById("disclaimer_panel");
+if (!process.env.DEPLOY_URL?.includes("infernotrainer.com")) {
+  topHeaderContainer.innerHTML = "PREVIEW BUILD for 3D mode. Visit <a href=\"https://www.infernotrainer.com\">infernotrainer.com</a> for the original.<br />" + topHeaderContainer.innerHTML
+}

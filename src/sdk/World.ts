@@ -53,6 +53,8 @@ export class World {
     this.deltaTimeSincePause = window.performance.now() - this.then;
     this.deltaTimeSinceLastTick = window.performance.now() - this.tickTimer;
     this.isPaused = true;
+    clearInterval(this.clientTickHandle);
+    this.clientTickHandle = null;
   }
 
   doClientTick() {

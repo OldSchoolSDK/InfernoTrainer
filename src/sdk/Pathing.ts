@@ -111,14 +111,12 @@ export class Pathing {
    */
   static constructPaths(
     region: Region,
-    startPoint: Location,
+    { x, y }: Location,
     endPoints: Location[],
   ): {
     destination: Location | null;
     path: Location[];
   } {
-    const x = startPoint.x;
-    const y = startPoint.y;
     const unpathableEndPoints = endPoints.filter(
       (location) => !Pathing.canTileBePathedTo(region, location.x, location.y, 1),
     );
@@ -156,14 +154,14 @@ export class Pathing {
 
     // Djikstra search for the optimal route
     const explored: { [x: number]: { [y: number]: PathingNode } } = {};
-    let minExploredX = Number.MAX_SAFE_INTEGER;
-    let minExploredY = Number.MAX_SAFE_INTEGER;
-    let maxExploredX = Number.MIN_SAFE_INTEGER;
-    let maxExploredY = Number.MIN_SAFE_INTEGER;
 
     // initialise first node
     explored[pathX] = {};
     explored[pathX][pathY] = { x: pathX, y: pathY, parent: null, pathLength: 0 };
+    let minExploredX = pathX;
+    let minExploredY = pathY;
+    let maxExploredX = pathX;
+    let maxExploredY = pathY;
 
     while (nodes.length !== 0) {
       const parentNode = nodes.shift();
@@ -242,7 +240,8 @@ export class Pathing {
     const maxY = Math.max(maxExploredY, swTile.y + 10);
 
     let bestBackupTile: Location | null = null;
-    let minEuclideanDistance = Number.MAX_VALUE;
+    //let minEuclideanDistance = Pathing.dist(swTile.x, swTile.y, startPoint.x, startPoint.y);
+    let minEuclideanDistance = Number.MAX_VALUE; // Pathing.dist(swTile.x, swTile.y, startPoint.x, startPoint.y);
     let minPathLength = 100;
 
     for (let x = minX; x <= maxX; ++x) {
