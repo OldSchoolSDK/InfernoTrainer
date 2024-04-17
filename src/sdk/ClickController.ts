@@ -142,15 +142,7 @@ export class ClickController {
     const mobs: Mob[] = [];
     const players: Player[] = [];
     const groundItems: Item[] = [];
-    if (clickedOn.type === "coordinate") {
-      mobs.push(...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, x, y, world.tickPercent));
-      players.push(
-        ...Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(region, x, y, world.tickPercent).filter(
-          (player: Player) => player !== Viewport.viewport.player,
-        ),
-      );
-      groundItems.push(...region.groundItemsAtLocation(Math.floor(x), Math.floor(y)));
-    } else if (clickedOn.type === "entities") {
+    if (clickedOn.type === "entities") {
       mobs.push(...clickedOn.mobs);
       players.push(...clickedOn.players);
       groundItems.push(...clickedOn.groundItems);

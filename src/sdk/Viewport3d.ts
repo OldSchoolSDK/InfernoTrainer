@@ -386,20 +386,11 @@ export class Viewport3d implements ViewportDelegate {
       x: Math.floor(floor.x) + 0.5,
       y: Math.floor(floor.z) + 1.5,
     };
-    // check if there were any NPCs on the way.
     const intersections = this.raycaster.intersectObjects(
       this.scene.children.filter((c) => c.userData.clickable === true),
     );
 
-    if (intersections.length === 0) {
-      return {
-        type: "coordinate" as const,
-        location: {
-          x: this.selectedTile.x,
-          y: this.selectedTile.y,
-        },
-      };
-    }
+    // check if there were any NPCs on the way.
     const mobs = intersections
       .filter((i) => i.object.userData.unit instanceof Mob)
       .map((i) => i.object.userData.unit as Mob);
@@ -417,7 +408,13 @@ export class Viewport3d implements ViewportDelegate {
         },
       };
     }
-    return null;
+    return {
+      type: "coordinate" as const,
+      location: {
+        x: this.selectedTile.x,
+        y: this.selectedTile.y,
+      },
+    };
   }
 
   setMapRotation(direction: CardinalDirection) {
