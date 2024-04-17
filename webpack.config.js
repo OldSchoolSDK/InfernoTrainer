@@ -11,6 +11,10 @@ if (!process.env.BUILD_DATE) {
   isDevBuild = true;
   process.env.BUILD_DATE = "";
 }
+if (!process.env.DEPLOY_URL) {
+  isDevBuild = true;
+  process.env.DEPLOY_URL = "http://localhost:8000/";
+}
 const config = {
   mode: isDevBuild ? "development" : "production",
   entry: "./src/index.ts",
@@ -41,7 +45,7 @@ const config = {
         { from: `assets/fonts/*.woff2`, to: "", context: `src/` },
       ],
     }),
-    new webpack.EnvironmentPlugin(["COMMIT_REF", "BUILD_DATE"]),
+    new webpack.EnvironmentPlugin(["COMMIT_REF", "BUILD_DATE", "DEPLOY_URL"]),
   ],
   module: {
     rules: [
