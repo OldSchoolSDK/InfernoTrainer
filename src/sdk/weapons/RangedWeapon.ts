@@ -2,10 +2,21 @@ import { Unit, UnitTypes } from "../Unit";
 import { XpDrop } from "../XpDrop";
 import { Projectile, ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
+import { EquipmentTypes } from "../Equipment";
 
 export class RangedWeapon extends Weapon {
+  get type() {
+    return EquipmentTypes.WEAPON;
+  }
+
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, "range", options));
+    to.addProjectile(
+      new Projectile(this, this.damage, from, to, "range", {
+        sound: this.attackSound,
+        hitSound: this.attackLandingSound,
+        ...options,
+      }),
+    );
   }
 
   grantXp(from: Unit) {
@@ -89,16 +100,18 @@ export class RangedWeapon extends Weapon {
       Math.floor(Math.floor(from.currentStats.range) * prayerMultiplier + (bonuses.isAccurate ? 3 : 0) + 8) *
       bonuses.voidMultiplier;
     const max = Math.floor(
-      Math.floor(0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64)) / 640) * bonuses.gearMultiplier) *
-        this._damageMultiplier(from, to, bonuses),
+      Math.floor(
+        0.5 + ((rangedStrength * (from.bonuses.other.rangedStrength + 64)) / 640) * bonuses.gearRangeMultiplier,
+      ) * this._damageMultiplier(from, to, bonuses),
     );
     return max;
   }
 
   _attackRoll(from: Unit, to: Unit, bonuses: AttackBonuses) {
     return Math.floor(
-      Math.floor(this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearMultiplier) *
-        this._accuracyMultiplier(from, to, bonuses),
+      Math.floor(
+        this._rangedAttack(from, to, bonuses) * (from.bonuses.attack.range + 64) * bonuses.gearRangeMultiplier,
+      ) * this._accuracyMultiplier(from, to, bonuses),
     );
   }
 

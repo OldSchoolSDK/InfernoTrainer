@@ -25,6 +25,9 @@ interface TabPosition {
   y: number;
 }
 
+const BASE_WIDTH = 33 * 7;
+const BASE_HEIGHT = 36 * 2 + 275;
+
 export class ControlPanelController {
   static controls = Object.freeze({
     COMBAT: new CombatControls(),
@@ -42,14 +45,14 @@ export class ControlPanelController {
   controls: BaseControls[];
   selectedControl: BaseControls;
 
-  width: number;
-  height: number;
+  public width: number;
+  public height: number;
 
   isUsingExternalUI = false;
 
   constructor() {
-    this.width = 33 * 7;
-    this.height = 36 * 2 + 275;
+    this.width = BASE_WIDTH;
+    this.height = BASE_HEIGHT;
 
     this.desktopControls = [
       ControlPanelController.controls.COMBAT,
@@ -118,16 +121,19 @@ export class ControlPanelController {
     const controlAreaHeight = height - MapController.controller.height;
     let scaleRatio = controlAreaHeight / 7 / 36;
 
-    let maxScaleRatio = 1.0;
+    let maxScaleRatio = Settings.maxUiScale;
     if (Settings.mobileCheck() && width > 600) {
-      maxScaleRatio = 1.1;
+      maxScaleRatio = Settings.maxUiScale * 1.1;
     }
 
     if (scaleRatio > maxScaleRatio) {
       scaleRatio = maxScaleRatio;
     }
 
+    // not the best place for these setters...
     Settings.controlPanelScale = scaleRatio * 0.915;
+    this.width = BASE_WIDTH * scaleRatio;
+    this.height = BASE_HEIGHT * scaleRatio;
 
     return scaleRatio;
   }
@@ -298,13 +304,13 @@ export class ControlPanelController {
     }
   }
 
-  draw() {
+  draw(context: CanvasRenderingContext2D) {
     Viewport.viewport.context.fillStyle = "#000";
     const scale = this.getTabScale();
 
     if (this.selectedControl && this.selectedControl.draw) {
       const position = this.controlPosition(this.selectedControl);
-      this.selectedControl.draw(this, position.x, position.y);
+      this.selectedControl.draw(context, this, position.x, position.y);
     }
 
     let selectedPosition: TabPosition = null;
@@ -312,7 +318,7 @@ export class ControlPanelController {
     this.controls.forEach((control, index) => {
       const tabPosition = this.tabPosition(index);
       if (control.tabImage) {
-        Viewport.viewport.context.drawImage(
+        context.drawImage(
           control.tabImage,
           tabPosition.x,
           tabPosition.y,
@@ -322,8 +328,8 @@ export class ControlPanelController {
       }
 
       if (control.isAvailable === false) {
-        Viewport.viewport.context.fillStyle = "#00000099";
-        Viewport.viewport.context.fillRect(tabPosition.x, tabPosition.y, 33 * scale, 36 * scale);
+        context.fillStyle = "#00000099";
+        context.fillRect(tabPosition.x, tabPosition.y, 33 * scale, 36 * scale);
       }
 
       if (control === this.selectedControl) {
@@ -332,9 +338,9 @@ export class ControlPanelController {
     });
 
     if (selectedPosition) {
-      Viewport.viewport.context.strokeStyle = "#00FF0073";
-      Viewport.viewport.context.lineWidth = 3;
-      Viewport.viewport.context.strokeRect(selectedPosition.x, selectedPosition.y, 33 * scale, 36 * scale);
+      context.strokeStyle = "#00FF0073";
+      context.lineWidth = 3;
+      context.strokeRect(selectedPosition.x, selectedPosition.y, 33 * scale, 36 * scale);
     }
   }
 }

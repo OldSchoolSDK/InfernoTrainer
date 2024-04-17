@@ -14,6 +14,11 @@ import { Location } from "../../../../sdk/Location";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
 import { Region } from "../../../../sdk/Region";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+import { Assets } from "../../../../sdk/utils/Assets";
+
+const NibblerModel = Assets.getAssetUrl("models/7691_33005.glb");
 
 class NibblerWeapon extends MeleeWeapon {
   attack(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}): boolean {
@@ -105,19 +110,18 @@ export class JalNib extends Mob {
   }
 
   get sound() {
-    return NibblerSound;
+    return new Sound(NibblerSound, 0.15);
   }
 
   attackStyleForNewAttack() {
     return "crush";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
   }
 
   attackIfPossible() {
-    this.attackDelay--;
     this.attackStyle = this.attackStyleForNewAttack();
 
     if (this.dying === -1 && this.aggro.dying > -1) {
@@ -142,7 +146,15 @@ export class JalNib extends Mob {
       Pathing.dist(this.location.x, this.location.y, aggroPoint.x, aggroPoint.y) <= this.attackRange &&
       this.attackDelay <= 0
     ) {
-      this.attack();
+      this.attack() && this.didAttack();
     }
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, NibblerModel, 0.0075);
+  }
+
+  override get attackAnimationId() {
+    return 2;
   }
 }

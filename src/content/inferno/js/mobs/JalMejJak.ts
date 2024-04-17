@@ -51,7 +51,7 @@ class AoeWeapon extends Weapon {
         };
         const spark3 = new InfernoHealerSpark(from.region, spark3Location, from, to);
         from.region.addEntity(spark3);
-      }, 4),
+      }, 3),
     );
     return true;
   }

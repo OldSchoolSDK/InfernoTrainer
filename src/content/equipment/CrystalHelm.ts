@@ -2,6 +2,7 @@ import { Helmet } from "../../sdk/gear/Helmet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Crystal_helm.png";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class CrystalHelm extends Helmet {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -46,5 +47,10 @@ export class CrystalHelm extends Helmet {
         slayer: 0,
       },
     };
+  }
+  
+  Model = Assets.getAssetUrl("models/player_crystal_helm.glb");
+  override get model() {
+    return this.Model;
   }
 }

@@ -93,7 +93,7 @@ export class JalAkRekKet extends Mob {
     return JalAkRekKetImage;
   }
 
-  get sound(): string {
+  get sound() {
     return null;
   }
 
@@ -101,7 +101,7 @@ export class JalAkRekKet extends Mob {
     return "crush";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
   }
 }

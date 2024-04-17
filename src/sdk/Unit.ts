@@ -28,6 +28,8 @@ import { PrayerController } from "./PrayerController";
 import { Region } from "./Region";
 import { Player } from "./Player";
 import { CollisionType } from "./Collision";
+import { Renderable } from "./Renderable";
+import { Sound, SoundCache } from "./utils/SoundCache";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -97,12 +99,13 @@ export interface UnitTargetBonuses {
   slayer: number;
 }
 
-export class Unit {
+export abstract class Unit extends Renderable {
   prayerController: PrayerController;
   lastOverhead?: BasePrayer = null;
   aggro?: Unit;
   perceivedLocation: Location;
   attackDelay = 0;
+  lastHitAgo = Number.MAX_SAFE_INTEGER;
   hasLOS = false;
   frozen = 0;
   stunned = 0;
@@ -180,6 +183,7 @@ export class Unit {
   }
 
   constructor(region: Region, location: Location, options?: UnitOptions) {
+    super();
     this.region = region;
     this.aggro = options.aggro || null;
     this.perceivedLocation = location;
@@ -208,18 +212,52 @@ export class Unit {
   setStats() {
     // Override me
   }
+
   movementStep() {
     // Override me
   }
+
   attackStep() {
-    // Override me
+    // Override me, called after all movement has been resolved
+    this.attackDelay--;
   }
-  draw(tickPercent: number) {
-    // Override me
+
+  // called when the unit has attacked
+  didAttack() {
+    this.attackDelay = this.attackSpeed;
+    this.playAttackSound();
+    this.playAttackAnimation();
   }
-  drawUILayer(tickPercent: number) {
-    // Override me
+
+  playAttackSound() {
+    // override me
   }
+
+  playAttackAnimation() {
+    if (this.attackAnimationId) {
+      this.playAnimation(this.attackAnimationId);
+    }
+  }
+
+  getPerceivedLocation(tickPercent: number) {
+    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent);
+    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent);
+    return { x: perceivedX, y: perceivedY, z: 0 };
+  }
+
+  getPerceivedRotation(tickPercent) {
+    if (this.aggro) {
+      const perceivedLocation = this.aggro.getPerceivedLocation(tickPercent);
+      return -Pathing.angle(
+        this.location.x + this.size / 2,
+        this.location.y - this.size / 2,
+        perceivedLocation.x + this.aggro.size / 2,
+        perceivedLocation.y - this.aggro.size / 2,
+      );
+    }
+    return 0;
+  }
+
   removedFromWorld() {
     // Override me
   }
@@ -310,6 +348,10 @@ export class Unit {
     return null;
   }
 
+  get isAnimated(): boolean {
+    return false;
+  }
+
   // Returns true if the NPC can move towards the unit it is aggro'd against.
   canMove() {
     return !this.hasLOS && !this.isFrozen() && !this.isStunned() && !this.isDying();
@@ -323,7 +365,7 @@ export class Unit {
     if (ticks < this.frozen) {
       return;
     }
-    this.perceivedLocation = this.location;
+    //this.perceivedLocation = this.location;
     this.frozen = ticks;
   }
 
@@ -349,6 +391,7 @@ export class Unit {
   get size() {
     return 1;
   }
+
   isDying() {
     return this.dying > 0;
   }
@@ -385,12 +428,23 @@ export class Unit {
     return null;
   }
 
-  get sound(): string {
+  /** Sounds **/
+
+  get sound(): Sound | null {
+    return null;
+  }
+
+  hitSound(damaged: boolean): Sound | null {
     return null;
   }
 
   get color(): string {
     return "#FFFFFF00";
+  }
+
+  shouldDestroy() {
+    // this is -1 for a living npc.
+    return this.dying === 0;
   }
 
   shouldShowAttackAnimation() {
@@ -476,7 +530,7 @@ export class Unit {
     this.location = location;
   }
 
-  attackAnimation(tickPercent: number) {
+  attackAnimation(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
     // override pls
   }
 
@@ -500,6 +554,7 @@ export class Unit {
   }
 
   processIncomingAttacks() {
+    this.lastHitAgo++;
     this.incomingProjectiles = filter(
       this.incomingProjectiles,
       (projectile: Projectile) => projectile.remainingDelay > -1,
@@ -517,9 +572,10 @@ export class Unit {
           1 / (projectile.remainingDelay + 1),
         ),
       };
-      projectile.remainingDelay--;
+      projectile.onTick();
 
       if (projectile.remainingDelay === 0) {
+        projectile.onHit();
         // Some attacks can be nullified if they land after the attackers death.
         if (
           projectile.options &&
@@ -538,8 +594,13 @@ export class Unit {
           }
         } else {
           this.currentStats.hitpoint -= projectile.damage;
+          const sound = this.hitSound(projectile.damage > 0);
+          if (sound) {
+            SoundCache.play(sound);
+          }
         }
         this.damageTaken();
+        this.lastHitAgo = 0;
         if (this.shouldChangeAggro(projectile)) {
           this.setAggro(projectile.from);
 
@@ -565,25 +626,27 @@ export class Unit {
     // Override me
   }
 
+  override draw(tickPercent, context, offset, scale, drawUnderTile) {
+    if (this.isAnimated) {
+      this.unitImage = ImageLoader.imageCache[this.image];
+    }
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
+  }
+
   drawHitsplat(projectile: Projectile): boolean {
     return true;
   }
 
-  drawHPBar() {
-    this.region.context.fillStyle = "red";
-    this.region.context.fillRect(
-      (-this.size / 2) * Settings.tileSize,
-      (-this.size / 2) * Settings.tileSize,
-      Settings.tileSize * this.size,
-      5,
-    );
+  drawHPBar(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    context.fillStyle = "red";
+    context.fillRect((-this.size / 2) * scale, -(this.size / 2) * scale, scale * this.size, 5);
 
-    this.region.context.fillStyle = "green";
-    const w = Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
-    this.region.context.fillRect((-this.size / 2) * Settings.tileSize, (-this.size / 2) * Settings.tileSize, w, 5);
+    context.fillStyle = "lime";
+    const w = Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) * (scale * this.size);
+    context.fillRect((-this.size / 2) * scale, (-this.size / 2) * scale, w, 5);
   }
 
-  drawHitsplats() {
+  drawHitsplats(context: OffscreenCanvasRenderingContext2D, scale: number, above: boolean) {
     let projectileOffsets = [
       [0, 12],
       [0, 28],
@@ -592,6 +655,10 @@ export class Unit {
     ];
 
     let projectileCounter = 0;
+    let verticalOffset = -((this.size + 1) * scale) / 2;
+    if (!above) {
+      verticalOffset *= -1;
+    }
     this.incomingProjectiles.forEach((projectile) => {
       if (projectile.remainingDelay > 0) {
         return;
@@ -615,27 +682,21 @@ export class Unit {
           image = this.healHitsplatImage;
         }
 
-        this.region.context.drawImage(
-          image,
-          projectile.offsetX - 12,
-          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
-          24,
-          23,
-        );
-        this.region.context.fillStyle = "#FFFFFF";
-        this.region.context.font = "16px Stats_11";
-        this.region.context.textAlign = "center";
-        this.region.context.fillText(
+        context.drawImage(image, projectile.offsetX - 12, verticalOffset - projectile.offsetY, 24, 23);
+        context.fillStyle = "#FFFFFF";
+        context.font = "16px Stats_11";
+        context.textAlign = "center";
+        context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
-          -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15,
+          verticalOffset - projectile.offsetY + 15,
         );
-        this.region.context.textAlign = "left";
+        context.textAlign = "left";
       }
     });
   }
 
-  drawOverheadPrayers() {
+  drawOverheadPrayers(context: OffscreenCanvasRenderingContext2D, scale: number) {
     if (!this.prayerController) {
       return;
     }
@@ -644,76 +705,28 @@ export class Unit {
     if (overhead) {
       const overheadImg = overhead.overheadImage();
       if (overheadImg) {
-        this.region.context.drawImage(
-          overheadImg,
-          -Settings.tileSize / 2,
-          -Settings.tileSize * 3,
-          Settings.tileSize,
-          Settings.tileSize,
-        );
+        context.drawImage(overheadImg, -scale / 2, -scale * 3, scale, scale);
       }
     }
   }
 
-  // The rendering context is the world.
-  drawIncomingProjectiles(tickPercent: number) {
-    this.incomingProjectiles.forEach((projectile) => {
-      if (projectile.options.hidden) {
-        return;
-      }
+  get idlePoseId() {
+    return 0;
+  }
 
-      if (projectile.remainingDelay < 0) {
-        return;
-      }
+  get walkingPoseId(): number | null {
+    return 1;
+  }
 
-      const startX = projectile.currentLocation.x;
-      const startY = projectile.currentLocation.y;
-      const endX = projectile.to.location.x + projectile.to.size / 2;
-      const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+  get animationIndex() {
+    // can be overriden by setAnimation
+    if (this.perceivedLocation.x !== this.location.x || this.perceivedLocation.y !== this.location.y) {
+      return this.walkingPoseId ?? this.idlePoseId;
+    }
+    return this.idlePoseId;
+  }
 
-      const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
-      const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));
-
-      this.region.context.save();
-      this.region.context.translate(perceivedX * Settings.tileSize, perceivedY * Settings.tileSize);
-
-      if (projectile.image) {
-        this.region.context.rotate(Math.PI);
-        this.region.context.drawImage(
-          projectile.image,
-          -Settings.tileSize / 2,
-          -Settings.tileSize / 2,
-          Settings.tileSize,
-          Settings.tileSize,
-        );
-      } else {
-        this.region.context.beginPath();
-
-        this.region.context.fillStyle = "#D1BB7773";
-        if (
-          projectile.attackStyle === "slash" ||
-          projectile.attackStyle === "crush" ||
-          projectile.attackStyle === "stab"
-        ) {
-          this.region.context.fillStyle = "#FF000073";
-        } else if (projectile.attackStyle === "range") {
-          this.region.context.fillStyle = "#00FF0073";
-        } else if (projectile.attackStyle === "magic") {
-          this.region.context.fillStyle = "#0000FF73";
-        } else if (projectile.attackStyle === "heal") {
-          this.region.context.fillStyle = "#9813aa73";
-        } else {
-          console.log("[WARN] This style is not accounted for in custom coloring: ", projectile.attackStyle);
-        }
-        this.region.context.arc(0, 0, 5, 0, 2 * Math.PI);
-        this.region.context.fill();
-      }
-      this.region.context.restore();
-
-      // if (projectile.closestTile && this.mobName() == EntityName.JAL_TOK_JAD){
-      //   this.region.context.strokeStyle = 'red';
-      //   this.region.context.strokeRect(projectile.closestTile.x * Settings.tileSize, projectile.closestTile.y * Settings.tileSize, Settings.tileSize, Settings.tileSize);
-      // }
-    });
+  get attackAnimationId(): number | null {
+    return null;
   }
 }

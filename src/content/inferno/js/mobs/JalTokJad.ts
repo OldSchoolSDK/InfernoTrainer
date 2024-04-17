@@ -4,20 +4,35 @@ import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
 import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { AttackIndicators, Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
-import JadImage from "../../assets/images/JalTok-Jad.png";
+import JadImage from "../../assets/images/jad/jad_mage_1.png";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
+import {
+  ArcProjectionMotionInterpolator,
+  CeilingFallMotionInterpolator,
+  Projectile,
+} from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { YtHurKot } from "./YtHurKot";
 import { Collision } from "../../../../sdk/Collision";
 import { EntityName } from "../../../../sdk/EntityName";
 
-import MagicSound from "../../assets/sounds/TzTok-Jad-Magic-attack.ogg";
-import RangeSound from "../../assets/sounds/TzTok-Jad-Ranged-attack.ogg";
+import FireBreath from "../../assets/sounds/firebreath_159.ogg";
+import FireWaveCastAndFire from "../../assets/sounds/firewave_cast_and_fire_162.ogg";
+import FireWaveHit from "../../assets/sounds/firewave_hit_163.ogg";
+
 import { Random } from "../../../../sdk/Random";
 import { Region } from "../../../../sdk/Region";
+import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
+import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
+import { BasicModel } from "../../../../sdk/rendering/BasicModel";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+import { Assets } from "../../../../sdk/utils/Assets";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+
+export const JadModel = Assets.getAssetUrl("models/7700_33012.glb");
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -26,46 +41,82 @@ interface JadUnitOptions extends UnitOptions {
   isZukWave: boolean;
 }
 
+const MageStartSound = { src: FireBreath, volume: 0.1 };
+const RangeProjectileSound = { src: FireWaveHit, volume: 0.075 };
+const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.075 };
+
+const JAD_PROJECTILE_DELAY = 3;
+
 class JadMagicWeapon extends MagicWeapon {
   attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
-        const overhead = to.prayerController.matchFeature("magic");
+        const overhead = to.prayerController?.matchFeature("magic");
         from.attackFeedback = AttackIndicators.HIT;
         if (overhead) {
           from.attackFeedback = AttackIndicators.BLOCKED;
         }
-
         super.attack(from, to, bonuses);
-      }, 3),
+      }, JAD_PROJECTILE_DELAY),
     );
     return true;
   }
 
   registerProjectile(from: Unit, to: Unit) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, "magic", { reduceDelay: 3 }));
+    to.addProjectile(
+      new Projectile(this, this.damage, from, to, "magic", {
+        reduceDelay: JAD_PROJECTILE_DELAY,
+        motionInterpolator: new ArcProjectionMotionInterpolator(1),
+        color: "#FFAA00",
+        size: 2,
+        sound: MageProjectileSound,
+      }),
+    );
   }
 }
 class JadRangeWeapon extends RangedWeapon {
   attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
-        const overhead = to.prayerController.matchFeature("range");
+        const overhead = to.prayerController?.matchFeature("range");
         from.attackFeedback = AttackIndicators.HIT;
         if (overhead) {
           from.attackFeedback = AttackIndicators.BLOCKED;
         }
 
         super.attack(from, to, bonuses);
-      }, 3),
+      }, JAD_PROJECTILE_DELAY),
     );
     return true;
   }
 
   registerProjectile(from: Unit, to: Unit) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, "range", { reduceDelay: 3 }));
+    to.addProjectile(
+      new JadRangeProjectile(this, this.damage, from, to, "range", {
+        reduceDelay: JAD_PROJECTILE_DELAY,
+        motionInterpolator: new CeilingFallMotionInterpolator(8),
+        sound: RangeProjectileSound,
+      }),
+    );
   }
 }
+
+class JadRangeProjectile extends Projectile {
+  get color() {
+    return "#333333";
+  }
+
+  get size() {
+    return 1;
+  }
+
+  create3dModel() {
+    return BasicModel.forRenderableCentered(this);
+  }
+}
+
+const jadMageFrames = JAD_MAGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
+const jadRangeFrames = JAD_RANGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
 
 export class JalTokJad extends Mob {
   playerPrayerScan?: string = null;
@@ -73,6 +124,10 @@ export class JalTokJad extends Mob {
   hasProccedHealers = false;
   healers: number;
   isZukWave: boolean;
+
+  currentAnimationTick = 0;
+  currentAnimationFrame = 0;
+  currentAnimation: string[] | null = null;
 
   constructor(region: Region, location: Location, options: JadUnitOptions) {
     super(region, location, options);
@@ -189,23 +244,23 @@ export class JalTokJad extends Mob {
   }
 
   get image() {
-    return JadImage;
+    if (!this.currentAnimation) {
+      return JadImage;
+    }
+    const animationLength = this.currentAnimation.length;
+    return this.currentAnimation[Math.floor(this.currentAnimationFrame % animationLength)];
   }
 
-  get sound() {
-    return this.attackStyle === "magic" ? MagicSound : RangeSound;
+  get isAnimated() {
+    return !!this.currentAnimation;
+  }
+
+  override get sound() {
+    return this.attackStyle === "magic" ? MageStartSound : null;
   }
 
   attackStyleForNewAttack() {
     return Random.get() < 0.5 ? "range" : "magic";
-  }
-
-  attackAnimation(tickPercent: number) {
-    if (this.attackStyle === "magic") {
-      this.region.context.rotate(tickPercent * Math.PI * 2);
-    } else {
-      this.region.context.rotate(Math.sin(-tickPercent * Math.PI));
-    }
   }
 
   shouldShowAttackAnimation() {
@@ -213,15 +268,60 @@ export class JalTokJad extends Mob {
   }
 
   canMeleeIfClose() {
-    return "stab";
+    return "stab" as const;
   }
 
   magicMaxHit() {
     return 113;
   }
 
+  attackStep() {
+    super.attackStep();
+    this.currentAnimationTick++;
+  }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
+  }
+
   attack() {
     super.attack();
     this.attackFeedback = AttackIndicators.NONE;
+    if (this.attackStyle === "magic") {
+      this.currentAnimation = JAD_MAGE_FRAMES;
+    } else if (this.attackStyle === "range") {
+      this.currentAnimation = JAD_RANGE_FRAMES;
+    }
+    this.currentAnimationFrame = 0;
+    this.currentAnimationTick = 0;
+    return true;
+  }
+
+  draw(tickPercent, context, offset, scale, drawUnderTile) {
+    if (this.currentAnimation) {
+      this.currentAnimationFrame =
+        (this.currentAnimationTick - 1) * JAD_FRAMES_PER_TICK + tickPercent * JAD_FRAMES_PER_TICK;
+      if (this.currentAnimationFrame >= this.currentAnimation.length) {
+        this.currentAnimation = null;
+        this.currentAnimationFrame = 0;
+        this.currentAnimationTick = 0;
+      }
+    }
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, JadModel, 0.0075);
+  }
+
+  get attackAnimationId() {
+    switch (this.attackStyle) {
+      case "magic":
+        return 2;
+      case "range":
+        return 3;
+      default:
+        return 4;
+    }
   }
 }

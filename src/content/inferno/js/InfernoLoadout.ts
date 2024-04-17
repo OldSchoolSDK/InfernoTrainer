@@ -2,8 +2,6 @@ import { UnitOptions } from "../../../sdk/Unit";
 
 import { JusticiarFaceguard } from "../../equipment/JusticiarFaceguard";
 import { NecklaceOfAnguish } from "../../equipment/NecklaceOfAnguish";
-import { ArmadylChestplate } from "../../equipment/ArmadylChestplate";
-import { ArmadylChainskirt } from "../../equipment/ArmadylChainskirt";
 import { PegasianBoots } from "../../equipment/PegasianBoots";
 import { AvasAssembler } from "../../equipment/AvasAssembler";
 import { AvasAccumulator } from "../../equipment/AvasAccumulator";
@@ -43,6 +41,11 @@ import { AncestralRobebottom } from "../../equipment/AncestralRobebottom";
 import { StaminaPotion } from "../../items/StaminaPotion";
 import { SaradominBrew } from "../../items/SaradominBrew";
 import { SuperRestore } from "../../items/SuperRestore";
+import { ZaryteVambraces } from "../../equipment/ZaryteVambraces";
+import { MasoriMaskF } from "../../equipment/MasoriMaskF";
+import { MasoriBodyF } from "../../equipment/MasoriBodyF";
+import { MasoriChapsF } from "../../equipment/MasoriChapsF";
+import { DizanasQuiver } from "../../equipment/DizanasQuiver";
 import { BastionPotion } from "../../items/BastionPotion";
 
 import { TwistedBow } from "../../weapons/TwistedBow";
@@ -54,6 +57,8 @@ import { filter, indexOf, map } from "lodash";
 import { Chest } from "../../../sdk/gear/Chest";
 import { Legs } from "../../../sdk/gear/Legs";
 import { Player } from "../../../sdk/Player";
+import { BlackChinchompa } from "../../weapons/BlackChinchompa";
+import { BrowserUtils } from "../../../sdk/utils/BrowserUtils";
 
 export class InfernoLoadout {
   wave: number;
@@ -66,28 +71,64 @@ export class InfernoLoadout {
     this.onTask = onTask;
   }
 
+  loadoutMaxTbowSpeedrunner() {
+    return {
+      ...this.loadoutMaxTbow(),
+      inventory: [
+        new BlackChinchompa(),
+        new Blowpipe(),
+        new MasoriBodyF(),
+        new TwistedBow(!!BrowserUtils.getQueryVar("geno")),
+        new BastionPotion(),
+        new NecklaceOfAnguish(),
+        new MasoriChapsF(),
+        null,
+        new BastionPotion(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new BastionPotion(),
+        new StaminaPotion(),
+        new BastionPotion(),
+      ],
+    };
+  }
+
   loadoutMaxTbow() {
     return {
       equipment: {
         weapon: new KodaiWand(),
         offhand: new CrystalShield(),
-        helmet: new JusticiarFaceguard(),
+        helmet: new MasoriMaskF(),
         necklace: new OccultNecklace(),
-        cape: new AvasAssembler(),
+        cape: new DizanasQuiver(),
         ammo: new DragonArrows(),
         chest: new AncestralRobetop(),
         legs: new AncestralRobebottom(),
         feet: new PegasianBoots(),
-        gloves: new BarrowsGloves(),
+        gloves: new ZaryteVambraces(),
         ring: new RingOfSufferingImbued(),
       },
       inventory: [
         new Blowpipe(),
-        new ArmadylChestplate(),
+        new MasoriBodyF(),
         new TwistedBow(),
         new JusticiarChestguard(),
         new NecklaceOfAnguish(),
-        new ArmadylChainskirt(),
+        new MasoriChapsF(),
         null,
         new JusticiarLegguards(),
         new SaradominBrew(),
@@ -349,6 +390,9 @@ export class InfernoLoadout {
   getLoadout(): UnitOptions {
     let loadout: UnitOptions;
     switch (this.loadoutType) {
+      case "max_tbow_speed":
+        loadout = this.loadoutMaxTbowSpeedrunner();
+        break;
       case "max_tbow":
         loadout = this.loadoutMaxTbow();
         break;
@@ -388,6 +432,7 @@ export class InfernoLoadout {
       // Swap out chest
       const mageChest = loadout.equipment.chest;
       const rangeChest = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.MASORI_BODY_F,
         ItemName.ARMADYL_CHESTPLATE,
         ItemName.SARADOMIN_D_HIDE_BODY,
         ItemName.CRYSTAL_BODY,
@@ -400,6 +445,7 @@ export class InfernoLoadout {
       // Swap out body
       const mageLegs = loadout.equipment.legs;
       const rangeLegs = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.MASORI_CHAPS_F,
         ItemName.ARMADYL_CHAINSKIRT,
         ItemName.SARADOMIN_D_HIDE_CHAPS,
         ItemName.CRYSTAL_LEGS,

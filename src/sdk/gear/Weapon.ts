@@ -11,6 +11,7 @@ import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Random } from "../Random";
+import { Sound, SoundCache } from "../utils/SoundCache";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -25,7 +26,9 @@ export interface AttackBonuses {
   styleBonus?: number;
   isAccurate?: boolean;
   voidMultiplier?: number;
-  gearMultiplier?: number;
+  gearMeleeMultiplier?: number;
+  gearMageMultiplier?: number;
+  gearRangeMultiplier?: number;
   attackStyle?: string;
   magicBaseSpellDamage?: number;
   overallMultiplier?: number;
@@ -37,8 +40,8 @@ export class Weapon extends Equipment {
   damage: number;
   damageRoll: number;
   lastHitHit = false;
-  selected = false;
-  inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+  override selected = false;
+  override inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   attackStyles() {
     return [];
@@ -60,15 +63,15 @@ export class Weapon extends Equipment {
     return AttackStylesController.controller.getAttackStyleForType(this.attackStyleCategory(), this);
   }
 
-  assignToPlayer(player: Player) {
+  override assignToPlayer(player: Player) {
     player.equipment.weapon = this;
     player.interruptCombat();
   }
 
-  unassignToPlayer(player: Player) {
+  override unassignToPlayer(player: Player) {
     player.equipment.weapon = null;
   }
-  currentEquipment(player: Player): Equipment {
+  override currentEquipment(player: Player): Equipment {
     return player.equipment.weapon;
   }
 
@@ -78,11 +81,14 @@ export class Weapon extends Equipment {
   specialAttackDrain(): number {
     return 50;
   }
-  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}) {
+  specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     // Override me
+    if (this.specialAttackSound) {
+      SoundCache.play(this.specialAttackSound);
+    }
   }
 
-  inventoryLeftClick(player: Player) {
+  override inventoryLeftClick(player: Player) {
     const currentWeapon = player.equipment.weapon || null;
     const currentOffhand = player.equipment.offhand || null;
 
@@ -135,13 +141,15 @@ export class Weapon extends Equipment {
     this._calculatePrayerEffects(from, to, bonuses);
     bonuses.styleBonus = bonuses.styleBonus || 0;
     bonuses.voidMultiplier = bonuses.voidMultiplier || 1;
-    bonuses.gearMultiplier = bonuses.gearMultiplier || 1;
+    bonuses.gearMeleeMultiplier = bonuses.gearMeleeMultiplier || 1;
+    bonuses.gearMageMultiplier = bonuses.gearMageMultiplier || 1;
+    bonuses.gearRangeMultiplier = bonuses.gearRangeMultiplier || 1;
     bonuses.overallMultiplier = bonuses.overallMultiplier || 1.0;
 
     this.rollDamage(from, to, bonuses);
 
     if (this.damage === -1) {
-      return;
+      return false;
     }
 
     if (to.setEffects) {
@@ -199,7 +207,9 @@ export class Weapon extends Equipment {
   _hitChance(from: Unit, to: Unit, bonuses: AttackBonuses) {
     const attackRoll = this._attackRoll(from, to, bonuses);
     const defenceRoll = this._defenceRoll(from, to, bonuses);
-    return attackRoll > defenceRoll ? 1 - (defenceRoll + 2) / (2 * attackRoll + 1) : attackRoll / (2 * defenceRoll + 1);
+    const hitChance =
+      attackRoll > defenceRoll ? 1 - (defenceRoll + 2) / (2 * attackRoll + 1) : attackRoll / (2 * defenceRoll + 1);
+    return hitChance;
   }
 
   isBlockable(from: Unit, to: Unit, bonuses: AttackBonuses): boolean {
@@ -215,7 +225,13 @@ export class Weapon extends Equipment {
   }
 
   registerProjectile(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, bonuses.attackStyle, options));
+    to.addProjectile(
+      new Projectile(this, this.damage, from, to, bonuses.attackStyle, {
+        sound: this.attackSound,
+        hitSound: this.attackLandingSound,
+        ...options,
+      }),
+    );
   }
 
   get image(): HTMLImageElement {
@@ -251,5 +267,18 @@ export class Weapon extends Equipment {
 
   static isMeleeAttackStyle(style: string) {
     return style === "crush" || style === "slash" || style === "stab";
+  }
+
+  get attackSound(): Sound | null {
+    // Override me
+    return null;
+  }
+
+  get specialAttackSound(): Sound | null {
+    return null;
+  }
+
+  get attackLandingSound(): Sound | null {
+    return null;
   }
 }

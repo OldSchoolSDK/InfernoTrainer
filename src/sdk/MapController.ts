@@ -42,6 +42,9 @@ enum MapHover {
   XP = 5,
 }
 
+const INITIAL_WIDTH = 210;
+const INITIAL_HEIGHT = 180;
+
 export class MapController {
   static controller = new MapController();
 
@@ -83,8 +86,8 @@ export class MapController {
   width: number;
   height: number;
   constructor() {
-    this.width = 210;
-    this.height = 180;
+    this.width = INITIAL_WIDTH;
+    this.height = INITIAL_HEIGHT;
 
     this.hovering = MapHover.NONE;
     this.loadImages();
@@ -209,9 +212,7 @@ export class MapController {
 
     mapContext.save();
     mapContext.translate(76, 76);
-    if (Settings.rotated === "south") {
-      mapContext.rotate(Math.PI);
-    }
+    mapContext.rotate(Viewport.viewport.getMapRotation());
     mapContext.translate(-76, -76);
 
     if (Viewport.viewport.player.region.mapImage) {
@@ -234,8 +235,8 @@ export class MapController {
   cursorMovedTo(event: MouseEvent) {
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
 
     this.hovering = MapHover.NONE;
@@ -259,8 +260,8 @@ export class MapController {
 
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -296,13 +297,13 @@ export class MapController {
         {
           text: [{ text: "Look North", fillStyle: "white" }],
           action: () => {
-            Settings.rotated = "north";
+            Viewport.viewport.rotateNorth();
           },
         },
         {
           text: [{ text: "Look South", fillStyle: "white" }],
           action: () => {
-            Settings.rotated = "south";
+            Viewport.viewport.rotateSouth();
           },
         },
       ];
@@ -331,7 +332,7 @@ export class MapController {
           },
         },
       ];
-    } else if (x > 38 && x < 79 && y > 148 && y < 175) {
+    } else if (x > 38 && x < 90 && y > 148 && y < 175) {
       if (this.canSpecialAttack()) {
         intercepted = true;
         // special attack
@@ -359,8 +360,8 @@ export class MapController {
     let intercepted = false;
     const { width } = Chrome.size();
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
-    const x = event.offsetX - offset;
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
+    const x = (event.offsetX - offset) / scale;
     const y = event.offsetY / scale;
 
     if (x > 4 && x < 20 && y > 31 && y < 48) {
@@ -369,11 +370,10 @@ export class MapController {
       Settings.persistToStorage();
     } else if (x > 33 && x < 64 && y > 5 && y < 36) {
       intercepted = true;
-
-      if (Settings.rotated === "south") {
-        Settings.rotated = "north";
+      if (Viewport.viewport.getMapRotation() === 0) {
+        Viewport.viewport.rotateSouth();
       } else {
-        Settings.rotated = "south";
+        Viewport.viewport.rotateNorth();
       }
       Settings.persistToStorage();
     } else if (x > 4 && x < 52 && y > 53 && y < 73) {
@@ -385,7 +385,7 @@ export class MapController {
     } else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
       Viewport.viewport.player.running = !Viewport.viewport.player.running;
-    } else if (x > 38 && x < 79 && y > 148 && y < 175) {
+    } else if (x > 38 && x < 90 && y > 148 && y < 175) {
       intercepted = true;
       this.toggleSpecialAttack();
     }
@@ -416,10 +416,12 @@ export class MapController {
     const { width } = Chrome.size();
 
     const gameHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    Settings.minimapScale = gameHeight / 500 > 1 ? 1 : gameHeight / 500;
+    Settings.minimapScale = (gameHeight / 500 > 1 ? 1 : gameHeight / 500) * Settings.maxUiScale;
 
     const scale = Settings.minimapScale;
-    const offset = width - this.width * scale - (Settings.menuVisible ? 232 : 0);
+    this.width = INITIAL_WIDTH * scale;
+    this.height = INITIAL_HEIGHT * scale;
+    const offset = width - this.width - (Settings.menuVisible ? 232 : 0);
 
     ctx.font = 16 * scale + "px Stats_11";
     ctx.textAlign = "center";
@@ -430,9 +432,7 @@ export class MapController {
     // draw compass
     ctx.save();
     ctx.translate(offset + 50.5 * scale, 23.5 * scale);
-    if (Settings.rotated === "south") {
-      ctx.rotate(Math.PI);
-    }
+    ctx.rotate(Viewport.viewport.getMapRotation());
     ctx.translate(-50.5 * scale, -23.5 * scale);
     if (this.compassImage) {
       ctx.drawImage(this.compassImage, 25 * scale, -2, 51 * scale, 51 * scale);

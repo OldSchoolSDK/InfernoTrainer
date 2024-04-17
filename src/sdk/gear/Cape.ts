@@ -1,7 +1,11 @@
-import { Equipment } from "../Equipment";
+import { Equipment, EquipmentTypes } from "../Equipment";
 import { Player } from "../Player";
 
 export class Cape extends Equipment {
+  get type(): EquipmentTypes {
+    return EquipmentTypes.AMMO;
+  }
+
   assignToPlayer(player: Player) {
     player.equipment.cape = this;
   }

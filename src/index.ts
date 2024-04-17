@@ -27,9 +27,12 @@ import { EntityName } from "./sdk/EntityName";
 import { Mob } from "./sdk/Mob";
 import { Location } from "./sdk/Location";
 import { MapController } from "./sdk/MapController";
-import { Blowpipe } from "./content/weapons/Blowpipe";
-import { NecklaceOfAnguish } from "./content/equipment/NecklaceOfAnguish";
-import { PegasianBoots } from "./content/equipment/PegasianBoots";
+import { Assets } from "./sdk/utils/Assets";
+import { Chrome } from "./sdk/Chrome";
+
+import SpecialAttackBarBackground from "./assets/images/attackstyles/interface/special_attack_background.png";
+import { InfernoScene } from "./content/InfernoScene";
+import { TwistedBow } from "./content/weapons/TwistedBow";
 
 declare global {
   interface Window {
@@ -71,15 +74,9 @@ const southPillar = selectedRegion.initializeAndGetSouthPillar();
 const westPillar = selectedRegion.initializeAndGetWestPillar();
 const northPillar = selectedRegion.initializeAndGetNorthPillar();
 
-const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
-
-loadout.setStats(player); // flip this around one day
-player.setUnitOptions(loadout.getLoadout());
-
-Viewport.viewport.setPlayer(player);
-ImageLoader.onAllImagesLoaded(() => MapController.controller.updateOrbsMask(player.currentStats, player.stats));
-
+selectedRegion.initializeAndGetUse3dView();
 selectedRegion.wave = parseInt(BrowserUtils.getQueryVar("wave"));
+
 if (isNaN(selectedRegion.wave)) {
   selectedRegion.wave = 62;
 }
@@ -90,12 +87,25 @@ if (selectedRegion.wave > InfernoWaves.waves.length + 8) {
   selectedRegion.wave = InfernoWaves.waves.length + 8;
 }
 
+const loadout = new InfernoLoadout(selectedRegion.wave, loadoutType, onTask);
+
+loadout.setStats(player); // flip this around one day
+player.setUnitOptions(loadout.getLoadout());
+
+Viewport.setupViewport(selectedRegion);
+Viewport.viewport.setPlayer(player);
+
+ImageLoader.onAllImagesLoaded(() => {
+  MapController.controller.updateOrbsMask(player.currentStats, player.stats);
+});
 if (selectedRegion.wave < 67 || selectedRegion.wave >= 70) {
   // Add pillars
   InfernoPillar.addPillarsToWorld(selectedRegion, southPillar, westPillar, northPillar);
 }
 
-const randomPillar = (shuffle(selectedRegion.entities) || [null])[0]; // Since we've only added pillars this is safe. Do not move to after movement blockers.
+const randomPillar = (shuffle(
+  selectedRegion.entities.filter((entity) => entity.entityName() === EntityName.PILLAR),
+) || [null])[0]; // Since we've only added pillars this is safe. Do not move to after movement blockers.
 
 for (let x = 10; x < 41; x++) {
   selectedRegion.addEntity(new InvisibleMovementBlocker(this, { x, y: 13 }));
@@ -141,7 +151,9 @@ editWaveInput.addEventListener("click", () => {
     return [mob.location.x - 11, mob.location.y - 14];
   });
 
-  const url = `/?wave=0&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
+  const url = `/?wave=0&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(
+    rangers,
+  )}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
   window.location.href = url;
 });
 exportWaveInput.addEventListener("click", () => {
@@ -175,7 +187,9 @@ exportWaveInput.addEventListener("click", () => {
     return [mob.location.x - 11, mob.location.y - 14];
   });
 
-  const url = `/?wave=74&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
+  const url = `/?wave=74&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(
+    meleers,
+  )}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
   window.location.href = url;
 });
 
@@ -220,6 +234,11 @@ if (Settings.tile_markers) {
     .forEach((tileMarker: TileMarker) => {
       selectedRegion.addEntity(tileMarker);
     });
+}
+
+// Add 3d scene
+if (Settings.use3dView) {
+  selectedRegion.addEntity(new InfernoScene(selectedRegion, { x: 0, y: 48 }));
 }
 
 // Add mobs
@@ -357,13 +376,75 @@ ImageLoader.onAllImagesLoaded(() =>
 );
 
 ImageLoader.onAllImagesLoaded(() => {
-  // Start the engine
-  world.startTicking();
+  drawAssetLoadingBar(loadingAssetProgress);
+  imagesReady = true;
+  checkStart();
 });
 
 const interval = setInterval(() => {
   ImageLoader.checkImagesLoaded(interval);
 }, 50);
+
+Assets.onAllAssetsLoaded(() => {
+  // renders a single frame
+  Viewport.viewport.initialise().then(() => {
+    console.log("assets are preloaded");
+    assetsPreloaded = true;
+    checkStart();
+  });
+});
+
+function drawAssetLoadingBar(loadingProgress: number) {
+  const specialAttackBarBackground = ImageLoader.createImage(SpecialAttackBarBackground);
+  const { width: canvasWidth, height: canvasHeight } = Chrome.size();
+  const canvas = document.getElementById("world") as HTMLCanvasElement;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "#FFFF00";
+  context.font = "32px OSRS";
+  context.textAlign = "center";
+  context.fillText(`Loading models: ${Math.floor(loadingProgress * 100)}%`, canvas.width / 2, canvas.height / 2);
+  const scale = 2;
+  const left = canvasWidth / 2 - (specialAttackBarBackground.width * scale) / 2;
+  const top = canvasHeight / 2 + 20;
+  const width = specialAttackBarBackground.width * scale;
+  const height = specialAttackBarBackground.height * scale;
+  context.drawImage(specialAttackBarBackground, left, top, width, height);
+  context.fillStyle = "#730606";
+  context.fillRect(left + 2 * scale, top + 6 * scale, width - 4 * scale, height - 12 * scale);
+  context.fillStyle = "#397d3b";
+  context.fillRect(left + 2 * scale, top + 6 * scale, (width - 4 * scale) * loadingProgress, height - 12 * scale);
+  context.fillStyle = "#000000";
+  context.globalAlpha = 0.5;
+  context.strokeRect(left + 2 * scale, top + 6 * scale, width - 4 * scale, height - 12 * scale);
+  context.globalAlpha = 1;
+}
+
+let loadingAssetProgress = 0.0;
+drawAssetLoadingBar(loadingAssetProgress);
+
+Assets.onAssetProgress((loaded, total) => {
+  loadingAssetProgress = loaded / total;
+  drawAssetLoadingBar(loadingAssetProgress);
+});
+
+const assets2 = setInterval(() => {
+  Assets.checkAssetsLoaded(assets2);
+}, 50);
+
+let imagesReady = false;
+let assetsPreloaded = false;
+let started = false;
+
+function checkStart() {
+  if (!started && imagesReady && assetsPreloaded) {
+    started = true;
+    // Start the engine
+    world.startTicking();
+  }
+}
 
 /// /////////////////////////////////////////////////////////
 

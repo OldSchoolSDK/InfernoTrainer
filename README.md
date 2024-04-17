@@ -26,18 +26,12 @@ Likely. Please open a issue above. Videos, screenshots, proof of OSRS science, e
 
 Sure. Right now the code is undergoing rapid development and the API is not stable. I am open to pull requests but I suggest you start small and let me talk to you first to make sure we're aligned.
 
-### Development setup
+## Development notes
 
-Node 16 is required. It does not run on Node 18+ yet.
-
-To install dependencies:
-
-    npm install
-
-To start the dev server (https://localhost:8000):
+Use Node 16 for now. There's an SSL error on version >= 18.
 
     npm run start
 
-To reformat all files with Prettier (please do this before submitting a PR):
+Running test
 
-    npm run prettier
+    npx jest

@@ -12,6 +12,13 @@ import { EntityName } from "../../../../sdk/EntityName";
 import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { InfernoRegion } from "../InfernoRegion";
 import { Random } from "../../../../sdk/Random";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+import { Assets } from "../../../../sdk/utils/Assets";
+
+export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
@@ -100,14 +107,19 @@ export class JalZek extends Mob {
   }
 
   get sound() {
-    return MagerSound;
+    return new Sound(MagerSound);
   }
+
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
+  }
+
   attackStyleForNewAttack() {
     return "magic";
   }
 
   canMeleeIfClose() {
-    return "stab";
+    return "stab" as const;
   }
 
   magicMaxHit() {
@@ -118,8 +130,8 @@ export class JalZek extends Mob {
     return 70;
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.rotate(tickPercent * Math.PI * 2);
+  attackAnimation(tickPercent: number, context) {
+    context.rotate(tickPercent * Math.PI * 2);
   }
 
   respawnLocation(mobToResurrect: Mob) {
@@ -137,8 +149,6 @@ export class JalZek extends Mob {
   }
 
   attackIfPossible() {
-    this.attackDelay--;
-
     this.attackStyle = this.attackStyleForNewAttack();
 
     this.attackFeedback = AttackIndicators.NONE;
@@ -163,7 +173,7 @@ export class JalZek extends Mob {
       if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
         const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region);
         if (!mobToResurrect) {
-          this.attack();
+          this.attack() && this.didAttack();
         } else {
           // Set to 50% health
           mobToResurrect.currentStats.hitpoint = Math.floor(mobToResurrect.stats.hitpoint / 2);
@@ -176,10 +186,19 @@ export class JalZek extends Mob {
           this.region.addMob(mobToResurrect);
           // (15, 10) to  (21 , 22)
           this.attackDelay = 8;
+          this.playAnimation(3);
         }
       } else {
-        this.attack();
+        this.attack() && this.didAttack();
       }
     }
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, MagerModel, 0.0075);
+  }
+
+  override get attackAnimationId() {
+    return 2;
   }
 }

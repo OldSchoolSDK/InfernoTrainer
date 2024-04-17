@@ -15,6 +15,10 @@ import { JalXil } from "./mobs/JalXil";
 import { Mob } from "../../../sdk/Mob";
 import { Region } from "../../../sdk/Region";
 import { Random } from "../../../sdk/Random";
+import { Assets } from "../../../sdk/utils/Assets";
+import { GLTFModel } from "../../../sdk/rendering/GLTFModel";
+
+const ShieldModel = Assets.getAssetUrl("models/7707_33036.glb");
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -107,11 +111,19 @@ export class ZukShield extends Mob {
     );
   }
 
+  get drawOutline() {
+    return false;
+  }
+
   contextActions() {
     return [];
   }
   mobName(): EntityName {
     return EntityName.INFERNO_SHIELD;
+  }
+
+  get selectable() {
+    return false;
   }
 
   canBeAttacked() {
@@ -171,6 +183,10 @@ export class ZukShield extends Mob {
     // Shield can't attack.
   }
 
+  getPerceivedRotation(tickPercent: any) {
+    return -Math.PI / 2;
+  }
+
   drawUnderTile() {
     this.region.context.fillStyle = this.color;
     // Draw mob
@@ -180,5 +196,16 @@ export class ZukShield extends Mob {
       3 * Settings.tileSize,
       3 * Settings.tileSize,
     );
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, ShieldModel, 0.0075);
+  }
+  get animationIndex() {
+    if (this.dying >= 0) {
+      return 1; // dying
+    } else {
+      return 0; // idle
+    }
   }
 }

@@ -2,6 +2,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Crystal_legs.png";
 import { Legs } from "../../sdk/gear/Legs";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class CrystalLegs extends Legs {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -47,5 +48,10 @@ export class CrystalLegs extends Legs {
         slayer: 0,
       },
     };
+  }
+  
+  Model = Assets.getAssetUrl("models/player_crystal_legs.glb");
+  override get model() {
+    return this.Model;
   }
 }

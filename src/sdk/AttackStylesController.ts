@@ -24,6 +24,10 @@ import ScytheAggressiveSlashImage from "../assets/images/attackstyles/scythe/agg
 import ScytheAggressiveCrushImage from "../assets/images/attackstyles/scythe/aggressivecrush.png";
 import ScytheDefensiveImage from "../assets/images/attackstyles/scythe/defensive.png";
 
+import ChinchompaShortFuseImage from "../assets/images/attackstyles/chinchompas/short.png";
+import ChinchompaMediumFuseImage from "../assets/images/attackstyles/chinchompas/medium.png";
+import ChinchompaLongFuseImage from "../assets/images/attackstyles/chinchompas/long.png";
+
 //https://oldschool.runescape.wiki/w/Weapons/Types
 export enum AttackStyleTypes {
   CROSSBOW = "CROSSBOW",
@@ -63,6 +67,9 @@ export enum AttackStyle {
   DEFENSIVE = "DEFENSIVE",
   CONTROLLED = "CONTROLLED",
   AUTOCAST = "AUTOCAST",
+  SHORT_FUSE = "SHORT_FUSE",
+  MEDIUM_FUSE = "MEDIUM_FUSE",
+  LONG_FUSE = "LONG_FUSE",
 }
 
 interface AttackStyleStorage {
@@ -105,6 +112,11 @@ export class AttackStylesController {
       [AttackStyle.AGGRESSIVESLASH]: ImageLoader.createImage(ScytheAggressiveSlashImage),
       [AttackStyle.AGGRESSIVECRUSH]: ImageLoader.createImage(ScytheAggressiveCrushImage),
       [AttackStyle.DEFENSIVE]: ImageLoader.createImage(ScytheDefensiveImage),
+    },
+    [AttackStyleTypes.CHINCHOMPA]: {
+      [AttackStyle.SHORT_FUSE]: ImageLoader.createImage(ChinchompaShortFuseImage),
+      [AttackStyle.MEDIUM_FUSE]: ImageLoader.createImage(ChinchompaMediumFuseImage),
+      [AttackStyle.LONG_FUSE]: ImageLoader.createImage(ChinchompaLongFuseImage),
     },
   };
 

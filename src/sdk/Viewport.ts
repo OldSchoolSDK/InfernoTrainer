@@ -1,6 +1,5 @@
 "use strict";
 import { Settings } from "./Settings";
-import { Pathing } from "./Pathing";
 import { ClickController } from "./ClickController";
 import { Chrome } from "./Chrome";
 import { Player } from "./Player";
@@ -11,21 +10,83 @@ import { MapController } from "./MapController";
 import { XpDropController } from "./XpDropController";
 import { ImageLoader } from "./utils/ImageLoader";
 import ButtonActiveIcon from "../assets/images/interface/button_active.png";
+import { CardinalDirection, Region } from "./Region";
+import { Viewport3d } from "./Viewport3d";
+import { Location } from "./Location";
+import { Mob } from "./Mob";
+import { Item } from "./Item";
+import { Viewport2d } from "./Viewport2d";
+import { CombatControls } from "./controlpanels/CombatControls";
+
+type ViewportEntitiesClick = {
+  type: "entities";
+  mobs: Mob[];
+  players: Player[];
+  groundItems: Item[];
+  location: Location;
+};
+
+type ViewportCoordinateClick = {
+  type: "coordinate";
+  location: Location;
+};
+
+type ViewportClickResult = ViewportEntitiesClick | ViewportCoordinateClick | null;
+
+type ViewportDrawResult = {
+  // game canvas
+  canvas: OffscreenCanvas;
+  // drawn on top of the game canvas. optional, not used for 2d view
+  uiCanvas: OffscreenCanvas | null;
+  flip: boolean;
+  offsetX: number;
+  offsetY: number;
+};
+
+export interface ViewportDelegate {
+  initialise(world: World, region: Region): Promise<void>;
+
+  draw(world: World, region: Region): ViewportDrawResult;
+
+  // translate the click (relative to the viewport) to a location in the world or something that got clicked
+  translateClick(offsetX: number, offsetY: number, world: World, viewport: Viewport): ViewportClickResult;
+
+  getMapRotation(): number;
+
+  setMapRotation(direction: CardinalDirection);
+}
 
 export class Viewport {
+  static viewport: Viewport;
+  static setupViewport(region: Region, force2d = false) {
+    const faceInitialSouth = region.initialFacing === CardinalDirection.SOUTH;
+    // called after Settings have been initialized
+    Viewport.viewport = new Viewport(
+      Settings.use3dView && !force2d ? new Viewport3d(faceInitialSouth) : new Viewport2d(),
+    );
+  }
+
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon);
   contextMenu: ContextMenu = new ContextMenu();
-  static viewport = new Viewport();
+
   clickController: ClickController;
   canvas: HTMLCanvasElement;
   player: Player;
   width: number;
   height: number;
 
+  constructor(private delegate: ViewportDelegate) {}
+
+  /**
+   * Return all objects or world coordinates at the given position (relative to the top-left of the viewport).
+   */
+  translateClick(offsetX: number, offsetY: number, world: World): ViewportClickResult {
+    return this.delegate.translateClick(offsetX, offsetY, world, this);
+  }
+
   get context() {
     return this.canvas.getContext("2d");
   }
-
   setPlayer(player: Player) {
     this.player = player;
     window.addEventListener("orientationchange", () => this.calculateViewport());
@@ -40,11 +101,21 @@ export class Viewport {
     this.clickController.registerClickActions();
   }
 
+  // called after all graphics have loaded
+  async initialise() {
+    await this.delegate.initialise(this.player.region.world, this.player.region);
+    return;
+  }
+
   calculateViewport() {
     const { width, height } = Chrome.size();
     Settings._tileSize = width / this.player.region.width;
     this.width = width / Settings.tileSize;
     this.height = height / Settings.tileSize;
+    if (width !== this.canvas.width || height !== this.canvas.height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
   }
 
   getViewport(tickPercent: number) {
@@ -75,36 +146,20 @@ export class Viewport {
     }
   }
 
-  drawRegion(world: World) {
-    const region = this.player.region;
+  getMapRotation() {
+    return this.delegate.getMapRotation();
+  }
 
-    region.context.save();
-    region.drawWorldBackground();
-    region.drawGroundItems(region.context);
+  rotateSouth() {
+    this.delegate.setMapRotation(CardinalDirection.SOUTH);
+  }
 
-    // Draw all things on the map
-    region.entities.forEach((entity) => entity.draw(world.tickPercent));
+  rotateNorth() {
+    this.delegate.setMapRotation(CardinalDirection.NORTH);
+  }
 
-    if (world.getReadyTimer <= 0) {
-      region.mobs.forEach((mob) => mob.draw(world.tickPercent));
-      region.newMobs.forEach((mob) => mob.draw(world.tickPercent));
-    }
-
-    region.players.forEach((player: Player) => {
-      player.draw(world.tickPercent);
-    });
-
-    region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));
-
-    if (world.getReadyTimer === 0) {
-      region.mobs.forEach((mob) => mob.drawUILayer(world.tickPercent));
-
-      region.players.forEach((player: Player) => {
-        player.drawUILayer(world.tickPercent);
-      });
-    }
-
-    region.context.restore();
+  getDelegate() {
+    return this.delegate;
   }
 
   draw(world: World) {
@@ -113,15 +168,17 @@ export class Viewport {
     this.context.restore();
     this.context.save();
     this.context.fillStyle = "black";
-    this.context.fillRect(0, 0, 10000000, 1000000);
     const { width, height } = Chrome.size();
-    if (Settings.rotated === "south") {
+    this.context.fillRect(0, 0, width, height);
+    const { canvas, uiCanvas, flip, offsetX, offsetY } = this.delegate.draw(world, this.player.region);
+    if (flip) {
       this.context.rotate(Math.PI);
       this.context.translate(-width, -height);
     }
-    this.drawRegion(world);
-    const { viewportX, viewportY } = this.getViewport(world.tickPercent);
-    this.context.drawImage(this.player.region.canvas, -viewportX * Settings.tileSize, -viewportY * Settings.tileSize);
+    this.context.drawImage(canvas, offsetX, offsetY);
+    if (uiCanvas) {
+      this.context.drawImage(uiCanvas, offsetX, offsetY);
+    }
     this.context.restore();
     this.context.save();
 
@@ -141,7 +198,7 @@ export class Viewport {
     }
 
     // draw control panel
-    ControlPanelController.controller.draw();
+    ControlPanelController.controller.draw(this.context);
     XpDropController.controller.draw(
       this.context,
       width - 140 - MapController.controller.width - (Settings.menuVisible ? 232 : 0),

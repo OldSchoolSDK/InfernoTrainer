@@ -17,6 +17,11 @@ export interface GroundItems {
   [key: number]: GroundYItems;
 }
 
+export enum CardinalDirection {
+  NORTH,
+  SOUTH,
+}
+
 // Base class for any trainer region.
 export class Region {
   canvas: OffscreenCanvas;
@@ -39,6 +44,10 @@ export class Region {
       this._serialNumber = String(Math.random());
     }
     return this._serialNumber;
+  }
+
+  get initialFacing(): CardinalDirection {
+    return CardinalDirection.SOUTH;
   }
 
   midTick() {
@@ -73,6 +82,7 @@ export class Region {
   }
 
   removeEntity(entity: Entity) {
+    entity.dying = 0;
     remove(this.entities, entity);
   }
 
@@ -84,7 +94,7 @@ export class Region {
     }
   }
 
-  removeMob(mob: Unit) {
+  removeMob(mob: Mob) {
     remove(this.mobs, mob);
   }
   removePlayer(player: Player) {
@@ -118,9 +128,14 @@ export class Region {
     return "";
   }
 
-  drawWorldBackground() {
+  drawWorldBackground(context: OffscreenCanvasRenderingContext2D, scale: number) {
     // Override me
   }
+
+  drawDefaultFloor() {
+    return true;
+  }
+
   groundItemsAtLocation(x: number, y: number) {
     return (this.groundItems[x] ? this.groundItems[x][y] : []) || [];
   }
@@ -150,5 +165,13 @@ export class Region {
         });
       });
     });
+  }
+
+  // calls preload on all renderable children
+  async preload() {
+    await Promise.all(this.entities.map((entity) => entity.preload()));
+    await Promise.all(this.mobs.map((mob) => mob.preload()));
+    await Promise.all(this.newMobs.map((mob) => mob.preload()));
+    await Promise.all(this.players.map((players) => players.preload()));
   }
 }

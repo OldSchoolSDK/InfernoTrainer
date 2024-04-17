@@ -5,6 +5,7 @@ import OverheadImg from "../../assets/images/prayers/mageOver.png";
 import OnSound from "../../assets/sounds/mageOn.ogg";
 import OffSound from "../../assets/sounds/mageOff.ogg";
 import { Settings } from "../../sdk/Settings";
+import { Sound, SoundCache } from "../../sdk/utils/SoundCache";
 
 export class ProtectMage extends BasePrayer {
   get name() {
@@ -36,13 +37,13 @@ export class ProtectMage extends BasePrayer {
 
   playOnSound() {
     if (Settings.playsAudio) {
-      new Audio(OnSound).play();
+      SoundCache.play(new Sound(OnSound, 0.35));
     }
   }
 
   playOffSound() {
     if (Settings.playsAudio) {
-      new Audio(OffSound).play();
+      SoundCache.play(new Sound(OffSound, 0.35));
     }
   }
 }

@@ -2,6 +2,7 @@ import { Feet } from "../../sdk/gear/Feet";
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Pegasian_boots.png";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class PegasianBoots extends Feet {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -44,5 +45,10 @@ export class PegasianBoots extends Feet {
         slayer: 0,
       },
     };
+  }
+
+  Model = Assets.getAssetUrl("models/player_pegasian_boots.glb");
+  override get model() {
+    return this.Model;
   }
 }

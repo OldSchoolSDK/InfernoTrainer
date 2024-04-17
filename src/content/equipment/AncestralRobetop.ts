@@ -2,6 +2,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Ancestral_robe_top.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
+import { Assets } from "../../sdk/utils/Assets";
 
 export class AncestralRobetop extends Chest {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
@@ -44,5 +45,10 @@ export class AncestralRobetop extends Chest {
         slayer: 0,
       },
     };
+  }
+  
+  Model = Assets.getAssetUrl("models/player_ancestral_robe_top.glb");
+  override get model() {
+    return this.Model;
   }
 }

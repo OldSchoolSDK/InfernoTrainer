@@ -6,6 +6,7 @@ import OverheadImg from "../../assets/images/prayers/meleeOver.png";
 import OnSound from "../../assets/sounds/meleeOn.ogg";
 import OffSound from "../../assets/sounds/meleeOff.ogg";
 import { Settings } from "../../sdk/Settings";
+import { Sound, SoundCache } from "../../sdk/utils/SoundCache";
 
 export class ProtectMelee extends BasePrayer {
   get name() {
@@ -37,13 +38,13 @@ export class ProtectMelee extends BasePrayer {
 
   playOnSound() {
     if (Settings.playsAudio) {
-      new Audio(OnSound).play();
+      SoundCache.play(new Sound(OnSound, 0.35));
     }
   }
 
   playOffSound() {
     if (Settings.playsAudio) {
-      new Audio(OffSound).play();
+      SoundCache.play(new Sound(OffSound, 0.35));
     }
   }
 }

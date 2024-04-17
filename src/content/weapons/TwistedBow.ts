@@ -7,8 +7,14 @@ import { ItemName } from "../../sdk/ItemName";
 import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
 import { AttackBonuses } from "../../sdk/gear/Weapon";
 
+import TwistedBowAttackSound from "../../assets/sounds/shortbow_2702.ogg";
+import { Sound, SoundCache } from "../../sdk/utils/SoundCache";
+
+import { PlayerAnimationIndices } from "../../sdk/rendering/GLTFAnimationConstants";
+import { Assets } from "../../sdk/utils/Assets";
+
 export class TwistedBow extends RangedWeapon {
-  constructor() {
+  constructor(geno = false) {
     super();
     this.bonuses = {
       attack: {
@@ -16,7 +22,7 @@ export class TwistedBow extends RangedWeapon {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 70,
+        range: geno ? 10000 : 70,
       },
       defence: {
         stab: 0,
@@ -27,7 +33,7 @@ export class TwistedBow extends RangedWeapon {
       },
       other: {
         meleeStrength: 0,
-        rangedStrength: 20,
+        rangedStrength: geno ? 80 : 20,
         magicDamage: 0,
         prayer: 0,
       },
@@ -36,6 +42,7 @@ export class TwistedBow extends RangedWeapon {
         slayer: 0,
       },
     };
+    SoundCache.preload(this.attackSound.src);
   }
 
   compatibleAmmo(): ItemName[] {
@@ -59,6 +66,10 @@ export class TwistedBow extends RangedWeapon {
       return 6;
     }
     return 5;
+  }
+
+  get attackSound() {
+    return new Sound(TwistedBowAttackSound, 0.1);
   }
 
   get weight(): number {
@@ -91,5 +102,14 @@ export class TwistedBow extends RangedWeapon {
     const magic = Math.min(Math.max(to.currentStats.magic, to.bonuses.attack.magic), 250);
     const multiplier = (250 + ((10 * 3 * magic) / 10 - 14) / 100 - Math.pow((3 * magic) / 10 - 140, 2) / 100) / 100;
     return Math.min(2.5, Math.max(0, multiplier));
+  }
+
+  Model = Assets.getAssetUrl("models/player_twisted_bow.glb");
+  override get model() {
+    return this.Model;
+  }
+
+  get attackAnimationId() {
+    return PlayerAnimationIndices.FireBow;
   }
 }

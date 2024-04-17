@@ -25,7 +25,7 @@ export class RingOfSufferingImbued extends Ring {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 70,
+        range: 0,
       },
       defence: {
         stab: 20,

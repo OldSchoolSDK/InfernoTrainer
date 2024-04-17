@@ -1,8 +1,10 @@
 "use strict";
+import _ from "lodash";
+
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
 import { LineOfSight } from "./LineOfSight";
-import { minBy, range, filter, find, map, min, uniq, sumBy } from "lodash";
+import { minBy, range, filter, find, map, min, uniq, sumBy, flatMap } from "lodash";
 import { Unit, UnitTypes, UnitBonuses, UnitOptions } from "./Unit";
 import { XpDropController } from "./XpDropController";
 import { AttackBonuses, Weapon } from "./gear/Weapon";
@@ -23,6 +25,24 @@ import { PrayerController } from "./PrayerController";
 import { AmmoType } from "./gear/Ammo";
 import { Region } from "./Region";
 import { Viewport } from "./Viewport";
+import { Sound, SoundCache } from "./utils/SoundCache";
+
+import LeatherHit from "../assets/sounds/hit.ogg";
+import HumanHit from "../assets/sounds/human_hit_513.ogg";
+import { Model } from "./rendering/Model";
+import { TileMarker } from "../content/TileMarker";
+
+import SlayerHelmetModel from "../assets/models/male_Tzkal_slayer helmet (i).gltf";
+import TwistedBowModel from "../assets/models/male_Twisted_bow.gltf";
+import ToxicBlowpipeModel from "../assets/models/male_Toxic_blowpipe.gltf";
+import MasoriBodyModel from "../assets/models/male_Masori_body (f).gltf";
+import MasoriChapsModel from "../assets/models/male_Masori_chaps (f).gltf";
+import PegasianBootsModel from "../assets/models/male_Pegasian_boots.gltf";
+import DizanasMaxCapeModel from "../assets/models/male_Dizana's_max cape.gltf";
+
+import { GLTFModel } from "./rendering/GLTFModel";
+import { PlayerAnimationIndices } from "./rendering/GLTFAnimationConstants";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class PlayerEffects {
@@ -31,9 +51,25 @@ class PlayerEffects {
   stamina = 0;
 }
 
+// player can rotate this many JAUs per client tick
+const PLAYER_ROTATION_RATE_JAU = 64;
+const CLIENT_TICKS_PER_SECOND = 50;
+const JAU_PER_RADIAN = 512;
+const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * PLAYER_ROTATION_RATE_JAU) / JAU_PER_RADIAN) * 0.6;
+const LOCAL_POINTS_PER_CELL = 128;
+
+const ENABLE_POSITION_DEBUG = false;
+
+// position that is "close enough"
+const EPSILON = 0.1;
+
 export class Player extends Unit {
   manualSpellCastSelection: Weapon;
+
+  // this is the actual location that we want to move to (ignoring pathing)
   destinationLocation?: Location;
+  // this is the location we are actually pathing towards
+  pathTargetLocation?: Location;
 
   stats: PlayerStats;
   currentStats: PlayerStats;
@@ -53,12 +89,20 @@ export class Player extends Unit {
 
   seekingItem: Item = null;
 
-  path: any;
+  path: (Location & { run: boolean })[] = [];
+
+  clickMarker: ClickMarker | null = null;
+  aggroMarker: ClickMarker | null = null;
+  trueTileMarker: ClickMarker;
+
+  pathMarkers: ClickMarker[] = [];
+  currentPoseAnimation = PlayerAnimationIndices.Idle;
 
   constructor(region: Region, location: Location, options: UnitOptions = {}) {
     super(region, location, options);
 
     this.destinationLocation = location;
+    this.pathTargetLocation = location;
     this.equipmentChanged();
     this.clearXpDrops();
     this.autoRetaliate = false;
@@ -67,6 +111,8 @@ export class Player extends Unit {
     this.setUnitOptions(options);
 
     this.prayerController = new PrayerController(this);
+    this.trueTileMarker = new ClickMarker(this.region, this.location, "#00FFFF");
+    this.region.addEntity(this.trueTileMarker);
   }
 
   contextActions(region: Region, x: number, y: number) {
@@ -75,7 +121,10 @@ export class Player extends Unit {
         text: [
           { text: "Attack ", fillStyle: "white" },
           { text: `Player`, fillStyle: "yellow" },
-          { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) },
+          {
+            text: ` (level ${this.combatLevel})`,
+            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+          },
         ],
         action: () => {
           Viewport.viewport.clickController.redClick();
@@ -88,10 +137,15 @@ export class Player extends Unit {
   setUnitOptions(options: UnitOptions) {
     this.equipment = options.equipment || {};
     this.inventory = options.inventory || new Array(28).fill(null);
+    this.equipmentChanged();
   }
 
   interruptCombat() {
     this.setAggro(null);
+  }
+
+  get color() {
+    return "#00FF00";
   }
 
   get isPlayer(): boolean {
@@ -160,9 +214,10 @@ export class Player extends Unit {
 
     // updated gear bonuses
     this.cachedBonuses = Unit.emptyBonuses();
-    gear.forEach((gear: Equipment) => {
-      if (gear && gear.bonuses) {
-        this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, gear.bonuses);
+    gear.forEach((g: Equipment) => {
+      if (g && g.bonuses) {
+        g.updateBonuses(gear);
+        this.cachedBonuses = Unit.mergeEquipmentBonuses(this.cachedBonuses, g.bonuses);
       }
     });
 
@@ -192,6 +247,8 @@ export class Player extends Unit {
       }
     });
     this.setEffects = completeSetEffects;
+
+    this.invalidateModel();
   }
 
   get bonuses(): UnitBonuses {
@@ -256,7 +313,10 @@ export class Player extends Unit {
     }
 
     Object.keys(this.xpDrops).forEach((skill) => {
-      XpDropController.controller.registerXpDrop({ skill, xp: Math.ceil(this.xpDrops[skill]) });
+      XpDropController.controller.registerXpDrop({
+        skill,
+        xp: Math.ceil(this.xpDrops[skill]),
+      });
     });
 
     this.clearXpDrops();
@@ -286,7 +346,11 @@ export class Player extends Unit {
                 bestDistance = distance;
                 bestDistances = [];
               }
-              bestDistances.push({ x: potentialX, y: potentialY, bestDistance });
+              bestDistances.push({
+                x: potentialX,
+                y: potentialY,
+                bestDistance,
+              });
             }
           }
         }
@@ -322,10 +386,12 @@ export class Player extends Unit {
         } else {
           const bonuses: AttackBonuses = {};
           if (this.equipment.helmet && this.equipment.helmet.itemName === ItemName.SLAYER_HELMET_I) {
-            bonuses.gearMultiplier = 7 / 6;
+            bonuses.gearMeleeMultiplier = 7 / 6;
+            bonuses.gearRangeMultiplier = 1.15;
+            bonuses.gearMageMultiplier = 1.15;
           }
 
-          return this.equipment.weapon.attack(this, this.aggro as Unit /* hack */, bonuses);
+          return this.equipment.weapon.attack(this, this.aggro /* hack */, bonuses);
         }
       } else {
         return false;
@@ -333,7 +399,12 @@ export class Player extends Unit {
     }
 
     return true;
-    // this.playAttackSound();
+  }
+
+  override playAttackSound() {
+    if (this.equipment.weapon?.attackSound) {
+      SoundCache.play(this.equipment.weapon?.attackSound);
+    }
   }
 
   activatePrayers() {
@@ -438,21 +509,10 @@ export class Player extends Unit {
           });
         });
         // Create paths to all npc tiles
-        const potentialPaths = map(seekingTiles, (point) =>
-          Pathing.constructPath(this.region, this.location, { x: point.x, y: point.y }),
-        );
-        const potentialPathLengths = map(potentialPaths, (path) => path.length);
-        // Figure out what the min distance is
-        const shortestPathLength = min(potentialPathLengths);
-        // Get all of the paths of the same minimum distance (can be more than 1)
-        const shortestPaths = filter(
-          map(potentialPathLengths, (length, index) => (length === shortestPathLength ? seekingTiles[index] : null)),
-        );
-        // Take the path that is the shortest absolute distance from player
-        this.destinationLocation = minBy(shortestPaths, (point) =>
-          Pathing.dist(this.location.x, this.location.y, point.x, point.y),
-        );
+        const path = Pathing.constructPaths(this.region, this.location, seekingTiles);
+        this.destinationLocation = path.destination ?? this.location;
       } else {
+        // stop moving
         this.destinationLocation = this.location;
       }
     } else if (this.seekingItem) {
@@ -460,16 +520,86 @@ export class Player extends Unit {
     }
   }
 
-  moveTorwardsDestination() {
-    // Actually move the player
+  // WARNING: client ticks do NOT happen in line with render or logic ticks. Do not use this for anything other than
+  // visual logic.
+  clientTick(tickPercent) {
+    // based on https://github.com/dennisdev/rs-map-viewer/blob/master/src/mapviewer/webgl/npc/Npc.ts#L115
+    if (this.path.length === 0) {
+      return;
+    }
+    let { x, y } = this.perceivedLocation;
+    const { x: nextX, y: nextY, run } = this.path[0];
 
-    this.perceivedLocation = this.location;
+    const currentAngle = this.getPerceivedRotation(tickPercent);
 
+    // 30 client ticks per tick and we want to walk 1 tile per tick so
+    const baseMovementSpeed = 1 / 30;
+    let movementSpeed = baseMovementSpeed;
+
+    this.currentPoseAnimation = PlayerAnimationIndices.Walk;
+
+    const canRotate = true;
+    if (currentAngle !== this.nextAngle && canRotate) {
+      if (ENABLE_POSITION_DEBUG) console.log("must rotate", this.path.length, run);
+      movementSpeed = baseMovementSpeed / 2;
+      this.currentPoseAnimation = PlayerAnimationIndices.Rotate180;
+    }
+    if (this.path.length === 3) {
+      if (ENABLE_POSITION_DEBUG) console.log("path length medium", this.path.length, run);
+      movementSpeed = baseMovementSpeed * 1.5;
+    }
+    if (this.path.length > 3) {
+      if (ENABLE_POSITION_DEBUG) console.log("path length warp", this.path.length, run);
+      movementSpeed = baseMovementSpeed * 2;
+    }
+    if (this.path.length < 3) {
+      if (ENABLE_POSITION_DEBUG) console.log("normal speed", this.path.length, run);
+    }
+    if (run) {
+      movementSpeed *= 2;
+      this.currentPoseAnimation = PlayerAnimationIndices.Run;
+    }
+    let diffX = Math.abs(x - nextX);
+    let diffY = Math.abs(y - nextY);
+    if (diffX > EPSILON || diffY > EPSILON) {
+      if (x < nextX) {
+        x = Math.min(x + movementSpeed, nextX);
+      } else if (x > nextX) {
+        x = Math.max(x - movementSpeed, nextX);
+      }
+      if (y < nextY) {
+        y = Math.min(y + movementSpeed, nextY);
+      } else if (y > nextY) {
+        y = Math.max(y - movementSpeed, nextY);
+      }
+    }
+    this.perceivedLocation = { x, y };
+    diffX = Math.abs(x - nextX);
+    diffY = Math.abs(y - nextY);
+    if (diffX < EPSILON && diffY < EPSILON) {
+      this.perceivedLocation.x = nextX;
+      this.perceivedLocation.y = nextY;
+      this.path.shift();
+      if (ENABLE_POSITION_DEBUG) {
+        const headTile = this.pathMarkers.shift();
+        this.region.removeEntity(headTile);
+      }
+      if (this.path.length === 0) {
+        this.currentPoseAnimation = PlayerAnimationIndices.Idle;
+        this.restingAngle = this.nextAngle;
+      } else {
+        this.nextAngle = this.getTargetAngle();
+      }
+    }
+  }
+
+  moveTowardsDestination() {
+    this.trueTileMarker.location = this.location;
+    this.nextAngle = this.getTargetAngle();
     // Calculate run energy
-    const dist = chebyshev(
-      [this.location.x, this.location.y],
-      [this.destinationLocation.x, this.destinationLocation.y],
-    );
+    const dist = this.pathTargetLocation
+      ? chebyshev([this.location.x, this.location.y], [this.pathTargetLocation.x, this.pathTargetLocation.y])
+      : 0;
     if (this.running && dist > 1) {
       const runReduction = 67 + Math.floor(67 + Math.min(Math.max(0, this.weight), 64) / 64);
       if (this.effects.stamina) {
@@ -486,13 +616,64 @@ export class Player extends Unit {
     if (this.currentStats.run === 0) {
       this.running = false;
     }
+    // Tick down stamina
     this.effects.stamina--;
     this.effects.stamina = Math.min(Math.max(this.effects.stamina, 0), 200);
 
-    const path = Pathing.path(this.region, this.location, this.destinationLocation, this.running ? 2 : 1, this.aggro);
-    this.location = { x: path.x, y: path.y };
+    // Path to next position if not already there.
+    if (
+      !this.destinationLocation ||
+      (this.location.x === this.destinationLocation.x && this.location.y === this.destinationLocation.y) ||
+      (this.pathTargetLocation && (this.location.x === this.pathTargetLocation.x && this.location.y === this.pathTargetLocation.y))
+    ) {
+      this.pathTargetLocation = null;
+      return;
+    }
 
-    this.path = path.path;
+    const speed = this.running ? 2 : 1;
+
+    const { path, destination } = Pathing.path(this.region, this.location, this.destinationLocation, speed, this.aggro);
+    this.pathTargetLocation = destination;
+    if (!path.length || !destination) {
+      return;
+    }
+    const originalLocation = this.location;
+    if (path.length < speed) {
+      // Step to the destination
+      this.location = path[path.length - 1];
+    } else {
+      // Move one or two steps forward
+      this.location = path[speed - 1];
+    }
+    // postprocess the path to corners only
+    // save the next 2 steps for interpolation purposes
+    let newTiles = path.map((pos, idx) => ({
+      ...pos,
+      run: this.running && path.length >= 2,
+      direction: Pathing.angle(
+        idx === 0 ? originalLocation.x : path[idx - 1].x,
+        idx === 0 ? originalLocation.y : path[idx - 1].y,
+        pos.x,
+        pos.y,
+      ),
+    }));
+    // only add corners to the path (and the last point)
+    newTiles = newTiles.filter((v, idx) => idx === path.length - 1 || v.direction !== newTiles[idx + 1].direction);
+    if (newTiles.length > 1 && newTiles[1].direction === newTiles[0].direction) {
+      newTiles.shift();
+    }
+    if (ENABLE_POSITION_DEBUG) {
+      newTiles.forEach((tile) => {
+        const marker = new ClickMarker(this.region, tile, "#FF0000");
+        this.pathMarkers.push(marker);
+        this.region.addEntity(marker);
+      });
+    }
+    this.path.push(...newTiles);
+    //console.log(this.location, path, [...this.path]);
+
+    this.trueTileMarker.location = this.location;
+    this.nextAngle = this.getTargetAngle();
   }
 
   takeSeekingItem() {
@@ -518,6 +699,50 @@ export class Player extends Unit {
     this.destinationLocation = this.location;
   }
 
+  // Rotation Code
+  private restingAngle = 0;
+  private nextAngle = 0;
+
+  private _angle = 0;
+
+  private lastTickPercent = 0;
+
+  getPerceivedRotation(tickPercent) {
+    // https://gist.github.com/shaunlebron/8832585
+    function shortAngleDist(a0, a1) {
+      const da = (a1 - a0) % (Math.PI * 2);
+      return ((2 * da) % (Math.PI * 2)) - da;
+    }
+    //
+    const turnAmount = RADIANS_PER_TICK * Math.max(0, tickPercent - this.lastTickPercent);
+    this.lastTickPercent = tickPercent;
+    const diff = (this.nextAngle - this._angle + Math.PI * 2) % (Math.PI * 2);
+    const direction = diff - Math.PI > 0 ? -1 : 1;
+    if (diff >= turnAmount) {
+      this._angle += turnAmount * direction;
+    } else {
+      this._angle = this.nextAngle;
+    }
+    return this._angle;
+  }
+
+  getTargetAngle() {
+    if (this.aggro) {
+      const angle = Pathing.angle(
+        this.perceivedLocation.x + this.size / 2,
+        this.perceivedLocation.y - this.size / 2,
+        this.aggro.location.x + this.aggro.size / 2,
+        this.aggro.location.y - this.aggro.size / 2,
+      );
+      return -angle;
+    }
+    if (this.path.length > 0) {
+      const angle = Pathing.angle(this.perceivedLocation.x, this.perceivedLocation.y, this.path[0].x, this.path[0].y);
+      return -angle;
+    }
+    return this.restingAngle;
+  }
+
   movementStep() {
     if (this.dying > -1) {
       return;
@@ -529,10 +754,43 @@ export class Player extends Unit {
 
     if (!this.isFrozen()) {
       this.determineDestination();
-
-      this.moveTorwardsDestination();
+      this.moveTowardsDestination();
     }
+
+    this.updatePathMarker();
     this.frozen--;
+  }
+
+  removeClickMarker() {
+    if (!this.clickMarker) {
+      return;
+    }
+    this.clickMarker.remove();
+    this.region.removeEntity(this.clickMarker);
+    this.clickMarker = null;
+  }
+
+  updatePathMarker() {
+    if (!this.pathTargetLocation) {
+      this.removeClickMarker();
+      return;
+    }
+    if (
+      this.clickMarker &&
+      this.location.x === this.pathTargetLocation.x &&
+      this.location.y === this.pathTargetLocation.x
+    ) {
+      this.removeClickMarker();
+    } else if (!this.clickMarker) {
+      this.clickMarker = new ClickMarker(this.region, this.pathTargetLocation);
+      this.region.addEntity(this.clickMarker);
+    } else {
+      this.clickMarker.location = this.pathTargetLocation;
+    }
+  }
+
+  hitSound(damaged: boolean): Sound | null {
+    return damaged ? new Sound(HumanHit, 0.1) : new Sound(LeatherHit, 0.15);
   }
 
   damageTaken() {
@@ -549,8 +807,11 @@ export class Player extends Unit {
     this.prayerController.tick(this);
   }
 
-  attackStep() {
+  override attackStep() {
+    super.attackStep();
     this.detectDeath();
+
+    this.processIncomingAttacks();
 
     if (this.dying > -1) {
       return;
@@ -560,8 +821,6 @@ export class Player extends Unit {
 
     this.attackIfPossible();
 
-    this.processIncomingAttacks();
-
     this.eats.tickFood(this);
 
     this.regenTimer.regen();
@@ -570,8 +829,6 @@ export class Player extends Unit {
   }
 
   attackIfPossible() {
-    this.attackDelay--;
-
     if (this.canAttack() === false) {
       return;
     }
@@ -579,10 +836,7 @@ export class Player extends Unit {
     if (this.aggro) {
       this.setHasLOS();
       if (this.hasLOS && this.attackDelay <= 0 && this.aggro.isDying() === false) {
-        const attackDelay = this.attackSpeed;
-        if (this.attack()) {
-          this.attackDelay = attackDelay;
-        }
+        this.attack() && this.didAttack();
       } else if (
         this.manualSpellCastSelection &&
         this.manualCastHasTarget &&
@@ -591,10 +845,7 @@ export class Player extends Unit {
         this.aggro.dying == this.aggro.deathAnimationLength
       ) {
         // Phantom/ghost barrage
-        const attackDelay = this.attackSpeed;
-        if (this.attack()) {
-          this.attackDelay = attackDelay;
-        }
+        this.attack() && this.didAttack();
       }
 
       // After allowing ghost barrage, unset aggro if enemy is dead
@@ -674,53 +925,65 @@ export class Player extends Unit {
       Settings.tileSize,
     );
     this.region.context.restore();
+    return { x: perceivedX, y: perceivedY };
   }
 
-  getPerceivedLocation(tickPercent: number): Location {
-    if (this.dying > -1) {
-      tickPercent = 0;
-    }
-
-    let perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent);
-    let perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent);
-
-    if (this.path && this.path.length === 2 && this.dying === -1) {
-      if (tickPercent < 0.5) {
-        perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.path[0].x, tickPercent * 2);
-        perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.path[0].y, tickPercent * 2);
-      } else {
-        perceivedX = Pathing.linearInterpolation(this.path[0].x, this.location.x, (tickPercent - 0.5) * 2);
-        perceivedY = Pathing.linearInterpolation(this.path[0].y, this.location.y, (tickPercent - 0.5) * 2);
-      }
-    }
-    return {
-      x: perceivedX,
-      y: perceivedY,
-    };
+  getPerceivedLocation(tickPercent: number) {
+    return { ...this.perceivedLocation, z: 0 };
   }
 
-  drawUILayer(tickPercent: number) {
+  drawUILayer(
+    tickPercent: number,
+    offset: Location,
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number,
+    hitsplatsAbove: boolean,
+  ) {
     if (this.dying > -1) {
       return;
     }
-    const perceivedLocation = this.getPerceivedLocation(tickPercent);
-    const perceivedX = perceivedLocation.x;
-    const perceivedY = perceivedLocation.y;
+    context.save();
 
-    this.region.context.save();
-
-    this.region.context.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-    );
+    context.translate(offset.x, offset.y);
 
     if (Settings.rotated === "south") {
       this.region.context.rotate(Math.PI);
     }
-    this.drawHPBar();
-    this.drawHitsplats();
-    this.drawOverheadPrayers();
-    this.region.context.restore();
-    this.drawIncomingProjectiles(tickPercent);
+    this.drawHPBar(context, scale);
+    this.drawHitsplats(context, scale, hitsplatsAbove);
+    this.drawOverheadPrayers(context, scale);
+    context.restore();
+  }
+
+  create3dModel(): Model {
+    return GLTFModel.forRenderableMulti(
+      this,
+      Object.values(this.equipment)
+        .map((e) => e?.model)
+        .filter((e) => !!e),
+      1 / 128,
+    );
+  }
+
+  override get animationIndex() {
+    return this.currentPoseAnimation;
+  }
+
+  override get drawOutline() {
+    // not needed with a real 3d model
+    return false;
+  }
+
+  override get attackAnimationId() {
+    return this.equipment.weapon?.attackAnimationId;
+  }
+}
+
+class ClickMarker extends TileMarker {
+  constructor(region: Region, location: Location, color = "#FFFFFF") {
+    super(region, location, color, 1, false);
+  }
+  remove() {
+    this.dying = 0;
   }
 }

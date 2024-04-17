@@ -14,6 +14,11 @@ import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { Unit, UnitBonuses } from "../../../../sdk/Unit";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
+import { Sound } from "../../../../sdk/utils/SoundCache";
+import { Assets } from "../../../../sdk/utils/Assets";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+
+const BlobModel = Assets.getAssetUrl("models/7693_33001.glb");
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
@@ -98,10 +103,10 @@ export class JalAk extends Mob {
   }
 
   get sound() {
-    return BlobSound;
+    return new Sound(BlobSound);
   }
-  attackAnimation(tickPercent: number) {
-    this.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4);
+  attackAnimation(tickPercent: number, context) {
+    context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4);
   }
 
   shouldShowAttackAnimation() {
@@ -116,7 +121,7 @@ export class JalAk extends Mob {
   }
 
   canMeleeIfClose() {
-    return "crush";
+    return "crush" as const;
   }
 
   magicMaxHit() {
@@ -124,7 +129,6 @@ export class JalAk extends Mob {
   }
 
   attackIfPossible() {
-    this.attackDelay--;
     this.attackFeedback = AttackIndicators.NONE;
 
     this.hadLOS = this.hasLOS;
@@ -150,8 +154,7 @@ export class JalAk extends Mob {
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
     if (this.playerPrayerScan && this.attackDelay <= 0) {
-      this.attack();
-      this.attackDelay = this.attackSpeed;
+      this.attack() && this.didAttack();
       this.playerPrayerScan = null;
     }
   }
@@ -164,7 +167,10 @@ export class JalAk extends Mob {
     );
     this.region.addMob(xil as Mob);
 
-    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro, cooldown: 4 });
+    const ket = new JalAkRekKet(this.region, this.location, {
+      aggro: this.aggro,
+      cooldown: 4,
+    });
     this.region.addMob(ket as Mob);
 
     const mej = new JalAkRekMej(
@@ -173,5 +179,13 @@ export class JalAk extends Mob {
       { aggro: this.aggro, cooldown: 4 },
     );
     this.region.addMob(mej as Mob);
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, BlobModel, 0.0075);
+  }
+
+  override get attackAnimationId() {
+    return this.attackStyle === "magic" ? 2 : 4;
   }
 }

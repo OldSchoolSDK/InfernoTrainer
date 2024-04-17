@@ -1,4 +1,4 @@
-import { Equipment } from "../Equipment";
+import { Equipment, EquipmentTypes } from "../Equipment";
 import { Player } from "../Player";
 
 export enum AmmoType {
@@ -7,6 +7,10 @@ export enum AmmoType {
 }
 
 export class Ammo extends Equipment {
+  get type(): EquipmentTypes {
+    return EquipmentTypes.AMMO;
+  }
+
   ammoType(): AmmoType {
     return AmmoType.AMMO;
   }

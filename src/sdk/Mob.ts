@@ -6,13 +6,15 @@ import { LineOfSight } from "./LineOfSight";
 import { Pathing } from "./Pathing";
 
 import { Weapon } from "./gear/Weapon";
-import { Unit, UnitBonuses, UnitStats, UnitTypes } from "./Unit";
+import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from "./Unit";
 import { Location } from "./Location";
 import { Collision } from "./Collision";
 import { SoundCache } from "./utils/SoundCache";
 import { Viewport } from "./Viewport";
 import { Random } from "./Random";
 import { Region } from "./Region";
+import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
+import { Model } from "./rendering/Model";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -39,7 +41,11 @@ export class Mob extends Unit {
   tcc: Location[];
   removableWithRightClick = false;
 
-  get type() {
+  constructor(region: Region, location: Location, options?: UnitOptions) {
+    super(region, location, options);
+  }
+
+  override get type() {
     return UnitTypes.MOB;
   }
 
@@ -47,7 +53,7 @@ export class Mob extends Unit {
     return true;
   }
 
-  setStats() {
+  override setStats() {
     // non boosted numbers
     this.stats = {
       attack: 99,
@@ -69,7 +75,7 @@ export class Mob extends Unit {
     };
   }
 
-  get bonuses(): UnitBonuses {
+  override get bonuses(): UnitBonuses {
     return {
       attack: {
         stab: 0,
@@ -94,7 +100,7 @@ export class Mob extends Unit {
     };
   }
 
-  movementStep() {
+  override movementStep() {
     if (this.dying === 0) {
       return;
     }
@@ -249,11 +255,13 @@ export class Mob extends Unit {
     return yTiles;
   }
   // todo: Rename this possibly? it returns the attack style if it's possible
-  canMeleeIfClose() {
+  canMeleeIfClose(): "slash" | "crush" | "stab" | "" {
     return "";
   }
 
-  attackStep() {
+  override attackStep() {
+    super.attackStep();
+
     if (this.spawnDelay > 0) {
       return;
     }
@@ -273,8 +281,6 @@ export class Mob extends Unit {
   }
 
   attackIfPossible() {
-    this.attackDelay--;
-
     this.hadLOS = this.hasLOS;
     this.setHasLOS();
 
@@ -299,7 +305,7 @@ export class Mob extends Unit {
     this.attackFeedback = AttackIndicators.NONE;
 
     if (!isUnderAggro && this.hasLOS && this.attackDelay <= 0) {
-      this.attack();
+      this.attack() && this.didAttack();
     }
   }
 
@@ -308,13 +314,20 @@ export class Mob extends Unit {
   }
 
   attack() {
+    if (this.aggro.dying >= 0) {
+      return false;
+    }
     if (this.canMeleeIfClose() && Weapon.isMeleeAttackStyle(this.attackStyle) === false) {
       if (this.isWithinMeleeRange() && Random.get() < 0.5) {
         this.attackStyle = this.canMeleeIfClose();
       }
     }
 
-    if (this.weapons[this.attackStyle].isBlockable(this, this.aggro, { attackStyle: this.attackStyle })) {
+    if (
+      this.weapons[this.attackStyle].isBlockable(this, this.aggro, {
+        attackStyle: this.attackStyle,
+      })
+    ) {
       this.attackFeedback = AttackIndicators.BLOCKED;
     } else {
       this.attackFeedback = AttackIndicators.HIT;
@@ -324,39 +337,45 @@ export class Mob extends Unit {
       magicBaseSpellDamage: this.magicMaxHit(),
     });
 
-    this.playAttackSound();
-
-    this.attackDelay = this.attackSpeed;
+    return true;
   }
 
   get consumesSpace(): Unit {
     return this;
   }
 
-  playAttackSound() {
-    if (Settings.playsAudio) {
-      const sound = SoundCache.getCachedSound(this.sound);
-      if (sound) {
-        let attemptedVolume =
-          1 / Pathing.dist(this.location.x, this.location.y, this.aggro.location.x, this.aggro.location.y);
-        attemptedVolume = Math.min(1, Math.max(0, attemptedVolume));
-        sound.volume = attemptedVolume;
-        sound.play();
-      }
+  override playAttackSound() {
+    if (Settings.playsAudio && this.sound) {
+      let attemptedVolume =
+        1 /
+        Pathing.dist(
+          Viewport.viewport.player.location.x,
+          Viewport.viewport.player.location.y,
+          this.location.x,
+          this.location.y,
+        );
+      attemptedVolume = Math.min(1, Math.max(0, Math.sqrt(attemptedVolume)));
+      SoundCache.play({
+        src: this.sound.src,
+        volume: attemptedVolume * this.sound.volume,
+      });
     }
   }
 
-  get combatLevel() {
+  override get combatLevel() {
     return 99;
   }
 
-  contextActions(region: Region, x: number, y: number) {
+  override contextActions(region: Region, x: number, y: number) {
     const actions = [
       {
         text: [
           { text: "Attack ", fillStyle: "white" },
           { text: this.mobName(), fillStyle: "yellow" },
-          { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) },
+          {
+            text: ` (level ${this.combatLevel})`,
+            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+          },
         ],
         action: () => {
           Viewport.viewport.clickController.redClick();
@@ -374,7 +393,10 @@ export class Mob extends Unit {
         text: [
           { text: "Remove ", fillStyle: "white" },
           { text: this.mobName(), fillStyle: "yellow" },
-          { text: ` (level ${this.combatLevel})`, fillStyle: Viewport.viewport.player.combatLevelColor(this) },
+          {
+            text: ` (level ${this.combatLevel})`,
+            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+          },
         ],
         action: () => {
           this.region.removeMob(this);
@@ -385,37 +407,39 @@ export class Mob extends Unit {
     return actions;
   }
 
-  drawOverTile(tickPercent: number) {
+  drawOverTile(tickPercent: number, context: OffscreenCanvasRenderingContext2D, scale) {
     // Override me
   }
 
-  drawUnderTile(tickPercent: number) {
-    this.region.context.fillStyle = "#00000000";
+  drawUnderTile(tickPercent: number, context: OffscreenCanvasRenderingContext2D, scale) {
+    context.fillStyle = "#00000000";
     if (Settings.displayFeedback) {
       if (this.dying > -1) {
-        this.region.context.fillStyle = "#964B0073";
+        context.fillStyle = "#964B0073";
       } else if (this.attackFeedback === AttackIndicators.BLOCKED) {
-        this.region.context.fillStyle = "#00FF0073";
+        context.fillStyle = "#00FF0073";
       } else if (this.attackFeedback === AttackIndicators.HIT) {
-        this.region.context.fillStyle = "#FF000073";
+        context.fillStyle = "#FF000073";
       } else if (this.attackFeedback === AttackIndicators.SCAN) {
-        this.region.context.fillStyle = "#FFFF0073";
+        context.fillStyle = "#FFFF0073";
       } else if (this.hasLOS) {
-        this.region.context.fillStyle = "#FF730073";
+        context.fillStyle = "#FF730073";
       } else {
-        this.region.context.fillStyle = this.color;
+        context.fillStyle = this.color;
       }
     }
     // Draw mob
-    this.region.context.fillRect(
-      -(this.size * Settings.tileSize) / 2,
-      -(this.size * Settings.tileSize) / 2,
-      this.size * Settings.tileSize,
-      this.size * Settings.tileSize,
-    );
+    context.fillRect(-(this.size * scale) / 2, -(this.size * scale) / 2, this.size * scale, this.size * scale);
   }
 
-  draw(tickPercent: number) {
+  override draw(
+    tickPercent: number,
+    context: OffscreenCanvasRenderingContext2D,
+    offset: Location,
+    scale: number,
+    drawUnderTile: boolean,
+  ) {
+    super.draw(tickPercent, context, offset, scale, drawUnderTile);
     if (Settings.displayMobLoS) {
       LineOfSight.drawLOS(
         this.region,
@@ -428,46 +452,48 @@ export class Mob extends Unit {
       );
     }
 
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent);
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent);
-    this.region.context.save();
-    this.region.context.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2,
+    const perceivedX = offset.x;
+    const perceivedY = offset.y;
+    context.save();
+    context.translate(
+      perceivedX * scale + (this.size * scale) / 2,
+      (perceivedY - this.size + 1) * scale + (this.size * scale) / 2,
     );
 
-    this.drawUnderTile(tickPercent);
+    if (drawUnderTile) {
+      this.drawUnderTile(tickPercent, context, scale);
+    }
     const currentImage = this.unitImage;
 
     if (Settings.rotated === "south") {
-      this.region.context.rotate(Math.PI);
+      context.rotate(Math.PI);
     }
     if (Settings.rotated === "south") {
-      this.region.context.scale(-1, 1);
+      context.scale(-1, 1);
     }
 
-    this.region.context.save();
+    context.save();
     if (this.shouldShowAttackAnimation()) {
-      this.attackAnimation(tickPercent);
+      this.attackAnimation(tickPercent, context);
     }
 
     if (currentImage) {
-      this.region.context.drawImage(
+      context.drawImage(
         currentImage,
-        -(this.size * Settings.tileSize) / 2,
-        -(this.size * Settings.tileSize) / 2,
-        this.size * Settings.tileSize,
-        this.size * Settings.tileSize,
+        -(this.size * scale) / 2,
+        -(this.size * scale) / 2,
+        this.size * scale,
+        this.size * scale,
       );
     }
 
-    this.region.context.restore();
+    context.restore();
 
     if (Settings.rotated === "south") {
-      this.region.context.scale(-1, 1);
+      context.scale(-1, 1);
     }
 
-    this.drawOverTile(tickPercent);
+    this.drawOverTile(tickPercent, context, scale);
 
     if (this.aggro) {
       const unit = this.aggro as Unit;
@@ -481,18 +507,13 @@ export class Mob extends Unit {
           unit.attackRange,
         )
       ) {
-        this.region.context.strokeStyle = "#00FF0073";
-        this.region.context.lineWidth = 1;
-        this.region.context.strokeRect(
-          -(this.size * Settings.tileSize) / 2,
-          -(this.size * Settings.tileSize) / 2,
-          this.size * Settings.tileSize,
-          this.size * Settings.tileSize,
-        );
+        context.strokeStyle = "#00FF0073";
+        context.lineWidth = 1;
+        context.strokeRect(-(this.size * scale) / 2, -(this.size * scale) / 2, this.size * scale, this.size * scale);
       }
     }
 
-    this.region.context.restore();
+    context.restore();
 
     if (!this.tcc) {
       return;
@@ -503,37 +524,30 @@ export class Mob extends Unit {
     // if (this.mobId !== 4) {
     //   return;
     // }
-    this.tcc.forEach((location: Location) => {
-      this.region.context.fillStyle = "#00FF0073";
-      this.region.context.fillRect(
-        location.x * Settings.tileSize,
-        location.y * Settings.tileSize,
-        Settings.tileSize,
-        Settings.tileSize,
-      );
-    });
+    /*this.tcc.forEach((location: Location) => {
+      context.fillStyle = "#00FF0073";
+      context.fillRect(location.x * scale, location.y * scale, scale, scale);
+    });*/
   }
-  drawUILayer(tickPercent: number) {
-    const perceivedX = Pathing.linearInterpolation(this.perceivedLocation.x, this.location.x, tickPercent);
-    const perceivedY = Pathing.linearInterpolation(this.perceivedLocation.y, this.location.y, tickPercent);
-    this.region.context.save();
-    this.region.context.translate(
-      perceivedX * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (perceivedY - this.size + 1) * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-    );
-
+  override drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove) {
+    context.save();
+    context.translate(offset.x, offset.y);
     if (Settings.rotated === "south") {
-      this.region.context.rotate(Math.PI);
+      context.rotate(Math.PI);
     }
 
-    this.drawHPBar();
+    this.drawHPBar(context, scale);
+    this.drawHitsplats(context, scale, hitsplatsAbove);
+    this.drawOverheadPrayers(context, scale);
 
-    this.drawHitsplats();
+    context.restore();
+  }
 
-    this.drawOverheadPrayers();
+  override create3dModel(): Model {
+    return CanvasSpriteModel.forRenderable(this);
+  }
 
-    this.region.context.restore();
-
-    this.drawIncomingProjectiles(tickPercent);
+  override get color() {
+    return "#FF0000";
   }
 }

@@ -14,6 +14,7 @@ export class Settings {
   static fps = 50;
   static tickMs = 600;
   static playsAudio: boolean;
+  static playsAreaAudio: boolean;
   static inputDelay: number;
   static rotated: string;
   static region: string;
@@ -44,7 +45,12 @@ export class Settings {
   static minimapScale: number;
   static controlPanelScale: number;
 
+  static maxUiScale: number;
+
   static _isMobileResult = null;
+
+  static use3dView = true;
+
   static mobileCheck() {
     if (Settings._isMobileResult !== null) {
       return Settings._isMobileResult;
@@ -58,6 +64,7 @@ export class Settings {
     // window.localStorage.setItem('framesPerTick', Settings.framesPerTick);
     window.localStorage.setItem("zoomScale", String(Settings.zoomScale));
     window.localStorage.setItem("playsAudio", String(Settings.playsAudio));
+    window.localStorage.setItem("playsAreaAudio", String(Settings.playsAreaAudio));
     window.localStorage.setItem("inputDelay", String(Settings.inputDelay));
     window.localStorage.setItem("rotated", Settings.rotated);
     window.localStorage.setItem("region", Settings.region);
@@ -81,24 +88,28 @@ export class Settings {
     window.localStorage.setItem("tile_markers", JSON.stringify(Settings.tile_markers));
     window.localStorage.setItem("lockPOV", JSON.stringify(Settings.lockPOV));
     window.localStorage.setItem("menuVisible", String(Settings.menuVisible));
+    window.localStorage.setItem("use3dView", String(Settings.use3dView));
+    window.localStorage.setItem("maxUiScale", String(Settings.maxUiScale));
   }
 
   static readFromStorage() {
     Settings.minimapScale = Settings.mobileCheck() ? 0.65 : 1;
-    Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1;
+    Settings.controlPanelScale = Settings.mobileCheck() ? 0.9 : 1.5;
 
     Settings.zoomScale = parseFloat(window.localStorage.getItem("zoomScale")) || 1;
 
     Settings.playsAudio = window.localStorage.getItem("playsAudio") === "true" || false;
+    Settings.playsAreaAudio = window.localStorage.getItem("playsAreaAudio") === "true" || false;
 
     if (Settings.mobileCheck()) {
       Settings.playsAudio = false;
+      Settings.playsAreaAudio = false;
     }
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
     Settings.inputDelay = parseInt(window.localStorage.getItem("inputDelay")) || 100;
     Settings.rotated = window.localStorage.getItem("rotated") || "south";
-    Settings.loadout = window.localStorage.getItem("loadout") || "max_tbow";
+    Settings.loadout = window.localStorage.getItem("loadout") || "max_tbow_speed";
     Settings.onTask = window.localStorage.getItem("onTask") === "true" || false;
     Settings.southPillar = window.localStorage.getItem("southPillar") !== "false" || false;
     Settings.westPillar = window.localStorage.getItem("westPillar") !== "false" || false;
@@ -130,5 +141,10 @@ export class Settings {
     if (!Settings.menuVisible) {
       document.getElementById("right_panel").classList.add("hidden");
     }
+    Settings.use3dView = window.localStorage.getItem("use3dView") !== "false" || false;
+    if (Settings.use3dView) {
+      Settings.rotated = "north";
+    }
+    Settings.maxUiScale = parseFloat(window.localStorage.getItem("maxUiScale")) || 1.0;
   }
 }
