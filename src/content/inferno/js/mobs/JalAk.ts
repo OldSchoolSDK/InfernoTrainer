@@ -99,6 +99,10 @@ export class JalAk extends Mob {
     return 3;
   }
 
+  get height() {
+    return 2;
+  }
+
   get image() {
     return BlobImage;
   }

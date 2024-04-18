@@ -99,7 +99,12 @@ export class Entity extends Renderable {
     // Override me
   }
 
-  drawUILayer(tickPercent: number) {
+  drawUILayer(
+    tickPercent: number,
+    screenPosition: Location,
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number,
+    hitsplatAbove = true) {
     // Override me
   }
 

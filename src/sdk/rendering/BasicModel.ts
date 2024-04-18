@@ -53,12 +53,12 @@ export class BasicModel implements Model {
     }
     const size = this.size;
     const { x, y, z } = location;
-    
+
     this.mesh.visible = visible;
 
     // conversion from Location3 to Vector3
     this.mesh.position.x = x + size / 2;
-    this.mesh.position.y = z;
+    this.mesh.position.y = z + size / 2;
     this.mesh.position.z = y - size / 2;
     this.mesh.position.add({
       x: this.drawOffset.x || 0,

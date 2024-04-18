@@ -107,29 +107,31 @@ export class InfernoPillar extends Entity {
     );
   }
 
-  drawUILayer() {
-    this.region.context.save();
+  drawUILayer(
+    tickPercent: number,
+    screenPosition: Location,
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number,
+    hitsplatAbove) {
+    context.save();
 
-    this.region.context.translate(
-      this.location.x * Settings.tileSize + (this.size * Settings.tileSize) / 2,
-      (this.location.y + 1) * Settings.tileSize - (this.size * Settings.tileSize) / 2,
-    );
+    context.translate(screenPosition.x, screenPosition.y);
 
     if (Settings.rotated === "south") {
-      this.region.context.rotate(Math.PI);
+      context.rotate(Math.PI);
     }
 
-    this.region.context.fillStyle = "red";
-    this.region.context.fillRect(
+    context.fillStyle = "red";
+    context.fillRect(
       (-this.size / 2) * Settings.tileSize,
-      (-this.size / 2) * Settings.tileSize,
+      hitsplatAbove ? (-this.size / 2) * Settings.tileSize : 0,
       Settings.tileSize * this.size,
       5,
     );
 
-    this.region.context.fillStyle = "green";
+    context.fillStyle = "lime";
     const w = (this.currentStats.hitpoint / this.stats.hitpoint) * (Settings.tileSize * this.size);
-    this.region.context.fillRect((-this.size / 2) * Settings.tileSize, (-this.size / 2) * Settings.tileSize, w, 5);
+    context.fillRect((-this.size / 2) * Settings.tileSize, hitsplatAbove ? (-this.size / 2) * Settings.tileSize : 0, w, 5);
 
     let projectileOffsets: number[][] = [
       [0, 0],
@@ -157,24 +159,26 @@ export class InfernoPillar extends Entity {
         return offset[0] !== projectile.offsetX || offset[1] !== projectile.offsetY;
       });
 
-      this.region.context.drawImage(
+      const posMult = hitsplatAbove ? -1 : 1;
+
+      context.drawImage(
         image,
         projectile.offsetX - 12,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
+        posMult * ((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY,
         24,
         23,
       );
-      this.region.context.fillStyle = "#FFFFFF";
-      this.region.context.font = "16px Stats_11";
-      this.region.context.textAlign = "center";
-      this.region.context.fillText(
+      context.fillStyle = "#FFFFFF";
+      context.font = "16px Stats_11";
+      context.textAlign = "center";
+      context.fillText(
         String(projectile.damage),
         projectile.offsetX,
-        -((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15,
+        posMult * ((this.size + 1) * Settings.tileSize) / 2 - projectile.offsetY + 15,
       );
-      this.region.context.textAlign = "left";
+      context.textAlign = "left";
     });
-    this.region.context.restore();
+    context.restore();
   }
 
   entityName(): EntityName {
@@ -186,7 +190,7 @@ export class InfernoPillar extends Entity {
   }
 
   get height() {
-    return 10;
+    return 6;
   }
 
   get color() {

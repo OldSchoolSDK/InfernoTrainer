@@ -32,19 +32,19 @@ export class Viewport2d implements ViewportDelegate {
       const location = r.getPerceivedLocation(world.tickPercent);
       r.draw(world.tickPercent, region.context, location, Settings.tileSize);
     });
+    const getOffset = (r: Renderable) => {
+      const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
+      const perceivedX = perceivedLocation.x;
+      const perceivedY = perceivedLocation.y;
 
-    region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent));
-    if (world.getReadyTimer === 0) {
-      const getOffset = (r: Renderable) => {
-        const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
-        const perceivedX = perceivedLocation.x;
-        const perceivedY = perceivedLocation.y;
-
-        return {
-          x: perceivedX * Settings.tileSize + (r.size * Settings.tileSize) / 2,
-          y: (perceivedY - r.size + 1) * Settings.tileSize + (r.size * Settings.tileSize) / 2,
-        };
+      return {
+        x: perceivedX * Settings.tileSize + (r.size * Settings.tileSize) / 2,
+        y: (perceivedY - r.size + 1) * Settings.tileSize + (r.size * Settings.tileSize) / 2,
       };
+    };
+
+    region.entities.forEach((entity) => entity.drawUILayer(world.tickPercent, getOffset(entity), entity.region.context, Settings.tileSize, true));
+    if (world.getReadyTimer <= 0) {
       region.mobs.forEach((mob) =>
         mob.drawUILayer(world.tickPercent, getOffset(mob), mob.region.context, Settings.tileSize, true),
       );
