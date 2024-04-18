@@ -17,6 +17,7 @@ import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 import { Assets } from "../../../../sdk/utils/Assets";
+import { Viewport } from "../../../../sdk/Viewport";
 
 export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
 
@@ -181,10 +182,13 @@ export class JalZek extends Mob {
           mobToResurrect.attackDelay = mobToResurrect.attackSpeed;
 
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect));
+          mobToResurrect.playAnimation(mobToResurrect.idlePoseId);
+          mobToResurrect.cancelDeath();
+          mobToResurrect.aggro = Viewport.viewport.player;
 
           mobToResurrect.perceivedLocation = mobToResurrect.location;
           this.region.addMob(mobToResurrect);
-          // (15, 10) to  (21 , 22)
+          // (15, 10) to  (21 , 22
           this.attackDelay = 8;
           this.playAnimation(3);
         }

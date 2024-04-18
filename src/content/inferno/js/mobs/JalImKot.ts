@@ -185,6 +185,10 @@ export class JalImKot extends Mob {
     return GLTFModel.forRenderable(this, MeleerModel, 0.0075);
   }
 
+  get deathAnimationLength() {
+    return 6;
+  }
+
   get attackAnimationId() {
     return 2;
   }
