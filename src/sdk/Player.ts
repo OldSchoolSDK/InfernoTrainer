@@ -179,8 +179,9 @@ export class Player extends Unit {
   }
 
   swapItemPositions(pos1: number, pos2: number) {
-    const temp = this.inventory[pos1];
-    this.inventory[pos1] = this.inventory[pos2];
+    // positions can be negative if an item is destroyed due to consuming it on the same tick
+    const temp = this.inventory[pos1] ?? null;
+    this.inventory[pos1] = this.inventory[pos2] ?? null;
     this.inventory[pos2] = temp;
   }
 
