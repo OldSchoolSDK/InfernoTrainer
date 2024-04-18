@@ -15,6 +15,7 @@ import { Random } from "./Random";
 import { Region } from "./Region";
 import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
 import { Model } from "./rendering/Model";
+import { InputController } from "./Input";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -379,7 +380,7 @@ export class Mob extends Unit {
         ],
         action: () => {
           Viewport.viewport.clickController.redClick();
-          Viewport.viewport.clickController.sendToServer(() =>
+          InputController.controller.sendToServer(() =>
             Viewport.viewport.clickController.playerAttackClick(this),
           );
         },
