@@ -174,17 +174,17 @@ export class ClickController {
     const inputController = InputController.controller;
     if (mobs.length && mobs[0].canBeAttacked()) {
       this.redClick();
-      inputController.sendToServer(() => this.playerAttackClick(mobs[0]));
+      inputController.queueAction(() => this.playerAttackClick(mobs[0]));
     } else if (players.length) {
       this.redClick();
-      inputController.sendToServer(() => this.playerAttackClick(players[0]));
+      inputController.queueAction(() => this.playerAttackClick(players[0]));
     } else if (groundItems.length) {
       this.redClick();
 
-      inputController.sendToServer(() => player.setSeekingItem(groundItems[0]));
+      inputController.queueAction(() => player.setSeekingItem(groundItems[0]));
     } else if (x !== null && y !== null) {
       this.yellowClick();
-      inputController.sendToServer(() => this.playerWalkClick(x, y));
+      inputController.queueAction(() => this.playerWalkClick(x, y));
     }
     Viewport.viewport.contextMenu.setInactive();
   }
@@ -233,7 +233,7 @@ export class ClickController {
           { text: "Take ", fillStyle: "white" },
           { text: item.itemName, fillStyle: "#FF911F" },
         ],
-        action: () => InputController.controller.sendToServer(() => Viewport.viewport.player.setSeekingItem(item)),
+        action: () => InputController.controller.queueAction(() => Viewport.viewport.player.setSeekingItem(item)),
       });
     });
 
@@ -244,7 +244,7 @@ export class ClickController {
           this.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          InputController.controller.sendToServer(() => this.playerWalkClick(x, y));
+          InputController.controller.queueAction(() => this.playerWalkClick(x, y));
         },
       },
       {

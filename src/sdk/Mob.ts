@@ -380,7 +380,7 @@ export class Mob extends Unit {
         ],
         action: () => {
           Viewport.viewport.clickController.redClick();
-          InputController.controller.sendToServer(() =>
+          InputController.controller.queueAction(() =>
             Viewport.viewport.clickController.playerAttackClick(this),
           );
         },
