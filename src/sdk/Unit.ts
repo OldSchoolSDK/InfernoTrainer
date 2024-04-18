@@ -122,6 +122,7 @@ export abstract class Unit extends Renderable {
   autoRetaliate = false;
   spawnDelay = 0;
   lastRotation = 0;
+  hasDiedAndAwaitingRemoval = false;
 
   get deathAnimationLength(): number {
     return 3;
@@ -543,17 +544,27 @@ export abstract class Unit extends Renderable {
     // override pls
   }
 
+  cancelDeath() {
+    // e.g. when revived
+    this.hasDiedAndAwaitingRemoval = false;
+    this.dying = -1;
+  }
+
   dead() {
     this.perceivedLocation = this.location;
     this.dying = this.deathAnimationLength;
     this.aggro = null;
+    this.hasDiedAndAwaitingRemoval = true;
     if (this.deathAnimationId) {
       DelayedAction.registerDelayedAction(
         new DelayedAction(
           () =>
             this.playAnimation(this.deathAnimationId, false).then(() => {
-              this.dying = 0;
-              this.detectDeath();
+              if (this.hasDiedAndAwaitingRemoval) {
+                // can be cancelled
+                this.dying = 0;
+                this.detectDeath();
+              }
             }),
           1,
         ),
