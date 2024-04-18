@@ -16,10 +16,18 @@ export abstract class Renderable {
   abstract getPerceivedLocation(tickPercent: number): Location3;
 
   /**
-   * return the angle of this renderable in radians.
+   * return the angle of this renderable in radians, around the Z (up) axis.
    * West is zero degrees, and increasing values represent clockwise rotation.
    */
   abstract getPerceivedRotation(tickPercent: number): number;
+
+  /**
+   * return the pitch angle of this renderable in radians, i.e. how up/down it is pointing
+   * 0 is flat, increasing is up, decreasing is down
+   */
+  getPerceivedPitch(tickPercent: number): number {
+    return 0;
+  }
 
   abstract get size(): number;
 
@@ -41,7 +49,7 @@ export abstract class Renderable {
     return true;
   }
 
-  get visible(): boolean {
+  visible(tickPercent): boolean {
     return true;
   }
 

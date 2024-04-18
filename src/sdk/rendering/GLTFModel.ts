@@ -5,7 +5,7 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module";
 
 import { Model } from "./Model";
 import { Renderable, RenderableListener } from "../Renderable";
-import { Location } from "../Location";
+import { Location, Location3 } from "../Location";
 import { Viewport } from "../Viewport";
 import { Viewport3d } from "../Viewport3d";
 import { drawLineNormally, drawLineOnTop } from "./RenderUtils";
@@ -233,7 +233,15 @@ export class GLTFModel implements Model, RenderableListener {
     this.loadedModel = preparingMesh;
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location, rotation: number, visible: boolean) {
+  draw(
+    scene: THREE.Scene,
+    clockDelta: number,
+    tickPercent: number,
+    location: Location3,
+    rotation: number,
+    pitch: number,
+    visible: boolean,
+  ) {
     if (!this.hasInitialisedModel) {
       this.initialiseWholeModel();
       this.hasInitialisedModel = true;
@@ -263,7 +271,7 @@ export class GLTFModel implements Model, RenderableListener {
       this.lastPoseId = this.renderable.animationIndex;
     }
 
-    const { x, y } = location;
+    const { x, y, z } = location;
     this.outline.position.x = x;
     this.outline.position.y = -0.49;
     this.outline.position.z = y;
@@ -276,9 +284,12 @@ export class GLTFModel implements Model, RenderableListener {
       const { size } = this.renderable;
       const adjustedRotation = rotation + Math.PI / 2;
       this.loadedModel.position.x = x + size / 2 + this.originOffset.x;
-      this.loadedModel.position.y = this.verticalOffset;
+      this.loadedModel.position.y = z + this.verticalOffset;
       this.loadedModel.position.z = y - size / 2 + this.originOffset.y;
-      this.loadedModel.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0), adjustedRotation);
+      this.loadedModel.rotation.order = "YXZ";
+      this.loadedModel.rotation.set(pitch, adjustedRotation, 0);
+      //this.loadedModel.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0), adjustedRotation);
+      //this.loadedModel.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), pitch);
     }
   }
 

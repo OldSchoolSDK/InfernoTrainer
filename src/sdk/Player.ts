@@ -140,6 +140,10 @@ export class Player extends Unit {
     return "#00FF00";
   }
 
+  get height() {
+    return 1;
+  }
+
   get isPlayer(): boolean {
     return true;
   }

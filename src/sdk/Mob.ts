@@ -341,7 +341,7 @@ export class Mob extends Unit {
     return true;
   }
 
-  get visible() {
+  visible() {
     return this.region.world.getReadyTimer <= 0;
   }
 

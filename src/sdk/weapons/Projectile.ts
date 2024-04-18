@@ -8,9 +8,12 @@ import { Sound, SoundCache } from "../utils/SoundCache";
 import { Renderable } from "../Renderable";
 import { Pathing } from "../Pathing";
 import { BasicModel } from "../rendering/BasicModel";
+import { GLTFModel } from "../rendering/GLTFModel";
+import { Collision } from "../Collision";
 
 export interface ProjectileMotionInterpolator {
   interpolate(from: Location3, to: Location3, percent: number): Location3;
+  interpolatePitch(from: Location3, to: Location3, percent: number): number;
 }
 
 export interface ProjectileOptions {
@@ -29,6 +32,9 @@ export interface ProjectileOptions {
   sound?: Sound;
   // played when the projectile lands
   hitSound?: Sound;
+  model?: string;
+  modelScale?: number;
+  verticalOffset?: number;
 }
 
 export class Projectile extends Renderable {
@@ -75,7 +81,11 @@ export class Projectile extends Renderable {
     if (this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint;
     }
-    this.options = options;
+    this.options = {
+      modelScale: 1.0,
+      verticalOffset: 0.0,
+      ...options,
+    };
 
     this.startLocation = {
       x: from.location.x + from.size / 2,
@@ -131,7 +141,7 @@ export class Projectile extends Renderable {
     if (this.options.motionInterpolator) {
       this.interpolator = this.options.motionInterpolator;
     } else {
-      this.interpolator = new LinearProjectionMotionInterpolator();
+      this.interpolator = new LinearProjectileMotionInterpolator();
     }
   }
 
@@ -151,8 +161,35 @@ export class Projectile extends Renderable {
     return "#000000";
   }
 
-  getPerceivedRotation() {
-    return 0;
+  getPerceivedRotation(tickPercent) {
+    const startX = this.startLocation.x;
+    const startY = this.startLocation.y;
+    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
+
+    const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
+    const endY = toY - this.to.size / 2 + 1;
+    return -Pathing.angle(startX, startY, endX, endY);
+  }
+
+  getPerceivedPitch(tickPercent: number) {
+    // pass in the CENTERED position of the projectile
+    const startX = this.startLocation.x;
+    const startY = this.startLocation.y;
+    const startHeight = this.currentHeight;
+    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
+    const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
+    const endY = toY - this.to.size / 2 + 1;
+    const endHeight = this.to.height * 0.5;
+    const percent = this.getPercent(tickPercent);
+    return this.interpolator.interpolatePitch(
+      { x: startX, y: startY, z: startHeight },
+      { x: endX, y: endY, z: endHeight },
+      percent,
+    );
+  }
+
+  private getPercent(tickPercent) {
+    return (this.age - this.visualDelayTicks + tickPercent) / Math.max(1, this.totalDelay - this.visualDelayTicks - 1);
   }
 
   onTick() {
@@ -172,20 +209,21 @@ export class Projectile extends Renderable {
     return this.age >= this.totalDelay;
   }
 
-  get visible() {
-    return this.age >= this.visualDelayTicks && this.age < this.totalDelay;
+  visible(tickPercent) {
+    const percent = this.getPercent(tickPercent);
+    return percent > 0 && percent <= 1;
   }
 
   getPerceivedLocation(tickPercent: number) {
     // pass in the CENTERED position of the projectile
-    const startX = this.startLocation.x;
-    const startY = this.startLocation.y;
+    const startX = this.startLocation.x - this.size / 2;
+    const startY = this.startLocation.y - this.size / 2;
     const startHeight = this.currentHeight;
     const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
     const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
     const endY = toY - this.to.size / 2 + 1;
-    const endHeight = this.to.height * 0.75;
-    const percent = (this.age - this.visualDelayTicks + tickPercent) / (this.totalDelay - this.visualDelayTicks);
+    const endHeight = this.to.height * 0.5;
+    const percent = this.getPercent(tickPercent);
     return this.interpolator.interpolate(
       { x: startX, y: startY, z: startHeight },
       { x: endX, y: endY, z: endHeight },
@@ -201,20 +239,27 @@ export class Projectile extends Renderable {
     return this._color;
   }
 
+  get drawOutline() {
+    return false;
+  }
+
   protected create3dModel() {
     if (this.options.hidden || !this.attackStyle || this.color === "#000000") {
       return null;
+    }
+    if (this.options.model) {
+      return GLTFModel.forRenderable(this, this.options.model, this.options.modelScale, this.options.verticalOffset);
     }
     return BasicModel.sphereForRenderable(this);
   }
 
   get animationIndex() {
-    return -1;
+    return 0;
   }
 }
 
-export class LinearProjectionMotionInterpolator implements ProjectileMotionInterpolator {
-  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+export class LinearProjectileMotionInterpolator implements ProjectileMotionInterpolator {
+  interpolate(from: Location3, to: Location3, percent: number) {
     // default linear
     const startX = from.x;
     const startY = from.y;
@@ -229,12 +274,16 @@ export class LinearProjectionMotionInterpolator implements ProjectileMotionInter
       startHeight === endHeight ? startHeight : Pathing.linearInterpolation(startHeight, endHeight, percent);
     return { x: perceivedX, y: perceivedY, z: perceivedHeight };
   }
+
+  interpolatePitch(from: Location3, to: Location3, percent: number) {
+    return 0;
+  }
 }
 
-export class ArcProjectionMotionInterpolator implements ProjectileMotionInterpolator {
+export class ArcProjectileMotionInterpolator implements ProjectileMotionInterpolator {
   constructor(private height: number) {}
 
-  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+  interpolate(from: Location3, to: Location3, percent: number) {
     const startX = from.x;
     const startY = from.y;
     const startHeight = from.z;
@@ -244,15 +293,20 @@ export class ArcProjectionMotionInterpolator implements ProjectileMotionInterpol
 
     const perceivedX = Pathing.linearInterpolation(startX, endX, percent);
     const perceivedY = Pathing.linearInterpolation(startY, endY, percent);
-    const perceivedHeight = Math.sin(percent * Math.PI) * this.height + (endHeight - startHeight) + startHeight;
+    const perceivedHeight =
+      Math.sin(percent * Math.PI) * this.height + (endHeight - startHeight) * percent + startHeight;
     return { x: perceivedX, y: perceivedY, z: perceivedHeight };
+  }
+
+  interpolatePitch(from: Location3, to: Location3, percent: number) {
+    return Math.sin(-(0.75 + percent * 0.5) * Math.PI);
   }
 }
 
 export class CeilingFallMotionInterpolator implements ProjectileMotionInterpolator {
   constructor(private height: number) {}
 
-  interpolate(from: Location3, to: Location3, percent: number): Location3 {
+  interpolate(from: Location3, to: Location3, percent: number) {
     const startHeight = to.z + this.height;
     const endX = to.x;
     const endY = to.y;
@@ -263,5 +317,9 @@ export class CeilingFallMotionInterpolator implements ProjectileMotionInterpolat
     // Round to make it a bit jerky
     const perceivedHeight = (Math.round(percent * 10) / 10) * (endHeight - startHeight) + startHeight;
     return { x: perceivedX, y: perceivedY, z: perceivedHeight };
+  }
+
+  interpolatePitch(from: Location3, to: Location3, percent: number) {
+    return 0;
   }
 }

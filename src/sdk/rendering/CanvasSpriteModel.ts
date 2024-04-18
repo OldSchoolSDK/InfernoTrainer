@@ -64,7 +64,15 @@ export class CanvasSpriteModel implements Model {
     this.outline = new THREE.LineSegments(geometry, this.outlineMaterial);
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location, rotation: number, visible: boolean) {
+  draw(
+    scene: THREE.Scene,
+    clockDelta: number,
+    tickPercent: number,
+    location: Location,
+    rotation: number,
+    pitch: number,
+    visible: boolean,
+  ) {
     if (this.sprite.parent !== scene) {
       scene.add(this.sprite);
       scene.add(this.outline);

@@ -32,7 +32,14 @@ export class PointingModel implements Model {
     this.mainMesh.add(this.arrowHelper);
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location3, rotation: number) {
+  draw(
+    scene: THREE.Scene,
+    clockDelta: number,
+    tickPercent: number,
+    location: Location3,
+    pitch: number,
+    rotation: number,
+  ) {
     if (this.mainMesh.parent !== scene) {
       scene.add(this.mainMesh);
     }

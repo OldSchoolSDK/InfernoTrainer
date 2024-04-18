@@ -112,7 +112,7 @@ export class ZukShield extends Mob {
     );
   }
 
-  override get visible() {
+  override visible() {
     // always visible, even during countdown
     return true;
   }

@@ -1,9 +1,7 @@
 import { Unit, UnitTypes } from "../Unit";
-import { XpDrop } from "../XpDrop";
 import { Projectile, ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";
-import { AttackStylesController } from "../AttackStylesController";
 
 export class RangedWeapon extends Weapon {
   get type() {
@@ -15,6 +13,8 @@ export class RangedWeapon extends Weapon {
       new Projectile(this, this.damage, from, to, "range", {
         sound: this.attackSound,
         hitSound: this.attackLandingSound,
+        model: this.projectileModel,
+        ...this.projectileOptions,
         ...options,
       }),
     );

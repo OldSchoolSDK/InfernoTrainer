@@ -47,7 +47,15 @@ export class BasicModel implements Model {
     this.mesh.userData.unit = unit;
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location3, rotation: number, visible: boolean) {
+  draw(
+    scene: THREE.Scene,
+    clockDelta: number,
+    tickPercent: number,
+    location: Location3,
+    rotation: number,
+    pitch: number,
+    visible: boolean,
+  ) {
     if (this.mesh.parent !== scene) {
       scene.add(this.mesh);
     }

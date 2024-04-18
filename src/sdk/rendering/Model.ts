@@ -3,7 +3,15 @@ import * as THREE from "three";
 import { Location3 } from "../Location";
 
 export interface Model {
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location3, angleRadians: number, visible: boolean);
+  draw(
+    scene: THREE.Scene,
+    clockDelta: number,
+    tickPercent: number,
+    location: Location3,
+    angleRadians: number,
+    pitchRadians: number,
+    visible: boolean,
+  );
 
   destroy(scene: THREE.Scene);
 

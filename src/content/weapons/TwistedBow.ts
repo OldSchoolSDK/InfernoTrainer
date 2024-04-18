@@ -1,17 +1,17 @@
 "use strict";
 
-import TbowInventImage from "../../assets/images/weapons/twistedBow.png";
 import { Unit } from "../../sdk/Unit";
 import { RangedWeapon } from "../../sdk/weapons/RangedWeapon";
 import { ItemName } from "../../sdk/ItemName";
 import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
 import { AttackBonuses } from "../../sdk/gear/Weapon";
-
-import TwistedBowAttackSound from "../../assets/sounds/shortbow_2702.ogg";
 import { Sound, SoundCache } from "../../sdk/utils/SoundCache";
-
 import { PlayerAnimationIndices } from "../../sdk/rendering/GLTFAnimationConstants";
 import { Assets } from "../../sdk/utils/Assets";
+
+import TbowInventImage from "../../assets/images/weapons/twistedBow.png";
+import TwistedBowAttackSound from "../../assets/sounds/shortbow_2702.ogg";
+import { ArcProjectileMotionInterpolator } from "../../sdk/weapons/Projectile";
 
 export class TwistedBow extends RangedWeapon {
   constructor(geno = false) {
@@ -111,5 +111,19 @@ export class TwistedBow extends RangedWeapon {
 
   get attackAnimationId() {
     return PlayerAnimationIndices.FireBow;
+  }
+
+  ProjectileModel = Assets.getAssetUrl("models/dragon_arrow.glb");
+  get projectileModel() {
+    return this.ProjectileModel;
+  }
+
+  get projectileOptions() {
+    return {
+      modelScale: 1 / 128,
+      visualDelayTicks: 1,
+      verticalOffset: -0.75,
+      motionInterpolator: new ArcProjectileMotionInterpolator(1),
+    };
   }
 }

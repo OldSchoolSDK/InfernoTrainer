@@ -236,6 +236,8 @@ export class Weapon extends Equipment {
       new Projectile(this, this.damage, from, to, bonuses.attackStyle, {
         sound: this.attackSound,
         hitSound: this.attackLandingSound,
+        model: this.projectileModel,
+        ...this.projectileOptions,
         ...options,
       }),
     );
@@ -286,6 +288,14 @@ export class Weapon extends Equipment {
   }
 
   get attackLandingSound(): Sound | null {
+    return null;
+  }
+
+  get projectileModel(): string | null {
+    return null;
+  }
+
+  get projectileOptions(): Partial<ProjectileOptions> | null {
     return null;
   }
 }

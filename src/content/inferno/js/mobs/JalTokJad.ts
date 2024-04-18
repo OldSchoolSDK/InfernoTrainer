@@ -9,7 +9,7 @@ import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
 import { Location } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
 import {
-  ArcProjectionMotionInterpolator,
+  ArcProjectileMotionInterpolator,
   CeilingFallMotionInterpolator,
   Projectile,
 } from "../../../../sdk/weapons/Projectile";
@@ -66,7 +66,7 @@ class JadMagicWeapon extends MagicWeapon {
     to.addProjectile(
       new Projectile(this, this.damage, from, to, "magic", {
         reduceDelay: JAD_PROJECTILE_DELAY,
-        motionInterpolator: new ArcProjectionMotionInterpolator(1),
+        motionInterpolator: new ArcProjectileMotionInterpolator(1),
         color: "#FFAA00",
         size: 2,
         sound: MageProjectileSound,
