@@ -49,7 +49,7 @@ class ZukWeapon extends MagicWeapon {
     to.addProjectile(
       new ZukProjectile(this, this.damage, from, to, "range", {
         setDelay: 4,
-        visualDelayTicks: 2,
+        visualDelayTicks: 3,
         sound,
       }),
     );
@@ -77,8 +77,6 @@ export class TzKalZuk extends Mob {
   constructor(region: Region, location: Location, options: UnitOptions) {
     super(region, location, options);
     this.attackDelay = 14;
-
-    // this.currentStats.hitpoint = 80;
 
     this.shield = find(region.mobs.concat(region.newMobs), (mob: Unit) => {
       return mob.mobName() === EntityName.INFERNO_SHIELD;

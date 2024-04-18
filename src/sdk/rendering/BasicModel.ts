@@ -47,12 +47,14 @@ export class BasicModel implements Model {
     this.mesh.userData.unit = unit;
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location3, rotation: number) {
+  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location3, rotation: number, visible: boolean) {
     if (this.mesh.parent !== scene) {
       scene.add(this.mesh);
     }
     const size = this.size;
     const { x, y, z } = location;
+    
+    this.mesh.visible = visible;
 
     // conversion from Location3 to Vector3
     this.mesh.position.x = x + size / 2;
