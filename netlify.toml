@@ -2,3 +2,5 @@
 [[redirects]]
 from = "https://threejs--soltrainer.netlify.app/*"
 to = "https://inferno.colosim.com/:splat"
+status = 301
+force = true
