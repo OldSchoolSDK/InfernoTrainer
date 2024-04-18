@@ -350,9 +350,9 @@ export class Viewport3d implements ViewportDelegate {
       );
       return { x, y };
     };
-    const units: Unit[] = [...region.players, ...region.mobs];
+    const units: Unit[] = [...region.players, ...(world.getReadyTimer <= 0 ? region.mobs : [])];
 
-    const renderables: Renderable[] = (units as Renderable[]).concat(region.entities).concat(region.mobs);
+    const renderables: Renderable[] = (units as Renderable[]).concat(region.entities);
 
     renderables.forEach((r) => {
       r.drawUILayer(world.tickPercent, get2dOffset(r), this.uiCanvasContext, SPRITE_SCALE, false);

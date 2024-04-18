@@ -243,7 +243,7 @@ export abstract class Unit extends Renderable {
   playAttackAnimation() {
     if (this.attackAnimationId) {
       // only blend if not idle
-      const doBlend = this.animationIndex !== this.idlePoseId  && this.canBlendAttackAnimation;
+      const doBlend = this.animationIndex !== this.idlePoseId && this.canBlendAttackAnimation;
       this.playAnimation(this.attackAnimationId, doBlend);
     }
   }
@@ -548,10 +548,16 @@ export abstract class Unit extends Renderable {
     this.dying = this.deathAnimationLength;
     this.aggro = null;
     if (this.deathAnimationId) {
-        DelayedAction.registerDelayedAction(new DelayedAction(() => this.playAnimation(this.deathAnimationId, false).then(() => {
-          this.dying = 0;
-          this.detectDeath();
-        }), 1));
+      DelayedAction.registerDelayedAction(
+        new DelayedAction(
+          () =>
+            this.playAnimation(this.deathAnimationId, false).then(() => {
+              this.dying = 0;
+              this.detectDeath();
+            }),
+          1,
+        ),
+      );
     }
   }
 

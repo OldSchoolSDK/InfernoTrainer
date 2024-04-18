@@ -202,7 +202,7 @@ export class ClickController {
     if (MapController.controller.rightClick(e)) {
       return;
     }
-    
+
     const clickedOn = this.getClickedOn(e, world, region);
 
     if (!clickedOn) {

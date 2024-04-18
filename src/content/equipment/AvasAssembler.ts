@@ -46,7 +46,7 @@ export class AvasAssembler extends Cape {
       },
     };
   }
-  
+
   Model = Assets.getAssetUrl("models/player_ava_s_assembler.glb");
   override get model() {
     return this.Model;

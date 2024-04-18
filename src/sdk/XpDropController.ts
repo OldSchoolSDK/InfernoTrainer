@@ -90,25 +90,25 @@ export class XpDropController {
       this.ctx.strokeStyle = XpDropController.outlineColor;
       this.ctx.strokeRect(0, 0, 110 * scale, 42 * scale);
       this.ctx.strokeStyle = XpDropController.inlineColor;
-      this.ctx.strokeRect(1* scale, 1* scale, 109* scale, 41* scale);
-      this.ctx.strokeRect(1* scale, 30* scale, 108* scale, 11* scale);
+      this.ctx.strokeRect(1 * scale, 1 * scale, 109 * scale, 41 * scale);
+      this.ctx.strokeRect(1 * scale, 30 * scale, 108 * scale, 11 * scale);
       this.ctx.fillStyle = XpDropController.fillColor;
-      this.ctx.fillRect(2* scale, 2* scale, 108* scale, 40* scale);
+      this.ctx.fillRect(2 * scale, 2 * scale, 108 * scale, 40 * scale);
       this.ctx.fillStyle = "#000000";
-      this.ctx.fillRect(2* scale, 31* scale, 106* scale, 9* scale);
+      this.ctx.fillRect(2 * scale, 31 * scale, 106 * scale, 9 * scale);
       this.ctx.fillStyle = "#00BF00";
-      this.ctx.fillRect(3* scale, 32* scale, 90* scale, 7* scale);
+      this.ctx.fillRect(3 * scale, 32 * scale, 90 * scale, 7 * scale);
 
       this.ctx.fillStyle = "#FFFFFF";
       this.ctx.font = `${Math.floor(16 * scale)}px Stats_11`;
       this.ctx.textAlign = "right";
 
-      this.ctx.drawImage(skillInfo.image, 4* scale, 2* scale, 26* scale, 26* scale);
+      this.ctx.drawImage(skillInfo.image, 4 * scale, 2 * scale, 26 * scale, 26 * scale);
       this.ctx.fillStyle = "#000000";
 
-      this.ctx.fillText("200,000,000", 106 * scale, 21* scale);
+      this.ctx.fillText("200,000,000", 106 * scale, 21 * scale);
       this.ctx.fillStyle = "#FFFFFF";
-      this.ctx.fillText("200,000,000", 105* scale, 20* scale);
+      this.ctx.fillText("200,000,000", 105 * scale, 20 * scale);
     }
 
     const xpDropYOffset = 85;

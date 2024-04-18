@@ -120,7 +120,7 @@ export class GLTFModel implements Model, RenderableListener {
   }
 
   /**
-   * 
+   *
    * @param id id (in the animation file) to play
    * @param blend blend the new animation with the pose animation
    */
@@ -233,7 +233,7 @@ export class GLTFModel implements Model, RenderableListener {
     this.loadedModel = preparingMesh;
   }
 
-  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location, rotation: number) {
+  draw(scene: THREE.Scene, clockDelta: number, tickPercent: number, location: Location, rotation: number, visible: boolean) {
     if (!this.hasInitialisedModel) {
       this.initialiseWholeModel();
       this.hasInitialisedModel = true;
@@ -247,6 +247,10 @@ export class GLTFModel implements Model, RenderableListener {
       scene.add(this.clickHull);
     }
 
+    this.outline.visible = visible;
+    if (this.loadedModel) {
+      this.loadedModel.visible = visible;
+    }
     this.outlineMaterial.color.setHex(this.renderable.selected ? OUTLINE_SELECTED : OUTLINE_NORMAL);
     if (this.renderable.selected) {
       drawLineOnTop(this.outline);

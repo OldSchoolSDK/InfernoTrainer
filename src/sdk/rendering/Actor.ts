@@ -11,12 +11,12 @@ export class Actor {
   }
 
   draw(scene: THREE.Scene, clockDelta: number, tickPercent: number) {
-    if (!this.unit.visible || !this.model) {
+    if (!this.model) {
       return;
     }
     const worldLocation = this.unit.getPerceivedLocation(tickPercent);
     const rotationRadians = this.unit.getPerceivedRotation(tickPercent);
-    this.model.draw(scene, clockDelta, tickPercent, worldLocation, rotationRadians);
+    this.model.draw(scene, clockDelta, tickPercent, worldLocation, rotationRadians, this.unit.visible);
   }
 
   shouldRemove() {

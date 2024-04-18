@@ -285,7 +285,7 @@ export class Mob extends Unit {
     this.hadLOS = this.hasLOS;
     this.setHasLOS();
 
-    if (this.canAttack() === false) {
+    if (!this.aggro || this.canAttack() === false) {
       return;
     }
 
@@ -341,6 +341,10 @@ export class Mob extends Unit {
     return true;
   }
 
+  get visible() {
+    return this.region.world.getReadyTimer <= 0;
+  }
+
   get consumesSpace(): Unit {
     return this;
   }
@@ -380,9 +384,7 @@ export class Mob extends Unit {
         ],
         action: () => {
           Viewport.viewport.clickController.redClick();
-          InputController.controller.queueAction(() =>
-            Viewport.viewport.clickController.playerAttackClick(this),
-          );
+          InputController.controller.queueAction(() => Viewport.viewport.clickController.playerAttackClick(this));
         },
       },
     ];

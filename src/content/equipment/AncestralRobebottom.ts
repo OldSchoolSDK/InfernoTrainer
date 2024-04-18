@@ -47,7 +47,7 @@ export class AncestralRobebottom extends Legs {
       },
     };
   }
-  
+
   Model = Assets.getAssetUrl("models/player_ancestral_robe_bottom.glb");
   override get model() {
     return this.Model;

@@ -49,7 +49,7 @@ export class CrystalBody extends Chest {
       },
     };
   }
-  
+
   Model = Assets.getAssetUrl("models/player_crystal_body.glb");
   override get model() {
     return this.Model;

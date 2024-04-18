@@ -4,8 +4,8 @@ import { Location, Location3 } from "./Location";
 import { Model } from "./rendering/Model";
 
 export interface RenderableListener {
-   animationChanged(id: number, blend: boolean): Promise<void>;
-   modelChanged();
+  animationChanged(id: number, blend: boolean): Promise<void>;
+  modelChanged();
 }
 
 export abstract class Renderable {
