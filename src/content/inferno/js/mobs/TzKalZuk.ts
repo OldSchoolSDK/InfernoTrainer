@@ -49,7 +49,7 @@ class ZukWeapon extends MagicWeapon {
     to.addProjectile(
       new ZukProjectile(this, this.damage, from, to, "range", {
         setDelay: 4,
-        visualDelayTicks: 3,
+        visualDelayTicks: 2,
         sound,
       }),
     );
