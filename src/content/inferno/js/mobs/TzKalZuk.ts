@@ -194,6 +194,11 @@ export class TzKalZuk extends Mob {
     }
   }
 
+  override get visible() {
+    // always visible, even during countdown
+    return true;
+  }
+
   attack() {
     if (!this.aggro || this.aggro.dying >= 0) {
       return false;

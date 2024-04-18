@@ -247,7 +247,7 @@ export class GLTFModel implements Model, RenderableListener {
       scene.add(this.clickHull);
     }
 
-    this.outline.visible = visible;
+    this.outline.visible = this.renderable.drawOutline && visible;
     if (this.loadedModel) {
       this.loadedModel.visible = visible;
     }
