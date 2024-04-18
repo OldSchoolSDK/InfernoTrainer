@@ -304,6 +304,12 @@ export class ControlPanelController {
     }
   }
 
+  onWorldTick() {
+    this.controls.forEach((control) => {
+      control.onWorldTick();
+    });
+  }
+
   draw(context: CanvasRenderingContext2D) {
     Viewport.viewport.context.fillStyle = "#000";
     const scale = this.getTabScale();

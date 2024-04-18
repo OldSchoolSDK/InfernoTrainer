@@ -22,7 +22,6 @@ export class Item {
 
   inventoryLeftClick(player: Player) {
     // Override me
-    player;
   }
 
   contextActions(player: Player) {

@@ -178,6 +178,12 @@ export class Player extends Unit {
     this.eats.checkRedemption(this);
   }
 
+  swapItemPositions(pos1: number, pos2: number) {
+    const temp = this.inventory[pos1];
+    this.inventory[pos1] = this.inventory[pos2];
+    this.inventory[pos2] = temp;
+  }
+
   equipmentChanged() {
     this.interruptCombat();
 

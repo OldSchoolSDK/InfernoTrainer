@@ -8,6 +8,7 @@ import { Viewport } from "./Viewport";
 import MetronomeSound from "../assets/sounds/bonk.ogg";
 import { Pathing } from "./Pathing";
 import { InputController } from "./Input";
+import { ControlPanelController } from "./ControlPanelController";
 
 const CLIENT_TICK_MS = 20;
 
@@ -46,6 +47,7 @@ export class World {
 
       this.deltaTimeSincePause = -1;
     }
+    ControlPanelController.controller.onWorldTick();
     this.browserLoop(window.performance.now());
     this.clientTickHandle = setInterval(() => this.doClientTick(), CLIENT_TICK_MS);
   }
@@ -96,6 +98,7 @@ export class World {
   tickWorld(n = 1) {
     this.globalTickCounter++;
     InputController.controller.onWorldTick();
+    ControlPanelController.controller.onWorldTick();
     this.regions.forEach((region: Region) => this.tickRegion(region));
 
     if (n > 1) {

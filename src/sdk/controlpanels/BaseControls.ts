@@ -43,6 +43,10 @@ export class BaseControls {
     //
   }
 
+  onWorldTick() {
+    // Override me
+  }
+
   draw(context: CanvasRenderingContext2D, ctrl: ControlPanelController, x: number, y: number) {
     const scale = Settings.controlPanelScale;
     if (this.panelImage) {

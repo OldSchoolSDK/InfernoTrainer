@@ -11,12 +11,16 @@ import { Collision } from "../Collision";
 import { MenuOption } from "../ContextMenu";
 import { MapController } from "../MapController";
 import { Viewport } from "../Viewport";
+import { InputController } from "../Input";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
   clickedDownItem: Item = null;
   clickedDownLocation: Location = null;
   cursorLocation: Location = null;
+  // this is the visual representation of the inventory, which updates instantly when items are moved but is refreshed
+  // every tick
+  inventoryCache: Item[] = [];
 
   get panelImageReference() {
     return InventoryPanel;
@@ -40,6 +44,10 @@ export class InventoryControls extends BaseControls {
 
   get appearsOnLeftInMobile(): boolean {
     return false;
+  }
+
+  override onWorldTick() {
+    this.inventoryCache = [...Viewport.viewport.player.inventory];
   }
 
   panelRightClick(x: number, y: number) {
@@ -103,7 +111,7 @@ export class InventoryControls extends BaseControls {
 
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
-        clickedItem.inventoryLeftClick(Viewport.viewport.player);
+        InputController.controller.queueAction(() => clickedItem.inventoryLeftClick(Viewport.viewport.player));
         MapController.controller.updateOrbsMask(null, null);
       } else {
         clickedItem.selected = true;
@@ -112,13 +120,20 @@ export class InventoryControls extends BaseControls {
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
       const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
-      Viewport.viewport.player.inventory[theItemWereReplacingPosition] = this.clickedDownItem;
-      Viewport.viewport.player.inventory[thisPosition] = theItemWereReplacing;
+      // update the local cache immediately, but the real position updates upon server tick
+      this.inventoryCache[theItemWereReplacingPosition] = this.clickedDownItem;
+      this.inventoryCache[thisPosition] = theItemWereReplacing;
+      InputController.controller.queueAction(() => {
+        Viewport.viewport.player.swapItemPositions(theItemWereReplacingPosition, thisPosition);
+      });
     } else if (clickedItem) {
       const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
-      Viewport.viewport.player.inventory[clickedItem.inventoryPosition(Viewport.viewport.player)] =
-        this.clickedDownItem;
-      Viewport.viewport.player.inventory[thisPosition] = null;
+      const clickedPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
+      this.inventoryCache[clickedPosition] = this.clickedDownItem;
+      this.inventoryCache[thisPosition] = null;
+      InputController.controller.queueAction(() => {
+        Viewport.viewport.player.swapItemPositions(clickedPosition, thisPosition);
+      });
     }
     this.clickedDownItem = null;
     this.cursorLocation = null;
@@ -153,8 +168,7 @@ export class InventoryControls extends BaseControls {
     super.draw(context, ctrl, x, y);
 
     const scale = Settings.controlPanelScale;
-    const { player } = Viewport.viewport;
-    player.inventory.forEach((inventoryItem, index) => {
+    this.inventoryCache.forEach((inventoryItem, index) => {
       const x2 = index % 4;
       const y2 = Math.floor(index / 4);
 
