@@ -156,7 +156,7 @@ export class JalZek extends Mob {
     this.hadLOS = this.hasLOS;
     this.setHasLOS();
 
-    if (this.canAttack() === false) {
+    if (!this.aggro || this.canAttack() === false) {
       return;
     }
 

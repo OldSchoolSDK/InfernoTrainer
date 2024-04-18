@@ -17,6 +17,7 @@ import { Random } from "../../../../sdk/Random";
 import { Sound } from "../../../../sdk/utils/SoundCache";
 import { Assets } from "../../../../sdk/utils/Assets";
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+import { Viewport } from "../../../../sdk/Viewport";
 
 const BlobModel = Assets.getAssetUrl("models/7693_33001.glb");
 
@@ -160,15 +161,16 @@ export class JalAk extends Mob {
   }
 
   removedFromWorld() {
+    const player = Viewport.viewport.player;
     const xil = new JalAkRekXil(
       this.region,
       { x: this.location.x + 1, y: this.location.y - 1 },
-      { aggro: this.aggro, cooldown: 4 },
+      { aggro: player, cooldown: 4 },
     );
     this.region.addMob(xil as Mob);
 
     const ket = new JalAkRekKet(this.region, this.location, {
-      aggro: this.aggro,
+      aggro: player,
       cooldown: 4,
     });
     this.region.addMob(ket as Mob);
@@ -176,7 +178,7 @@ export class JalAk extends Mob {
     const mej = new JalAkRekMej(
       this.region,
       { x: this.location.x + 2, y: this.location.y - 2 },
-      { aggro: this.aggro, cooldown: 4 },
+      { aggro: player, cooldown: 4 },
     );
     this.region.addMob(mej as Mob);
   }

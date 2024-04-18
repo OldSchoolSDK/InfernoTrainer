@@ -195,7 +195,7 @@ export class TzKalZuk extends Mob {
   }
 
   attack() {
-    if (this.aggro.dying >= 0) {
+    if (!this.aggro || this.aggro.dying >= 0) {
       return false;
     }
     let shieldOrPlayer: Unit = this.shield;
