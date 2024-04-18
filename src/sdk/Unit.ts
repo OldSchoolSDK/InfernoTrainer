@@ -30,6 +30,7 @@ import { Player } from "./Player";
 import { CollisionType } from "./Collision";
 import { Renderable } from "./Renderable";
 import { Sound, SoundCache } from "./utils/SoundCache";
+import { DelayedAction } from "./DelayedAction";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -120,6 +121,7 @@ export abstract class Unit extends Renderable {
   setEffects: (typeof SetEffect)[] = [];
   autoRetaliate = false;
   spawnDelay = 0;
+  lastRotation = 0;
 
   get deathAnimationLength(): number {
     return 3;
@@ -224,6 +226,7 @@ export abstract class Unit extends Renderable {
   attackStep() {
     // Override me, called after all movement has been resolved
     this.attackDelay--;
+    this.lastRotation = this.getPerceivedRotation(0);
   }
 
   // called when the unit has attacked
@@ -261,7 +264,7 @@ export abstract class Unit extends Renderable {
         perceivedLocation.y - this.aggro.size / 2,
       );
     }
-    return 0;
+    return this.lastRotation;
   }
 
   removedFromWorld() {
@@ -543,6 +546,13 @@ export abstract class Unit extends Renderable {
   dead() {
     this.perceivedLocation = this.location;
     this.dying = this.deathAnimationLength;
+    this.aggro = null;
+    if (this.deathAnimationId) {
+        DelayedAction.registerDelayedAction(new DelayedAction(() => this.playAnimation(this.deathAnimationId, false).then(() => {
+          this.dying = 0;
+          this.detectDeath();
+        }), 1));
+    }
   }
 
   detectDeath() {
@@ -738,5 +748,9 @@ export abstract class Unit extends Renderable {
 
   get canBlendAttackAnimation(): boolean {
     return false;
+  }
+
+  get deathAnimationId(): number | null {
+    return null;
   }
 }

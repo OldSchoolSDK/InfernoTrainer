@@ -324,4 +324,8 @@ export class JalTokJad extends Mob {
         return 4;
     }
   }
+
+  override get deathAnimationId() {
+    return 6;
+  }
 }

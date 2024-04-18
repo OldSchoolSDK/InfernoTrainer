@@ -201,4 +201,8 @@ export class JalZek extends Mob {
   override get attackAnimationId() {
     return 2;
   }
+
+  override get deathAnimationId() {
+    return 5;
+  }
 }

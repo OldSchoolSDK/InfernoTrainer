@@ -118,4 +118,8 @@ export class JalMejRah extends Mob {
   override get attackAnimationId() {
     return 1;
   }
+
+  override get deathAnimationId() {
+    return 3;
+  }
 }

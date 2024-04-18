@@ -57,6 +57,7 @@ export class GLTFModel implements Model, RenderableListener {
   private lastPoseId = -1;
   private playingAnimationId = -1;
   private playingAnimationCanBlend = false;
+  private playingAnimationPromiseResolve = null;
   // first index is the model ID, second index is the animation ID.
   private animations: THREE.AnimationAction[][] = [];
 
@@ -96,8 +97,8 @@ export class GLTFModel implements Model, RenderableListener {
     this.clickHull.visible = false;
   }
 
-  animationChanged(id, blend) {
-    this.startPlayingAnimation(id, blend);
+  async animationChanged(id, blend) {
+    return this.startPlayingAnimation(id, blend);
   }
 
   modelChanged() {
@@ -145,6 +146,10 @@ export class GLTFModel implements Model, RenderableListener {
     // reset the timer of the mixers because it seems to bug out and show the first frame sometimes
     // suspect that it has to do with the mixer time exceeding the length of the animation?
     this.mixers.forEach((mixerForModel) => mixerForModel.setTime(0));
+    return new Promise<void>((resolve) => {
+      this.playingAnimationPromiseResolve = resolve;
+      return;
+    });
   }
 
   onAnimationFinished(action?: THREE.AnimationAction) {
@@ -161,10 +166,13 @@ export class GLTFModel implements Model, RenderableListener {
     });
     this.playingAnimationId = -1;
     this.playingAnimationCanBlend = false;
+    if (this.playingAnimationPromiseResolve) {
+      this.playingAnimationPromiseResolve();
+      this.playingAnimationPromiseResolve = null;
+    }
   }
 
   onPoseChanged(newPoseId) {
-    console.log('pose changed', newPoseId)
     this.animations.forEach((animationsForModel, i) => {
       const lastAnimation = animationsForModel[this.lastPoseId];
       lastAnimation.stop();

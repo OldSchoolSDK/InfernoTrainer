@@ -185,4 +185,8 @@ export class JalImKot extends Mob {
   get attackAnimationId() {
     return 2;
   }
+
+  override get deathAnimationId() {
+    return 6;
+  }
 }

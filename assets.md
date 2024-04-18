@@ -77,9 +77,6 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
     # Nibbler: Idle, Walk, Attack, Flinch, Die
     npm run cmd modelBuilder npc 7691 anim 7573,7572,7574,7575,7676 name nibbler
 
-    # Nibbler: Idle, Walk, Attack, Flinch, Die
-    npm run cmd modelBuilder npc 7691 anim 7573,7572,7574,7575,7676 name nibbler
-
     # Bat: Idle/Walk, Attack, Flinch, Die
     npm run cmd modelBuilder npc 7692 anim 7577,7578,7579,7580 name bat
 

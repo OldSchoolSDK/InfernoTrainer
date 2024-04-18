@@ -157,4 +157,8 @@ export class JalNib extends Mob {
   override get attackAnimationId() {
     return 2;
   }
+
+  override get deathAnimationId() {
+    return 4;
+  }
 }

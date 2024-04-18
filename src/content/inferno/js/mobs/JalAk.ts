@@ -188,4 +188,8 @@ export class JalAk extends Mob {
   override get attackAnimationId() {
     return this.attackStyle === "magic" ? 2 : 4;
   }
+
+  override get deathAnimationId() {
+    return 3;
+  }
 }

@@ -345,7 +345,15 @@ export class TzKalZuk extends Mob {
     await GLTFModel.preload(JadModel);
   }
 
+  get deathAnimationLength() {
+    return 6;
+  }
+
   get attackAnimationId() {
     return 1;
+  }
+
+  override get deathAnimationId() {
+    return 3;
   }
 }

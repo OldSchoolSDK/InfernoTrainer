@@ -151,6 +151,10 @@ export class JalXil extends Mob {
     return 5;
   }
 
+  override get deathAnimationId() {
+    return 4;
+  }
+
   override get attackAnimationId() {
     return 2;
   }
