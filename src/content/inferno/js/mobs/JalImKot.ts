@@ -127,6 +127,9 @@ export class JalImKot extends Mob {
   }
 
   startDig() {
+    if (!this.aggro) {
+      return;
+    }
     this.freeze(6);
     this.digSequenceTime = 6;
     this.digCount++;
