@@ -137,6 +137,10 @@ export abstract class Unit extends Renderable {
     return false;
   }
 
+  get xpBonusMultiplier() {
+    return 1.0;
+  }
+
   mobName(): EntityName {
     return null;
   }

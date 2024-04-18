@@ -3,6 +3,7 @@ import { XpDrop } from "../XpDrop";
 import { Projectile, ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";
+import { AttackStylesController } from "../AttackStylesController";
 
 export class RangedWeapon extends Weapon {
   get type() {
@@ -17,13 +18,6 @@ export class RangedWeapon extends Weapon {
         ...options,
       }),
     );
-  }
-
-  grantXp(from: Unit) {
-    if (from.type === UnitTypes.PLAYER && this.damage > 0) {
-      from.grantXp(new XpDrop("hitpoint", this.damage * 1.33));
-      from.grantXp(new XpDrop("range", this.damage * 4));
-    }
   }
 
   calculateHitDelay(distance: number) {

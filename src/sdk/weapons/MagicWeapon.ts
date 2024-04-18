@@ -17,13 +17,6 @@ export class MagicWeapon extends Weapon {
     return Math.floor((1 + distance) / 3) + 1;
   }
 
-  grantXp(from: Unit) {
-    if (from.type === UnitTypes.PLAYER && this.damage > 0) {
-      from.grantXp(new XpDrop("hitpoint", this.damage * 1.33));
-      from.grantXp(new XpDrop("magic", this.damage * 2));
-    }
-  }
-
   isBlockable(from: Unit, to: Unit, bonuses: AttackBonuses) {
     this._calculatePrayerEffects(from, to, bonuses);
 

@@ -227,6 +227,10 @@ export class TzKalZuk extends Mob {
     return 251;
   }
 
+  override get xpBonusMultiplier() {
+    return 1.575;
+  }
+
   setStats() {
     this.stunned = 8;
 

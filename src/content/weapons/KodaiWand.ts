@@ -1,6 +1,6 @@
 "use strict";
 
-import BPInventImage from "../../assets/images/equipment/Kodai_wand.png";
+import KodaiInventImage from "../../assets/images/equipment/Kodai_wand.png";
 import { MeleeWeapon } from "../../sdk/weapons/MeleeWeapon";
 import { ItemName } from "../../sdk/ItemName";
 import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
@@ -105,6 +105,6 @@ export class KodaiWand extends MeleeWeapon {
   }
 
   get inventoryImage() {
-    return BPInventImage;
+    return KodaiInventImage;
   }
 }

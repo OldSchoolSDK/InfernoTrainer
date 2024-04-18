@@ -1,7 +1,7 @@
 "use strict";
 
 import { BasePrayer } from "../BasePrayer";
-import { Unit } from "../Unit";
+import { Unit, UnitTypes } from "../Unit";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Equipment } from "../Equipment";
 import { Player } from "../Player";
@@ -12,6 +12,7 @@ import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Random } from "../Random";
 import { Sound, SoundCache } from "../utils/SoundCache";
+import { XpDrop } from "../XpDrop";
 
 interface EffectivePrayers {
   magic?: BasePrayer;
@@ -179,7 +180,7 @@ export class Weapon extends Equipment {
       );
     }
 
-    this.grantXp(from);
+    this.grantXp(from, to);
     this.registerProjectile(from, to, bonuses);
     return true;
   }
@@ -216,8 +217,14 @@ export class Weapon extends Equipment {
     return false; // weapons implement this at the type tier
   }
 
-  grantXp(from: Unit) {
-    // weapons implement this at the type tier
+  grantXp(from: Unit, to: Unit) {
+    if (from.type === UnitTypes.PLAYER && this.damage > 0) {
+      AttackStylesController.controller
+        .getWeaponXpDrops(this.attackStyle(), this.damage, to.xpBonusMultiplier)
+        .forEach(({ skill, xp }) => {
+          from.grantXp(new XpDrop(skill, xp));
+        });
+    }
   }
 
   _calculatePrayerEffects(from: Unit, to: Unit, bonuses: AttackBonuses) {
