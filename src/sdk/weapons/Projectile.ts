@@ -54,11 +54,12 @@ export interface ProjectileOptions {
   verticalOffset?: number;
 }
 
+const targetIsLocation = (x: Unit | Location): x is Location => (x as Location).x !== undefined;
 export class Projectile extends Renderable {
   weapon: Weapon;
   damage: number;
   from: Unit;
-  to: Unit;
+  to: Unit | Location3;
   distance: number;
   options: ProjectileOptions = {};
   remainingDelay: number;
@@ -177,11 +178,15 @@ export class Projectile extends Renderable {
   }
 
   getTargetDestination(tickPercent): Location3 {
+    if (targetIsLocation(this.to)) {
+      return this.to;
+    }
     const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
     const endHeight = this.to.height * 0.5;
+    const targetSize = this.to.size;
 
-    const x = toX + (this.to.size - 1) / 2;
-    const y = toY - (this.to.size - 1) / 2;
+    const x = toX + (targetSize - 1) / 2;
+    const y = toY - (targetSize - 1) / 2;
 
     return { x, y, z: endHeight }
   }
@@ -240,9 +245,23 @@ export class Projectile extends Renderable {
   }
 
   onTick() {
+    const targetLocation = this.getTargetDestination(0.0);
+    this.currentLocation = {
+      x: Pathing.linearInterpolation(
+        this.currentLocation.x,
+        targetLocation.x,
+        1 / (this.remainingDelay + 1),
+      ),
+      y: Pathing.linearInterpolation(
+        this.currentLocation.y,
+        targetLocation.y,
+        1 / (this.remainingDelay + 1),
+      ),
+    };
     this.remainingDelay--;
     this.age++;
     this.checkSound(this.options.projectileSound, this.options.visualDelayTicks);
+
   }
 
   onHit() {

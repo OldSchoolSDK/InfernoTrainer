@@ -112,6 +112,8 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
     npm run cmd modelBuilder spotanim 1377 name range_projectile
     npm run cmd modelBuilder spotanim 1375 name zuk_projectile
 
+    npm run cmd modelBuilder spotanim 660 name tekton_meteor
+    npm run cmd modelBuilder spotanim 659 name tekton_meteor_splat
 
 sounds
 range and mage ATTACK  sound 598

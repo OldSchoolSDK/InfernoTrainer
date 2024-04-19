@@ -17,7 +17,10 @@ class HealWeapon extends Weapon {
 
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
     this.damage = -Math.floor(Random.get() * 25);
-    this.registerProjectile(from, to, bonuses, options);
+    this.registerProjectile(from, to, bonuses, {
+      ...options,
+      hidden: true,
+    });
     return true;
   }
 }

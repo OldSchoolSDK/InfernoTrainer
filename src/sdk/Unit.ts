@@ -590,18 +590,6 @@ export abstract class Unit extends Renderable {
       (projectile: Projectile) => !projectile.shouldDestroy(),
     );
     this.incomingProjectiles.forEach((projectile) => {
-      projectile.currentLocation = {
-        x: Pathing.linearInterpolation(
-          projectile.currentLocation.x,
-          projectile.to.location.x + projectile.to.size / 2,
-          1 / (projectile.remainingDelay + 1),
-        ),
-        y: Pathing.linearInterpolation(
-          projectile.currentLocation.y,
-          projectile.to.location.y - projectile.to.size / 2 + 1,
-          1 / (projectile.remainingDelay + 1),
-        ),
-      };
       projectile.onTick();
 
       if (projectile.remainingDelay === 0) {
