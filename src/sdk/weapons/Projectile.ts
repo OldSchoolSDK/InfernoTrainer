@@ -19,7 +19,8 @@ export interface ProjectileMotionInterpolator {
 }
 
 export interface MultiModelProjectileOffsetInterpolator {
-  // when there are multiple models, offset them by this much
+  // when there are multiple models, offset them by this much. Note that the projectile is already rotated towards
+  // the target, so the X axis offsets the models left-to-right, and Y axis offsets the models forward-and-back.
   interpolateOffsets(from: Location3, to: Location3, percent: number): Location3[];
 }
 
@@ -208,7 +209,11 @@ export class Projectile extends Renderable {
 
   private getPercent(tickPercent: number) {
     const numerator = this.age - this.options.visualDelayTicks + tickPercent;
-    const denominator = Math.max(1, this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks);
+    const denominator = this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks;
+    // special case for short lifetime projectiles - we let it appear early
+    if (denominator <= 0 && this.age >= this.options.visualDelayTicks - 1) {
+      return tickPercent;
+    }
     return numerator / denominator;
   }
 
@@ -365,20 +370,15 @@ export class ArcProjectileMotionInterpolator implements ProjectileMotionInterpol
   }
 }
 
-export class CeilingFallMotionInterpolator implements ProjectileMotionInterpolator {
-  constructor(private height: number) {}
+
+// Simply sticks to the target
+export class FollowTargetInterpolator implements ProjectileMotionInterpolator {
 
   interpolate(from: Location3, to: Location3, percent: number) {
-    const startHeight = to.z + this.height;
     const endX = to.x;
     const endY = to.y;
     const endHeight = to.z;
-
-    const perceivedX = endX;
-    const perceivedY = endY;
-    // Round to make it a bit jerky
-    const perceivedHeight = (Math.round(percent * 10) / 10) * (endHeight - startHeight) + startHeight;
-    return { x: perceivedX, y: perceivedY, z: perceivedHeight };
+    return { x: endX, y: endY, z: endHeight };
   }
 
   interpolatePitch(from: Location3, to: Location3, percent: number) {

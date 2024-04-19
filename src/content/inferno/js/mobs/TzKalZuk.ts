@@ -27,6 +27,7 @@ import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg";
 
 const ZukModel = Assets.getAssetUrl("models/7706_33011.glb");
+const ZukBall = Assets.getAssetUrl("models/zuk_projectile.glb");
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -48,6 +49,8 @@ class ZukWeapon extends MagicWeapon {
     }
     to.addProjectile(
       new ZukProjectile(this, this.damage, from, to, "range", {
+        model: ZukBall,
+        modelScale: 1 / 128,
         setDelay: 4,
         visualDelayTicks: 2,
         sound,

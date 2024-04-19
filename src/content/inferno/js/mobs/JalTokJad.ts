@@ -6,11 +6,12 @@ import { AttackIndicators, Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import JadImage from "../../assets/images/jad/jad_mage_1.png";
 import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
-import { Location } from "../../../../sdk/Location";
+import { Location, Location3 } from "../../../../sdk/Location";
 import { AttackBonuses } from "../../../../sdk/gear/Weapon";
 import {
   ArcProjectileMotionInterpolator,
-  CeilingFallMotionInterpolator,
+  FollowTargetInterpolator,
+  MultiModelProjectileOffsetInterpolator,
   Projectile,
 } from "../../../../sdk/weapons/Projectile";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
@@ -28,11 +29,15 @@ import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
 import { BasicModel } from "../../../../sdk/rendering/BasicModel";
 import { Sound, SoundCache } from "../../../../sdk/utils/SoundCache";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 import { Assets } from "../../../../sdk/utils/Assets";
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 export const JadModel = Assets.getAssetUrl("models/7700_33012.glb");
+export const JadRangeProjectileModel = Assets.getAssetUrl("models/jad_range.glb");
+export const JadMageProjectileModel1 = Assets.getAssetUrl("models/jad_mage_front.glb");
+export const JadMageProjectileModel2 = Assets.getAssetUrl("models/jad_mage_middle.glb");
+export const JadMageProjectileModel3 = Assets.getAssetUrl("models/jad_mage_rear.glb");
 
 interface JadUnitOptions extends UnitOptions {
   attackSpeed: number;
@@ -46,6 +51,18 @@ const RangeProjectileSound = { src: FireWaveHit, volume: 0.075 };
 const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.075 };
 
 const JAD_PROJECTILE_DELAY = 3;
+
+// draw the projectiles forward to back
+const MageOffsetInterpolator: MultiModelProjectileOffsetInterpolator ={
+  interpolateOffsets: function (from, to, percent: number): Location3[] {
+    const res = [
+      { x: 0, y: -1, z: 0},
+      { x: 0, y: -0.5, z: 0},
+      { x: 0, y: 0, z: 0}
+    ];
+    return res;
+  }
+}
 
 class JadMagicWeapon extends MagicWeapon {
   override attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
@@ -70,7 +87,15 @@ class JadMagicWeapon extends MagicWeapon {
         motionInterpolator: new ArcProjectileMotionInterpolator(1),
         color: "#FFAA00",
         size: 2,
+        visualHitEarlyTicks: -1,
         projectileSound: MageProjectileSound,
+        models: [
+          JadMageProjectileModel1,
+          JadMageProjectileModel2,
+          JadMageProjectileModel3,
+        ],
+        modelScale: 1 / 128,
+        offsetsInterpolator: MageOffsetInterpolator
       }),
     );
   }
@@ -84,7 +109,6 @@ class JadRangeWeapon extends RangedWeapon {
         if (overhead) {
           from.attackFeedback = AttackIndicators.BLOCKED;
         }
-
         super.attack(from, to, bonuses);
       }, JAD_PROJECTILE_DELAY),
     );
@@ -93,26 +117,16 @@ class JadRangeWeapon extends RangedWeapon {
 
   registerProjectile(from: Unit, to: Unit) {
     to.addProjectile(
-      new JadRangeProjectile(this, this.damage, from, to, "range", {
+      new Projectile(this, this.damage, from, to, "range", {
         reduceDelay: JAD_PROJECTILE_DELAY,
-        motionInterpolator: new CeilingFallMotionInterpolator(8),
+        model: JadRangeProjectileModel,
+        modelScale: 1 / 128,
+        // allows the animation to play out even after hitting
+        visualHitEarlyTicks: -1,
+        motionInterpolator: new FollowTargetInterpolator(),
         sound: RangeProjectileSound,
       }),
     );
-  }
-}
-
-class JadRangeProjectile extends Projectile {
-  get color() {
-    return "#333333";
-  }
-
-  get size() {
-    return 1;
-  }
-
-  create3dModel() {
-    return BasicModel.forRenderableCentered(this);
   }
 }
 
