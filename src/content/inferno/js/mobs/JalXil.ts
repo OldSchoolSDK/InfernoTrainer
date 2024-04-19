@@ -5,7 +5,7 @@ import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
-import RangerSound from "../../assets/sounds/ranger.ogg";
+import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { Unit, UnitBonuses } from "../../../../sdk/Unit";
 import { Projectile } from "../../../../sdk/weapons/Projectile";
@@ -17,21 +17,6 @@ import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 import { Assets } from "../../../../sdk/utils/Assets";
 
 export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
-
-class JalXilWeapon extends RangedWeapon {
-  registerProjectile(from: Unit, to: Unit) {
-    DelayedAction.registerDelayedAction(
-      new DelayedAction(() => {
-        to.addProjectile(
-          new Projectile(this, this.damage, from, to, "range", {
-            reduceDelay: 2,
-          }),
-        );
-      }, 2),
-    );
-  }
-}
-
 export class JalXil extends Mob {
   mobName(): EntityName {
     return EntityName.JAL_XIL;
@@ -52,11 +37,13 @@ export class JalXil extends Mob {
 
   setStats() {
     this.stunned = 1;
-
+``
     this.weapons = {
       crush: new MeleeWeapon(),
-      range: new JalXilWeapon({
-        sound: new Sound(RangerSound, 0.1),
+      range: new RangedWeapon({
+        projectileSound: new Sound(RangerSound, 0.1),
+        reduceDelay: -2,
+        visualDelayTicks: 3,
       }),
     };
 

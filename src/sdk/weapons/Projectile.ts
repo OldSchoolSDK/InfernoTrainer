@@ -25,15 +25,17 @@ export interface ProjectileOptions {
   setDelay?: number;
   reduceDelay?: number;
   cancelOnDeath?: boolean;
+  color?: string;
+  size?: number;
   motionInterpolator?: ProjectileMotionInterpolator;
   // ticks until the projectile appears
   visualDelayTicks?: number;
-  // ticks before landing that the projectile hits the target
+  // ticks before actually landing that the projectile hits the target
   visualHitEarlyTicks?: number;
-  color?: string;
-  size?: number;
-  // played when the projectile is launched
+  // played when the attack starts
   sound?: Sound;
+  // played when the projectile is launched
+  projectileSound?: Sound;
   // played when the projectile lands
   hitSound?: Sound;
   model?: string;
@@ -67,8 +69,6 @@ export class Projectile extends Renderable {
 
   /*
     This should take the player and mob object, and do chebyshev on the size of them
-
-    sound is played when
   */
   constructor(
     weapon: Weapon,
@@ -132,25 +132,12 @@ export class Projectile extends Renderable {
         }
       }
     }
+
+    this.checkSound(this.options.projectileSound, this.options.visualDelayTicks);
+    this.checkSound(this.options.sound, 0);
+
     this.remainingDelay = options.setDelay || this.remainingDelay;
     this.totalDelay = this.remainingDelay;
-    if (Settings.playsAudio && this.options.sound) {
-      const player = Viewport.viewport.player;
-      // projectiles launched at the player always play at full volume
-      let volumeRatio = (this.from === player || this.to === player) ? 1.0 :
-        1 /
-        Pathing.dist(
-          Viewport.viewport.player.location.x,
-          Viewport.viewport.player.location.y,
-          this.startLocation.x,
-          this.startLocation.y,
-        );
-      volumeRatio = Math.min(1, Math.max(0, Math.sqrt(volumeRatio)));
-      SoundCache.play({
-        src: this.options.sound.src,
-        volume: volumeRatio * this.options.sound.volume,
-      });
-    }
 
     this._color = this.options.color || this.getColor();
     this._size = this.options.size || 0.5;
@@ -209,10 +196,30 @@ export class Projectile extends Renderable {
     return (this.age - this.options.visualDelayTicks + tickPercent) / Math.max(1, this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks);
   }
 
+  checkSound(sound: Sound, delay: number) {
+    if (Settings.playsAudio && sound && this.age === delay) {
+      const player = Viewport.viewport.player;
+      // projectiles launched at the player always play at full volume
+      let volumeRatio = (this.from === player || this.to === player) ? 1.0 :
+        1 /
+        Pathing.dist(
+          Viewport.viewport.player.location.x,
+          Viewport.viewport.player.location.y,
+          this.startLocation.x,
+          this.startLocation.y,
+        );
+      volumeRatio = Math.min(1, Math.max(0, Math.sqrt(volumeRatio)));
+      SoundCache.play({
+        src: sound.src,
+        volume: volumeRatio * sound.volume,
+      });
+    }
+  }
+
   onTick() {
-    //
     this.remainingDelay--;
     this.age++;
+    this.checkSound(this.options.projectileSound, this.options.visualDelayTicks);
   }
 
   onHit() {

@@ -27,7 +27,7 @@ import { Region } from "../../../../sdk/Region";
 import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
 import { BasicModel } from "../../../../sdk/rendering/BasicModel";
-import { Sound } from "../../../../sdk/utils/SoundCache";
+import { Sound, SoundCache } from "../../../../sdk/utils/SoundCache";
 import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 import { Assets } from "../../../../sdk/utils/Assets";
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
@@ -48,7 +48,7 @@ const MageProjectileSound = { src: FireWaveCastAndFire, volume: 0.075 };
 const JAD_PROJECTILE_DELAY = 3;
 
 class JadMagicWeapon extends MagicWeapon {
-  attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
+  override attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
         const overhead = to.prayerController?.matchFeature("magic");
@@ -59,6 +59,7 @@ class JadMagicWeapon extends MagicWeapon {
         super.attack(from, to, bonuses);
       }, JAD_PROJECTILE_DELAY),
     );
+    SoundCache.play(MageStartSound);
     return true;
   }
 
@@ -69,7 +70,7 @@ class JadMagicWeapon extends MagicWeapon {
         motionInterpolator: new ArcProjectileMotionInterpolator(1),
         color: "#FFAA00",
         size: 2,
-        sound: MageProjectileSound,
+        projectileSound: MageProjectileSound,
       }),
     );
   }
@@ -153,9 +154,7 @@ export class JalTokJad extends Mob {
   setStats() {
     this.weapons = {
       stab: new MeleeWeapon(),
-      magic: new JadMagicWeapon({
-        sound: MageStartSound
-      }),
+      magic: new JadMagicWeapon(),
       range: new JadRangeWeapon(),
     };
 

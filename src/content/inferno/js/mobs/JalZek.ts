@@ -3,8 +3,6 @@
 import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
 import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { Mob, AttackIndicators } from "../../../../sdk/Mob";
-import MagerImage from "../../assets/images/mager.png";
-import MagerSound from "../../assets/sounds/mager.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { UnitBonuses } from "../../../../sdk/Unit";
 import { Collision } from "../../../../sdk/Collision";
@@ -13,11 +11,13 @@ import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { InfernoRegion } from "../InfernoRegion";
 import { Random } from "../../../../sdk/Random";
 import { Sound } from "../../../../sdk/utils/SoundCache";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
-
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 import { Assets } from "../../../../sdk/utils/Assets";
 import { Viewport } from "../../../../sdk/Viewport";
+
+import MagerImage from "../../assets/images/mager.png";
+import MagerSound from "../../assets/sounds/mage_ranger_598.ogg";
+import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
 
