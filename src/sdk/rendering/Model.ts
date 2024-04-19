@@ -11,6 +11,7 @@ export interface Model {
     angleRadians: number,
     pitchRadians: number,
     visible: boolean,
+    modelOffsets: Location3[],
   );
 
   destroy(scene: THREE.Scene);

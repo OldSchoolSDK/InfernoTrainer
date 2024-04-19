@@ -20,6 +20,7 @@ import MagerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 
 export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
+export const MageProjectileModel = Assets.getAssetUrl("models/mage_projectile.glb");
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
@@ -50,6 +51,10 @@ export class JalZek extends Mob {
     this.weapons = {
       stab: new MeleeWeapon(),
       magic: new MagicWeapon({
+        model: MageProjectileModel,
+        modelScale: 1 / 128,
+        visualDelayTicks: 2,
+        visualHitEarlyTicks: -1, // hits after landing
         sound: new Sound(MagerSound, 0.1),
       }),
     };

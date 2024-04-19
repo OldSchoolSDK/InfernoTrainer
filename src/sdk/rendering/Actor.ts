@@ -17,6 +17,7 @@ export class Actor {
     const worldLocation = this.unit.getPerceivedLocation(tickPercent);
     const rotationRadians = this.unit.getPerceivedRotation(tickPercent);
     const pitchRadians = this.unit.getPerceivedPitch(tickPercent);
+    const modelOffsets = this.unit.getPerceivedOffsets(tickPercent);
     this.model.draw(
       scene,
       clockDelta,
@@ -25,6 +26,7 @@ export class Actor {
       rotationRadians,
       pitchRadians,
       this.unit.visible(tickPercent),
+      modelOffsets,
     );
   }
 

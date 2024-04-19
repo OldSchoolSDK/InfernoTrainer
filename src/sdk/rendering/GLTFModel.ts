@@ -241,6 +241,7 @@ export class GLTFModel implements Model, RenderableListener {
     rotation: number,
     pitch: number,
     visible: boolean,
+    modelOffsets: Location3[],
   ) {
     if (!this.hasInitialisedModel) {
       this.initialiseWholeModel();
@@ -288,8 +289,15 @@ export class GLTFModel implements Model, RenderableListener {
       this.loadedModel.position.z = y - size / 2 + this.originOffset.y;
       this.loadedModel.rotation.order = "YXZ";
       this.loadedModel.rotation.set(pitch, adjustedRotation, 0);
-      //this.loadedModel.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0), adjustedRotation);
-      //this.loadedModel.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), pitch);
+
+      this.loadedModel.children.forEach((child, idx) => {
+        if (modelOffsets[idx]) {
+          const offset = modelOffsets[idx];
+          child.position.set(offset.x, offset.z, offset.y);
+        } else {
+          child.position.set(0, 0, 0);
+        }
+      });
     }
   }
 

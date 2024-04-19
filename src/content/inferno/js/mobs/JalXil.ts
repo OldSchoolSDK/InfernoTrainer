@@ -1,22 +1,37 @@
 "use strict";
 
-import { Settings } from "../../../../sdk/Settings";
 import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
 import { Mob } from "../../../../sdk/Mob";
 import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { Unit, UnitBonuses } from "../../../../sdk/Unit";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
-import { DelayedAction } from "../../../../sdk/DelayedAction";
+import { UnitBonuses } from "../../../../sdk/Unit";
+import { MultiModelProjectileOffsetInterpolator, Projectile } from "../../../../sdk/weapons/Projectile";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Sound } from "../../../../sdk/utils/SoundCache";
 import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
 import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 import { Assets } from "../../../../sdk/utils/Assets";
+import { Location3 } from "../../../../sdk/Location";
+import { Pathing } from "../../../../sdk/Pathing";
 
 export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
+export const RangeProjectileModel = Assets.getAssetUrl("models/range_projectile.glb");
+
+// draw the projectiles coming from the shoulders but converging on the target.
+// the projectile is already rotated towards the target so we only need to offset on the x direction
+const JalXilOffsetsInterpolator: MultiModelProjectileOffsetInterpolator ={
+  interpolateOffsets: function (from: Location3, to: Location3, percent: number): Location3[] {
+    const r = 0.6 * (1.0 - percent);
+    const res = [
+      { x: r, y: 0, z: 0},
+      { x: -r, y: 0, z: 0}
+    ];
+    return res;
+  }
+}
+
 export class JalXil extends Mob {
   mobName(): EntityName {
     return EntityName.JAL_XIL;
@@ -41,7 +56,11 @@ export class JalXil extends Mob {
     this.weapons = {
       crush: new MeleeWeapon(),
       range: new RangedWeapon({
+        models: [RangeProjectileModel, RangeProjectileModel],
+        offsetsInterpolator: JalXilOffsetsInterpolator,
+        modelScale: 1/128,
         projectileSound: new Sound(RangerSound, 0.1),
+        verticalOffset: -1,
         reduceDelay: -2,
         visualDelayTicks: 3,
       }),

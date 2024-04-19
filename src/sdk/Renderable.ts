@@ -8,6 +8,8 @@ export interface RenderableListener {
   modelChanged();
 }
 
+const NIL_OFFSET: Location3[] = [{ x: 0, y: 0, z: 0 }];
+
 export abstract class Renderable {
   private _selected = false;
   private cachedModel: Model | null = null;
@@ -27,6 +29,13 @@ export abstract class Renderable {
    */
   getPerceivedPitch(tickPercent: number): number {
     return 0;
+  }
+
+  /**
+   * allow offsetting the components of a multi-model renderable
+   */
+  getPerceivedOffsets(tickPercent: number): Location3[] {
+    return NIL_OFFSET;
   }
 
   abstract get size(): number;

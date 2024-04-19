@@ -582,7 +582,7 @@ export abstract class Unit extends Renderable {
     this.lastHitAgo++;
     this.incomingProjectiles = filter(
       this.incomingProjectiles,
-      (projectile: Projectile) => projectile.remainingDelay > -1,
+      (projectile: Projectile) => !projectile.shouldDestroy(),
     );
     this.incomingProjectiles.forEach((projectile) => {
       projectile.currentLocation = {

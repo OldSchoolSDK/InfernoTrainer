@@ -18,6 +18,11 @@ export interface ProjectileMotionInterpolator {
   interpolatePitch(from: Location3, to: Location3, percent: number): number;
 }
 
+export interface MultiModelProjectileOffsetInterpolator {
+  // when there are multiple models, offset them by this much
+  interpolateOffsets(from: Location3, to: Location3, percent: number): Location3[];
+}
+
 export interface ProjectileOptions {
   forceSWTile?: boolean;
   hidden?: boolean;
@@ -30,7 +35,8 @@ export interface ProjectileOptions {
   motionInterpolator?: ProjectileMotionInterpolator;
   // ticks until the projectile appears
   visualDelayTicks?: number;
-  // ticks before actually landing that the projectile hits the target
+  // ticks before actually landing that the projectile hits the target. can be negative in which the projectile
+  // 'lands' after the projectile hits
   visualHitEarlyTicks?: number;
   // played when the attack starts
   sound?: Sound;
@@ -40,6 +46,10 @@ export interface ProjectileOptions {
   hitSound?: Sound;
   model?: string;
   modelScale?: number;
+  // if there are multiple models
+  models?: string[];
+  offsetsInterpolator?: MultiModelProjectileOffsetInterpolator;
+  // offset of start height
   verticalOffset?: number;
 }
 
@@ -91,13 +101,12 @@ export class Projectile extends Renderable {
       visualHitEarlyTicks: 0,
       ...options,
     };
-
     this.startLocation = {
-      x: from.location.x + from.size / 2,
-      y: from.location.y - from.size / 2 + 1,
+      x: from.location.x + (from.size - 1) / 2,
+      y: from.location.y - (from.size - 1) / 2,
     };
     this.currentLocation = { ...this.startLocation };
-    this.currentHeight = from.height * 0.75; // projectile origin
+    this.currentHeight = from.height * 0.75 + this.options.verticalOffset; // projectile origin
     this.from = from;
     this.to = to;
     this.distance = 999999;
@@ -118,7 +127,8 @@ export class Projectile extends Renderable {
         );
       } else {
         const closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);
-        this.distance = chebyshev([this.from.location.x, this.from.location.y], [closestTile[0], closestTile[1]]);
+        const closestTileFrom = from.getClosestTileTo(this.to.location.x, this.to.location.y);
+        this.distance = chebyshev([closestTileFrom[0], closestTileFrom[1]], [closestTile[0], closestTile[1]]);
       }
 
       this.remainingDelay = weapon.calculateHitDelay(this.distance);
@@ -165,13 +175,20 @@ export class Projectile extends Renderable {
     return "#000000";
   }
 
+  getTargetDestination(tickPercent): Location3 {
+    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
+    const endHeight = this.to.height * 0.5;
+
+    const x = toX + (this.to.size - 1) / 2;
+    const y = toY - (this.to.size - 1) / 2;
+
+    return { x, y, z: endHeight }
+  }
+
   getPerceivedRotation(tickPercent) {
     const startX = this.startLocation.x;
     const startY = this.startLocation.y;
-    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
-
-    const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
-    const endY = toY - this.to.size / 2 + 1;
+    const { x: endX, y: endY } = this.getTargetDestination(tickPercent);
     return -Pathing.angle(startX, startY, endX, endY);
   }
 
@@ -180,10 +197,7 @@ export class Projectile extends Renderable {
     const startX = this.startLocation.x;
     const startY = this.startLocation.y;
     const startHeight = this.currentHeight;
-    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
-    const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
-    const endY = toY - this.to.size / 2 + 1;
-    const endHeight = this.to.height * 0.5;
+    const { x: endX, y: endY, z: endHeight } = this.getTargetDestination(tickPercent);
     const percent = this.getPercent(tickPercent);
     return this.interpolator.interpolatePitch(
       { x: startX, y: startY, z: startHeight },
@@ -192,22 +206,26 @@ export class Projectile extends Renderable {
     );
   }
 
-  private getPercent(tickPercent) {
-    return (this.age - this.options.visualDelayTicks + tickPercent) / Math.max(1, this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks);
+  private getPercent(tickPercent: number) {
+    const numerator = this.age - this.options.visualDelayTicks + tickPercent;
+    const denominator = Math.max(1, this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks);
+    return numerator / denominator;
   }
 
   checkSound(sound: Sound, delay: number) {
     if (Settings.playsAudio && sound && this.age === delay) {
       const player = Viewport.viewport.player;
       // projectiles launched at the player always play at full volume
-      let volumeRatio = (this.from === player || this.to === player) ? 1.0 :
-        1 /
-        Pathing.dist(
-          Viewport.viewport.player.location.x,
-          Viewport.viewport.player.location.y,
-          this.startLocation.x,
-          this.startLocation.y,
-        );
+      let volumeRatio =
+        this.from === player || this.to === player
+          ? 1.0
+          : 1 /
+            Pathing.dist(
+              Viewport.viewport.player.location.x,
+              Viewport.viewport.player.location.y,
+              this.startLocation.x,
+              this.startLocation.y,
+            );
       volumeRatio = Math.min(1, Math.max(0, Math.sqrt(volumeRatio)));
       SoundCache.play({
         src: sound.src,
@@ -230,7 +248,7 @@ export class Projectile extends Renderable {
   }
 
   shouldDestroy() {
-    return this.age >= this.totalDelay;
+    return this.age >= this.totalDelay + Math.max(0, -this.options.visualHitEarlyTicks);
   }
 
   visible(tickPercent) {
@@ -239,20 +257,32 @@ export class Projectile extends Renderable {
   }
 
   getPerceivedLocation(tickPercent: number) {
-    // pass in the CENTERED position of the projectile
-    const startX = this.startLocation.x - this.size / 2;
-    const startY = this.startLocation.y - this.size / 2;
+    const startX = this.startLocation.x;
+    const startY = this.startLocation.y;
     const startHeight = this.currentHeight;
-    const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
-    const endX = toX + this.to.size / 2 - 1; // why? 2am me doesn't know
-    const endY = toY - this.to.size / 2 + 1;
-    const endHeight = this.to.height * 0.5;
+    const { x: endX, y: endY, z: endHeight } = this.getTargetDestination(tickPercent);
     const percent = this.getPercent(tickPercent);
     return this.interpolator.interpolate(
       { x: startX, y: startY, z: startHeight },
       { x: endX, y: endY, z: endHeight },
       percent,
     );
+  }
+
+  getPerceivedOffsets(tickPercent: number): Location3[] {
+    if (this.options.offsetsInterpolator) {
+      const startX = this.startLocation.x;
+      const startY = this.startLocation.y;
+      const startHeight = this.currentHeight;
+      const { x: endX, y: endY, z: endHeight } = this.getTargetDestination(tickPercent);
+      const percent = this.getPercent(tickPercent);
+      return this.options.offsetsInterpolator.interpolateOffsets(
+        { x: startX, y: startY, z: startHeight },
+        { x: endX, y: endY, z: endHeight },
+        percent,
+      );
+    }
+    return super.getPerceivedOffsets(tickPercent);
   }
 
   get size(): number {
@@ -271,8 +301,16 @@ export class Projectile extends Renderable {
     if (this.options.hidden || !this.attackStyle || this.color === "#000000") {
       return null;
     }
+    if (this.options.models) {
+      return GLTFModel.forRenderableMulti(
+        this,
+        this.options.models,
+        this.options.modelScale,
+        0,
+      );
+    }
     if (this.options.model) {
-      return GLTFModel.forRenderable(this, this.options.model, this.options.modelScale, this.options.verticalOffset);
+      return GLTFModel.forRenderable(this, this.options.model, this.options.modelScale, 0);
     }
     return BasicModel.sphereForRenderable(this);
   }
