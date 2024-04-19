@@ -39,7 +39,9 @@ export class JalImKot extends Mob {
     this.stunned = 1;
 
     this.weapons = {
-      slash: new MeleeWeapon(),
+      slash: new MeleeWeapon({
+        sound: new Sound(MeleerSound, 0.6)
+      }),
     };
 
     // non boosted numbers
@@ -98,10 +100,6 @@ export class JalImKot extends Mob {
 
   get image() {
     return MeleerImage;
-  }
-
-  get sound() {
-    return new Sound(MeleerSound, 0.75);
   }
 
   get color() {

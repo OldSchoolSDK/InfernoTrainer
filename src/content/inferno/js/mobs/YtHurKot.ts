@@ -119,10 +119,6 @@ export class YtHurKot extends Mob {
     return HurKotImage;
   }
 
-  get sound() {
-    return null;
-  }
-
   get color() {
     return "#ACFF5633";
   }

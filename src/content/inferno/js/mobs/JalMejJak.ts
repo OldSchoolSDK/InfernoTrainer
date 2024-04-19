@@ -139,17 +139,6 @@ export class JalMejJak extends Mob {
     return JalMejJakImage;
   }
 
-  get sound() {
-    return null;
-  }
-  // attackAnimation (tickPercent: number) {
-  //   this.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4)
-  // }
-
-  // shouldShowAttackAnimation () {
-  //   return this.attackCooldownTicks === this.cooldown && this.playerPrayerScan === null
-  // }
-
   shouldChangeAggro(projectile: Projectile) {
     return this.aggro != projectile.from && this.autoRetaliate;
   }

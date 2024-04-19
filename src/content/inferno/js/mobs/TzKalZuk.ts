@@ -238,6 +238,7 @@ export class TzKalZuk extends Mob {
     this.stunned = 8;
 
     this.weapons = {
+      // sound is handled internally in ZukWeapon
       typeless: new ZukWeapon(),
     };
 
@@ -304,10 +305,6 @@ export class TzKalZuk extends Mob {
 
   get image() {
     return ZukImage;
-  }
-
-  get sound() {
-    return null;
   }
 
   hitSound(damaged) {

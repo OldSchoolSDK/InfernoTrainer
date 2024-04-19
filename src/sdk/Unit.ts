@@ -233,12 +233,7 @@ export abstract class Unit extends Renderable {
   // called when the unit has attacked
   didAttack() {
     this.attackDelay = this.attackSpeed;
-    this.playAttackSound();
     this.playAttackAnimation();
-  }
-
-  playAttackSound() {
-    // override me
   }
 
   playAttackAnimation() {
@@ -440,10 +435,7 @@ export abstract class Unit extends Renderable {
 
   /** Sounds **/
 
-  get sound(): Sound | null {
-    return null;
-  }
-
+  // sound to play when hit
   hitSound(damaged: boolean): Sound | null {
     return null;
   }

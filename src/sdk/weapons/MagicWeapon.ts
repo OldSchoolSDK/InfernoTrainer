@@ -5,6 +5,11 @@ import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";
 
 export class MagicWeapon extends Weapon {
+
+  constructor(projectileRules?: ProjectileOptions) {
+    super(projectileRules);
+  }
+
   get type() {
     return EquipmentTypes.WEAPON;
   }

@@ -93,10 +93,6 @@ export class JalAkRekKet extends Mob {
     return JalAkRekKetImage;
   }
 
-  get sound() {
-    return null;
-  }
-
   attackStyleForNewAttack() {
     return "crush";
   }

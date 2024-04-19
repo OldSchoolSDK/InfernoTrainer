@@ -44,6 +44,10 @@ export class Weapon extends Equipment {
   override selected = false;
   override inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
+  constructor(protected projectileOptions: ProjectileOptions = {}) {
+    super();
+  }
+
   attackStyles() {
     return [];
   }
@@ -82,10 +86,11 @@ export class Weapon extends Equipment {
   specialAttackDrain(): number {
     return 50;
   }
+  
   specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     // Override me
     if (this.specialAttackSound) {
-      SoundCache.play(this.specialAttackSound);
+      options.sound = this.specialAttackSound;
     }
   }
 
@@ -292,10 +297,6 @@ export class Weapon extends Equipment {
   }
 
   get projectileModel(): string | null {
-    return null;
-  }
-
-  get projectileOptions(): Partial<ProjectileOptions> | null {
     return null;
   }
 }

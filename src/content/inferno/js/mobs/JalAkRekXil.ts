@@ -92,10 +92,6 @@ export class JalAkRekXil extends Mob {
     return JalAkRekMejImage;
   }
 
-  get sound() {
-    return null;
-  }
-
   attackStyleForNewAttack() {
     return "range";
   }

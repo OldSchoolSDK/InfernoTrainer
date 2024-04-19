@@ -153,7 +153,9 @@ export class JalTokJad extends Mob {
   setStats() {
     this.weapons = {
       stab: new MeleeWeapon(),
-      magic: new JadMagicWeapon(),
+      magic: new JadMagicWeapon({
+        sound: MageStartSound
+      }),
       range: new JadRangeWeapon(),
     };
 
@@ -253,10 +255,6 @@ export class JalTokJad extends Mob {
 
   get isAnimated() {
     return !!this.currentAnimation;
-  }
-
-  override get sound() {
-    return this.attackStyle === "magic" ? MageStartSound : null;
   }
 
   attackStyleForNewAttack() {

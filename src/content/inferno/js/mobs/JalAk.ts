@@ -42,8 +42,12 @@ export class JalAk extends Mob {
 
     this.weapons = {
       crush: new MeleeWeapon(),
-      magic: new MagicWeapon(),
-      range: new RangedWeapon(),
+      magic: new MagicWeapon({
+        sound: new Sound(BlobSound)
+      }),
+      range: new RangedWeapon({
+        sound: new Sound(BlobSound)
+      }),
     };
 
     // non boosted numbers
@@ -106,10 +110,7 @@ export class JalAk extends Mob {
   get image() {
     return BlobImage;
   }
-
-  get sound() {
-    return new Sound(BlobSound);
-  }
+  
   attackAnimation(tickPercent: number, context) {
     context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4);
   }

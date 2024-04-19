@@ -97,6 +97,8 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
     npm run cmd modelBuilder spotanim 448 name jad_mage_front
     npm run cmd modelBuilder spotanim 449 name jad_mage_middle
     npm run cmd modelBuilder spotanim 450 name jad_mage_rear
+    
+    npm run cmd modelBuilder spotanim 451 name jad_range
 
     npm run cmd modelBuilder spotanim 1120 name dragon_arrow
     npm run cmd modelBuilder spotanim 1122 name dragon_dart

@@ -6,7 +6,7 @@ import { ItemName } from "../../sdk/ItemName";
 import { Unit } from "../../sdk/Unit";
 import { AttackBonuses } from "../../sdk/gear/Weapon";
 import { AttackStyle, AttackStyleTypes } from "../../sdk/AttackStylesController";
-import { Projectile, ProjectileOptions } from "../../sdk/weapons/Projectile";
+import { ArcProjectileMotionInterpolator, Projectile, ProjectileOptions } from "../../sdk/weapons/Projectile";
 
 import BPAttackSound from "../../assets/sounds/dart_2696.ogg";
 import BPSpecSound from "../../assets/sounds/snake_hit_800.ogg";
@@ -17,7 +17,13 @@ import { Assets } from "../../sdk/utils/Assets";
 
 export class Blowpipe extends RangedWeapon {
   constructor() {
-    super();
+    super({
+      modelScale: 1 / 128,
+      visualDelayTicks: 1,
+      visualHitEarlyTicks: 0,
+      verticalOffset: -0.75,
+      motionInterpolator: new ArcProjectileMotionInterpolator(0.5),
+    });
     this.bonuses = {
       attack: {
         stab: 0,
@@ -86,6 +92,7 @@ export class Blowpipe extends RangedWeapon {
     bonuses.isSpecialAttack = true;
     // BP special attack takes an extra tick to land
     options.reduceDelay = -1;
+    options.visualDelayTicks = 1;
     super.attack(from, to, bonuses);
 
     const healAttackerBy = Math.floor(this.damageRoll / 2);
@@ -129,15 +136,6 @@ export class Blowpipe extends RangedWeapon {
     return new Sound(BPSpecSound, 0.5);
   }
 
-  registerProjectile(from: Unit, to: Unit) {
-    to.addProjectile(
-      new Projectile(this, this.damage, from, to, "range", {
-        visualDelayTicks: 1,
-        sound: this.attackSound,
-      }),
-    );
-  }
-
   Model = Assets.getAssetUrl("models/player_toxic_blowpipe.glb");
   override get model() {
     return this.Model;
@@ -145,5 +143,10 @@ export class Blowpipe extends RangedWeapon {
 
   get attackAnimationId() {
     return PlayerAnimationIndices.FireBlowpipe;
+  }
+
+  ProjectileModel = Assets.getAssetUrl("models/dragon_dart.glb");
+  get projectileModel() {
+    return this.ProjectileModel;
   }
 }

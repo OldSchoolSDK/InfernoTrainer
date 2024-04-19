@@ -10,6 +10,8 @@ import { Pathing } from "../Pathing";
 import { BasicModel } from "../rendering/BasicModel";
 import { GLTFModel } from "../rendering/GLTFModel";
 import { Collision } from "../Collision";
+import { Settings } from "../Settings";
+import { Viewport } from "../Viewport";
 
 export interface ProjectileMotionInterpolator {
   interpolate(from: Location3, to: Location3, percent: number): Location3;
@@ -19,13 +21,15 @@ export interface ProjectileMotionInterpolator {
 export interface ProjectileOptions {
   forceSWTile?: boolean;
   hidden?: boolean;
-  // overriddes reduceDelay
+  // overrides reduceDelay
   setDelay?: number;
   reduceDelay?: number;
   cancelOnDeath?: boolean;
   motionInterpolator?: ProjectileMotionInterpolator;
   // ticks until the projectile appears
   visualDelayTicks?: number;
+  // ticks before landing that the projectile hits the target
+  visualHitEarlyTicks?: number;
   color?: string;
   size?: number;
   // played when the projectile is launched
@@ -47,7 +51,6 @@ export class Projectile extends Renderable {
   remainingDelay: number;
   totalDelay: number;
   age = 0;
-  visualDelayTicks: number;
   startLocation: Location;
   currentLocation: Location;
   currentHeight: number;
@@ -84,6 +87,8 @@ export class Projectile extends Renderable {
     this.options = {
       modelScale: 1.0,
       verticalOffset: 0.0,
+      visualDelayTicks: 0,
+      visualHitEarlyTicks: 0,
       ...options,
     };
 
@@ -96,8 +101,6 @@ export class Projectile extends Renderable {
     this.from = from;
     this.to = to;
     this.distance = 999999;
-
-    this.visualDelayTicks = options.visualDelayTicks || 0;
 
     if (Weapon.isMeleeAttackStyle(attackStyle)) {
       this.distance = 0;
@@ -131,8 +134,22 @@ export class Projectile extends Renderable {
     }
     this.remainingDelay = options.setDelay || this.remainingDelay;
     this.totalDelay = this.remainingDelay;
-    if (this.options.sound) {
-      SoundCache.play(this.options.sound);
+    if (Settings.playsAudio && this.options.sound) {
+      const player = Viewport.viewport.player;
+      // projectiles launched at the player always play at full volume
+      let volumeRatio = (this.from === player || this.to === player) ? 1.0 :
+        1 /
+        Pathing.dist(
+          Viewport.viewport.player.location.x,
+          Viewport.viewport.player.location.y,
+          this.startLocation.x,
+          this.startLocation.y,
+        );
+      volumeRatio = Math.min(1, Math.max(0, Math.sqrt(volumeRatio)));
+      SoundCache.play({
+        src: this.options.sound.src,
+        volume: volumeRatio * this.options.sound.volume,
+      });
     }
 
     this._color = this.options.color || this.getColor();
@@ -172,7 +189,7 @@ export class Projectile extends Renderable {
   }
 
   getPerceivedPitch(tickPercent: number) {
-    // pass in the CENTERED position of the projectile
+    // pass in the CENTERED position of the projectile`
     const startX = this.startLocation.x;
     const startY = this.startLocation.y;
     const startHeight = this.currentHeight;
@@ -189,7 +206,7 @@ export class Projectile extends Renderable {
   }
 
   private getPercent(tickPercent) {
-    return (this.age - this.visualDelayTicks + tickPercent) / Math.max(1, this.totalDelay - this.visualDelayTicks - 1);
+    return (this.age - this.options.visualDelayTicks + tickPercent) / Math.max(1, this.totalDelay - this.options.visualDelayTicks - this.options.visualHitEarlyTicks);
   }
 
   onTick() {

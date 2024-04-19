@@ -55,7 +55,9 @@ export class JalXil extends Mob {
 
     this.weapons = {
       crush: new MeleeWeapon(),
-      range: new JalXilWeapon(),
+      range: new JalXilWeapon({
+        sound: new Sound(RangerSound, 0.1),
+      }),
     };
 
     // non boosted numbers
@@ -113,10 +115,6 @@ export class JalXil extends Mob {
     return RangeImage;
   }
 
-  get sound() {
-    return new Sound(RangerSound);
-  }
-
   hitSound(damaged) {
     return new Sound(HitSound, 0.1);
   }
@@ -131,12 +129,6 @@ export class JalXil extends Mob {
 
   canMeleeIfClose() {
     return "crush" as const;
-  }
-
-  playAttackSound() {
-    setTimeout(() => {
-      super.playAttackSound();
-    }, 1.75 * Settings.tickMs);
   }
 
   attackAnimation(tickPercent: number, context) {

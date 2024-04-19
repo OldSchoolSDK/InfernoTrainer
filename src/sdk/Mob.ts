@@ -9,7 +9,6 @@ import { Weapon } from "./gear/Weapon";
 import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from "./Unit";
 import { Location } from "./Location";
 import { Collision } from "./Collision";
-import { SoundCache } from "./utils/SoundCache";
 import { Viewport } from "./Viewport";
 import { Random } from "./Random";
 import { Region } from "./Region";
@@ -347,24 +346,6 @@ export class Mob extends Unit {
 
   get consumesSpace(): Unit {
     return this;
-  }
-
-  override playAttackSound() {
-    if (Settings.playsAudio && this.sound) {
-      let attemptedVolume =
-        1 /
-        Pathing.dist(
-          Viewport.viewport.player.location.x,
-          Viewport.viewport.player.location.y,
-          this.location.x,
-          this.location.y,
-        );
-      attemptedVolume = Math.min(1, Math.max(0, Math.sqrt(attemptedVolume)));
-      SoundCache.play({
-        src: this.sound.src,
-        volume: attemptedVolume * this.sound.volume,
-      });
-    }
   }
 
   override get combatLevel() {

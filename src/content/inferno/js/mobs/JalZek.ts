@@ -49,7 +49,9 @@ export class JalZek extends Mob {
 
     this.weapons = {
       stab: new MeleeWeapon(),
-      magic: new MagicWeapon(),
+      magic: new MagicWeapon({
+        sound: new Sound(MagerSound, 0.1),
+      }),
     };
 
     // non boosted numbers
@@ -105,10 +107,6 @@ export class JalZek extends Mob {
 
   get image() {
     return MagerImage;
-  }
-
-  get sound() {
-    return new Sound(MagerSound);
   }
 
   hitSound(damaged) {

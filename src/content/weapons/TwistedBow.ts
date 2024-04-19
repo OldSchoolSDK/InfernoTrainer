@@ -15,7 +15,13 @@ import { ArcProjectileMotionInterpolator } from "../../sdk/weapons/Projectile";
 
 export class TwistedBow extends RangedWeapon {
   constructor(geno = false) {
-    super();
+    super({
+      modelScale: 1 / 128,
+      visualDelayTicks: 1,
+      visualHitEarlyTicks: 1,
+      verticalOffset: -0.75,
+      motionInterpolator: new ArcProjectileMotionInterpolator(1),
+    });
     this.bonuses = {
       attack: {
         stab: 0,
@@ -116,14 +122,5 @@ export class TwistedBow extends RangedWeapon {
   ProjectileModel = Assets.getAssetUrl("models/dragon_arrow.glb");
   get projectileModel() {
     return this.ProjectileModel;
-  }
-
-  get projectileOptions() {
-    return {
-      modelScale: 1 / 128,
-      visualDelayTicks: 1,
-      verticalOffset: -0.75,
-      motionInterpolator: new ArcProjectileMotionInterpolator(1),
-    };
   }
 }

@@ -24,7 +24,10 @@ class NibblerWeapon extends MeleeWeapon {
   attack(from: Unit, to: Unit, bonuses: AttackBonuses, options: ProjectileOptions = {}): boolean {
     const damage = Math.floor(Random.get() * 5);
     this.damage = damage;
-    to.addProjectile(new Projectile(this, this.damage, from, to, "crush", options));
+    to.addProjectile(new Projectile(this, this.damage, from, to, "crush", {
+      ...this.projectileOptions,
+      ...options
+    }));
     return true;
   }
 }
@@ -47,7 +50,9 @@ export class JalNib extends Mob {
     this.stunned = 1;
     this.autoRetaliate = false;
     this.weapons = {
-      crush: new NibblerWeapon(),
+      crush: new NibblerWeapon({
+        sound: new Sound(NibblerSound, 0.2)
+      }),
     };
 
     // non boosted numbers
@@ -107,10 +112,6 @@ export class JalNib extends Mob {
 
   get image() {
     return NibblerImage;
-  }
-
-  get sound() {
-    return new Sound(NibblerSound, 0.15);
   }
 
   attackStyleForNewAttack() {
