@@ -444,6 +444,11 @@ export abstract class Unit extends Renderable {
     return "#FFFFFF00";
   }
 
+  get healthScale(): number {
+    // the server usually only sends hitpoints as a fraction where this is the denominator.
+    return Math.min(this.stats.hitpoint, 30);
+  }
+
   shouldDestroy() {
     // this is -1 for a living npc.
     return this.dying === 0;
@@ -666,8 +671,9 @@ export abstract class Unit extends Renderable {
     context.fillStyle = "red";
     context.fillRect((-this.size / 2) * scale, -(this.size / 2) * scale, scale * this.size, 5);
 
+    const healthRatio = Math.min(1, Math.ceil((this.currentStats.hitpoint / this.stats.hitpoint) * this.healthScale) / this.healthScale);
     context.fillStyle = "lime";
-    const w = Math.min(1, this.currentStats.hitpoint / this.stats.hitpoint) * (scale * this.size);
+    const w = healthRatio * (scale * this.size);
     context.fillRect((-this.size / 2) * scale, (-this.size / 2) * scale, w, 5);
   }
 
