@@ -41,16 +41,16 @@ class ZukWeapon extends MagicWeapon {
     return false;
   }
   registerProjectile(from: Unit, to: Unit) {
-    const projectileSound = new Sound(ZukAttackSound, 0.0025);
+    const sound = new Sound(ZukAttackSound, 0.03);
     if (to.isPlayer) {
       // louder!
-      projectileSound.volume = 0.1;
+      sound.volume = 0.1;
     }
     to.addProjectile(
       new ZukProjectile(this, this.damage, from, to, "range", {
         setDelay: 4,
         visualDelayTicks: 2,
-        projectileSound,
+        sound,
       }),
     );
   }

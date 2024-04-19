@@ -89,9 +89,6 @@ export class Weapon extends Equipment {
   
   specialAttack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}) {
     // Override me
-    if (this.specialAttackSound) {
-      options.sound = this.specialAttackSound;
-    }
   }
 
   override inventoryLeftClick(player: Player) {
@@ -186,7 +183,7 @@ export class Weapon extends Equipment {
     }
 
     this.grantXp(from, to);
-    this.registerProjectile(from, to, bonuses);
+    this.registerProjectile(from, to, bonuses, options);
     return true;
   }
 

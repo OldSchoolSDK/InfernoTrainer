@@ -91,9 +91,13 @@ export class Blowpipe extends RangedWeapon {
     super.specialAttack(from, to, bonuses, options);
     bonuses.isSpecialAttack = true;
     // BP special attack takes an extra tick to land
-    options.reduceDelay = -1;
-    options.visualDelayTicks = 1;
-    super.attack(from, to, bonuses);
+    super.attack(from, to, bonuses, {
+      ...options,
+      reduceDelay: -1,
+      visualHitEarlyTicks: 1,
+      visualDelayTicks: 1,
+      projectileSound: this.specialAttackSound,
+    });
 
     const healAttackerBy = Math.floor(this.damageRoll / 2);
     from.currentStats.hitpoint += healAttackerBy;
