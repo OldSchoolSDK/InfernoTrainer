@@ -107,7 +107,7 @@ export class Settings {
     }
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
-    Settings.inputDelay = parseInt(window.localStorage.getItem("inputDelay")) ?? 100;
+    Settings.inputDelay = parseInt(window.localStorage.getItem("inputDelay") ?? '100');
     Settings.rotated = window.localStorage.getItem("rotated") || "south";
     Settings.loadout = window.localStorage.getItem("loadout") || "max_tbow_speed";
     Settings.onTask = window.localStorage.getItem("onTask") === "true" || false;
