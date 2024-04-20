@@ -1,3 +1,7 @@
 export const ControlPanelController = {
-  controller: {},
+  controller: {
+    onWorldTick: () => {
+      //
+    }
+  },
 };
