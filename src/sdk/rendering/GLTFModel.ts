@@ -63,6 +63,9 @@ export class GLTFModel implements Model, RenderableListener {
   // first index is the model ID, second index is the animation ID.
   private animations: THREE.AnimationAction[][] = [];
 
+  // models are loaded and inserted into `loadedModel` in indeterminate orders, so we save the index of each model
+  private modelOrder: number[] = [];
+
   constructor(
     private renderable: Renderable,
     private models: string[],
@@ -107,13 +110,15 @@ export class GLTFModel implements Model, RenderableListener {
     if (!this.loadedModel) {
       return;
     }
+    // TODO: handle model order that gets out of whack
     // TODO: what if get3dModel() now returns something other than GLTFModel? Bad times...
     const newModels = (this.renderable.get3dModel() as GLTFModel).models;
     const toRemove = this.models.filter((model) => !newModels.includes(model));
     const toAdd = newModels.filter((model) => !this.models.includes(model));
     toRemove.forEach((name) => this.loadedModel.remove(this.loadedModel.getObjectByName(name)));
     this.models = newModels;
-    toAdd.forEach((name) => this.loadAndAddSingleModel(this.loadedModel, name));
+    // (index is wrong here...)
+    toAdd.forEach((name, index) => this.loadAndAddSingleModel(this.loadedModel, name, index));
   }
 
   stopCurrentAnimation() {
@@ -189,7 +194,7 @@ export class GLTFModel implements Model, RenderableListener {
     });
   }
 
-  loadAndAddSingleModel(target, model) {
+  loadAndAddSingleModel(target, model, index) {
     const processGltf = (gltf: GLTF, clone = false) => {
       const scale = this.scale;
       gltf.scene.name = model;
@@ -228,6 +233,7 @@ export class GLTFModel implements Model, RenderableListener {
           this.onAnimationFinished(e.action);
         });
       }
+      this.modelOrder.push(index);
     }
     if (model in globalModelCache) {
       // prevents reloading the model from file
@@ -242,7 +248,7 @@ export class GLTFModel implements Model, RenderableListener {
 
   initialiseWholeModel() {
     const preparingMesh = new THREE.Object3D();
-    this.models.forEach((model) => this.loadAndAddSingleModel(preparingMesh, model));
+    this.models.forEach((model, index) => this.loadAndAddSingleModel(preparingMesh, model, index));
     this.loadedModel = preparingMesh;
   }
 
@@ -304,8 +310,9 @@ export class GLTFModel implements Model, RenderableListener {
       this.loadedModel.rotation.set(pitch, adjustedRotation, 0);
 
       this.loadedModel.children.forEach((child, idx) => {
-        if (modelOffsets[idx]) {
-          const offset = modelOffsets[idx];
+        const insertionIdx = this.modelOrder[idx];
+        if (modelOffsets[insertionIdx]) {
+          const offset = modelOffsets[insertionIdx];
           child.position.set(offset.x, offset.z, offset.y);
         } else {
           child.position.set(0, 0, 0);
