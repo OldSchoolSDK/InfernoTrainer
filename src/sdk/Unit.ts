@@ -123,6 +123,7 @@ export abstract class Unit extends Renderable {
   spawnDelay = 0;
   lastRotation = 0;
   hasDiedAndAwaitingRemoval = false;
+  nulledTicks = 0;
 
   get deathAnimationLength(): number {
     return 3;
@@ -146,6 +147,10 @@ export abstract class Unit extends Renderable {
 
   mobName(): EntityName {
     return null;
+  }
+
+  get isNulled() {
+    return this.nulledTicks > 0;
   }
 
   get combatLevel() {
@@ -226,6 +231,7 @@ export abstract class Unit extends Renderable {
 
   attackStep() {
     // Override me, called after all movement has been resolved
+    this.nulledTicks--;
     this.attackDelay--;
     this.lastRotation = this.getPerceivedRotation(0);
   }

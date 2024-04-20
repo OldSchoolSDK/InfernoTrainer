@@ -43,8 +43,7 @@ export class InfernoHealerSpark extends Entity {
   to: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
-  sparkDelay = 2;
-  hasSparked = false;
+  age = 0;
 
   constructor(region: Region, location: Location, from: Unit, to: Unit) {
     super(region, location);
@@ -81,18 +80,12 @@ export class InfernoHealerSpark extends Entity {
   }
 
   visible() {
-    return this.dying < 0 || this.hasSparked;
+    return this.dying < 0 && this.age >= 1;
   }
 
   tick() {
-    if (this.hasSparked) {
-      this.dying = 0;
-    }
-    --this.sparkDelay;
-    if (this.sparkDelay == 2) {
-      this.playAnimation(0);
-    }
-    if (!this.hasSparked && this.sparkDelay <= 0) {
+    ++this.age;
+    if (this.age == 1) {
       let attemptedVolume =
         1 /
         Pathing.dist(
@@ -109,7 +102,10 @@ export class InfernoHealerSpark extends Entity {
       ) {
         this.weapon.attack(this.from, this.from.aggro as Unit, {});
       }
-      this.hasSparked = true;
+    } else if (this.age == 3) {
+      this.playAnimation(0).then(() => {
+        this.dying = 0;
+      })
     }
   }
 

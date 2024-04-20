@@ -31,7 +31,7 @@ class HealWeapon extends Weapon {
 }
 
 class InfernoSparkWeapon extends Weapon {
-  // dummy weapon for the projectile. in theory we should create the splat
+  // dummy weapon for the projectile (that this needs to exist means we need to fix the Projectile api)
 }
 
 const AOE_PROJECTILE_SETTINGS: ProjectileOptions = {
@@ -57,12 +57,12 @@ class AoeWeapon extends Weapon {
     };
     const spark2Location = {
       x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-      y: 16 + Math.floor(Random.get() * 4),
+      y: 14 + Math.floor(Random.get() * 4),
       z: 0,
     };
     const spark3Location = {
       x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-      y: 16 + Math.floor(Random.get() * 4),
+      y: 14 + Math.floor(Random.get() * 4),
       z: 0,
     };
     from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, limitedPlayerLocation, "magic", AOE_PROJECTILE_SETTINGS))
@@ -88,7 +88,7 @@ class AoeWeapon extends Weapon {
 }
 
 export class JalMejJak extends Mob {
-  playerPrayerScan?: string = null;
+  private lastAggro: Unit = null;
 
   mobName(): EntityName {
     return EntityName.JAL_MEJ_JAK;
@@ -180,4 +180,11 @@ export class JalMejJak extends Mob {
   // attackIfPossible() {
 
   // }
+  override attackStep() {
+    super.attackStep();
+    if (this.lastAggro && this.lastAggro != this.aggro) {
+      this.nulledTicks = 2;
+    }
+    this.lastAggro = this.aggro;
+  }
 }
