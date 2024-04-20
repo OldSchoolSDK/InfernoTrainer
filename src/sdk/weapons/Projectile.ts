@@ -54,11 +54,12 @@ export interface ProjectileOptions {
   verticalOffset?: number;
 }
 
+const targetIsLocation = (x: Unit | Location): x is Location => (x as Location).x !== undefined;
 export class Projectile extends Renderable {
   weapon: Weapon;
   damage: number;
   from: Unit;
-  to: Unit;
+  to: Unit | Location3;
   distance: number;
   options: ProjectileOptions = {};
   remainingDelay: number;
@@ -85,14 +86,14 @@ export class Projectile extends Renderable {
     weapon: Weapon,
     damage: number,
     from: Unit,
-    to: Unit,
+    to: Unit | Location3,
     attackStyle: string,
     options: ProjectileOptions = {},
   ) {
     super();
     this.attackStyle = attackStyle;
     this.damage = Math.floor(damage);
-    if (this.damage > to.currentStats.hitpoint) {
+    if (!targetIsLocation(to) && this.damage > to.currentStats.hitpoint) {
       this.damage = to.currentStats.hitpoint;
     }
     this.options = {
@@ -122,13 +123,18 @@ export class Projectile extends Renderable {
 
       if (options.forceSWTile) {
         // Things like ice barrage calculate distance to SW tile only
+        const targetSW = targetIsLocation(to) ? to : to.location;
         this.distance = chebyshev(
           [this.from.location.x, this.from.location.y],
-          [this.to.location.x, this.to.location.y],
+          [targetSW.x, targetSW.y],
         );
+      } else if (targetIsLocation(to)) {
+        const closestTile = to;
+        const closestTileFrom = from.getClosestTileTo(to.x, to.y);
+        this.distance = chebyshev([closestTileFrom[0], closestTileFrom[1]], [closestTile[0], closestTile[1]]);
       } else {
         const closestTile = to.getClosestTileTo(this.from.location.x, this.from.location.y);
-        const closestTileFrom = from.getClosestTileTo(this.to.location.x, this.to.location.y);
+        const closestTileFrom = from.getClosestTileTo(to.location.x, to.location.y);
         this.distance = chebyshev([closestTileFrom[0], closestTileFrom[1]], [closestTile[0], closestTile[1]]);
       }
 
@@ -177,11 +183,15 @@ export class Projectile extends Renderable {
   }
 
   getTargetDestination(tickPercent): Location3 {
+    if (targetIsLocation(this.to)) {
+      return this.to;
+    }
     const { x: toX, y: toY } = this.to.getPerceivedLocation(tickPercent);
     const endHeight = this.to.height * 0.5;
+    const targetSize = this.to.size;
 
-    const x = toX + (this.to.size - 1) / 2;
-    const y = toY - (this.to.size - 1) / 2;
+    const x = toX + (targetSize - 1) / 2;
+    const y = toY - (targetSize - 1) / 2;
 
     return { x, y, z: endHeight }
   }
@@ -240,13 +250,25 @@ export class Projectile extends Renderable {
   }
 
   onTick() {
+    const targetLocation = this.getTargetDestination(0.0);
+    this.currentLocation = {
+      x: Pathing.linearInterpolation(
+        this.currentLocation.x,
+        targetLocation.x,
+        1 / (this.remainingDelay + 1),
+      ),
+      y: Pathing.linearInterpolation(
+        this.currentLocation.y,
+        targetLocation.y,
+        1 / (this.remainingDelay + 1),
+      ),
+    };
     this.remainingDelay--;
     this.age++;
     this.checkSound(this.options.projectileSound, this.options.visualDelayTicks);
   }
 
   onHit() {
-    //
     if (this.options.hitSound) {
       SoundCache.play(this.options.hitSound);
     }

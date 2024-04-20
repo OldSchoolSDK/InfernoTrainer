@@ -4,11 +4,15 @@ export class Assets {
   static onProgressFns: ((loaded: number, total: number) => void)[] = [];
   static onLoadFns: (() => void)[] = [];
 
+  static loadedAssets = {};
   /**
    * Returns the appropriate URL for an asset and also schedules it for preloading.
    */
   static getAssetUrl(asset: string) {
     const url = `https://assets-soltrainer.netlify.app/${asset}`;
+    if (Assets.loadedAssets[url]) {
+      return url;
+    }
     Assets.loadingAssetUrls.push(url);
     Assets.assetCount++;
     Promise.resolve().then(async () => {
@@ -20,6 +24,7 @@ export class Assets {
         onProgressFns(this.assetCount - this.loadingAssetUrls.length, this.assetCount),
       );
       Assets.loadingAssetUrls = this.loadingAssetUrls.filter((u) => u !== url);
+      Assets.loadedAssets[url] = true;
     });
     return url;
   }

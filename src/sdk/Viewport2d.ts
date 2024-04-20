@@ -109,8 +109,7 @@ export class Viewport2d implements ViewportDelegate {
 
       const startX = projectile.currentLocation.x;
       const startY = projectile.currentLocation.y;
-      const endX = projectile.to.location.x + projectile.to.size / 2;
-      const endY = projectile.to.location.y - projectile.to.size / 2 + 1;
+      const { x: endX, y: endY } = projectile.getTargetDestination(tickPercent);
 
       const perceivedX = Pathing.linearInterpolation(startX, endX, tickPercent / (projectile.remainingDelay + 1));
       const perceivedY = Pathing.linearInterpolation(startY, endY, tickPercent / (projectile.remainingDelay + 1));

@@ -817,6 +817,11 @@ export class Player extends Unit {
 
     this.clearXpDrops();
 
+    // clear aggro if target is nulled (e.g. healers on zuk after tag)
+    if (this.aggro && this.aggro.isNulled) {
+      this.aggro = null;
+    }
+
     this.attackIfPossible();
 
     this.eats.tickFood(this);
