@@ -106,8 +106,8 @@ export class Mob extends Unit {
     }
     this.processIncomingAttacks();
 
-    this.spawnDelay--;
-    if (this.spawnDelay > 0) {
+    this.age--;
+    if (this.age > 0) {
       return;
     }
     this.perceivedLocation = { x: this.location.x, y: this.location.y };
@@ -262,7 +262,7 @@ export class Mob extends Unit {
   override attackStep() {
     super.attackStep();
 
-    if (this.spawnDelay > 0) {
+    if (this.age > 0) {
       return;
     }
     if (this.dying === 0) {

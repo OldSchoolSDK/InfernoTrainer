@@ -258,6 +258,14 @@ export class JalTokJad extends Mob {
     return 5;
   }
 
+  get clickboxRadius() {
+    return 2.5;
+  }
+
+  get clickboxHeight() {
+    return 4;
+  }
+
   get image() {
     if (!this.currentAnimation) {
       return JadImage;

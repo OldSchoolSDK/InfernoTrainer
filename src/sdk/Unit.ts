@@ -120,7 +120,7 @@ export abstract class Unit extends Renderable {
   equipment: UnitEquipment = new UnitEquipment();
   setEffects: (typeof SetEffect)[] = [];
   autoRetaliate = false;
-  spawnDelay = 0;
+  age = 0;
   lastRotation = 0;
   hasDiedAndAwaitingRemoval = false;
   nulledTicks = 0;
@@ -201,7 +201,7 @@ export abstract class Unit extends Renderable {
     this.perceivedLocation = location;
     this.location = location;
     this.setStats();
-    this.spawnDelay = options.spawnDelay || 0;
+    this.age = options.spawnDelay || 0;
     this.autoRetaliate = true;
     this.currentStats.hitpoint = this.stats.hitpoint;
 
@@ -221,6 +221,7 @@ export abstract class Unit extends Renderable {
   grantXp(xpDrop: XpDrop) {
     // Override me
   }
+
   setStats() {
     // Override me
   }
@@ -267,6 +268,10 @@ export abstract class Unit extends Renderable {
       );
     }
     return this.lastRotation;
+  }
+
+  addedToWorld() {
+    // override me
   }
 
   removedFromWorld() {
@@ -533,7 +538,7 @@ export abstract class Unit extends Renderable {
   }
 
   addProjectile(projectile: Projectile) {
-    if (this.spawnDelay > 0 && this.autoRetaliate && !this.aggro) {
+    if (this.age > 0 && this.autoRetaliate && !this.aggro) {
       this.setAggro(projectile.from);
     }
     this.incomingProjectiles.push(projectile);

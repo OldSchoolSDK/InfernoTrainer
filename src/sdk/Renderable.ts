@@ -15,6 +15,9 @@ export abstract class Renderable {
   private cachedModel: Model | null = null;
   private animationChangeListener: RenderableListener | null = null;
 
+  // in case the animation is set before animationChangeListener is set
+  private queuedAnimationId = -1;
+
   abstract getPerceivedLocation(tickPercent: number): Location3;
 
   /**
@@ -46,6 +49,14 @@ export abstract class Renderable {
 
   get height(): number {
     return this.size;
+  }
+
+  get clickboxHeight(): number | null {
+    return null;
+  }
+
+  get clickboxRadius(): number | null {
+    return null;
   }
 
   abstract get color(): string;
@@ -117,11 +128,17 @@ export abstract class Renderable {
   async playAnimation(index: number, blend = false) {
     if (this.animationChangeListener) {
       return this.animationChangeListener.animationChanged(index, blend);
+    } else {
+      this.queuedAnimationId = index;
     }
   }
 
   setAnimationListener(listener: RenderableListener) {
     this.animationChangeListener = listener;
+    if (this.queuedAnimationId >= 0) {
+      listener.animationChanged(this.queuedAnimationId, false);
+      this.queuedAnimationId = -1;
+    }
   }
 
   clearAnimationListener() {

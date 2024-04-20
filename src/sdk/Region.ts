@@ -63,6 +63,7 @@ export class Region {
 
   addPlayer(player: Player) {
     this.players.push(player);
+    player.addedToWorld();
   }
 
   rightClickActions() {
@@ -92,6 +93,7 @@ export class Region {
   addMob(mob: Mob) {
     if (!mob.region.world) {
       this.mobs.push(mob);
+      mob.addedToWorld();
     } else {
       this.newMobs.push(mob);
     }

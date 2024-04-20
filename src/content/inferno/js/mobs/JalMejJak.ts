@@ -10,7 +10,10 @@ import { ArcProjectileMotionInterpolator, Projectile, ProjectileOptions } from "
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
 import { Assets } from "../../../../sdk/utils/Assets";
+import { Model } from "../../../../sdk/rendering/Model";
+import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 
+const HealerModel = Assets.getAssetUrl("models/zuk_healer.glb");
 const Spark = Assets.getAssetUrl("models/tekton_meteor.glb");
 
 const HEAL_PROJECTILE_SETTINGS: ProjectileOptions = {
@@ -78,7 +81,7 @@ class AoeWeapon extends Weapon {
         const spark3 = new InfernoHealerSpark(from.region, spark3Location, from, to);
         from.region.addEntity(spark3);
       }, 2),
-    );
+        );
     return true;
   }
 
@@ -87,6 +90,7 @@ class AoeWeapon extends Weapon {
   }
 }
 
+const SPAWN_DELAY = 1;
 export class JalMejJak extends Mob {
   private lastAggro: Unit = null;
 
@@ -103,8 +107,7 @@ export class JalMejJak extends Mob {
   }
 
   setStats() {
-    this.stunned = 1;
-
+    this.stunned = SPAWN_DELAY;
     this.weapons = {
       heal: new HealWeapon(),
       aoe: new AoeWeapon(),
@@ -122,6 +125,10 @@ export class JalMejJak extends Mob {
 
     // with boosts
     this.currentStats = JSON.parse(JSON.stringify(this.stats));
+  }
+
+  override addedToWorld() {
+    this.playAnimation(2);
   }
 
   get bonuses(): UnitBonuses {
@@ -177,9 +184,22 @@ export class JalMejJak extends Mob {
     return false;
   }
 
-  // attackIfPossible() {
+  create3dModel(): Model {
+    return GLTFModel.forRenderable(this, HealerModel, 1 / 128, 1.0);
+  }
 
-  // }
+  get idlePoseId() {
+    return 0;
+  }
+
+  get attackAnimationId() {
+    return 1;
+  }
+
+  get deathAnimationId() {
+    return 3;
+  }
+  
   override attackStep() {
     super.attackStep();
     if (this.lastAggro && this.lastAggro != this.aggro) {

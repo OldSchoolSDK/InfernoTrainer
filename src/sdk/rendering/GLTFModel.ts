@@ -208,8 +208,9 @@ export class GLTFModel implements Model, RenderableListener {
       target.add(scene);
       const size = new THREE.Vector3();
       new THREE.Box3().setFromObject(scene).getSize(size);
-      const clickboxHeight = Math.max(this.renderable.size, 0.4 * size.y);
-      this.hullGeometry.scale(0.4 * this.renderable.size, clickboxHeight, 0.4 * this.renderable.size);
+      const clickboxHeight = this.renderable.clickboxHeight ?? Math.max(this.renderable.size, 0.4 * size.y);
+      const clickboxRadius = this.renderable.clickboxRadius ?? this.renderable.size * 0.4;
+      this.hullGeometry.scale(clickboxRadius, clickboxHeight, clickboxRadius);
       this.hullGeometry.translate(0, clickboxHeight / 2 - 0.49, 0);
       // load and start animating
       if (animations.length === 0) {
