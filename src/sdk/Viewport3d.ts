@@ -305,6 +305,16 @@ export class Viewport3d implements ViewportDelegate {
       projectiles.push(...mob.incomingProjectiles);
     });
 
+    region.projectiles.forEach((projectile: Projectile) => {
+      let actor = this.knownActors.get(projectile);
+      if (!actor) {
+        actor = new Actor(projectile);
+        this.knownActors.set(projectile, actor);
+      }
+      // Add all projectiles to scene
+      projectiles.push(projectile);
+    });
+
     projectiles.forEach((projectile) => {
       let actor = this.knownActors.get(projectile);
       if (!actor) {

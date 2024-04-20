@@ -112,6 +112,10 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
     npm run cmd modelBuilder spotanim 1377 name range_projectile
     npm run cmd modelBuilder spotanim 1375 name zuk_projectile
 
+    # these look terrible with normal optimisation so we do this
+    for file in tekton_meteor*.gltf; do
+        gltf-transform optimize --simplify false --compress meshopt $file $(echo $file | sed 's/\.gltf$/\.glb/')
+    done
     npm run cmd modelBuilder spotanim 660 name tekton_meteor
     npm run cmd modelBuilder spotanim 659 name tekton_meteor_splat
 

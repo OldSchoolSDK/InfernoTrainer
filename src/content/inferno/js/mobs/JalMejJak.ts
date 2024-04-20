@@ -6,10 +6,18 @@ import { Unit, UnitBonuses, UnitTypes } from "../../../../sdk/Unit";
 import { Weapon, AttackBonuses } from "../../../../sdk/gear/Weapon";
 import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { InfernoHealerSpark } from "../InfernoHealerSpark";
-import { Projectile, ProjectileOptions } from "../../../../sdk/weapons/Projectile";
+import { ArcProjectileMotionInterpolator, Projectile, ProjectileOptions } from "../../../../sdk/weapons/Projectile";
 import { EntityName } from "../../../../sdk/EntityName";
 import { Random } from "../../../../sdk/Random";
+import { Assets } from "../../../../sdk/utils/Assets";
 
+const Spark = Assets.getAssetUrl("models/tekton_meteor.glb");
+
+const HEAL_PROJECTILE_SETTINGS: ProjectileOptions = {
+  model: Spark,
+  modelScale: 1 / 128,
+  setDelay: 3,
+}
 class HealWeapon extends Weapon {
   calculateHitDelay(distance: number) {
     return 3;
@@ -17,12 +25,21 @@ class HealWeapon extends Weapon {
 
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions): boolean {
     this.damage = -Math.floor(Random.get() * 25);
-    this.registerProjectile(from, to, bonuses, {
-      ...options,
-      hidden: true,
-    });
+    this.registerProjectile(from, to, bonuses, HEAL_PROJECTILE_SETTINGS);
     return true;
   }
+}
+
+class InfernoSparkWeapon extends Weapon {
+  // dummy weapon for the projectile. in theory we should create the splat
+}
+
+const AOE_PROJECTILE_SETTINGS: ProjectileOptions = {
+  model: Spark,
+  modelScale: 1 / 128,
+  motionInterpolator: new ArcProjectileMotionInterpolator(3),
+  setDelay: 4,
+  visualDelayTicks: 0,
 }
 
 class AoeWeapon extends Weapon {
@@ -32,29 +49,35 @@ class AoeWeapon extends Weapon {
 
   attack(from: Unit, to: Unit): boolean {
     const playerLocation = from.aggro.location;
+    // make splat in 2 random spots and where the player is
+    const limitedPlayerLocation = {
+      x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 4),
+      y: playerLocation.y,
+      z: 0,
+    };
+    const spark2Location = {
+      x: from.location.x + (Math.floor(Random.get() * 11) - 5),
+      y: 16 + Math.floor(Random.get() * 4),
+      z: 0,
+    };
+    const spark3Location = {
+      x: from.location.x + (Math.floor(Random.get() * 11) - 5),
+      y: 16 + Math.floor(Random.get() * 4),
+      z: 0,
+    };
+    from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, limitedPlayerLocation, "magic", AOE_PROJECTILE_SETTINGS))
+    from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, spark2Location, "magic", AOE_PROJECTILE_SETTINGS))
+    from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, spark3Location, "magic", AOE_PROJECTILE_SETTINGS))
+
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
-        // make splat in 2 random spots and where the player is
-        const limitedPlayerLocation = {
-          x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 5),
-          y: playerLocation.y,
-        };
         const spark1 = new InfernoHealerSpark(from.region, limitedPlayerLocation, from, to);
         from.region.addEntity(spark1);
-        const spark2Location = {
-          x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-          y: 16 + Math.floor(Random.get() * 5),
-        };
         const spark2 = new InfernoHealerSpark(from.region, spark2Location, from, to);
         from.region.addEntity(spark2);
-
-        const spark3Location = {
-          x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-          y: 16 + Math.floor(Random.get() * 5),
-        };
         const spark3 = new InfernoHealerSpark(from.region, spark3Location, from, to);
         from.region.addEntity(spark3);
-      }, 3),
+      }, 2),
     );
     return true;
   }

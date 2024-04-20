@@ -67,7 +67,7 @@ export class BlackChinchompa extends RangedWeapon {
   }
 
   get attackSpeed() {
-    if (this.attackStyle() === AttackStyle.RAPID) {
+    if (this.attackStyle() === AttackStyle.MEDIUM_FUSE) {
       return 3;
     }
     return 4;

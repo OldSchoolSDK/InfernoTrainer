@@ -16,6 +16,10 @@ import { Sound, SoundCache } from "../../../sdk/utils/SoundCache";
 import FireWaveHit from "../assets/sounds/firewave_hit_163.ogg";
 import { Viewport } from "../../../sdk/Viewport";
 import { Pathing } from "../../../sdk/Pathing";
+import { GLTFModel } from "../../../sdk/rendering/GLTFModel";
+import { Assets } from "../../../sdk/utils/Assets";
+
+const Splat = Assets.getAssetUrl("models/tekton_meteor_splat.glb");
 
 class InfernoSparkWeapon extends Weapon {
   calculateHitDelay(distance: number) {
@@ -39,6 +43,7 @@ export class InfernoHealerSpark extends Entity {
   to: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
+  sparkDelay = 2;
   hasSparked = false;
 
   constructor(region: Region, location: Location, from: Unit, to: Unit) {
@@ -48,7 +53,11 @@ export class InfernoHealerSpark extends Entity {
   }
 
   create3dModel() {
-    return TileMarkerModel.forRenderable(this);
+    return GLTFModel.forRenderable(this, Splat, 1 / 128, -1);
+  }
+
+  get animationIndex() {
+    return 0;
   }
 
   get color() {
@@ -67,11 +76,23 @@ export class InfernoHealerSpark extends Entity {
     return this.dying === 0;
   }
 
+  get drawOutline() {
+    return false;
+  }
+
+  visible() {
+    return this.dying < 0 || this.hasSparked;
+  }
+
   tick() {
-    if (this.dying === -1) {
+    if (this.hasSparked) {
       this.dying = 0;
     }
-    if (!this.hasSparked) {
+    --this.sparkDelay;
+    if (this.sparkDelay == 2) {
+      this.playAnimation(0);
+    }
+    if (!this.hasSparked && this.sparkDelay <= 0) {
       let attemptedVolume =
         1 /
         Pathing.dist(

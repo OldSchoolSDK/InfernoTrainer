@@ -17,6 +17,9 @@ const OUTLINE_SELECTED = 0xff0000;
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 
+// cache a copy of each model
+const globalModelCache: {[name: string]: GLTF} = {};
+
 /**
  * Render the model using one or more GLTF models. If there are multiple models, they are drawn superimposed on the same spot and are expected
  * to have the same animation set.
@@ -51,7 +54,6 @@ export class GLTFModel implements Model, RenderableListener {
   // parent object for all models loaded into this
   private loadedModel: THREE.Object3D | null = null;
   private hasInitialisedModel = false;
-  private modelCache: { [name: string]: GLTF } = {};
   private mixers: THREE.AnimationMixer[] = [];
 
   private lastPoseId = -1;
@@ -175,7 +177,9 @@ export class GLTFModel implements Model, RenderableListener {
   onPoseChanged(newPoseId) {
     this.animations.forEach((animationsForModel, i) => {
       const lastAnimation = animationsForModel[this.lastPoseId];
-      lastAnimation.stop();
+      if (lastAnimation) {
+        lastAnimation.stop();
+      }
       if (this.playingAnimationId >= 0 && !this.playingAnimationCanBlend) {
         return;
       }
@@ -186,30 +190,30 @@ export class GLTFModel implements Model, RenderableListener {
   }
 
   loadAndAddSingleModel(target, model) {
-    if (this.modelCache[model]) {
-      target.add(this.modelCache[model].scene);
-      return;
-    }
-    loader.load(model, (gltf: GLTF) => {
-      this.modelCache[model] = gltf;
+    const processGltf = (gltf: GLTF, clone = false) => {
       const scale = this.scale;
       gltf.scene.name = model;
       // make adjustments
       gltf.scene.scale.set(scale, scale, scale);
-      target.add(gltf.scene);
-      // load and start animating
-      if (gltf.animations.length === 0) {
-        return;
+      const { animations } = gltf;
+      let { scene } = gltf;
+      if (clone) {
+        scene = scene.clone();
       }
+      target.add(scene);
       const size = new THREE.Vector3();
-      new THREE.Box3().setFromObject(gltf.scene).getSize(size);
+      new THREE.Box3().setFromObject(scene).getSize(size);
       const clickboxHeight = Math.max(this.renderable.size, 0.4 * size.y);
       this.hullGeometry.scale(0.4 * this.renderable.size, clickboxHeight, 0.4 * this.renderable.size);
       this.hullGeometry.translate(0, clickboxHeight / 2 - 0.49, 0);
-      const mixer = new THREE.AnimationMixer(gltf.scene);
+      // load and start animating
+      if (animations.length === 0) {
+        return;
+      }
+      const mixer = new THREE.AnimationMixer(scene);
       this.mixers.push(mixer);
       this.animations.push(
-        gltf.animations.map((animation) => {
+        animations.map((animation) => {
           const action = mixer.clipAction(animation);
           action.clampWhenFinished = true;
           action.zeroSlopeAtEnd = false;
@@ -224,7 +228,16 @@ export class GLTFModel implements Model, RenderableListener {
           this.onAnimationFinished(e.action);
         });
       }
-    });
+    }
+    if (model in globalModelCache) {
+      // prevents reloading the model from file
+      processGltf(globalModelCache[model], true);
+    } else {
+      loader.load(model, (gltf: GLTF) => {
+        globalModelCache[model] = gltf;
+        processGltf(gltf);
+      });
+    }
   }
 
   initialiseWholeModel() {

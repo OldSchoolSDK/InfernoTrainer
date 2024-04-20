@@ -9,6 +9,8 @@ import MetronomeSound from "../assets/sounds/bonk.ogg";
 import { Pathing } from "./Pathing";
 import { InputController } from "./Input";
 import { ControlPanelController } from "./ControlPanelController";
+import { Projectile } from "./weapons/Projectile";
+import { filter } from "lodash";
 
 const CLIENT_TICK_MS = 20;
 
@@ -138,6 +140,18 @@ export class World {
       });
       region.newMobs.forEach((mob) => mob.attackStep());
     }
+
+    region.projectiles = filter(
+      region.projectiles,
+      (projectile: Projectile) => !projectile.shouldDestroy(),
+    );
+    region.projectiles.forEach((projectile: Projectile) => {
+      projectile.onTick();
+
+      if (projectile.remainingDelay === 0) {
+        projectile.onHit();
+      }
+    });
 
     region.players.forEach((player: Player) => {
       player.movementStep();
