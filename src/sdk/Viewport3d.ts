@@ -140,18 +140,22 @@ export class Viewport3d implements ViewportDelegate {
     switch (e.key) {
       case "ArrowLeft":
       case "a":
+      case "A":
         this.yawDelta = -2;
         break;
       case "ArrowRight":
       case "d":
+      case "D":
         this.yawDelta = 2;
         break;
       case "ArrowUp":
       case "w":
+      case "W":
         this.pitchDelta = -1;
         break;
       case "ArrowDown":
       case "s":
+      case "S":
         this.pitchDelta = 1;
         break;
     }
@@ -163,12 +167,16 @@ export class Viewport3d implements ViewportDelegate {
       case "ArrowRight":
       case "a":
       case "d":
+      case "A":
+      case "D":
         this.yawDelta = 0;
         break;
       case "ArrowUp":
       case "ArrowDown":
       case "w":
       case "s":
+      case "W":
+      case "S":
         this.pitchDelta = 0;
         break;
     }
