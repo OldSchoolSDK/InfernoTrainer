@@ -62,6 +62,8 @@ export class Viewport3d implements ViewportDelegate {
     this.uiCanvas = new OffscreenCanvas(this.canvasDimensions.width, this.canvasDimensions.height);
     this.uiCanvasContext = this.uiCanvas.getContext("2d");
 
+    this.checkGpu();
+
     this.camera = new THREE.PerspectiveCamera(70, this.canvasDimensions.width / this.canvasDimensions.height, 0.1, 50);
     this.raycaster = new THREE.Raycaster();
     this.raycaster.params.Points.threshold = 0.1;
@@ -113,6 +115,23 @@ export class Viewport3d implements ViewportDelegate {
     this.scene.add(this.selectedTileMesh);
 
     this.animate();
+  }
+
+  checkGpu() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext("webgl");
+      const debugInfo = gl?.getExtension("WEBGL_debug_renderer_info");
+      const gpuInfo: string = gl?.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)?.toLowerCase() ?? "none";
+      if (gpuInfo.includes("nvidia") || gpuInfo.includes("gpu") || gpuInfo.includes("geforce") || gpuInfo.includes("amd") || gpuInfo.includes("radeon")) {
+        return;
+      }
+      if (gpuInfo === "none" || gpuInfo.includes("google") || gpuInfo.includes("apple") || gpuInfo.includes("intel")) {
+        document.getElementById("gpu_warning").innerHTML = `<span style="color: #FF6666">Software rendering detected. Framerate may be low. Turn on Hardware Acceleration in your browser if you have a GPU.<br />${gpuInfo}</span>`;
+      }
+    } catch(err) {
+      console.warn('error trying to detect gpu', err);
+    }
   }
 
   // implementation from https://codepen.io/seanwasere/pen/BaMBoPd

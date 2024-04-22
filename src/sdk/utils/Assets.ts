@@ -16,10 +16,10 @@ export class Assets {
     Assets.loadingAssetUrls.push(url);
     Assets.assetCount++;
     Promise.resolve().then(async () => {
-      console.log(`Preloading asset: ${url}`);
+      console.trace(`Preloading asset: ${url}`);
       const response = await fetch(url);
       const bytes = await response.arrayBuffer();
-      console.log(`Preloaded asset: ${url}, ${response.statusText}: ${bytes.byteLength}`);
+      console.trace(`Preloaded asset: ${url}, ${response.statusText}: ${bytes.byteLength}`);
       Assets.onProgressFns.forEach((onProgressFns) =>
         onProgressFns(this.assetCount - this.loadingAssetUrls.length, this.assetCount),
       );
