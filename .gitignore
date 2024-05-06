@@ -105,3 +105,7 @@ typings/
 
 # TernJS port file
 .tern-port
+
+/_bundles/
+/lib/
+/lib-esm/
