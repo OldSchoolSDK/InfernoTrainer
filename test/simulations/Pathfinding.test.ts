@@ -1,10 +1,8 @@
 import { Player } from "../../src/sdk/Player";
 import { World } from "../../src/sdk/World";
-import { Region } from "../../src/sdk/Region";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-import { InfernoPillar } from "../../src/content/inferno/js/InfernoPillar";
 import { TestRegion } from "../utils/TestRegion";
 
 describe("pathfinding tests", () => {
@@ -85,7 +83,15 @@ describe("pathfinding tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    region.addEntity(new InfernoPillar(region, { x: 16, y: 16 }));
+    
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 16, y: 16 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 17, y: 16 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 18, y: 16 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 16, y: 15 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 18, y: 15 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 16, y: 14 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 17, y: 14 }));
+    region.addEntity(new InvisibleMovementBlocker(region, { x: 18, y: 14 }));
 
     player.moveTo(20, 20);
 
