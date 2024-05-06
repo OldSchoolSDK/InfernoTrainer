@@ -5,7 +5,7 @@ import { CollisionType } from "../sdk/Collision";
 import { Settings } from "../sdk/Settings";
 import { Location } from "../sdk/Location";
 import { LineOfSightMask } from "../sdk/LineOfSight";
-import { EntityName } from "../sdk/EntityName";
+import { EntityNames } from "../sdk/EntityName";
 import { Region } from "../sdk/Region";
 import { Model } from "../sdk/rendering/Model";
 import { TileMarkerModel } from "../sdk/rendering/TileMarkerModel";
@@ -22,8 +22,8 @@ export class TileMarker extends Entity {
     this.saveable = saveable;
   }
 
-  entityName(): EntityName {
-    return EntityName.TILE_MARKER;
+  entityName() {
+    return EntityNames.TILE_MARKER;
   }
 
   get collisionType() {

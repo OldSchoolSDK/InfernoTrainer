@@ -3,7 +3,7 @@ import { TileMarker } from "../content/TileMarker";
 import { ClickAnimation } from "./ClickAnimation";
 import { MenuOption } from "./ContextMenu";
 import { Entity } from "./Entity";
-import { EntityName } from "./EntityName";
+import { EntityNames } from "./EntityName";
 import { Item } from "./Item";
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
@@ -261,7 +261,7 @@ export class ClickController {
           let removed = false;
           const entitiesAtPoint = Pathing.entitiesAtPoint(region, x, y, 1);
           entitiesAtPoint.forEach((entity: TileMarker) => {
-            if (entity.entityName() === EntityName.TILE_MARKER && entity.saveable) {
+            if (entity.entityName() === EntityNames.TILE_MARKER && entity.saveable) {
               region.removeEntity(entity);
               removed = true;
             }
@@ -272,7 +272,7 @@ export class ClickController {
           }
 
           Settings.tile_markers = filter(
-            filter(region.entities, (entity: Entity) => entity.entityName() === EntityName.TILE_MARKER),
+            filter(region.entities, (entity: Entity) => entity.entityName() === EntityNames.TILE_MARKER),
             (tileMarker: TileMarker) => tileMarker.saveable,
           ).map((entity: Entity) => entity.location);
 

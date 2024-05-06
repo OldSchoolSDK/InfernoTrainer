@@ -2,7 +2,6 @@
 import { Location } from "./Location";
 import { Settings } from "./Settings";
 import { UnitTypes } from "./Unit";
-import { EntityName } from "./EntityName";
 import { Region } from "./Region";
 import { clamp } from "lodash";
 import { CollisionType } from "./Collision";
@@ -65,7 +64,7 @@ export class Entity extends Renderable {
     ];
   }
 
-  entityName(): EntityName {
+  entityName() {
     return null;
   }
 
@@ -108,7 +107,8 @@ export class Entity extends Renderable {
     screenPosition: Location,
     context: OffscreenCanvasRenderingContext2D,
     scale: number,
-    hitsplatAbove = true) {
+    hitsplatAbove = true,
+  ) {
     // Override me
   }
 
