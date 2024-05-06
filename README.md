@@ -1,7 +1,8 @@
-# Inferno Trainer
+# OldSchoolSDK
 
-- [Click here to try the Inferno Trainer](https://www.infernotrainer.com/)
-- [Click here to beta test the Inferno Trainer](https://beta.infernotrainer.com/)
+- [Click here to try the original Inferno Trainer (which this SDK was based on)](https://www.infernotrainer.com/)
+- [Click here to try the 3D Inferno Trainer](https://inferno.colosim.com/)
+- [Click here to try the 3D Sol Heredit Trainer](https://colosim.com/)
 - [Join our Discord](https://discord.gg/Z3ZyY7Yzt5)
 
 ## What is this project?
@@ -10,13 +11,7 @@ This project stemmed from my interest in Old School Runescape's Inferno, and my 
 
 ## How do I use it?
 
-### Pick your own waves
-
-If you want to practice a wave, click one of the links above. You can type in a wave and it will produce a random spawn, and you can re-play the exact spawn if you wish.
-
-### Practice a wave I failed in-game
-
-Alternatively, if you are practicing the Inferno and have the Inferno Stats plugin (Available on RuneLite's Plugin Hub), you can click a wave in the panel and it will load the simulation with the exact spawn. I would recommend you disable the "Hide when outside of the Inferno" feature for when you plank.
+This is published at `@supalosa/oldschool-trainer-sdk`. Please see [here](https://github.com/Supalosa/InfernoTrainer) for example implementations. Better instructions will come soon.
 
 ## I found a bug!
 
@@ -28,10 +23,6 @@ Sure. Right now the code is undergoing rapid development and the API is not stab
 
 ## Development notes
 
-Use Node 16 for now. There's an SSL error on version >= 18.
-
-    npm run start
-
-Running test
+Running tests
 
     npx jest

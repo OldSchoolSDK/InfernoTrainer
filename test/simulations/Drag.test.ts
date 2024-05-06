@@ -3,9 +3,8 @@ import { World } from "../../src/sdk/World";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-import { InfernoPillar } from "../../src/content/inferno/js/InfernoPillar";
-import { JalXil } from "../../src/content/inferno/js/mobs/JalXil";
 import { TestRegion } from "../utils/TestRegion";
+import { TestNpc } from "../utils/TestNpc";
 
 
 // check that we accurately drag around pillars in the expected direction
@@ -46,8 +45,16 @@ describe("drag tests", () => {
     region.addEntity(new Wall(region, { x: 29, y: 2 }));
     region.addEntity(new Wall(region, { x: 29, y: 1 }));
     region.addEntity(new Wall(region, { x: 29, y: 0 }));
-
-    region.addEntity(new InfernoPillar(region, { x: 28, y: 21 }));
+  
+    region.addEntity(new Wall(region, { x: 28, y: 21 }));
+    region.addEntity(new Wall(region, { x: 29, y: 21 }));
+    region.addEntity(new Wall(region, { x: 30, y: 21 }));
+    region.addEntity(new Wall(region, { x: 28, y: 20 }));
+    region.addEntity(new Wall(region, { x: 29, y: 20 }));
+    region.addEntity(new Wall(region, { x: 30, y: 20 }));
+    region.addEntity(new Wall(region, { x: 28, y: 19 }));
+    region.addEntity(new Wall(region, { x: 29, y: 19 }));
+    region.addEntity(new Wall(region, { x: 30, y: 19 }));
 
     Viewport.setupViewport(region, true);
   });
@@ -58,7 +65,7 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    const jalxil = new JalXil(region, { x: 29, y: 24 }, { aggro: player });
+    const jalxil = new TestNpc(region, { x: 29, y: 24 }, { aggro: player });
     region.addMob(jalxil);
 
     player.setAggro(jalxil);
@@ -77,7 +84,7 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    const jalxil = new JalXil(region, { x: 29, y: 24 }, { aggro: player });
+    const jalxil = new TestNpc(region, { x: 29, y: 24 }, { aggro: player });
     region.addMob(jalxil);
 
     player.setAggro(jalxil);
@@ -96,7 +103,7 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    const jalxil = new JalXil(region, { x: 29, y: 24 }, { aggro: player });
+    const jalxil = new TestNpc(region, { x: 29, y: 24 }, { aggro: player });
     region.addMob(jalxil);
 
     player.setAggro(jalxil);
@@ -119,8 +126,8 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    region.addMob(new JalXil(region, { x: 29, y: 24 }, { aggro: player }));
-    const backJalXil = new JalXil(region, { x: 29, y: 27 }, { aggro: player });
+    region.addMob(new TestNpc(region, { x: 29, y: 24 }, { aggro: player }));
+    const backJalXil = new TestNpc(region, { x: 29, y: 27 }, { aggro: player });
     region.addMob(backJalXil);
 
     player.setAggro(backJalXil);
@@ -141,8 +148,8 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    region.addMob(new JalXil(region, { x: 29, y: 24 }, { aggro: player }));
-    const backJalXil = new JalXil(region, { x: 29, y: 27 }, { aggro: player });
+    region.addMob(new TestNpc(region, { x: 29, y: 24 }, { aggro: player }));
+    const backJalXil = new TestNpc(region, { x: 29, y: 27 }, { aggro: player });
     region.addMob(backJalXil);
 
     player.setAggro(backJalXil);
@@ -163,8 +170,8 @@ describe("drag tests", () => {
     region.addPlayer(player);
     Viewport.viewport.setPlayer(player);
 
-    region.addMob(new JalXil(region, { x: 29, y: 24 }, { aggro: player }));
-    const backJalXil = new JalXil(region, { x: 29, y: 27 }, { aggro: player });
+    region.addMob(new TestNpc(region, { x: 29, y: 24 }, { aggro: player }));
+    const backJalXil = new TestNpc(region, { x: 29, y: 27 }, { aggro: player });
     region.addMob(backJalXil);
 
     player.setAggro(backJalXil);

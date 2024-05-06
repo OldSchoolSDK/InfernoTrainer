@@ -67,7 +67,6 @@ export class Settings {
     window.localStorage.setItem("playsAreaAudio", String(Settings.playsAreaAudio));
     window.localStorage.setItem("inputDelay", String(Settings.inputDelay));
     window.localStorage.setItem("rotated", Settings.rotated);
-    window.localStorage.setItem("region", Settings.region);
     window.localStorage.setItem("displayXpDrops", String(Settings.displayXpDrops));
 
     window.localStorage.setItem("inventory_key", Settings.inventory_key);
@@ -120,7 +119,6 @@ export class Settings {
     Settings.displayFeedback = !(window.localStorage.getItem("displayFeedback") === "false" || false);
     Settings.metronome = window.localStorage.getItem("metronome") === "true" || false;
 
-    Settings.region = "inferno";
     Settings.displayXpDrops = !(window.localStorage.getItem("displayXpDrops") === "false" || false);
 
     Settings.inventory_key = window.localStorage.getItem("inventory_key") || "F4";

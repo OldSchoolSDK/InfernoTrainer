@@ -160,7 +160,7 @@ export class ClickController {
     if (e.button !== 0) {
       return;
     }
-    const region = Viewport.viewport.player.region; // TODO: does this ned to go back? : as InfernoRegion;
+    const region = Viewport.viewport.player.region;
     const world = Viewport.viewport.player.region.world;
     const player = Viewport.viewport.player;
 
@@ -194,7 +194,7 @@ export class ClickController {
   }
 
   rightClickDown(e: MouseEvent) {
-    const region = Viewport.viewport.player.region; // TODO: Redo as InfernoRegion;
+    const region = Viewport.viewport.player.region;
     const world = Viewport.viewport.player.region.world;
 
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
