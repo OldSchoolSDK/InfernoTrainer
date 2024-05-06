@@ -1,0 +1,2 @@
+!function(e,o){"object"==typeof exports&&"object"==typeof module?module.exports=o():"function"==typeof define&&define.amd?define("OldSchoolSDK",[],o):"object"==typeof exports?exports.OldSchoolSDK=o():e.OldSchoolSDK=o()}(self,(()=>(()=>{"use strict";var e={};return(()=>{var o=e;Object.defineProperty(o,"__esModule",{value:!0}),o.BLAH=void 0,o.BLAH=1})(),e})()));
+//# sourceMappingURL=main.js.map

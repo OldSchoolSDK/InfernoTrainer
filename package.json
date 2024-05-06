@@ -1,11 +1,12 @@
 {
   "name": "@supalosa/oldschool-trainer-sdk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "lib/src/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "start": "npx webpack serve",
-    "build": "webpack",
+    "clean": "rm -rf _bundles lib lib-esm",
+    "build": "npm run clean && webpack",
     "lint": "eslint . --ext .ts --fix",
     "prettier": "npx prettier --write ."
   },
@@ -19,6 +20,10 @@
   "bugs": {
     "url": "https://github.com/OldSchoolSDK/Engine/issues"
   },
+  "files": [
+    "lib",
+    "_bundles"
+  ],
   "homepage": "https://github.com/OldSchoolSDK/Engine#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",

@@ -1,6 +1,6 @@
 "use strict";
 
-export enum EntityName {
+export enum EntityNames {
   TILE_MARKER = "Tile Marker",
   INFERNO_SHIELD = "Inferno Shield",
   TZ_KAL_ZUK = "TzKal-Zuk",

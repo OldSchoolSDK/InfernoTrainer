@@ -1,7 +1,6 @@
 import HealSplat from "../assets/images/hitsplats/heal.png";
 import MissSplat from "../assets/images/hitsplats/miss.png";
 import DamageSplat from "../assets/images/hitsplats/damage.png";
-import { Settings } from "./Settings";
 import { LineOfSight, LineOfSightMask } from "./LineOfSight";
 import { remove, filter, clamp } from "lodash";
 import { BasePrayer } from "./BasePrayer";
@@ -22,7 +21,6 @@ import { Ring } from "./gear/Ring";
 import { Cape } from "./gear/Cape";
 import { Ammo } from "./gear/Ammo";
 import { SetEffect } from "./SetEffect";
-import { EntityName } from "./EntityName";
 import { Item } from "./Item";
 import { PrayerController } from "./PrayerController";
 import { Region } from "./Region";
@@ -149,7 +147,7 @@ export abstract class Unit extends Renderable {
     return 1.0;
   }
 
-  mobName(): EntityName {
+  mobName(): string {
     return null;
   }
 
