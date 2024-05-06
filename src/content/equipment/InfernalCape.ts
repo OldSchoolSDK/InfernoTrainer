@@ -1,45 +1,44 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from "../../assets/images/equipment/Masori_mask_(f).png";
+import InventImage from "../../assets/images/equipment/Infernal_cape.png";
 import { ItemName } from "../../sdk/ItemName";
 import { Assets } from "../../sdk/utils/Assets";
-import { Helmet } from "../../sdk/gear/Helmet";
+import { Cape } from "../../sdk/gear/Cape";
 
-export class MasoriMaskF extends Helmet {
+export class InfernalCape extends Cape {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+
+  get itemName(): ItemName {
+    return ItemName.INFERNAL_CAPE;
+  }
+  get weight(): number {
+    return 1.814;
+  }
 
   get inventoryImage() {
     return InventImage;
   }
-  get itemName(): ItemName {
-    return ItemName.MASORI_MASK_F;
-  }
-
-  get weight(): number {
-    return 10;
-  }
-
   constructor() {
     super();
     this.bonuses = {
       attack: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: -1,
-        range: 12,
+        stab: 4,
+        slash: 4,
+        crush: 4,
+        magic: 1,
+        range: 1,
       },
       defence: {
-        stab: 8,
-        slash: 10,
+        stab: 12,
+        slash: 12,
         crush: 12,
         magic: 12,
-        range: 9,
+        range: 12,
       },
       other: {
-        meleeStrength: 0,
-        rangedStrength: 2,
+        meleeStrength: 8,
+        rangedStrength: 0,
         magicDamage: 0,
-        prayer: 1,
+        prayer: 2,
       },
       targetSpecific: {
         undead: 0,
@@ -49,7 +48,6 @@ export class MasoriMaskF extends Helmet {
   }
 
   override get model() {
-    return this.Model;
+    return Assets.getAssetUrl("models/player_infernal_cape.glb");
   }
-  Model = Assets.getAssetUrl("models/player_masori_mask__f_.glb");
 }

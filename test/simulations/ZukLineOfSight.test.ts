@@ -7,26 +7,17 @@ import { Wall } from "../../src/content/Wall";
 import { TzKalZuk } from "../../src/content/inferno/js/mobs/TzKalZuk";
 import { Mob } from "../../src/sdk/Mob";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-
-class TestZukRegion extends Region {
-  get width(): number {
-    return 51;
-  }
-
-  get height(): number {
-    return 57;
-  }
-}
+import { TestRegion } from "../utils/TestRegion";
 
 // Zuk LOS (dragging behaviour) tests
 describe("player LOS in zuk fight", () => {
-  let region: TestZukRegion;
+  let region: TestRegion;
   let world: World;
 
   let zuk: Mob;
 
   beforeEach(() => {
-    region = new TestZukRegion();
+    region = new TestRegion(51, 57);
     world = new World();
     region.world = world;
     world.addRegion(region);

@@ -1,21 +1,19 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from "../../assets/images/equipment/Masori_mask_(f).png";
+import InventImage from "../../assets/images/equipment/Ultor_ring.png";
+import { Ring } from "../../sdk/gear/Ring";
 import { ItemName } from "../../sdk/ItemName";
-import { Assets } from "../../sdk/utils/Assets";
-import { Helmet } from "../../sdk/gear/Helmet";
 
-export class MasoriMaskF extends Helmet {
+export class UltorRing extends Ring {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   get inventoryImage() {
     return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.MASORI_MASK_F;
+    return ItemName.ULTOR_RING;
   }
-
   get weight(): number {
-    return 10;
+    return 0.012;
   }
 
   constructor() {
@@ -25,21 +23,21 @@ export class MasoriMaskF extends Helmet {
         stab: 0,
         slash: 0,
         crush: 0,
-        magic: -1,
-        range: 12,
+        magic: 0,
+        range: 0,
       },
       defence: {
-        stab: 8,
-        slash: 10,
-        crush: 12,
-        magic: 12,
-        range: 9,
+        stab: 0,
+        slash: 0,
+        crush: 0,
+        magic: 0,
+        range: 0,
       },
       other: {
-        meleeStrength: 0,
-        rangedStrength: 2,
+        meleeStrength: 12,
+        rangedStrength: 0,
         magicDamage: 0,
-        prayer: 1,
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
@@ -47,9 +45,4 @@ export class MasoriMaskF extends Helmet {
       },
     };
   }
-
-  override get model() {
-    return this.Model;
-  }
-  Model = Assets.getAssetUrl("models/player_masori_mask__f_.glb");
 }

@@ -58,6 +58,12 @@ import { Chest } from "../../../sdk/gear/Chest";
 import { Legs } from "../../../sdk/gear/Legs";
 import { Player } from "../../../sdk/Player";
 import { BlackChinchompa } from "../../weapons/BlackChinchompa";
+import { ScytheOfVitur } from "../../weapons/ScytheOfVitur";
+import { TorvaFullhelm } from "../../equipment/TorvaFullhelm";
+import { InfernalCape } from "../../equipment/InfernalCape";
+import { TorvaPlatebody } from "../../equipment/TorvaPlatebody";
+import { TorvaPlatelegs } from "../../equipment/TorvaPlatelegs";
+import { PrimordialBoots } from "../../equipment/PrimordialBoots";
 import { BrowserUtils } from "../../../sdk/utils/BrowserUtils";
 
 export class InfernoLoadout {
@@ -69,6 +75,54 @@ export class InfernoLoadout {
     this.wave = wave;
     this.loadoutType = loadoutType;
     this.onTask = onTask;
+  }
+
+  loadoutMaxMelee() {
+    return {
+      equipment: {
+        weapon: new ScytheOfVitur(),
+        offhand: null,
+        helmet: new TorvaFullhelm(),
+        necklace: new OccultNecklace(), // TODO
+        cape: new InfernalCape(),
+        ammo: new DragonArrows(),
+        chest: new TorvaPlatebody(),
+        legs: new TorvaPlatelegs(),
+        feet: new PrimordialBoots(),
+        gloves: new ZaryteVambraces(), // TODO
+        ring: new RingOfSufferingImbued(), // TODO
+      },
+      inventory: [
+        new TwistedBow(),
+        new MasoriBodyF(),
+        new DizanasQuiver(),
+        new PegasianBoots(),
+        new NecklaceOfAnguish(),
+        new MasoriChapsF(),
+        new MasoriMaskF(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new BastionPotion(),
+        new StaminaPotion(),
+        new SuperRestore(),
+        new SuperRestore(),
+      ],
+    };
   }
 
   loadoutMaxTbowSpeedrunner() {
@@ -408,9 +462,12 @@ export class InfernoLoadout {
       case "rcb":
         loadout = this.loadoutRcb();
         break;
+      case "max_melee":
+        loadout = this.loadoutMaxMelee();
+        break;
     }
 
-    if (this.wave > 66) {
+    if (this.wave > 66 && this.wave <= 69) {
       // switch necklace to range dps necklace
       loadout.inventory[this.findItemByName(loadout.inventory, ItemName.NECKLACE_OF_ANGUISH)] = new OccultNecklace();
       loadout.equipment.necklace = new NecklaceOfAnguish();

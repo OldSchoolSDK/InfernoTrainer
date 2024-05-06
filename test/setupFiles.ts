@@ -33,7 +33,16 @@ jest.spyOn(document, "getElementById").mockImplementation((elementId: string) =>
   return c;
 });
 
+const nextRandom = [];
+
+export const forceRandom = (value: number) => {
+  nextRandom.push(value);
+};
+
 Random.setRandom(() => {
+  if (nextRandom.length > 0) {
+    return nextRandom.shift();
+  }
   Random.memory = (Random.memory + 13.37) % 180;
   return Math.abs(Math.sin(Random.memory * 0.0174533));
 });

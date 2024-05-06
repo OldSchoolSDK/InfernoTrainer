@@ -35,6 +35,7 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: `index.html`, to: "", context: `src/` },
+        { from: `index.html`, to: "colosseum.html", context: `src/` },
         { from: `manifest.json`, to: "", context: `src/` },
         {
           from: `assets/images/webappicon.png`,
@@ -57,6 +58,10 @@ const config = {
       {
         test: /\.(png|svg|jpg|jpeg|gif|ogg|gltf|glb)$/i,
         type: "asset/resource",
+      },
+      {
+        test: /\.html$/i,
+        loader: "html-loader",
       },
     ],
   },

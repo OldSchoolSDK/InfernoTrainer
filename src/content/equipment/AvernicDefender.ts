@@ -1,45 +1,44 @@
 import { ImageLoader } from "../../sdk/utils/ImageLoader";
-import InventImage from "../../assets/images/equipment/Masori_mask_(f).png";
+import InventImage from "../../assets/images/equipment/Avernic_defender.png";
+import { Offhand } from "../../sdk/gear/Offhand";
 import { ItemName } from "../../sdk/ItemName";
 import { Assets } from "../../sdk/utils/Assets";
-import { Helmet } from "../../sdk/gear/Helmet";
 
-export class MasoriMaskF extends Helmet {
+export class AvernicDefender extends Offhand {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   get inventoryImage() {
     return InventImage;
   }
   get itemName(): ItemName {
-    return ItemName.MASORI_MASK_F;
+    return ItemName.AVERNIC_DEFENDER;
   }
-
   get weight(): number {
-    return 10;
+    return 0.453;
   }
 
   constructor() {
     super();
     this.bonuses = {
       attack: {
-        stab: 0,
-        slash: 0,
-        crush: 0,
-        magic: -1,
-        range: 12,
+        stab: 30,
+        slash: 29,
+        crush: 28,
+        magic: -5,
+        range: -4,
       },
       defence: {
-        stab: 8,
-        slash: 10,
-        crush: 12,
-        magic: 12,
-        range: 9,
+        stab: 30,
+        slash: 29,
+        crush: 28,
+        magic: -5,
+        range: -4,
       },
       other: {
-        meleeStrength: 0,
-        rangedStrength: 2,
+        meleeStrength: 8,
+        rangedStrength: 0,
         magicDamage: 0,
-        prayer: 1,
+        prayer: 0,
       },
       targetSpecific: {
         undead: 0,
@@ -48,8 +47,8 @@ export class MasoriMaskF extends Helmet {
     };
   }
 
+  Model = Assets.getAssetUrl("models/player_avernic_defender.glb");
   override get model() {
     return this.Model;
   }
-  Model = Assets.getAssetUrl("models/player_masori_mask__f_.glb");
 }

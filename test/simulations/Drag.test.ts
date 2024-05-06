@@ -1,24 +1,12 @@
 import { Player } from "../../src/sdk/Player";
 import { World } from "../../src/sdk/World";
-import { TwistedBow } from "../../src/content/weapons/TwistedBow";
-import { Region } from "../../src/sdk/Region";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
-import { TzKalZuk } from "../../src/content/inferno/js/mobs/TzKalZuk";
-import { Mob } from "../../src/sdk/Mob";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
 import { InfernoPillar } from "../../src/content/inferno/js/InfernoPillar";
 import { JalXil } from "../../src/content/inferno/js/mobs/JalXil";
+import { TestRegion } from "../utils/TestRegion";
 
-class TestRegion extends Region {
-  get width(): number {
-    return 51;
-  }
-
-  get height(): number {
-    return 57;
-  }
-}
 
 // check that we accurately drag around pillars in the expected direction
 describe("drag tests", () => {
@@ -26,7 +14,7 @@ describe("drag tests", () => {
   let world: World;
 
   beforeEach(() => {
-    region = new TestRegion();
+    region = new TestRegion(51, 57);
     world = new World();
     region.world = world;
     world.addRegion(region);

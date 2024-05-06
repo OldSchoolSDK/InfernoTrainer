@@ -5,23 +5,14 @@ import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
 import { InfernoPillar } from "../../src/content/inferno/js/InfernoPillar";
-
-class TestRegion extends Region {
-  get width(): number {
-    return 51;
-  }
-
-  get height(): number {
-    return 57;
-  }
-}
+import { TestRegion } from "../utils/TestRegion";
 
 describe("pathfinding tests", () => {
   let region: TestRegion;
   let world: World;
 
   beforeEach(() => {
-    region = new TestRegion();
+    region = new TestRegion(51, 57);
     world = new World();
     region.world = world;
     world.addRegion(region);
