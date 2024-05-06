@@ -2,11 +2,15 @@
 import { Player } from "./Player";
 import { World } from "./World";
 import { Viewport, ViewportDelegate } from "./Viewport";
-import { CardinalDirection, Region } from "./Region";
+import { CardinalDirection, GroundItems, Region } from "./Region";
 import { Settings } from "./Settings";
 import { Renderable } from "./Renderable";
 import { Unit } from "./Unit";
 import { Pathing } from "./Pathing";
+import { Mob } from "./Mob";
+import { Collision } from "./Collision";
+import { Item } from "./Item";
+import _ from "lodash";
 
 export class Viewport2d implements ViewportDelegate {
   async initialise(world: World, region: Region) {
@@ -72,7 +76,7 @@ export class Viewport2d implements ViewportDelegate {
     };
   }
 
-  translateClick(offsetX, offsetY, world, viewport) {
+  translateClick(offsetX, offsetY, world: World, viewport: Viewport) {
     const { viewportX, viewportY } = viewport.getViewport(world.tickPercent);
     let x: number = offsetX + viewportX * Settings.tileSize;
     let y: number = offsetY + viewportY * Settings.tileSize;
@@ -81,11 +85,42 @@ export class Viewport2d implements ViewportDelegate {
       x = viewport.width * Settings.tileSize - offsetX + viewportX * Settings.tileSize;
       y = viewport.height * Settings.tileSize - offsetY + viewportY * Settings.tileSize;
     }
+    const adjustedX = x / Settings.tileSize;
+    const adjustedY = y / Settings.tileSize;
+    const mobs: Mob[] = [];
+    const players: Player[] = [];
+    const groundItems: Item[] = [];
+    const region = viewport.player.region;
+
+    mobs.push(
+      ...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, adjustedX, adjustedY, world.tickPercent),
+    );
+    players.push(
+      ...Collision.collidesWithAnyPlayersAtPerceivedDisplayLocation(
+        region,
+        adjustedX,
+        adjustedY,
+        world.tickPercent,
+      ).filter((player: Player) => player !== Viewport.viewport.player),
+    );
+    groundItems.push(...region.groundItemsAtLocation(Math.floor(adjustedX), Math.floor(adjustedY)));
+    if (mobs.length > 0 || players.length > 0 || groundItems.length > 0) {
+      return {
+        type: "entities" as const,
+        mobs: _.uniq(mobs),
+        players: players,
+        groundItems: groundItems,
+        location: {
+          x: adjustedX,
+          y: adjustedY,
+        },
+      };
+    }
     return {
       type: "coordinate" as const,
       location: {
-        x: x / Settings.tileSize,
-        y: y / Settings.tileSize,
+        x: adjustedX,
+        y: adjustedY,
       },
     };
   }

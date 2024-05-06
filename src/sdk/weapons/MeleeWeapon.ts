@@ -1,9 +1,17 @@
+import { AttackStylesController } from "../AttackStylesController";
+import { PrayerGroups } from "../BasePrayer";
 import { EquipmentTypes } from "../Equipment";
 import { Weapon, AttackBonuses } from "../gear/Weapon";
 import { Unit, UnitTypes } from "../Unit";
-import { XpDrop } from "../XpDrop";
+import { ProjectileOptions } from "./Projectile";
 
 export class MeleeWeapon extends Weapon {
+  constructor(projectileOptions: ProjectileOptions = {}) {
+    super({
+      hidden: true,
+      ...projectileOptions
+    });
+  }
   get type() {
     return EquipmentTypes.WEAPON;
   }
@@ -16,23 +24,22 @@ export class MeleeWeapon extends Weapon {
   _calculatePrayerEffects(from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {};
     if (from.type !== UnitTypes.MOB && from.prayerController) {
-      const offensiveAttack = from.prayerController.matchFeature("offensiveAttack");
+      const offensiveAttack = from.prayerController.matchGroup(PrayerGroups.ACCURACY);
       if (offensiveAttack) {
         bonuses.effectivePrayers.attack = offensiveAttack;
       }
 
-      const offensiveStrength = from.prayerController.matchFeature("offensiveStrength");
+      const offensiveStrength = from.prayerController.matchGroup(PrayerGroups.STRENGTH);
       if (offensiveStrength) {
         bonuses.effectivePrayers.strength = offensiveStrength;
-      }
-
-      const defence = from.prayerController.matchFeature("defence");
-      if (defence) {
-        bonuses.effectivePrayers.defence = defence;
       }
     }
 
     if (to.type !== UnitTypes.MOB && to.prayerController) {
+      const defence = to.prayerController.matchGroup(PrayerGroups.DEFENCE);
+      if (defence) {
+        bonuses.effectivePrayers.defence = defence;
+      }
       const overhead = to.prayerController.overhead();
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead;
@@ -71,8 +78,14 @@ export class MeleeWeapon extends Weapon {
         prayerMultiplier = 1.23;
       }
     }
+
+    if (from.type === UnitTypes.PLAYER) {
+      bonuses.styleStrengthBonus = AttackStylesController.controller.getWeaponStrengthBonus(this.attackStyle());
+    } else {
+      bonuses.styleStrengthBonus = 0;
+    }
     return Math.floor(
-      (Math.floor(from.currentStats.strength * prayerMultiplier) + bonuses.styleBonus + 8) * bonuses.voidMultiplier,
+      (Math.floor(from.currentStats.strength * prayerMultiplier) + bonuses.styleStrengthBonus + 8) * bonuses.voidMultiplier,
     );
   }
 

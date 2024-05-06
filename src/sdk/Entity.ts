@@ -75,7 +75,7 @@ export class Entity extends Renderable {
     this.region = region;
   }
 
-  getPerceivedLocation() {
+  getPerceivedLocation(tickPercent: number) {
     return {
       ...this.location,
       z: 0,
@@ -84,6 +84,10 @@ export class Entity extends Renderable {
 
   getPerceivedRotation() {
     return 0;
+  }
+
+  getTrueLocation() {
+    return this.location;
   }
 
   get color() {

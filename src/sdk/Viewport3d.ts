@@ -17,12 +17,11 @@ import { Actor } from "./rendering/Actor";
 import _ from "lodash";
 import { Unit } from "./Unit";
 import { Projectile } from "./weapons/Projectile";
-import { TileMarkerModel } from "./rendering/TileMarkerModel";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
 
-const MIN_PITCH = -1;
+const MIN_PITCH = -Math.PI / 2;
 const MAX_PITCH = 0.1;
 
 const FLOOR_Y_POS = -0.5;
@@ -376,6 +375,7 @@ export class Viewport3d implements ViewportDelegate {
       this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
       this.selectedTileMesh.position.y = -0.49;
       this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;
+      this.selectedTileMesh.visible = !Viewport.viewport.clickController.hasSelectedMob();
     }
   }
 

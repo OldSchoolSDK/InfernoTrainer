@@ -38,12 +38,13 @@ export class BasePrayer {
     }
   }
 
-  feature(): string {
-    return "";
-  }
-
   drainRate(): number {
     throw new Error("prayer does not have proper drain rate");
+  }
+
+  // currently only used for overheads
+  feature(): string {
+    return "";
   }
 
   get name() {

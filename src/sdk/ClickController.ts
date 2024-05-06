@@ -92,6 +92,10 @@ export class ClickController {
 
   private recentlySelectedMobs: Mob[] = [];
 
+  hasSelectedMob() {
+    return this.recentlySelectedMobs.length > 0;
+  }
+
   mouseMoved(e: MouseEvent) {
     const world = Viewport.viewport.player.region.world;
     const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);

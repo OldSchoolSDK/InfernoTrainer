@@ -11,6 +11,7 @@ import { Viewport3d } from "../Viewport3d";
 import { drawLineNormally, drawLineOnTop } from "./RenderUtils";
 
 const OUTLINE_NORMAL = 0xffffff;
+const OUTLINE_TRUE_TILE = 0x00ffff;
 const OUTLINE_SELECTED = 0xff0000;
 
 // global loader across models
@@ -47,6 +48,8 @@ export class GLTFModel implements Model, RenderableListener {
 
   private outline: THREE.LineSegments;
   private outlineMaterial: THREE.LineBasicMaterial;
+
+  private trueTile: THREE.LineSegments;
 
   private hullGeometry: THREE.CylinderGeometry;
   private clickHull: THREE.Mesh;
@@ -88,9 +91,17 @@ export class GLTFModel implements Model, RenderableListener {
       new THREE.Vector3(0, 0, -size),
       new THREE.Vector3(0, 0, 0),
     ];
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    this.outline = new THREE.LineSegments(geometry, this.outlineMaterial);
+    const outlineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.outline = new THREE.LineSegments(outlineGeometry, this.outlineMaterial);
     this.outline.visible = renderable.drawOutline;
+    const trueTileGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.trueTile = new THREE.LineSegments(
+      trueTileGeometry,
+      new THREE.LineBasicMaterial({
+        color: OUTLINE_TRUE_TILE,
+      }),
+    );
+    this.trueTile.visible = renderable.drawTrueTile;
 
     const hullMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 });
     hullMaterial.transparent = true;
@@ -198,6 +209,12 @@ export class GLTFModel implements Model, RenderableListener {
     const processGltf = (gltf: GLTF, clone = false) => {
       const scale = this.scale;
       gltf.scene.name = model;
+
+      gltf.scene.traverse((o: any) => {
+        if (o.isMesh) {
+          o.material.name = model;
+        }
+      });
       // make adjustments
       gltf.scene.scale.set(scale, scale, scale);
       const { animations } = gltf;
@@ -273,6 +290,7 @@ export class GLTFModel implements Model, RenderableListener {
     }
     if (this.outline.parent !== scene) {
       scene.add(this.outline);
+      scene.add(this.trueTile);
       scene.add(this.clickHull);
     }
 
@@ -296,6 +314,15 @@ export class GLTFModel implements Model, RenderableListener {
     this.outline.position.x = x;
     this.outline.position.y = -0.49;
     this.outline.position.z = y;
+    this.outline.visible = this.renderable.drawOutline;
+    if (this.renderable.drawTrueTile) {
+      const { x: trueX, y: trueY } = this.renderable.getTrueLocation();
+      this.trueTile.position.x = trueX;
+      this.trueTile.position.y = -0.495;
+      this.trueTile.position.z = trueY;
+    }
+    this.trueTile.visible = this.renderable.drawTrueTile;
+
     this.clickHull.position.x = x + this.renderable.size / 2;
     this.clickHull.position.z = y - this.renderable.size / 2;
 
@@ -329,6 +356,7 @@ export class GLTFModel implements Model, RenderableListener {
     }
     if (this.outline.parent === scene) {
       scene.remove(this.outline);
+      scene.remove(this.trueTile);
       scene.remove(this.clickHull);
     }
   }

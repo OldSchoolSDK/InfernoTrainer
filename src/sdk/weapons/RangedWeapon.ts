@@ -2,6 +2,8 @@ import { Unit, UnitTypes } from "../Unit";
 import { Projectile, ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";
+import { AttackStylesController } from "../AttackStylesController";
+import { PrayerGroups } from "../BasePrayer";
 
 export class RangedWeapon extends Weapon {
   get type() {
@@ -28,16 +30,16 @@ export class RangedWeapon extends Weapon {
     bonuses.effectivePrayers = {};
 
     if (from.type !== UnitTypes.MOB && from.prayerController) {
-      const offensiveRange = from.prayerController.matchFeature("offensiveRange");
+      const offensiveRange = from.prayerController.matchGroup(PrayerGroups.ACCURACY);
       if (offensiveRange) {
         bonuses.effectivePrayers.range = offensiveRange;
       }
-      const defence = from.prayerController.matchFeature("defence");
+    }
+    if (to.type !== UnitTypes.MOB && to.prayerController) {
+      const defence = to.prayerController.matchGroup(PrayerGroups.DEFENCE);
       if (defence) {
         bonuses.effectivePrayers.defence = defence;
       }
-    }
-    if (to.type !== UnitTypes.MOB && to.prayerController) {
       const overhead = to.prayerController.overhead();
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead;

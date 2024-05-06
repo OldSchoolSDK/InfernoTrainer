@@ -15,6 +15,7 @@ import { Region } from "./Region";
 import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
 import { Model } from "./rendering/Model";
 import { InputController } from "./Input";
+import { parseText } from "./utils/Text";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -100,6 +101,53 @@ export class Mob extends Unit {
     };
   }
 
+  /**
+   *
+   * @returns the next location to move to
+   */
+  getNextMovementStep(): { dx: number; dy: number } {
+    let dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
+    let dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
+
+    if (
+      Collision.collisionMath(
+        this.location.x,
+        this.location.y,
+        this.size,
+        this.aggro.location.x,
+        this.aggro.location.y,
+        1,
+      )
+    ) {
+      // Random movement if player is under the mob.
+      if (Random.get() < 0.5) {
+        dy = this.location.y;
+        if (Random.get() < 0.5) {
+          dx = this.location.x + 1;
+        } else {
+          dx = this.location.x - 1;
+        }
+      } else {
+        dx = this.location.x;
+        if (Random.get() < 0.5) {
+          dy = this.location.y + 1;
+        } else {
+          dy = this.location.y - 1;
+        }
+      }
+    } else if (Collision.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
+      // allows corner safespotting
+      dy = this.location.y;
+    }
+
+    if (this.attackDelay > this.attackSpeed) {
+      // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
+      dx = this.location.x;
+      dy = this.location.y;
+    }
+    return { dx, dy };
+  }
+
   override movementStep() {
     if (this.dying === 0) {
       return;
@@ -114,45 +162,7 @@ export class Mob extends Unit {
 
     this.setHasLOS();
     if (this.canMove() && this.aggro) {
-      let dx = this.location.x + Math.sign(this.aggro.location.x - this.location.x);
-      let dy = this.location.y + Math.sign(this.aggro.location.y - this.location.y);
-
-      if (
-        Collision.collisionMath(
-          this.location.x,
-          this.location.y,
-          this.size,
-          this.aggro.location.x,
-          this.aggro.location.y,
-          1,
-        )
-      ) {
-        // Random movement if player is under the mob.
-        if (Random.get() < 0.5) {
-          dy = this.location.y;
-          if (Random.get() < 0.5) {
-            dx = this.location.x + 1;
-          } else {
-            dx = this.location.x - 1;
-          }
-        } else {
-          dx = this.location.x;
-          if (Random.get() < 0.5) {
-            dy = this.location.y + 1;
-          } else {
-            dy = this.location.y - 1;
-          }
-        }
-      } else if (Collision.collisionMath(dx, dy, this.size, this.aggro.location.x, this.aggro.location.y, 1)) {
-        // allows corner safespotting
-        dy = this.location.y;
-      }
-
-      if (this.attackDelay > this.attackSpeed) {
-        // No movement right after melee dig. 8 ticks after the dig it should be able to move again.
-        dx = this.location.x;
-        dy = this.location.y;
-      }
+      const { dx, dy } = this.getNextMovementStep();
 
       const xOff = dx - this.location.x;
       const yOff = this.location.y - dy;
@@ -513,6 +523,7 @@ export class Mob extends Unit {
       context.fillRect(location.x * scale, location.y * scale, scale, scale);
     });*/
   }
+
   override drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove) {
     context.save();
     context.translate(offset.x, offset.y);
@@ -521,6 +532,7 @@ export class Mob extends Unit {
     }
 
     this.drawHPBar(context, scale);
+    this.drawOverheadText(context, scale);
     this.drawHitsplats(context, scale, hitsplatsAbove);
     this.drawOverheadPrayers(context, scale);
 

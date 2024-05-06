@@ -31,6 +31,7 @@ import { CollisionType } from "./Collision";
 import { Renderable } from "./Renderable";
 import { Sound, SoundCache } from "./utils/SoundCache";
 import { DelayedAction } from "./DelayedAction";
+import { TextSegment, parseText } from "./utils/Text";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -124,6 +125,9 @@ export abstract class Unit extends Renderable {
   lastRotation = 0;
   hasDiedAndAwaitingRemoval = false;
   nulledTicks = 0;
+  
+  overheadText: string | null = null;
+  overheadTextTimer = 0;
 
   get deathAnimationLength(): number {
     return 3;
@@ -235,6 +239,11 @@ export abstract class Unit extends Renderable {
     this.nulledTicks--;
     this.attackDelay--;
     this.lastRotation = this.getPerceivedRotation(0);
+
+    if (this.overheadTextTimer <= 0) {
+      this.overheadText = null;
+    }
+    this.overheadTextTimer--;
   }
 
   // called when the unit has attacked
@@ -272,6 +281,10 @@ export abstract class Unit extends Renderable {
 
   addedToWorld() {
     // override me
+  }
+
+  getTrueLocation() {
+    return this.location;
   }
 
   removedFromWorld() {
@@ -431,7 +444,7 @@ export abstract class Unit extends Renderable {
   }
 
   // Returns the closest tile on this mob to the specified point.
-  getClosestTileTo(x: number, y: number) {
+  getClosestTileTo(x: number, y: number): [number, number] {
     // We simply clamp the target point to our own boundary box.
     return [
       clamp(x, this.location.x, this.location.x + this.size - 1),
@@ -604,7 +617,8 @@ export abstract class Unit extends Renderable {
       projectile.onTick();
 
       if (projectile.remainingDelay === 0) {
-        projectile.onHit();
+        // may override damage etc
+        projectile.beforeHit();
         // Some attacks can be nullified if they land after the attackers death.
         if (
           projectile.options &&
@@ -653,6 +667,36 @@ export abstract class Unit extends Renderable {
 
   damageTaken() {
     // Override me
+  }
+  
+  setOverheadText(text: string) {
+    this.overheadText = text;
+    this.overheadTextTimer = 8;
+  }
+
+  drawOverheadText(context: OffscreenCanvasRenderingContext2D, scale: number, alignCenter = true, prefix = "") {
+    if (!this.overheadText) {
+      return;
+    }
+    const parsedText = parseText(this.overheadText);
+    const textParts = prefix ? [{ text: prefix }, ...parsedText] : parsedText;
+    this.drawText(context, textParts, scale, alignCenter, prefix);
+  }
+
+  drawText(context: OffscreenCanvasRenderingContext2D, textParts: TextSegment[], scale: number, alignCenter = true, prefix = "") {
+    context.font = "24px OSRS";
+    const fullText = textParts.map(({text}) => text).join("");
+    const fullWidth = context.measureText(fullText);
+    const startX = alignCenter ? -(fullWidth.width / 2) : 0;
+    context.fillStyle = "black";
+    context.fillText(fullText, startX + 1, (-(this.size / 2) * scale) - 10 + 1);
+    let x = startX;
+    for (let i = 0; i < textParts.length; i++) {
+      const { text, color } = textParts[i];
+      context.fillStyle = color ? `#${color}` : "yellow";
+      context.fillText(text, x, (-(this.size / 2) * scale) - 10);
+      x += context.measureText(text).width;
+    }
   }
 
   override draw(tickPercent, context, offset, scale, drawUnderTile) {

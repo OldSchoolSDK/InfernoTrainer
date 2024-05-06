@@ -17,4 +17,5 @@ export enum EntityName {
   JAL_AK_REK_KET = "Jal-AkRek-Ket",
   JAL_AK = "Jal-Ak",
   PILLAR = "Pillar",
+  SOL_HEREDIT = "Sol Heredit",
 }

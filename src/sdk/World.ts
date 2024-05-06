@@ -141,6 +141,8 @@ export class World {
       region.newMobs.forEach((mob) => mob.attackStep());
     }
 
+    DelayedAction.afterNpcTick();
+
     region.projectiles = filter(
       region.projectiles,
       (projectile: Projectile) => !projectile.shouldDestroy(),
@@ -149,7 +151,7 @@ export class World {
       projectile.onTick();
 
       if (projectile.remainingDelay === 0) {
-        projectile.onHit();
+        projectile.beforeHit();
       }
     });
 
@@ -170,7 +172,7 @@ export class World {
     // Safely remove the dead stuff from the world. If we do it while iterating we can cause ticks to be stole'd
     const deadPlayers = region.players.filter((player) => player.dying === 0);
     const deadMobs = region.mobs.filter((mob) => mob.dying === 0);
-    const deadEntities = region.entities.filter((mob) => mob.dying === 0);
+    const deadEntities = region.entities.filter((entity) => entity.dying === 0);
     deadPlayers.forEach((player) => region.removePlayer(player));
     deadMobs.forEach((mob) => region.removeMob(mob));
     deadEntities.forEach((entity) => region.removeEntity(entity));

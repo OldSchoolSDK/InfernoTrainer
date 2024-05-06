@@ -28,6 +28,11 @@ import ChinchompaShortFuseImage from "../assets/images/attackstyles/chinchompas/
 import ChinchompaMediumFuseImage from "../assets/images/attackstyles/chinchompas/medium.png";
 import ChinchompaLongFuseImage from "../assets/images/attackstyles/chinchompas/long.png";
 
+import SwordChopImage from "../assets/images/attackstyles/swords/chop.png";
+import SwordSlashImage from "../assets/images/attackstyles/swords/slash.png";
+import SwordLungeImage from "../assets/images/attackstyles/swords/lunge.png";
+import SwordBlockImage from "../assets/images/attackstyles/swords/block.png";
+
 //https://oldschool.runescape.wiki/w/Weapons/Types
 export enum AttackStyleTypes {
   CROSSBOW = "CROSSBOW",
@@ -65,6 +70,7 @@ export enum AttackStyle {
   REAP = "REAP",
   AGGRESSIVECRUSH = "AGGRESSIVE (CRUSH)",
   AGGRESSIVESLASH = "AGGRESSIVE (SLASH)",
+  STAB = "STAB",
   DEFENSIVE = "DEFENSIVE",
   CONTROLLED = "CONTROLLED",
   AUTOCAST = "AUTOCAST",
@@ -103,6 +109,7 @@ const RANGE_ACCURATE = [{ skill: "range", multiplier: 4 }, HITPOINTS_133];
 const RANGE_RAPID = [{ skill: "range", multiplier: 4 }, HITPOINTS_133];
 const RANGE_LONGRANGE = [{ skill: "range", multiplier: 2 }, DEFENCE_2, HITPOINTS_133];
 
+// This badly needs a refactor to classify each styles by parent style
 export class AttackStylesController {
   static attackStyleImageMap: AttackStyleImageMap = {
     [AttackStyleTypes.CROSSBOW]: {
@@ -132,6 +139,12 @@ export class AttackStylesController {
       [AttackStyle.AGGRESSIVECRUSH]: ImageLoader.createImage(ScytheAggressiveCrushImage),
       [AttackStyle.DEFENSIVE]: ImageLoader.createImage(ScytheDefensiveImage),
     },
+    [AttackStyleTypes.SLASHSWORD]: {
+      [AttackStyle.ACCURATE]: ImageLoader.createImage(SwordChopImage),
+      [AttackStyle.AGGRESSIVESLASH]: ImageLoader.createImage(SwordSlashImage),
+      [AttackStyle.STAB]: ImageLoader.createImage(SwordLungeImage),
+      [AttackStyle.DEFENSIVE]: ImageLoader.createImage(SwordBlockImage),
+    },
     [AttackStyleTypes.CHINCHOMPA]: {
       [AttackStyle.SHORT_FUSE]: ImageLoader.createImage(ChinchompaShortFuseImage),
       [AttackStyle.MEDIUM_FUSE]: ImageLoader.createImage(ChinchompaMediumFuseImage),
@@ -148,6 +161,7 @@ export class AttackStylesController {
     [AttackStyle.AGGRESSIVESLASH]: MELEE_AGGRESSIVE,
     // TODO: add different defensives for different weapons
     [AttackStyle.DEFENSIVE]: MELEE_DEFENSIVE,
+    [AttackStyle.STAB]: MELEE_CONTROLLED,
     [AttackStyle.CONTROLLED]: MELEE_CONTROLLED,
     [AttackStyle.AUTOCAST]: [{ skill: "magic", multiplier: 2 }, HITPOINTS_133],
     // TODO: AUTOCAST_DEFENSIVE
@@ -155,6 +169,15 @@ export class AttackStylesController {
     [AttackStyle.MEDIUM_FUSE]: RANGE_RAPID,
     [AttackStyle.LONG_FUSE]: RANGE_LONGRANGE,
   };
+
+  static attackStyleStrengthBonus: {[style in AttackStyle]?: number} = {
+    // aggressive = 3
+    [AttackStyle.AGGRESSIVECRUSH]: 3,
+    [AttackStyle.AGGRESSIVESLASH]: 3,
+    // controlled = 1
+    [AttackStyle.CONTROLLED]: 1,
+    [AttackStyle.STAB]: 1,
+  }
 
   static controller: AttackStylesController = new AttackStylesController();
   stylesMap: AttackStyleStorage = {};
@@ -169,7 +192,8 @@ export class AttackStylesController {
   setWeaponAttackStyle(weapon: Weapon, newStyle: AttackStyle) {
     this.stylesMap[weapon.attackStyleCategory()] = newStyle;
   }
-  getWeaponAttackStyle(weapon: Weapon) {
+  
+  getWeaponAttackStyle(weapon: Weapon): AttackStyle {
     return this.stylesMap[weapon.attackStyleCategory()];
   }
 
@@ -178,5 +202,9 @@ export class AttackStylesController {
       xp: damage * skillMultiplier * npcMultiplier,
       skill,
     }));
+  }
+
+  getWeaponStrengthBonus(style: AttackStyle): number {
+    return AttackStylesController.attackStyleStrengthBonus[style] ?? 0;
   }
 }

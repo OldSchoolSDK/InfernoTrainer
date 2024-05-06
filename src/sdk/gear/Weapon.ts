@@ -12,6 +12,7 @@ import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Random } from "../Random";
 import { Sound, SoundCache } from "../utils/SoundCache";
+import { PlayerAnimationIndices } from "../rendering/GLTFAnimationConstants";
 import { XpDrop } from "../XpDrop";
 
 interface EffectivePrayers {
@@ -26,6 +27,8 @@ interface EffectivePrayers {
 export interface AttackBonuses {
   styleBonus?: number;
   isAccurate?: boolean;
+  // aggressive/controlled
+  styleStrengthBonus?: number;
   voidMultiplier?: number;
   gearMeleeMultiplier?: number;
   gearMageMultiplier?: number;
@@ -295,5 +298,9 @@ export class Weapon extends Equipment {
 
   get projectileModel(): string | null {
     return null;
+  }
+
+  get idleAnimationId() {
+    return PlayerAnimationIndices.Idle;
   }
 }

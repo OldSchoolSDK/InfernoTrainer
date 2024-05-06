@@ -1,5 +1,5 @@
 import { Item } from "./Item";
-import { UnitBonuses } from "./Unit";
+import { UnitBonuses, UnitEquipment } from "./Unit";
 import { SetEffect } from "./SetEffect";
 import { Player } from "./Player";
 
@@ -16,6 +16,21 @@ export enum EquipmentTypes {
   NECK = "neck",
   RING = "ring",
 }
+
+// maybe we ought to rename the values instead?
+export const EQUIPMENT_TYPE_TO_SLOT: {[equipmentType in EquipmentTypes]: keyof UnitEquipment} = {
+  [EquipmentTypes.HELMET]: 'helmet',
+  [EquipmentTypes.CHEST]: "chest",
+  [EquipmentTypes.LEGS]: "legs",
+  [EquipmentTypes.FEET]: "feet",
+  [EquipmentTypes.GLOVES]: "gloves",
+  [EquipmentTypes.WEAPON]: "weapon",
+  [EquipmentTypes.OFFHAND]: "offhand",
+  [EquipmentTypes.AMMO]: "ammo",
+  [EquipmentTypes.BACK]: "cape",
+  [EquipmentTypes.NECK]: "necklace",
+  [EquipmentTypes.RING]: "ring"
+};
 
 export class Equipment extends Item {
   bonuses: UnitBonuses;
@@ -65,7 +80,7 @@ export class Equipment extends Item {
       return;
     }
     this.unassignToPlayer(player);
-
+    player.equipmentChanged();
     player.inventory[openInventorySlots.shift()] = this;
   }
 

@@ -19,6 +19,7 @@ import { Location } from "./Location";
 import { Chrome } from "./Chrome";
 import { MapController } from "./MapController";
 import { Viewport } from "./Viewport";
+import { BoostPanel } from "./BoostPanel";
 
 interface TabPosition {
   x: number;
@@ -47,6 +48,8 @@ export class ControlPanelController {
 
   public width: number;
   public height: number;
+
+  private boostPanel = new BoostPanel();
 
   isUsingExternalUI = false;
 
@@ -92,11 +95,6 @@ export class ControlPanelController {
     this.controls = Settings.mobileCheck() ? this.mobileControls : this.desktopControls;
 
     this.selectedControl = ControlPanelController.controls.PRAYER;
-
-    // TODO: Technically a violation of separation of framework and inferno stuff. hmm.
-    const waveInput = document.getElementById("waveinput");
-    waveInput.addEventListener("focus", () => (this.isUsingExternalUI = true));
-    waveInput.addEventListener("focusout", () => (this.isUsingExternalUI = false));
     document.addEventListener("keydown", (event) => {
       if (Settings.is_keybinding) {
         return;
@@ -136,6 +134,21 @@ export class ControlPanelController {
     this.height = BASE_HEIGHT * scaleRatio;
 
     return scaleRatio;
+  }
+
+  boostPosition() {
+    const { width, height } = Chrome.size();
+    const scale = this.getTabScale();
+    if (Settings.mobileCheck()) {
+      const mapHeight = 170 * Settings.minimapScale;
+      const spacer = (height - mapHeight - 36 * scale * 7) / 2;
+      return { x: 15, y: mapHeight + spacer };
+    } else {
+      return {
+        x: width - 231 * scale - (Settings.menuVisible ? 232 : 0) + 28,
+        y: height - 72 * scale,
+      };
+    }
   }
 
   tabPosition(i: number): TabPosition {
@@ -318,6 +331,10 @@ export class ControlPanelController {
       const position = this.controlPosition(this.selectedControl);
       this.selectedControl.draw(context, this, position.x, position.y);
     }
+    
+    // TODO: make this rendering configurable
+    const boostPosition = this.boostPosition();
+    this.boostPanel.draw(context, scale, boostPosition.x, boostPosition.y);
 
     let selectedPosition: TabPosition = null;
 

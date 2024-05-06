@@ -163,7 +163,7 @@ export class Pathing {
     let maxExploredX = pathX;
     let maxExploredY = pathY;
 
-    while (nodes.length !== 0) {
+    while (nodes.length !== 0 && nodes.length < 1000) {
       const parentNode = nodes.shift();
       const matchedDestinations = pathableEndPoints.filter((d) => d.x === parentNode.x && d.y === parentNode.y);
       for (const matchedDestination of matchedDestinations) {

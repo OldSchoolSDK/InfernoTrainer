@@ -54,10 +54,10 @@ export class PrayerController {
       });
     });
 
-    for (const feature in conflictingPrayers) {
-      conflictingPrayers[feature].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
-      conflictingPrayers[feature].shift();
-      conflictingPrayers[feature].forEach((prayer: BasePrayer) => {
+    for (const prayer in conflictingPrayers) {
+      conflictingPrayers[prayer].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
+      conflictingPrayers[prayer].shift();
+      conflictingPrayers[prayer].forEach((prayer: BasePrayer) => {
         prayer.isLit = false;
         prayer.isActive = false;
       });
@@ -98,6 +98,10 @@ export class PrayerController {
 
   matchFeature(feature: string): BasePrayer {
     return find(this.activePrayers(), (prayer: BasePrayer) => prayer.feature() === feature);
+  }
+
+  matchGroup(group: PrayerGroups): BasePrayer {
+    return find(this.activePrayers(), (prayer: BasePrayer) => prayer.groups.includes(group));
   }
 
   overhead(): BasePrayer {

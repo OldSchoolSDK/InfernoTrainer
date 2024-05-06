@@ -48,7 +48,6 @@ const PLAYER_ROTATION_RATE_JAU = 64;
 const CLIENT_TICKS_PER_SECOND = 50;
 const JAU_PER_RADIAN = 512;
 const RADIANS_PER_TICK = ((CLIENT_TICKS_PER_SECOND * PLAYER_ROTATION_RATE_JAU) / JAU_PER_RADIAN) * 0.6;
-const LOCAL_POINTS_PER_CELL = 128;
 
 const ENABLE_POSITION_DEBUG = false;
 
@@ -85,7 +84,6 @@ export class Player extends Unit {
 
   clickMarker: ClickMarker | null = null;
   aggroMarker: ClickMarker | null = null;
-  trueTileMarker: ClickMarker;
 
   pathMarkers: ClickMarker[] = [];
   currentPoseAnimation = PlayerAnimationIndices.Idle;
@@ -103,8 +101,6 @@ export class Player extends Unit {
     this.setUnitOptions(options);
 
     this.prayerController = new PrayerController(this);
-    this.trueTileMarker = new ClickMarker(this.region, this.location, "#00FFFF");
-    this.region.addEntity(this.trueTileMarker);
   }
 
   contextActions(region: Region, x: number, y: number) {
@@ -251,6 +247,9 @@ export class Player extends Unit {
     });
     this.setEffects = completeSetEffects;
 
+    if (this.path.length === 0) {
+      this.currentPoseAnimation = this.getIdlePoseId();
+    }
     this.invalidateModel();
   }
 
@@ -518,6 +517,9 @@ export class Player extends Unit {
       this.destinationLocation = this.seekingItem.groundLocation;
     }
   }
+  private getIdlePoseId() {
+    return this.equipment.weapon ? this.equipment.weapon.idleAnimationId : PlayerAnimationIndices.Idle;
+  }
 
   // WARNING: client ticks do NOT happen in line with render or logic ticks. Do not use this for anything other than
   // visual logic.
@@ -584,7 +586,7 @@ export class Player extends Unit {
         this.region.removeEntity(headTile);
       }
       if (this.path.length === 0) {
-        this.currentPoseAnimation = PlayerAnimationIndices.Idle;
+        this.currentPoseAnimation = this.getIdlePoseId();
         this.restingAngle = this.nextAngle;
       } else {
         this.nextAngle = this.getTargetAngle();
@@ -593,7 +595,6 @@ export class Player extends Unit {
   }
 
   moveTowardsDestination() {
-    this.trueTileMarker.location = this.location;
     this.nextAngle = this.getTargetAngle();
     // Calculate run energy
     const dist = this.pathTargetLocation
@@ -668,9 +669,6 @@ export class Player extends Unit {
       });
     }
     this.path.push(...newTiles);
-    //console.log(this.location, path, [...this.path]);
-
-    this.trueTileMarker.location = this.location;
     this.nextAngle = this.getTargetAngle();
   }
 
@@ -982,6 +980,10 @@ export class Player extends Unit {
   }
 
   get canBlendAttackAnimation() {
+    return true;
+  }
+
+  override get drawTrueTile() {
     return true;
   }
 }

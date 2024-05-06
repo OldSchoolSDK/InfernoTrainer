@@ -26,6 +26,8 @@ export abstract class Renderable {
    */
   abstract getPerceivedRotation(tickPercent: number): number;
 
+  abstract getTrueLocation(): Location;
+
   /**
    * return the pitch angle of this renderable in radians, i.e. how up/down it is pointing
    * 0 is flat, increasing is up, decreasing is down
@@ -45,6 +47,10 @@ export abstract class Renderable {
 
   get drawOutline(): boolean {
     return true;
+  }
+
+  get drawTrueTile(): boolean {
+    return false;
   }
 
   get height(): number {
@@ -85,7 +91,7 @@ export abstract class Renderable {
   set selected(selected: boolean) {
     this._selected = selected;
   }
-
+  
   drawUILayer(
     tickPercent: number,
     screenPosition: Location,

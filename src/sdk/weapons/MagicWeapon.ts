@@ -3,6 +3,7 @@ import { XpDrop } from "../XpDrop";
 import { ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";
+import { PrayerGroups } from "../BasePrayer";
 
 export class MagicWeapon extends Weapon {
 
@@ -34,16 +35,16 @@ export class MagicWeapon extends Weapon {
   _calculatePrayerEffects(from: Unit, to: Unit, bonuses: AttackBonuses) {
     bonuses.effectivePrayers = {};
     if (from.type !== UnitTypes.MOB && from.prayerController) {
-      const offensiveMagic = from.prayerController.matchFeature("offensiveMagic");
+      const offensiveMagic = from.prayerController.matchGroup(PrayerGroups.ACCURACY);
       if (offensiveMagic) {
         bonuses.effectivePrayers.magic = offensiveMagic;
       }
-      const defence = from.prayerController.matchFeature("defence");
+    }
+    if (to.type !== UnitTypes.MOB && to.prayerController) {
+      const defence = to.prayerController.matchGroup(PrayerGroups.DEFENCE);
       if (defence) {
         bonuses.effectivePrayers.defence = defence;
       }
-    }
-    if (to.type !== UnitTypes.MOB && to.prayerController) {
       const overhead = to.prayerController.overhead();
       if (overhead) {
         bonuses.effectivePrayers.overhead = overhead;
