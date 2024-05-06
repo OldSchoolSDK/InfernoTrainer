@@ -2,7 +2,7 @@
   "name": "@supalosa/oldschool-trainer-sdk",
   "version": "0.0.3",
   "description": "",
-  "main": "lib/src/index.js",
+  "main": "index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf _bundles lib lib-esm",
