@@ -162,5 +162,7 @@ export class Settings {
       Settings.rotated = "north";
     }
     Settings.maxUiScale = parseFloat(window.localStorage.getItem("maxUiScale")) || 1.0;
+
+    Settings.checkWasd();
   }
 }
