@@ -118,18 +118,25 @@ export class Viewport3d implements ViewportDelegate {
 
   checkGpu() {
     try {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       const gl = canvas.getContext("webgl");
       const debugInfo = gl?.getExtension("WEBGL_debug_renderer_info");
       const gpuInfo: string = gl?.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)?.toLowerCase() ?? "none";
-      if (gpuInfo.includes("nvidia") || gpuInfo.includes("gpu") || gpuInfo.includes("geforce") || gpuInfo.includes("amd") || gpuInfo.includes("radeon")) {
+      if (
+        gpuInfo.includes("nvidia") ||
+        gpuInfo.includes("gpu") ||
+        gpuInfo.includes("geforce") ||
+        gpuInfo.includes("amd") ||
+        gpuInfo.includes("radeon")
+      ) {
         return;
       }
       if (gpuInfo === "none" || gpuInfo.includes("google") || gpuInfo.includes("apple") || gpuInfo.includes("intel")) {
-        document.getElementById("gpu_warning").innerHTML = `<span style="color: #FF6666">Software rendering detected. Framerate may be low. Turn on Hardware Acceleration in your browser if you have a GPU.<br />${gpuInfo}</span>`;
+        document.getElementById("gpu_warning").innerHTML =
+          `<span style="color: #FF6666">Software rendering detected. Framerate may be low. Turn on Hardware Acceleration in your browser if you have a GPU.<br />${gpuInfo}</span>`;
       }
-    } catch(err) {
-      console.warn('error trying to detect gpu', err);
+    } catch (err) {
+      console.warn("error trying to detect gpu", err);
     }
   }
 
@@ -154,6 +161,10 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   onKeyDown(e: KeyboardEvent) {
+    const allowWasd = !Settings.isUsingWasdKeybind;
+    if (!allowWasd && ["w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+      return;
+    }
     // values are desired change per second
     switch (e.key) {
       case "ArrowLeft":
@@ -180,6 +191,10 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   onKeyUp(e: KeyboardEvent) {
+    const allowWasd = !Settings.isUsingWasdKeybind;
+    if (!allowWasd && ["w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+      return;
+    }
     switch (e.key) {
       case "ArrowLeft":
       case "ArrowRight":

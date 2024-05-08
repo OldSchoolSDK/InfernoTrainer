@@ -3,6 +3,8 @@
 import { PlayerStats, SerializePlayerStats, DeserializePlayerStats } from "./PlayerStats";
 import { Location } from "./Location";
 
+const WASD = ["w", "a", "s", "d"];
+
 export class Settings {
   static zoomScale = 1;
 
@@ -51,6 +53,18 @@ export class Settings {
 
   static use3dView = true;
 
+  static isUsingWasdKeybind = Settings.checkWasd();
+
+  private static checkWasd() {
+    const result =
+      WASD.includes(Settings.inventory_key) ||
+      WASD.includes(Settings.equipment_key) ||
+      WASD.includes(Settings.combat_key) ||
+      WASD.includes(Settings.prayer_key);
+    Settings.isUsingWasdKeybind = result;
+    return result;
+  }
+
   static mobileCheck() {
     if (Settings._isMobileResult !== null) {
       return Settings._isMobileResult;
@@ -90,6 +104,8 @@ export class Settings {
     window.localStorage.setItem("menuVisible", String(Settings.menuVisible));
     window.localStorage.setItem("use3dView", String(Settings.use3dView));
     window.localStorage.setItem("maxUiScale", String(Settings.maxUiScale));
+
+    Settings.checkWasd();
   }
 
   static readFromStorage() {
@@ -107,7 +123,7 @@ export class Settings {
     }
     // Settings.tileSize = parseInt(window.localStorage.getItem('tileSize')) || 23;
     // Settings.framesPerTick = parseInt(window.localStorage.getItem('framesPerTick')) || 30;
-    Settings.inputDelay = parseInt(window.localStorage.getItem("inputDelay") ?? '100');
+    Settings.inputDelay = parseInt(window.localStorage.getItem("inputDelay") ?? "100");
     Settings.rotated = window.localStorage.getItem("rotated") || "south";
     Settings.loadout = window.localStorage.getItem("loadout") || "max_tbow_speed";
     Settings.onTask = window.localStorage.getItem("onTask") === "true" || false;
