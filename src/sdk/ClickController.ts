@@ -176,13 +176,13 @@ export class ClickController {
     Viewport.viewport.player.interruptCombat();
 
     const inputController = InputController.controller;
-    if (mobs.length && mobs[0].canBeAttacked()) {
+    if (!e.shiftKey && mobs.length && mobs[0].canBeAttacked()) {
       this.redClick();
       inputController.queueAction(() => this.playerAttackClick(mobs[0]));
-    } else if (players.length) {
+    } else if (!e.shiftKey && players.length) {
       this.redClick();
       inputController.queueAction(() => this.playerAttackClick(players[0]));
-    } else if (groundItems.length) {
+    } else if (!e.shiftKey && groundItems.length) {
       this.redClick();
 
       inputController.queueAction(() => player.setSeekingItem(groundItems[0]));
