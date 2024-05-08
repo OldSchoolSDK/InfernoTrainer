@@ -85,7 +85,7 @@ export class Viewport {
   }
 
   get context() {
-    return this.canvas.getContext("2d");
+    return this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
   setPlayer(player: Player) {
     this.player = player;

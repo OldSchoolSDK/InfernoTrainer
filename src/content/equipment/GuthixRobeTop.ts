@@ -3,7 +3,7 @@ import InventImage from "../../assets/images/equipment/Guthix_robe_top.png";
 import { Chest } from "../../sdk/gear/Chest";
 import { ItemName } from "../../sdk/ItemName";
 
-export class GuthixRobetop extends Chest {
+export class GuthixRobeTop extends Chest {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   get inventoryImage() {

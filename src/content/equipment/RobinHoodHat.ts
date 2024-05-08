@@ -3,7 +3,7 @@ import { ImageLoader } from "../../sdk/utils/ImageLoader";
 import InventImage from "../../assets/images/equipment/Robin_hood_hat.png";
 import { ItemName } from "../../sdk/ItemName";
 
-export class RobinhoodHat extends Helmet {
+export class RobinHoodHat extends Helmet {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
   get itemName(): ItemName {

@@ -59,7 +59,7 @@ export class Viewport3d implements ViewportDelegate {
 
     this.canvas = new OffscreenCanvas(this.canvasDimensions.width, this.canvasDimensions.height);
     this.uiCanvas = new OffscreenCanvas(this.canvasDimensions.width, this.canvasDimensions.height);
-    this.uiCanvasContext = this.uiCanvas.getContext("2d");
+    this.uiCanvasContext = this.uiCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     this.checkGpu();
 
@@ -255,7 +255,8 @@ export class Viewport3d implements ViewportDelegate {
     this.scene.add(ambientLight);
 
     const floorCanvas = new OffscreenCanvas(region.width * SPRITE_SCALE, region.height * SPRITE_SCALE);
-    const floorContext = floorCanvas.getContext("2d");
+    // workaround for https://github.com/microsoft/TypeScript/issues/53614
+    const floorContext = floorCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     region.drawWorldBackground(floorContext, SPRITE_SCALE);
 

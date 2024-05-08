@@ -107,7 +107,7 @@ export class MapController {
     const hitpointPercentage = this.currentStats.hitpoint / this.stats.hitpoint;
 
     this.mapHitpointOrbMasked = new OffscreenCanvas(this.mapHitpointOrb.width, this.mapHitpointOrb.height);
-    let ctx = this.mapHitpointOrbMasked.getContext("2d");
+    let ctx = this.mapHitpointOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     ctx.fillStyle = "white";
     ctx.drawImage(this.mapHitpointOrb, 0, 0);
@@ -122,7 +122,7 @@ export class MapController {
 
     const prayerPercentage = this.currentStats.prayer / this.stats.prayer;
     this.mapPrayerOrbMasked = new OffscreenCanvas(this.mapPrayerOrb.width, this.mapPrayerOrb.height);
-    ctx = this.mapPrayerOrbMasked.getContext("2d");
+    ctx = this.mapPrayerOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
     ctx.fillStyle = "white";
     ctx.drawImage(
       ControlPanelController.controls.PRAYER.hasQuickPrayersActivated ? this.mapPrayerSelectedOrb : this.mapPrayerOrb,
@@ -140,7 +140,7 @@ export class MapController {
 
     const runPercentage = this.currentStats.run / 10000;
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
-    ctx = this.mapRunOrbMasked.getContext("2d");
+    ctx = this.mapRunOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
     ctx.fillStyle = "white";
     ctx.drawImage(Viewport.viewport.player.running ? this.mapRunOrb : this.mapNoSpecOrb, 0, 0);
     ctx.globalCompositeOperation = "destination-in";
@@ -154,7 +154,7 @@ export class MapController {
 
     const specPercentage = this.currentStats.specialAttack / 100;
     this.mapSpecOrbMasked = new OffscreenCanvas(this.mapSpecOrb.width, this.mapSpecOrb.height);
-    ctx = this.mapSpecOrbMasked.getContext("2d");
+    ctx = this.mapSpecOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
     ctx.fillStyle = "white";
     let specOrb = this.mapNoSpecOrb;
     if (Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack()) {
@@ -181,7 +181,7 @@ export class MapController {
     compassImage.addEventListener("load", () => {
       this.compassImage = new OffscreenCanvas(51, 51);
 
-      const context = this.compassImage.getContext("2d");
+      const context = this.compassImage.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
       context.drawImage(compassImage, 0, 0);
 
@@ -208,7 +208,7 @@ export class MapController {
 
   generateMaskedMap() {
     this.mapCanvas = new OffscreenCanvas(152, 152);
-    const mapContext = this.mapCanvas.getContext("2d");
+    const mapContext = this.mapCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     mapContext.save();
     mapContext.translate(76, 76);

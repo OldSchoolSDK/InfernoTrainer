@@ -70,7 +70,7 @@ export abstract class Region {
     return [];
   }
 
-  get context() {
+  get context(): OffscreenCanvasRenderingContext2D {
     if (!this.canvas) {
       if (Settings.mobileCheck()) {
         this.canvas = new OffscreenCanvas(2000, 2000);
@@ -78,7 +78,7 @@ export abstract class Region {
         this.canvas = new OffscreenCanvas(10000, 10000);
       }
     }
-    return this.canvas.getContext("2d");
+    return this.canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
   }
 
   addEntity(entity: Entity) {

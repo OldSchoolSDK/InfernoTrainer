@@ -43,7 +43,7 @@ export class XpDropController {
   ];
 
   constructor() {
-    this.ctx = this.canvas.getContext("2d");
+    this.ctx = this.canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     this.drops = [{ abc: "asdf" }, {}, {}, {}];
     this.lastDropSkill = null;

@@ -29,7 +29,7 @@ export class CanvasSpriteModel implements Model {
   constructor(private renderable: Renderable) {
     const { size } = renderable;
     this.canvas = new OffscreenCanvas(size * CANVAS_TILE_SIZE, size * CANVAS_TILE_SIZE);
-    this.context = this.canvas.getContext("2d");
+    this.context = this.canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
     this.texture = new THREE.Texture(this.canvas);
     this.texture.needsUpdate = true;
     this.texture.colorSpace = THREE.LinearSRGBColorSpace;
