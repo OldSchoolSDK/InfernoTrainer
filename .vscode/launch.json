@@ -1,18 +1,5 @@
 {
   "version": "0.2.0",
   "configurations": [
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome Debugger",
-      "port": 9222,
-      "url": "http://localhost:8000/",
-
-      "webRoot": "${workspaceFolder}",
-      "sourceMaps": true,
-      "trace": true,
-      "timeout": 15000
-      //"preLaunchTask": "start_server_task"
-    }
   ]
 }
