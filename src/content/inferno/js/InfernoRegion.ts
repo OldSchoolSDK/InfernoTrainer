@@ -334,29 +334,29 @@ export class InfernoRegion extends Region {
     const mager = BrowserUtils.getQueryVar("mager") || "[]";
     const replayLink = document.getElementById("replayLink") as HTMLLinkElement;
 
-    function importSpawn() {
+    function importSpawn(region: Region) {
       try {
         JSON.parse(mager).forEach((spawn: number[]) =>
-          this.addMob(new JalZek(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          region.addMob(new JalZek(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(ranger).forEach((spawn: number[]) =>
-          this.addMob(new JalXil(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          region.addMob(new JalXil(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(melee).forEach((spawn: number[]) =>
-          this.addMob(new JalImKot(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          region.addMob(new JalImKot(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(blob).forEach((spawn: number[]) =>
-          this.addMob(new JalAk(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          region.addMob(new JalAk(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(bat).forEach((spawn: number[]) =>
-          this.addMob(new JalMejRah(this, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          region.addMob(new JalMejRah(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
 
-        InfernoWaves.spawnNibblers(3, this, randomPillar).forEach(this.addMob.bind(this));
+        InfernoWaves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region));
 
         replayLink.href = `/${window.location.search}`;
       } catch (ex) {
-        console.log("failed to import wave from inferno stats");
+        console.log("failed to import wave from inferno stats", ex);
       }
     }
     // Add mobs
@@ -372,14 +372,14 @@ export class InfernoRegion extends Region {
         });
       });
 
-      importSpawn();
+      importSpawn(this);
     } else if (this.wave < 67) {
       player.location = { x: 28, y: 17 };
       if (bat != "[]" || blob != "[]" || melee != "[]" || ranger != "[]" || mager != "[]") {
         // Backwards compatibility layer for runelite plugin
         this.wave = 1;
 
-        importSpawn();
+        importSpawn(this);
       } else {
         // Native approach
         const spawns = BrowserUtils.getQueryVar("spawns")
@@ -468,7 +468,7 @@ export class InfernoRegion extends Region {
       this.addEntity(new TileMarker(this, { x: 36, y: 14 }, "#00FF00", 1, false));
     } else if (this.wave === 74) {
       player.location = { x: 28, y: 17 };
-      importSpawn();
+      importSpawn(this);
     }
 
     document.getElementById("playWaveNum").addEventListener("click", () => {
