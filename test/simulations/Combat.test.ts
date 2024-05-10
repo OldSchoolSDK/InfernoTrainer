@@ -6,9 +6,11 @@ import { Random } from "../../src/sdk/Random";
 import { Viewport } from "../../src/sdk/Viewport";
 import { TestRegion } from "../utils/TestRegion";
 import { TestNpc } from "../utils/TestNpc";
+import { Settings } from "../../src";
 
 describe("basic combat scenario", () => {
-  test("when player tries to kill an fake jalxil...", () => {
+  test("when player tries to kill a fake jalxil...", () => {
+    Settings.inputDelay = 0;
     const region = new TestRegion(60, 60);
     const world = new World();
     region.world = world;
