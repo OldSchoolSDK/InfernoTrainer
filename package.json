@@ -1,9 +1,10 @@
 {
   "name": "@supalosa/oldschool-trainer-sdk",
-  "version": "0.0.3",
+  "version": "0.0.9",
   "description": "",
-  "main": "index.js",
+  "main": "_bundles/main.js",
   "types": "lib/index.d.ts",
+  "node": "^>=16.0.0",
   "scripts": {
     "clean": "rm -rf _bundles lib lib-esm",
     "build": "npm run clean && webpack",

@@ -2,13 +2,15 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
 
-const config = {
+module.exports = {
   mode: "production",
   entry: "./src/index.ts",
   output: {
     filename: "main.js",
-    library: 'OldSchoolSDK',
-    libraryTarget: 'umd',
+    library: {
+      name: 'OldSchoolSDK',
+      type: 'umd',
+    },
     umdNamedDefine: true,
     path: path.resolve(__dirname, "_bundles"),
   },
@@ -16,14 +18,10 @@ const config = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        { from: `assets/fonts/*.woff`, to: "", context: `src/` },
-        { from: `assets/fonts/*.woff2`, to: "", context: `src/` },
-      ],
-    }),
-  ],
+  optimization: {
+    minimize: false
+  },
+  plugins: [],
   module: {
     rules: [
       {
@@ -42,5 +40,3 @@ const config = {
     ],
   },
 };
-
-module.exports = config;
