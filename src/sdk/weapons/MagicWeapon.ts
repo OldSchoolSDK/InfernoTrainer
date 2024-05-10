@@ -1,5 +1,5 @@
-import { Unit, UnitTypes } from "../Unit";
-import { XpDrop } from "../XpDrop";
+import type { Unit } from "../Unit";
+import { UnitTypes } from "../Unit";
 import { ProjectileOptions } from "./Projectile";
 import { AttackBonuses, Weapon } from "../gear/Weapon";
 import { EquipmentTypes } from "../Equipment";

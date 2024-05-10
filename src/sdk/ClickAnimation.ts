@@ -9,7 +9,6 @@ import RedX3 from "../assets/images/interface/red_x_3.png";
 import RedX4 from "../assets/images/interface/red_x_4.png";
 import { Settings } from "./Settings";
 import { ImageLoader } from "./utils/ImageLoader";
-import { Viewport } from "./Viewport";
 
 interface ClickAnimationFrames {
   red: HTMLImageElement[];
@@ -44,13 +43,13 @@ export class ClickAnimation {
     ],
   };
 
-  draw() {
+  draw(context: CanvasRenderingContext2D) {
     if (this.ttl <= 0) {
       return;
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4);
     const frames = this.color === "red" ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
-    Viewport.viewport.context.drawImage(frames[frameNumber], this.x - 9, this.y - 9);
+    context.drawImage(frames[frameNumber], this.x - 9, this.y - 9);
 
     this.ttl -= 1.65 / Settings.fps;
   }

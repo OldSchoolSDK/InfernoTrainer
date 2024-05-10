@@ -16,7 +16,7 @@ import { Location } from "./Location";
 import { Mob } from "./Mob";
 import { Item } from "./Item";
 import { Viewport2d } from "./Viewport2d";
-import { CombatControls } from "./controlpanels/CombatControls";
+import { Trainer } from "./Trainer";
 
 type ViewportEntitiesClick = {
   type: "entities";
@@ -69,9 +69,8 @@ export class Viewport {
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon);
   contextMenu: ContextMenu = new ContextMenu();
 
-  clickController: ClickController;
+  private clickController: ClickController;
   canvas: HTMLCanvasElement;
-  player: Player;
   width: number;
   height: number;
 
@@ -88,7 +87,7 @@ export class Viewport {
     return this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
   setPlayer(player: Player) {
-    this.player = player;
+    Trainer.setPlayer(player);
     window.addEventListener("orientationchange", () => this.calculateViewport());
     window.addEventListener("resize", () => this.calculateViewport());
     window.addEventListener("wheel", () => this.calculateViewport());
@@ -99,17 +98,18 @@ export class Viewport {
     this.canvas.height = Settings._tileSize * 2 * this.height;
     this.clickController = new ClickController(this);
     this.clickController.registerClickActions();
+    Trainer.setClickController(this.clickController);
   }
 
   // called after all graphics have loaded
   async initialise() {
-    await this.delegate.initialise(this.player.region.world, this.player.region);
+    await this.delegate.initialise(Trainer.player.region.world, Trainer.player.region);
     return;
   }
 
   calculateViewport() {
     const { width, height } = Chrome.size();
-    Settings._tileSize = width / this.player.region.width;
+    Settings._tileSize = width / Trainer.player.region.width;
     this.width = width / Settings.tileSize;
     this.height = height / Settings.tileSize;
     if (width !== this.canvas.width || height !== this.canvas.height) {
@@ -119,10 +119,10 @@ export class Viewport {
   }
 
   getViewport(tickPercent: number) {
-    if (this.player.dying > -1) {
+    if (Trainer.player.dying > -1) {
       tickPercent = 0;
     }
-    const { x, y } = this.player.getPerceivedLocation(tickPercent);
+    const { x, y } = Trainer.player.getPerceivedLocation(tickPercent);
     const viewportX = x + 0.5 - this.width / 2;
     const viewportY = y + 0.5 - this.height / 2;
     return { viewportX, viewportY };
@@ -141,8 +141,8 @@ export class Viewport {
   }
 
   tick() {
-    if (MapController.controller && this.player) {
-      MapController.controller.updateOrbsMask(this.player.currentStats, this.player.stats);
+    if (MapController.controller && Trainer.player) {
+      MapController.controller.updateOrbsMask(Trainer.player.currentStats, Trainer.player.stats);
     }
   }
 
@@ -170,7 +170,7 @@ export class Viewport {
     this.context.fillStyle = "black";
     const { width, height } = Chrome.size();
     this.context.fillRect(0, 0, width, height);
-    const { canvas, uiCanvas, flip, offsetX, offsetY } = this.delegate.draw(world, this.player.region);
+    const { canvas, uiCanvas, flip, offsetX, offsetY } = this.delegate.draw(world, Trainer.player.region);
     if (flip) {
       this.context.rotate(Math.PI);
       this.context.translate(-width, -height);
@@ -206,10 +206,10 @@ export class Viewport {
       world.tickPercent,
     );
     MapController.controller.draw(this.context);
-    this.contextMenu.draw();
+    this.contextMenu.draw(this.context);
 
     if (this.clickController.clickAnimation) {
-      this.clickController.clickAnimation.draw();
+      this.clickController.clickAnimation.draw(this.context);
     }
 
     this.context.restore();

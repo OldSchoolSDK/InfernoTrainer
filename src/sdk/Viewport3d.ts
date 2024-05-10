@@ -17,6 +17,7 @@ import { Actor } from "./rendering/Actor";
 import _ from "lodash";
 import { Unit } from "./Unit";
 import { Projectile } from "./weapons/Projectile";
+import { Trainer } from "./Trainer";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -276,13 +277,13 @@ export class Viewport3d implements ViewportDelegate {
     plane.userData.clickable = true;
     // used for right-click walk here
     plane.userData.isFloor = true;
-    plane.visible = Viewport.viewport.player.region.drawDefaultFloor();
+    plane.visible = Trainer.player.region.drawDefaultFloor();
     this.scene.add(plane);
 
     this.scene.add(this.selectedTileMesh);
 
     // preload by adding a bunch of models to the scene but out of sight
-    await Viewport.viewport.player.region.preload();
+    await Trainer.player.region.preload();
     await this.renderer.compileAsync(this.scene, this.camera);
   }
 
@@ -391,7 +392,7 @@ export class Viewport3d implements ViewportDelegate {
       this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
       this.selectedTileMesh.position.y = -0.49;
       this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;
-      this.selectedTileMesh.visible = !Viewport.viewport.clickController.hasSelectedMob();
+      this.selectedTileMesh.visible = !Trainer.clickController.hasSelectedMob();
     }
   }
 

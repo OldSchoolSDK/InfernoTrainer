@@ -1,4 +1,5 @@
 import { Location } from "./Location";
+import { Trainer } from "./Trainer";
 import { Viewport } from "./Viewport";
 
 export interface MultiColorTextBlock {
@@ -56,43 +57,43 @@ export class ContextMenu {
     }
   }
 
-  draw() {
+  draw(context: CanvasRenderingContext2D) {
     if (this.isActive) {
       this.linesOfText = [
         {
           text: [{ text: "Choose Option", fillStyle: "#5f5445" }],
           action: () => {
-            Viewport.viewport.clickController.yellowClick();
+            Trainer.clickController.yellowClick();
           },
         },
         ...this.menuOptions,
         {
           text: [{ text: "Cancel", fillStyle: "white" }],
           action: () => {
-            Viewport.viewport.clickController.yellowClick();
+            Trainer.clickController.yellowClick();
           },
         },
       ];
-      Viewport.viewport.context.textAlign = "left";
+      context.textAlign = "left";
 
-      Viewport.viewport.context.font = "17px OSRS";
+      context.font = "17px OSRS";
 
       this.width = 0;
       this.linesOfText.forEach((line) => {
-        this.width = Math.max(this.width, this.fillMixedTextWidth(Viewport.viewport.context, line.text) + 10);
+        this.width = Math.max(this.width, this.fillMixedTextWidth(context, line.text) + 10);
       });
 
       this.height = 22 + (this.linesOfText.length - 1) * 20;
 
-      Viewport.viewport.context.fillStyle = "#5f5445";
-      Viewport.viewport.context.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height);
+      context.fillStyle = "#5f5445";
+      context.fillRect(this.location.x - this.width / 2, this.location.y, this.width, this.height);
 
-      Viewport.viewport.context.fillStyle = "black";
-      Viewport.viewport.context.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17);
+      context.fillStyle = "black";
+      context.fillRect(this.location.x - this.width / 2 + 1, this.location.y + 1, this.width - 2, 17);
 
-      Viewport.viewport.context.lineWidth = 1;
-      Viewport.viewport.context.strokeStyle = "black";
-      Viewport.viewport.context.strokeRect(
+      context.lineWidth = 1;
+      context.strokeStyle = "black";
+      context.strokeRect(
         this.location.x - this.width / 2 + 2,
         this.location.y + 20,
         this.width - 4,
@@ -100,10 +101,10 @@ export class ContextMenu {
       );
 
       for (let i = 0; i < this.linesOfText.length; i++) {
-        this.drawLineOfText(Viewport.viewport.context, this.linesOfText[i].text, this.width, i * 20);
+        this.drawLineOfText(context, this.linesOfText[i].text, this.width, i * 20);
       }
     }
-    Viewport.viewport.context.restore();
+    context.restore();
   }
 
   fillMixedText(ctx: CanvasRenderingContext2D, text: MultiColorTextBlock[], x: number, y: number, inputColor: string) {

@@ -6,16 +6,17 @@ import { LineOfSight } from "./LineOfSight";
 import { Pathing } from "./Pathing";
 
 import { Weapon } from "./gear/Weapon";
-import { Unit, UnitBonuses, UnitOptions, UnitStats, UnitTypes } from "./Unit";
+import { Unit, UnitBonuses, UnitOptions, UnitTypes } from "./Unit";
 import { Location } from "./Location";
 import { Collision } from "./Collision";
-import { Viewport } from "./Viewport";
 import { Random } from "./Random";
 import { Region } from "./Region";
 import { CanvasSpriteModel } from "./rendering/CanvasSpriteModel";
 import { Model } from "./rendering/Model";
 import { InputController } from "./Input";
 import { parseText } from "./utils/Text";
+import { UnitStats } from "./UnitStats";
+import { Trainer } from "./Trainer";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -370,12 +371,12 @@ export class Mob extends Unit {
           { text: this.mobName(), fillStyle: "yellow" },
           {
             text: ` (level ${this.combatLevel})`,
-            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+            fillStyle: Trainer.player.combatLevelColor(this),
           },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
-          InputController.controller.queueAction(() => Viewport.viewport.clickController.playerAttackClick(this));
+          Trainer.clickController.redClick();
+          InputController.controller.queueAction(() => Trainer.clickController.playerAttackClick(this));
         },
       },
     ];
@@ -389,7 +390,7 @@ export class Mob extends Unit {
           { text: this.mobName(), fillStyle: "yellow" },
           {
             text: ` (level ${this.combatLevel})`,
-            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+            fillStyle: Trainer.player.combatLevelColor(this),
           },
         ],
         action: () => {

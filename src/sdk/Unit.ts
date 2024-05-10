@@ -30,6 +30,7 @@ import { Renderable } from "./Renderable";
 import { Sound, SoundCache } from "./utils/SoundCache";
 import { DelayedAction } from "./DelayedAction";
 import { TextSegment, parseText } from "./utils/Text";
+import { UnitStats } from "./UnitStats";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export enum UnitTypes {
@@ -58,16 +59,6 @@ export interface UnitOptions {
   spawnDelay?: number;
   cooldown?: number;
   inventory?: Item[];
-}
-
-export interface UnitStats {
-  attack: number;
-  strength: number;
-  defence: number;
-  range: number;
-  magic: number;
-  hitpoint: number;
-  prayer?: number;
 }
 
 export interface UnitBonuses {

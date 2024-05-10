@@ -1,14 +1,13 @@
 "use strict";
 
 import { remove } from "lodash";
-import { Entity } from "./Entity";
-import { Item } from "./Item";
-import { Mob } from "./Mob";
-import { Player } from "./Player";
+import type { Entity } from "./Entity";
+import type { Item } from "./Item";
+import type { Mob } from "./Mob";
+import type { Player } from "./Player";
 import { Settings } from "./Settings";
-import { Unit } from "./Unit";
-import { World } from "./World";
-import { Projectile } from "./weapons/Projectile";
+import type { World } from "./World";
+import type { Projectile } from "./weapons/Projectile";
 
 interface GroundYItems {
   [key: number]: Item[];

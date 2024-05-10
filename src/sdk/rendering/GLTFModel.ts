@@ -6,8 +6,6 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module";
 import { Model } from "./Model";
 import { Renderable, RenderableListener } from "../Renderable";
 import { Location, Location3 } from "../Location";
-import { Viewport } from "../Viewport";
-import { Viewport3d } from "../Viewport3d";
 import { drawLineNormally, drawLineOnTop } from "./RenderUtils";
 
 const OUTLINE_NORMAL = 0xffffff;
@@ -382,8 +380,9 @@ export class GLTFModel implements Model, RenderableListener {
   }
 
   static async preload(model: string) {
+    // Is this gonna be crap?
+    const scene = new THREE.Scene();
     const gltf = await loader.loadAsync(model);
-    const scene = (Viewport.viewport.getDelegate() as Viewport3d).scene;
     const camera = new THREE.PerspectiveCamera();
     gltf.scene.scale.set(0.01, 0.01, 0.01);
     gltf.scene.position.set(20, 0, 20);

@@ -9,9 +9,9 @@ import { Renderable } from "../Renderable";
 import { Pathing } from "../Pathing";
 import { BasicModel } from "../rendering/BasicModel";
 import { GLTFModel } from "../rendering/GLTFModel";
-import { Collision } from "../Collision";
 import { Settings } from "../Settings";
 import { Viewport } from "../Viewport";
+import { Trainer } from "../Trainer";
 
 export interface ProjectileMotionInterpolator {
   interpolate(from: Location3, to: Location3, percent: number): Location3;
@@ -235,15 +235,15 @@ export class Projectile extends Renderable {
 
   checkSound(sound: Sound, delay: number) {
     if (Settings.playsAudio && sound && this.age === delay) {
-      const player = Viewport.viewport.player;
+      const player = Trainer.player;
       // projectiles launched at the player always play at full volume
       let volumeRatio =
         this.from === player || this.to === player
           ? 1.0
           : 1 /
             Pathing.dist(
-              Viewport.viewport.player.location.x,
-              Viewport.viewport.player.location.y,
+              Trainer.player.location.x,
+              Trainer.player.location.y,
               this.startLocation.x,
               this.startLocation.y,
             );

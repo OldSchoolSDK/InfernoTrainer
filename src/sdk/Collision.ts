@@ -1,11 +1,9 @@
 import { filter } from "lodash";
 import { Entity } from "./Entity";
-import { LineOfSightMask } from "./LineOfSight";
 import { Mob } from "./Mob";
 import { Pathing } from "./Pathing";
 import { Player } from "./Player";
 import { Region } from "./Region";
-import { Settings } from "./Settings";
 import { Unit } from "./Unit";
 
 export enum CollisionType {
@@ -67,7 +65,7 @@ export class Collision {
     return false;
   }
 
-  static collidesWithAnyLoSBlockingEntities(region: Region, x: number, y: number, s: number): LineOfSightMask {
+  static collidesWithAnyLoSBlockingEntities(region: Region, x: number, y: number, s: number) {
     for (let i = 0; i < region.entities.length; i++) {
       const entity = region.entities[i];
       if (Collision.collisionMath(x, y, s, entity.location.x, entity.location.y, entity.size)) {

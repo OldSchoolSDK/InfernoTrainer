@@ -13,8 +13,8 @@ import { Weapon } from "../gear/Weapon";
 import { Location } from "../../sdk/Location";
 import { startCase, toLower } from "lodash";
 import { Settings } from "../Settings";
-import { Viewport } from "../Viewport";
 import { PlayerStats } from "../PlayerStats";
+import { Trainer } from "../Trainer";
 
 export class CombatControls extends BaseControls {
   private playerStats: PlayerStats;
@@ -53,7 +53,7 @@ export class CombatControls extends BaseControls {
       { x: 25, y: 100 },
       { x: 105, y: 100 },
     ];
-    const weapon = Viewport.viewport.player.equipment.weapon;
+    const weapon = Trainer.player.equipment.weapon;
     const attackStyles = weapon.attackStyles();
 
     attackStyleOffsets.slice(0, attackStyles.length).forEach((offset: Location, index: number) => {
@@ -63,7 +63,7 @@ export class CombatControls extends BaseControls {
     });
 
     if (x > 28 && x < 175 && y > 160 && y < 200) {
-      Viewport.viewport.player.autoRetaliate = !Viewport.viewport.player.autoRetaliate;
+      Trainer.player.autoRetaliate = !Trainer.player.autoRetaliate;
     }
     if (
       x > 25 &&
@@ -72,9 +72,9 @@ export class CombatControls extends BaseControls {
       y < 210 + this.specialAttackBarBackground.height
     ) {
       const canSpec =
-        Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
+        Trainer.player.equipment.weapon && Trainer.player.equipment.weapon.hasSpecialAttack();
       if (canSpec) {
-        Viewport.viewport.player.useSpecialAttack = !Viewport.viewport.player.useSpecialAttack;
+        Trainer.player.useSpecialAttack = !Trainer.player.useSpecialAttack;
       }
     }
   }
@@ -127,7 +127,7 @@ export class CombatControls extends BaseControls {
 
     const scale = Settings.controlPanelScale;
 
-    const weapon = Viewport.viewport.player.equipment.weapon;
+    const weapon = Trainer.player.equipment.weapon;
 
     if (!weapon) {
       return;
@@ -170,7 +170,7 @@ export class CombatControls extends BaseControls {
       });
     }
 
-    const autoRetailateImage = Viewport.viewport.player.autoRetaliate
+    const autoRetailateImage = Trainer.player.autoRetaliate
       ? this.selectedAutoRetailButtonImage
       : this.autoRetailButtonImage;
     context.drawImage(
@@ -191,11 +191,11 @@ export class CombatControls extends BaseControls {
     context.fillText("Auto Retaliate", x + 115 * scale, y + 182 * scale);
 
     const canSpec =
-      Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
-    const isUsingSpec = canSpec && Viewport.viewport.player.useSpecialAttack;
+      Trainer.player.equipment.weapon && Trainer.player.equipment.weapon.hasSpecialAttack();
+    const isUsingSpec = canSpec && Trainer.player.useSpecialAttack;
 
     if (canSpec) {
-      const specAmount = (Viewport.viewport.player?.currentStats.specialAttack ?? 0.0) / 100.0;
+      const specAmount = (Trainer.player?.currentStats.specialAttack ?? 0.0) / 100.0;
       context.drawImage(
         this.specialAttackBarBackground,
         x + 25 * scale,

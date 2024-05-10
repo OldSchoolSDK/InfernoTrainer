@@ -30,6 +30,7 @@ import { ControlPanelController } from "./ControlPanelController";
 import { MenuOption } from "./ContextMenu";
 import { Chrome } from "./Chrome";
 import { Viewport } from "./Viewport";
+import { Trainer } from "./Trainer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -142,7 +143,7 @@ export class MapController {
     this.mapRunOrbMasked = new OffscreenCanvas(this.mapRunOrb.width, this.mapRunOrb.height);
     ctx = this.mapRunOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
     ctx.fillStyle = "white";
-    ctx.drawImage(Viewport.viewport.player.running ? this.mapRunOrb : this.mapNoSpecOrb, 0, 0);
+    ctx.drawImage(Trainer.player.running ? this.mapRunOrb : this.mapNoSpecOrb, 0, 0);
     ctx.globalCompositeOperation = "destination-in";
     ctx.fillRect(
       0,
@@ -157,8 +158,8 @@ export class MapController {
     ctx = this.mapSpecOrbMasked.getContext("2d") as OffscreenCanvasRenderingContext2D;
     ctx.fillStyle = "white";
     let specOrb = this.mapNoSpecOrb;
-    if (Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack()) {
-      if (Viewport.viewport.player.useSpecialAttack) {
+    if (Trainer.player.equipment.weapon && Trainer.player.equipment.weapon.hasSpecialAttack()) {
+      if (Trainer.player.useSpecialAttack) {
         specOrb = this.mapSpecOnOrb;
       } else {
         specOrb = this.mapSpecOrb;
@@ -215,12 +216,12 @@ export class MapController {
     mapContext.rotate(Viewport.viewport.getMapRotation());
     mapContext.translate(-76, -76);
 
-    if (Viewport.viewport.player.region.mapImage) {
+    if (Trainer.player.region.mapImage) {
       const compatCtx = mapContext as any;
       compatCtx.webkitImageSmoothingEnabled = false;
       compatCtx.mozImageSmoothingEnabled = false;
       compatCtx.imageSmoothingEnabled = false;
-      mapContext.drawImage(Viewport.viewport.player.region.mapImage, 0, 0, 152, 152);
+      mapContext.drawImage(Trainer.player.region.mapImage, 0, 0, 152, 152);
       compatCtx.webkitImageSmoothingEnabled = true;
       compatCtx.mozImageSmoothingEnabled = true;
       compatCtx.imageSmoothingEnabled = true;
@@ -328,7 +329,7 @@ export class MapController {
         {
           text: [{ text: "Toggle Run", fillStyle: "white" }],
           action: () => {
-            Viewport.viewport.player.running = !Viewport.viewport.player.running;
+            Trainer.player.running = !Trainer.player.running;
           },
         },
       ];
@@ -384,7 +385,7 @@ export class MapController {
       this.toggleQuickprayers();
     } else if (x > 15 && x < 67 && y > 122 && y < 149) {
       intercepted = true;
-      Viewport.viewport.player.running = !Viewport.viewport.player.running;
+      Trainer.player.running = !Trainer.player.running;
     } else if (x > 38 && x < 90 && y > 148 && y < 175) {
       intercepted = true;
       this.toggleSpecialAttack();
@@ -394,19 +395,19 @@ export class MapController {
   }
 
   canSpecialAttack() {
-    return Viewport.viewport.player.equipment.weapon && Viewport.viewport.player.equipment.weapon.hasSpecialAttack();
+    return Trainer.player.equipment.weapon && Trainer.player.equipment.weapon.hasSpecialAttack();
   }
 
   toggleSpecialAttack() {
     if (this.canSpecialAttack()) {
-      Viewport.viewport.player.useSpecialAttack = !Viewport.viewport.player.useSpecialAttack;
+      Trainer.player.useSpecialAttack = !Trainer.player.useSpecialAttack;
     }
   }
 
   toggleQuickprayers() {
     if (ControlPanelController.controls.PRAYER.hasQuickPrayersActivated) {
       ControlPanelController.controls.PRAYER.deactivateAllPrayers();
-      Viewport.viewport.player.prayerController.drainCounter = 0;
+      Trainer.player.prayerController.drainCounter = 0;
     } else {
       ControlPanelController.controls.PRAYER.activateQuickPrayers();
     }
@@ -484,9 +485,9 @@ export class MapController {
     ctx.drawImage(this.mapRunOrbMasked, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale);
 
     let mapRunIcon = this.mapWalkIcon;
-    if (Viewport.viewport.player.effects.stamina) {
+    if (Trainer.player.effects.stamina) {
       mapRunIcon = this.mapStamIcon;
-    } else if (Viewport.viewport.player.running) {
+    } else if (Trainer.player.running) {
       mapRunIcon = this.mapRunIcon;
     }
     ctx.drawImage(mapRunIcon, offset + 37 * scale, 118 * scale, 26 * scale, 26 * scale);

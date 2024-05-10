@@ -12,6 +12,7 @@ import { MenuOption } from "../ContextMenu";
 import { MapController } from "../MapController";
 import { Viewport } from "../Viewport";
 import { InputController } from "../Input";
+import { Trainer } from "../Trainer";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class InventoryControls extends BaseControls {
@@ -47,7 +48,7 @@ export class InventoryControls extends BaseControls {
   }
 
   override onWorldTick() {
-    this.inventoryCache = [...Viewport.viewport.player.inventory];
+    this.inventoryCache = [...Trainer.player.inventory];
   }
 
   panelRightClick(x: number, y: number) {
@@ -59,7 +60,7 @@ export class InventoryControls extends BaseControls {
     // })
 
     const clickedItem = first(
-      filter(Viewport.viewport.player.inventory, (inventoryItem: Item, index: number) => {
+      filter(Trainer.player.inventory, (inventoryItem: Item, index: number) => {
         if (!inventoryItem) {
           return;
         }
@@ -72,7 +73,7 @@ export class InventoryControls extends BaseControls {
     ) as Item;
 
     if (clickedItem) {
-      menuOptions = menuOptions.concat(clickedItem.contextActions(Viewport.viewport.player));
+      menuOptions = menuOptions.concat(clickedItem.contextActions(Trainer.player));
     }
 
     Viewport.viewport.contextMenu.setMenuOptions(menuOptions);
@@ -85,7 +86,7 @@ export class InventoryControls extends BaseControls {
     }
     const scale = Settings.controlPanelScale;
 
-    const sanitizedInventory = Viewport.viewport.player.inventory.map((item: Item, index: number) => {
+    const sanitizedInventory = Trainer.player.inventory.map((item: Item, index: number) => {
       if (item) {
         return item;
       }
@@ -111,28 +112,28 @@ export class InventoryControls extends BaseControls {
 
     if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
       if (clickedItem.hasInventoryLeftClick) {
-        InputController.controller.queueAction(() => clickedItem.inventoryLeftClick(Viewport.viewport.player));
+        InputController.controller.queueAction(() => clickedItem.inventoryLeftClick(Trainer.player));
         MapController.controller.updateOrbsMask(null, null);
       } else {
         clickedItem.selected = true;
       }
     } else if (!isPlaceholder && clickedItem) {
       const theItemWereReplacing = clickedItem;
-      const theItemWereReplacingPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
-      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
+      const theItemWereReplacingPosition = clickedItem.inventoryPosition(Trainer.player);
+      const thisPosition = this.clickedDownItem.inventoryPosition(Trainer.player);
       // update the local cache immediately, but the real position updates upon server tick
       this.inventoryCache[theItemWereReplacingPosition] = this.clickedDownItem;
       this.inventoryCache[thisPosition] = theItemWereReplacing;
       InputController.controller.queueAction(() => {
-        Viewport.viewport.player.swapItemPositions(theItemWereReplacingPosition, thisPosition);
+        Trainer.player.swapItemPositions(theItemWereReplacingPosition, thisPosition);
       });
     } else if (clickedItem) {
-      const thisPosition = this.clickedDownItem.inventoryPosition(Viewport.viewport.player);
-      const clickedPosition = clickedItem.inventoryPosition(Viewport.viewport.player);
+      const thisPosition = this.clickedDownItem.inventoryPosition(Trainer.player);
+      const clickedPosition = clickedItem.inventoryPosition(Trainer.player);
       this.inventoryCache[clickedPosition] = this.clickedDownItem;
       this.inventoryCache[thisPosition] = null;
       InputController.controller.queueAction(() => {
-        Viewport.viewport.player.swapItemPositions(clickedPosition, thisPosition);
+        Trainer.player.swapItemPositions(clickedPosition, thisPosition);
       });
     }
     this.clickedDownItem = null;
@@ -145,7 +146,7 @@ export class InventoryControls extends BaseControls {
     const scale = Settings.controlPanelScale;
 
     const clickedItem = first(
-      filter(Viewport.viewport.player.inventory, (inventoryItem: Item, index: number) => {
+      filter(Trainer.player.inventory, (inventoryItem: Item, index: number) => {
         if (!inventoryItem) {
           return;
         }
@@ -157,7 +158,7 @@ export class InventoryControls extends BaseControls {
       }),
     ) as Item;
 
-    Viewport.viewport.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false));
+    Trainer.player.inventory.forEach((inventoryItem) => inventoryItem && (inventoryItem.selected = false));
 
     if (clickedItem) {
       this.clickedDownItem = clickedItem;

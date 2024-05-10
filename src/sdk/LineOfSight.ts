@@ -1,7 +1,7 @@
 "use strict";
 
 import { Settings } from "./Settings";
-import { Pathing } from "./Pathing";
+import { LocationUtils } from "./Location";
 import { Collision } from "./Collision";
 import { Region } from "./Region";
 import { Player } from "./Player";
@@ -56,12 +56,12 @@ export class LineOfSight {
   }
 
   static playerHasLineOfSightOfMob(region: Region, x: number, y: number, mob: Unit, r = 1) {
-    const mobPoint = Pathing.closestPointTo(x, y, mob);
+    const mobPoint = LocationUtils.closestPointTo(x, y, mob);
     return LineOfSight.hasLineOfSight(region, x, y, mobPoint.x, mobPoint.y, 1, r, false);
   }
   static mobHasLineOfSightToMob(region: Region, mob1: Unit, mob2: Unit, r = 1) {
-    const mob1Point = Pathing.closestPointTo(mob1.location.x, mob1.location.y, mob2);
-    const mob2Point = Pathing.closestPointTo(mob2.location.x, mob2.location.y, mob1);
+    const mob1Point = LocationUtils.closestPointTo(mob1.location.x, mob1.location.y, mob2);
+    const mob2Point = LocationUtils.closestPointTo(mob2.location.x, mob2.location.y, mob1);
     return LineOfSight.hasLineOfSight(region, mob1Point.x, mob1Point.y, mob2Point.x, mob2Point.y, 1, r, false);
   }
 

@@ -11,7 +11,7 @@ import { SetEffect, SetEffectTypes } from "../SetEffect";
 import { ItemName } from "../ItemName";
 import { AttackStylesController, AttackStyle, AttackStyleTypes } from "../AttackStylesController";
 import { Random } from "../Random";
-import { Sound, SoundCache } from "../utils/SoundCache";
+import { Sound } from "../utils/SoundCache";
 import { PlayerAnimationIndices } from "../rendering/GLTFAnimationConstants";
 import { XpDrop } from "../XpDrop";
 

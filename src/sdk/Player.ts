@@ -24,8 +24,7 @@ import { PlayerRegenTimer } from "./PlayerRegenTimers";
 import { PrayerController } from "./PrayerController";
 import { AmmoType } from "./gear/Ammo";
 import { Region } from "./Region";
-import { Viewport } from "./Viewport";
-import { Sound, SoundCache } from "./utils/SoundCache";
+import { Sound } from "./utils/SoundCache";
 
 import LeatherHit from "../assets/sounds/hit.ogg";
 import HumanHit from "../assets/sounds/human_hit_513.ogg";
@@ -34,6 +33,7 @@ import { TileMarker } from "../content/TileMarker";
 
 import { GLTFModel } from "./rendering/GLTFModel";
 import { PlayerAnimationIndices } from "./rendering/GLTFAnimationConstants";
+import { Trainer } from "./Trainer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -111,12 +111,12 @@ export class Player extends Unit {
           { text: `Player`, fillStyle: "yellow" },
           {
             text: ` (level ${this.combatLevel})`,
-            fillStyle: Viewport.viewport.player.combatLevelColor(this),
+            fillStyle: Trainer.player.combatLevelColor(this),
           },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
-          Viewport.viewport.player.setAggro(this);
+          Trainer.clickController.redClick();
+          Trainer.player.setAggro(this);
         },
       },
     ]);
@@ -310,7 +310,7 @@ export class Player extends Unit {
     if (!XpDropController.controller) {
       return;
     }
-    if (this !== Viewport.viewport.player) {
+    if (this !== Trainer.player) {
       return;
     }
 

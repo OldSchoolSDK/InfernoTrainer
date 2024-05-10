@@ -1,7 +1,6 @@
 import { ControlPanelController } from "../ControlPanelController";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Settings } from "../Settings";
-import { Viewport } from "../Viewport";
 
 export class BaseControls {
   panelImage: HTMLImageElement = ImageLoader.createImage(this.panelImageReference);

@@ -5,9 +5,9 @@ import UsedSpotBackground from "../../assets/images/interface/equipment_spot_use
 import { Settings } from "../Settings";
 import { ControlPanelController } from "../ControlPanelController";
 import { ImageLoader } from "../utils/ImageLoader";
-import { Viewport } from "../Viewport";
 import { EQUIPMENT_TYPE_TO_SLOT, EquipmentTypes } from "../Equipment";
 import { InputController } from "../Input";
+import { Trainer } from "../Trainer";
 
 export class EquipmentControls extends BaseControls {
   static instance: EquipmentControls | null = null;
@@ -99,7 +99,7 @@ export class EquipmentControls extends BaseControls {
 
   private unequipItem(clicked: EquipmentTypes) {
     const equipmentSlot = EQUIPMENT_TYPE_TO_SLOT[clicked];
-    Viewport.viewport.player.equipment[equipmentSlot]?.unequip(Viewport.viewport.player);
+    Trainer.player.equipment[equipmentSlot]?.unequip(Trainer.player);
   }
 
   get isAvailable(): boolean {
@@ -120,7 +120,7 @@ export class EquipmentControls extends BaseControls {
     slot: EquipmentTypes,
   ) {
     const equipmentSlot = EQUIPMENT_TYPE_TO_SLOT[slot];
-    if (Viewport.viewport.player.equipment[equipmentSlot]) {
+    if (Trainer.player.equipment[equipmentSlot]) {
       context.drawImage(
         this.usedSpotBackground,
         x + slotX * scale,
@@ -133,8 +133,8 @@ export class EquipmentControls extends BaseControls {
       } else {
         context.globalAlpha = 1.0;
       }
-      const sprite = Viewport.viewport.player.equipment[equipmentSlot].inventorySprite;
-      Viewport.viewport.context.drawImage(
+      const sprite = Trainer.player.equipment[equipmentSlot].inventorySprite;
+      context.drawImage(
         sprite,
         x + (slotX + 18 - Math.floor(sprite.width / 2)) * scale,
         y + (slotY + 18 - Math.floor(sprite.height / 2)) * scale,

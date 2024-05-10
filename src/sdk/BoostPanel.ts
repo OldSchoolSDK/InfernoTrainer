@@ -1,7 +1,6 @@
 "use strict";
 
 import { PlayerStats } from "./PlayerStats";
-import { Viewport } from "./Viewport";
 
 import AttackXpDropImage from "../assets/images/xpdrops/attack.png";
 import StrengthXpDropImage from "../assets/images/xpdrops/strength.png";
@@ -9,6 +8,7 @@ import DefenceXpDropImage from "../assets/images/xpdrops/defence.png";
 import RangeXpDropImage from "../assets/images/xpdrops/range.png";
 import MagicXpDropImage from "../assets/images/xpdrops/magic.png";
 import { ImageLoader } from "./utils/ImageLoader";
+import { Trainer } from "./Trainer";
 
 const BOOST_VISIBLE_STATS: (keyof PlayerStats)[] = [
   "attack",
@@ -36,7 +36,7 @@ export class BoostPanel {
   
 
   draw(context: CanvasRenderingContext2D, scale: number, xLeft: number, yBottom: number) {
-    const player = Viewport.viewport.player;
+    const player = Trainer.player;
     if (!player) {
       return;
     }

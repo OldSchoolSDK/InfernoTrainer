@@ -1,5 +1,6 @@
 "use strict";
-import { UnitStats } from "./Unit";
+
+import { UnitStats } from "./UnitStats";
 
 export function SerializePlayerStats(stats: PlayerStats): string {
   return JSON.stringify(stats);

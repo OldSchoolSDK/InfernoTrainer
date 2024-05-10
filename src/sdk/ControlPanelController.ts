@@ -18,7 +18,6 @@ import { Settings } from "./Settings";
 import { Location } from "./Location";
 import { Chrome } from "./Chrome";
 import { MapController } from "./MapController";
-import { Viewport } from "./Viewport";
 import { BoostPanel } from "./BoostPanel";
 
 interface TabPosition {
@@ -324,7 +323,7 @@ export class ControlPanelController {
   }
 
   draw(context: CanvasRenderingContext2D) {
-    Viewport.viewport.context.fillStyle = "#000";
+    context.fillStyle = "#000";
     const scale = this.getTabScale();
 
     if (this.selectedControl && this.selectedControl.draw) {

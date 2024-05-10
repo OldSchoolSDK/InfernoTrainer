@@ -11,6 +11,7 @@ import { Mob } from "./Mob";
 import { Collision } from "./Collision";
 import { Item } from "./Item";
 import _ from "lodash";
+import { Trainer } from "./Trainer";
 
 export class Viewport2d implements ViewportDelegate {
   async initialise(world: World, region: Region) {
@@ -90,7 +91,7 @@ export class Viewport2d implements ViewportDelegate {
     const mobs: Mob[] = [];
     const players: Player[] = [];
     const groundItems: Item[] = [];
-    const region = viewport.player.region;
+    const region = Trainer.player.region;
 
     mobs.push(
       ...Collision.collidesWithAnyMobsAtPerceivedDisplayLocation(region, adjustedX, adjustedY, world.tickPercent),
@@ -101,7 +102,7 @@ export class Viewport2d implements ViewportDelegate {
         adjustedX,
         adjustedY,
         world.tickPercent,
-      ).filter((player: Player) => player !== Viewport.viewport.player),
+      ).filter((player: Player) => player !== Trainer.player),
     );
     groundItems.push(...region.groundItemsAtLocation(Math.floor(adjustedX), Math.floor(adjustedY)));
     if (mobs.length > 0 || players.length > 0 || groundItems.length > 0) {

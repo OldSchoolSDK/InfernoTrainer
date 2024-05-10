@@ -1,4 +1,4 @@
-import { Unit } from "../Unit";
+import type { Unit } from "../Unit";
 import { BarrageSpell } from "./BarrageSpell";
 import { ProjectileOptions } from "./Projectile";
 import { AttackBonuses } from "../gear/Weapon";

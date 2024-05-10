@@ -5,7 +5,7 @@ import { MagicWeapon } from "./MagicWeapon";
 import { ProjectileOptions } from "./Projectile";
 import { AttackBonuses } from "../gear/Weapon";
 import { XpDrop } from "../XpDrop";
-import { AttackStyle, AttackStyleTypes } from "../AttackStylesController";
+import { AttackStyle } from "../AttackStylesController";
 
 export class BarrageSpell extends MagicWeapon {
   get aoe() {

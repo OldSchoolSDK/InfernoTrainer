@@ -7,7 +7,7 @@ import { EntityNames } from "./EntityName";
 import { Item } from "./Item";
 import { Pathing } from "./Pathing";
 import { Settings } from "./Settings";
-import { Unit } from "./Unit";
+import type { Unit } from "./Unit";
 import { Viewport } from "./Viewport";
 import { MapController } from "./MapController";
 import { ControlPanelController } from "./ControlPanelController";
@@ -16,6 +16,7 @@ import { Mob } from "./Mob";
 import { World } from "./World";
 import { Region } from "./Region";
 import { InputController } from "./Input";
+import { Trainer } from "./Trainer";
 
 export class ClickController {
   clickAnimation?: ClickAnimation = null;
@@ -97,7 +98,7 @@ export class ClickController {
   }
 
   mouseMoved(e: MouseEvent) {
-    const world = Viewport.viewport.player.region.world;
+    const world = Trainer.player.region.world;
     const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
     this.recentlySelectedMobs.forEach((mob) => {
       mob.selected = false;
@@ -160,9 +161,9 @@ export class ClickController {
     if (e.button !== 0) {
       return;
     }
-    const region = Viewport.viewport.player.region;
-    const world = Viewport.viewport.player.region.world;
-    const player = Viewport.viewport.player;
+    const region = Trainer.player.region;
+    const world = Trainer.player.region.world;
+    const player = Trainer.player;
 
     Viewport.viewport.contextMenu.cursorMovedTo(e.clientX, e.clientY);
     const clickedOn = this.getClickedOn(e, world, region);
@@ -173,7 +174,7 @@ export class ClickController {
 
     const { mobs, players, groundItems, x, y } = clickedOn;
 
-    Viewport.viewport.player.interruptCombat();
+    Trainer.player.interruptCombat();
 
     const inputController = InputController.controller;
     if (!e.shiftKey && mobs.length && mobs[0].canBeAttacked()) {
@@ -194,8 +195,8 @@ export class ClickController {
   }
 
   rightClickDown(e: MouseEvent) {
-    const region = Viewport.viewport.player.region;
-    const world = Viewport.viewport.player.region.world;
+    const region = Trainer.player.region;
+    const world = Trainer.player.region.world;
 
     Viewport.viewport.contextMenu.setPosition({ x: e.offsetX, y: e.offsetY });
 
@@ -227,7 +228,7 @@ export class ClickController {
       menuOptions = menuOptions.concat(mob.contextActions(region, x, y));
     });
     players.forEach((player) => {
-      if (player !== Viewport.viewport.player) {
+      if (player !== Trainer.player) {
         menuOptions = menuOptions.concat(player.contextActions(region, x, y));
       }
     });
@@ -237,7 +238,7 @@ export class ClickController {
           { text: "Take ", fillStyle: "white" },
           { text: item.itemName, fillStyle: "#FF911F" },
         ],
-        action: () => InputController.controller.queueAction(() => Viewport.viewport.player.setSeekingItem(item)),
+        action: () => InputController.controller.queueAction(() => Trainer.player.setSeekingItem(item)),
       });
     });
 
@@ -268,7 +269,7 @@ export class ClickController {
           });
 
           if (!removed) {
-            region.addEntity(new TileMarker(Viewport.viewport.player.region, { x, y }, "#FF0000"));
+            region.addEntity(new TileMarker(Trainer.player.region, { x, y }, "#FF0000"));
           }
 
           Settings.tile_markers = filter(
@@ -288,11 +289,11 @@ export class ClickController {
   }
 
   playerAttackClick(mob: Unit) {
-    Viewport.viewport.player.setAggro(mob);
+    Trainer.player.setAggro(mob);
   }
 
   playerWalkClick(x: number, y: number) {
-    Viewport.viewport.player.moveTo(Math.floor(x), Math.floor(y));
+    Trainer.player.moveTo(Math.floor(x), Math.floor(y));
   }
 
   redClick() {
