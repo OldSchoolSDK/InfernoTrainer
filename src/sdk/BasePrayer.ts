@@ -1,6 +1,7 @@
 "use strict";
 
 import { Player } from "./Player";
+import { Settings } from "./Settings";
 import { ImageLoader } from "./utils/ImageLoader";
 
 export enum PrayerGroups {
@@ -16,7 +17,10 @@ export enum PrayerGroups {
 
 export class BasePrayer {
   lastActivated = 0;
+  private lastDeactivated = 0;
+  // server-side
   isActive = false;
+  // client-side
   isLit = false;
   cachedImage: HTMLImageElement;
 
@@ -29,11 +33,17 @@ export class BasePrayer {
   }
 
   tick() {
+    const ping = Settings.inputDelay || 0;
+    const now = Date.now();
     if (this.isLit && !this.isActive) {
-      this.isActive = true;
+      if (now >= this.lastActivated + ping) {
+        this.isActive = true;
+      }
       this.isLit = true;
     } else if (!this.isLit && this.isActive) {
-      this.isActive = false;
+      if (now >= this.lastDeactivated + ping) {
+        this.isActive = false;
+      }
       this.isLit = false;
     }
   }
@@ -70,6 +80,8 @@ export class BasePrayer {
     this.isLit = !this.isLit;
     if (this.isLit) {
       this.lastActivated = Date.now();
+    } else {
+      this.lastDeactivated = Date.now();
     }
   }
 
