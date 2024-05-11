@@ -1,70 +1,70 @@
-import { UnitOptions } from "../../../sdk/Unit";
-
-import { JusticiarFaceguard } from "../../equipment/JusticiarFaceguard";
-import { NecklaceOfAnguish } from "../../equipment/NecklaceOfAnguish";
-import { PegasianBoots } from "../../equipment/PegasianBoots";
-import { AvasAssembler } from "../../equipment/AvasAssembler";
-import { AvasAccumulator } from "../../equipment/AvasAccumulator";
-import { HolyBlessing } from "../../equipment/HolyBlessing";
-import { OccultNecklace } from "../../equipment/OccultNecklace";
-import { BarrowsGloves } from "../../equipment/BarrowsGloves";
-import { RingOfSufferingImbued } from "../../equipment/RingOfSufferingImbued";
-import { SlayerHelmet } from "../../equipment/SlayerHelmet";
-import { CrystalHelm } from "../../equipment/CrystalHelm";
-import { CrystalBody } from "../../equipment/CrystalBody";
-import { CrystalLegs } from "../../equipment/CrystalLegs";
-import { CrystalShield } from "../../equipment/CrystalShield";
-import { BowOfFaerdhinen } from "../../weapons/BowOfFaerdhinen";
-import { JusticiarChestguard } from "../../equipment/JusticiarChestguard";
-import { JusticiarLegguards } from "../../equipment/JusticiarLegguards";
-import { KodaiWand } from "../../weapons/KodaiWand";
-import { DragonArrows } from "../../equipment/DragonArrows";
-import { RobinhoodHat } from "../../equipment/RobinHoodHat";
-import { GuthixRobetop } from "../../equipment/GuthixRobeTop";
-import { RangerBoots } from "../../equipment/RangerBoots";
-import { RuneKiteshield } from "../../equipment/RuneKiteshield";
-import { DagonhaiRobeTop } from "../../equipment/DagonhaiRobeTop";
-import { AncientStaff } from "../../weapons/AncientStaff";
-import { AhrimsRobeskirt } from "../../equipment/AhrimsRobeskirt";
-import { AhrimsRobetop } from "../../equipment/AhrimsRobetop";
-import { SaradominBody } from "../../equipment/SaradominBody";
-import { SaradominChaps } from "../../equipment/SaradominChaps";
-import { SaradominCoif } from "../../equipment/SaradominCoif";
-import { DiamondBoltsE } from "../../equipment/DiamontBoltsE";
-import { RubyBoltsE } from "../../equipment/RubyBoltsE";
-import { RuneCrossbow } from "../../equipment/RuneCrossbow";
-import { MagesBook } from "../../equipment/MagesBook";
-import { BlackDhideChaps } from "../../equipment/BlackDhideChaps";
-import { BlackDhideVambraces } from "../../equipment/BlackDhideVambraces";
-import { AncestralRobetop } from "../../equipment/AncestralRobetop";
-import { AncestralRobebottom } from "../../equipment/AncestralRobebottom";
-import { StaminaPotion } from "../../items/StaminaPotion";
-import { SaradominBrew } from "../../items/SaradominBrew";
-import { SuperRestore } from "../../items/SuperRestore";
-import { ZaryteVambraces } from "../../equipment/ZaryteVambraces";
-import { MasoriMaskF } from "../../equipment/MasoriMaskF";
-import { MasoriBodyF } from "../../equipment/MasoriBodyF";
-import { MasoriChapsF } from "../../equipment/MasoriChapsF";
-import { DizanasQuiver } from "../../equipment/DizanasQuiver";
-import { BastionPotion } from "../../items/BastionPotion";
-
-import { TwistedBow } from "../../weapons/TwistedBow";
-import { Blowpipe } from "../../weapons/Blowpipe";
-import { Weapon } from "../../../sdk/gear/Weapon";
-import { ItemName } from "../../../sdk/ItemName";
-import { Item } from "../../../sdk/Item";
+import {
+  ScytheOfVitur,
+  TorvaFullhelm,
+  OccultNecklace,
+  InfernalCape,
+  DragonArrows,
+  TorvaPlatebody,
+  TorvaPlatelegs,
+  PrimordialBoots,
+  ZaryteVambraces,
+  RingOfSufferingImbued,
+  TwistedBow,
+  MasoriBodyF,
+  DizanasQuiver,
+  PegasianBoots,
+  NecklaceOfAnguish,
+  MasoriChapsF,
+  MasoriMaskF,
+  SaradominBrew,
+  SuperRestore,
+  BastionPotion,
+  StaminaPotion,
+  BlackChinchompa,
+  Blowpipe,
+  BrowserUtils,
+  KodaiWand,
+  CrystalShield,
+  AncestralRobetop,
+  AncestralRobebottom,
+  JusticiarChestguard,
+  JusticiarLegguards,
+  CrystalHelm,
+  AvasAssembler,
+  HolyBlessing,
+  BarrowsGloves,
+  CrystalBody,
+  BowOfFaerdhinen,
+  CrystalLegs,
+  AncientStaff,
+  SaradominCoif,
+  RubyBoltsE,
+  AhrimsRobetop,
+  AhrimsRobeskirt,
+  RuneCrossbow,
+  DiamondBoltsE,
+  JusticiarFaceguard,
+  SaradominBody,
+  SaradominChaps,
+  RuneKiteshield,
+  DagonhaiRobeTop,
+  RangerBoots,
+  MagesBook,
+  AvasAccumulator,
+  BlackDhideChaps,
+  BlackDhideVambraces,
+  Item,
+  ItemName,
+  Player,
+  UnitOptions,
+  Weapon,
+  Chest,
+  Legs,
+  SlayerHelmet,
+  RobinHoodHat,
+  GuthixRobeTop,
+} from "@supalosa/oldschool-trainer-sdk";
 import { filter, indexOf, map } from "lodash";
-import { Chest } from "../../../sdk/gear/Chest";
-import { Legs } from "../../../sdk/gear/Legs";
-import { Player } from "../../../sdk/Player";
-import { BlackChinchompa } from "../../weapons/BlackChinchompa";
-import { ScytheOfVitur } from "../../weapons/ScytheOfVitur";
-import { TorvaFullhelm } from "../../equipment/TorvaFullhelm";
-import { InfernalCape } from "../../equipment/InfernalCape";
-import { TorvaPlatebody } from "../../equipment/TorvaPlatebody";
-import { TorvaPlatelegs } from "../../equipment/TorvaPlatelegs";
-import { PrimordialBoots } from "../../equipment/PrimordialBoots";
-import { BrowserUtils } from "../../../sdk/utils/BrowserUtils";
 
 export class InfernoLoadout {
   wave: number;
@@ -362,11 +362,11 @@ export class InfernoLoadout {
       equipment: {
         weapon: new KodaiWand(),
         offhand: new MagesBook(),
-        helmet: new RobinhoodHat(),
+        helmet: new RobinHoodHat(),
         necklace: new OccultNecklace(),
         cape: new AvasAccumulator(),
         ammo: new DragonArrows(),
-        chest: new GuthixRobetop(),
+        chest: new GuthixRobeTop(),
         legs: new BlackDhideChaps(),
         feet: new RangerBoots(),
         gloves: new BlackDhideVambraces(),

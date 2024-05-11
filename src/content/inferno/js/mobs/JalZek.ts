@@ -1,19 +1,9 @@
 "use strict";
 
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob, AttackIndicators } from "../../../../sdk/Mob";
+import { Assets, Mob, Projectile, MeleeWeapon, MagicWeapon, Sound, UnitBonuses, Collision, AttackIndicators, Random, Viewport, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
+
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { UnitBonuses } from "../../../../sdk/Unit";
-import { Collision } from "../../../../sdk/Collision";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { InfernoRegion } from "../InfernoRegion";
-import { Random } from "../../../../sdk/Random";
-import { Sound } from "../../../../sdk/utils/SoundCache";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { Viewport } from "../../../../sdk/Viewport";
 
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mage_ranger_598.ogg";
@@ -25,8 +15,8 @@ export const MageProjectileModel = Assets.getAssetUrl("models/mage_projectile.gl
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
 
-  mobName(): EntityName {
-    return EntityName.JAL_ZEK;
+  mobName() {
+    return EntityNames.JAL_ZEK;
   }
 
   shouldChangeAggro(projectile: Projectile) {
@@ -187,7 +177,7 @@ export class JalZek extends Mob {
           mobToResurrect.setLocation(this.respawnLocation(mobToResurrect));
           mobToResurrect.playAnimation(mobToResurrect.idlePoseId);
           mobToResurrect.cancelDeath();
-          mobToResurrect.aggro = Viewport.viewport.player;
+          mobToResurrect.aggro = Trainer.player;
 
           mobToResurrect.perceivedLocation = mobToResurrect.location;
           this.region.addMob(mobToResurrect);

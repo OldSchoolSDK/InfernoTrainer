@@ -1,23 +1,8 @@
 "use strict";
 
-import { Settings } from "../../../sdk/Settings";
-import { Unit } from "../../../sdk/Unit";
-import { Projectile, ProjectileOptions } from "../../../sdk/weapons/Projectile";
-import { Location } from "../../../sdk/Location";
-import { Entity } from "../../../sdk/Entity";
-import { Collision, CollisionType } from "../../../sdk/Collision";
-import { Weapon, AttackBonuses } from "../../../sdk/gear/Weapon";
-import { LineOfSightMask } from "../../../sdk/LineOfSight";
-import { Random } from "../../../sdk/Random";
-import { Region } from "../../../sdk/Region";
-import { TileMarkerModel } from "../../../sdk/rendering/TileMarkerModel";
-import { Sound, SoundCache } from "../../../sdk/utils/SoundCache";
+import { Assets, Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Entity, Region, GLTFModel, Location, CollisionType, LineOfSightMask, Pathing, Viewport, SoundCache, Sound, Collision, Settings, Trainer } from "@supalosa/oldschool-trainer-sdk";
 
 import FireWaveHit from "../assets/sounds/firewave_hit_163.ogg";
-import { Viewport } from "../../../sdk/Viewport";
-import { Pathing } from "../../../sdk/Pathing";
-import { GLTFModel } from "../../../sdk/rendering/GLTFModel";
-import { Assets } from "../../../sdk/utils/Assets";
 
 const Splat = Assets.getAssetUrl("models/tekton_meteor_splat.glb");
 
@@ -89,8 +74,8 @@ export class InfernoHealerSpark extends Entity {
       let attemptedVolume =
         1 /
         Pathing.dist(
-          Viewport.viewport.player.location.x,
-          Viewport.viewport.player.location.y,
+          Trainer.player.location.x,
+          Trainer.player.location.y,
           this.location.x,
           this.location.y,
         );

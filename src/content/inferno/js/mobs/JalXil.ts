@@ -1,20 +1,11 @@
 "use strict";
 
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
+import { Assets, MultiModelProjectileOffsetInterpolator, Location3, Mob, MeleeWeapon, RangedWeapon, Sound, UnitBonuses, Projectile, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { UnitBonuses } from "../../../../sdk/Unit";
-import { MultiModelProjectileOffsetInterpolator, Projectile } from "../../../../sdk/weapons/Projectile";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Sound } from "../../../../sdk/utils/SoundCache";
 import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { Location3 } from "../../../../sdk/Location";
-import { Pathing } from "../../../../sdk/Pathing";
 
 export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
 export const RangeProjectileModel = Assets.getAssetUrl("models/range_projectile.glb");
@@ -33,8 +24,8 @@ const JalXilOffsetsInterpolator: MultiModelProjectileOffsetInterpolator ={
 }
 
 export class JalXil extends Mob {
-  mobName(): EntityName {
-    return EntityName.JAL_XIL;
+  mobName() {
+    return EntityNames.JAL_XIL;
   }
 
   get combatLevel() {

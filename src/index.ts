@@ -1,19 +1,12 @@
 "use strict";
 
-import { World as World } from "./sdk/World";
-import { Settings } from "./sdk/Settings";
-import { ImageLoader } from "./sdk/utils/ImageLoader";
+import { Settings, Region, World, Viewport, MapController, TileMarker, Assets, Location, Chrome, ImageLoader, Trainer } from "@supalosa/oldschool-trainer-sdk";
+
 import NewRelicBrowser from "new-relic-browser";
-import { Viewport } from "./sdk/Viewport";
-import { TileMarker } from "./content/TileMarker";
-import { Location } from "./sdk/Location";
-import { MapController } from "./sdk/MapController";
-import { Assets } from "./sdk/utils/Assets";
-import { Chrome } from "./sdk/Chrome";
-import { Region } from "./sdk/Region";
 import { InfernoRegion } from "./content/inferno/js/InfernoRegion";
 
 import SpecialAttackBarBackground from "./assets/images/attackstyles/interface/special_attack_background.png";
+
 
 declare global {
   interface Window {
@@ -74,7 +67,7 @@ player.destinationLocation = player.location;
 // UI controls
 
 ImageLoader.onAllImagesLoaded(() =>
-  MapController.controller.updateOrbsMask(Viewport.viewport.player.currentStats, Viewport.viewport.player.stats),
+  MapController.controller.updateOrbsMask(Trainer.player.currentStats, Trainer.player.stats),
 );
 
 ImageLoader.onAllImagesLoaded(() => {

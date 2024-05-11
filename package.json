@@ -44,12 +44,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@types/new-relic-browser": "^0.1118.2",
-    "@types/offscreencanvas": "^2019.6.4",
-    "chebyshev": "^0.2.1",
-    "color-scales": "^3.0.2",
-    "madge": "^7.0.0",
-    "source-map-loader": "^3.0.0",
+    "@supalosa/oldschool-trainer-sdk": "0.0.13",
     "three": "^0.163.0"
   }
 }
