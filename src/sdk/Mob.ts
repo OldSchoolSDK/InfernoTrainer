@@ -153,6 +153,10 @@ export class Mob extends Unit {
     return { dx, dy };
   }
 
+  override timerStep() {
+    // override me
+  }
+
   override movementStep() {
     if (this.dying === 0) {
       return;

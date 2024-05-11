@@ -131,10 +131,16 @@ export class World {
 
     if (this.getReadyTimer == 0) {
       region.mobs.forEach((mob) => {
+        mob.timerStep();
+      });
+      region.mobs.forEach((mob) => {
         mob.movementStep();
       });
       region.mobs.forEach((mob) => mob.attackStep());
 
+      region.newMobs.forEach((mob) => {
+        mob.timerStep();
+      });
       region.newMobs.forEach((mob) => {
         mob.movementStep();
       });
@@ -156,6 +162,7 @@ export class World {
     });
 
     region.players.forEach((player: Player) => {
+      player.timerStep();
       player.movementStep();
       if (this.getReadyTimer <= 0) {
         player.attackStep();

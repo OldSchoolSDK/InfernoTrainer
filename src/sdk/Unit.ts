@@ -224,6 +224,10 @@ export abstract class Unit extends Renderable {
     // Override me
   }
 
+  timerStep() {
+    // Override me, called before movement
+  }
+
   movementStep() {
     // Override me
   }
