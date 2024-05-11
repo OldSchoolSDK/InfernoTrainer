@@ -23,6 +23,24 @@ Sure. Right now the code is undergoing rapid development and the API is not stab
 
 ## Development notes
 
-Running tests
+### Developing the project from a client project:
+
+Modify `package.json`:
+
+    -  "main": "_bundles/main.js",
+    +  "main": "src/sdk/index.js",
+    -  "files": []
+
+From this project:
+
+    npm link
+
+From client project
+
+    npm link @supalosa/oldschool-trainer-sdk
+
+When done, revert the changes to `package.json` and `npm unlink @supalosa/oldschool-trainer-sdk`, and re-install `@supalosa/oldschool-trainer-sdk` at the desired SDK version.
+
+### Running tests
 
     npx jest
