@@ -7,6 +7,7 @@ export * from './Collision';
 
 export * from './Entity';
 export * from './Unit';
+export * from './UnitStats';
 export * from './Mob';
 export * from './Player';
 
