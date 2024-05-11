@@ -1,5 +1,4 @@
-import { Player } from "../../src/sdk/Player";
-import { Region } from "../../src/sdk/Region";
+import { Region } from "../Region";
 
 export class TestRegion extends Region {
     constructor(private _width: number, private _height: number) {

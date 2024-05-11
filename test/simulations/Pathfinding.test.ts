@@ -3,7 +3,7 @@ import { World } from "../../src/sdk/World";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-import { TestRegion } from "../utils/TestRegion";
+import { TestRegion } from "../../src/sdk/testing/TestRegion";
 
 describe("pathfinding tests", () => {
   let region: TestRegion;

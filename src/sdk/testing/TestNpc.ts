@@ -1,6 +1,6 @@
-import { Mob } from "../../src/sdk/Mob";
-import { MeleeWeapon } from "../../src/sdk/weapons/MeleeWeapon";
-import { RangedWeapon } from "../../src/sdk/weapons/RangedWeapon";
+import { Mob } from "../Mob";
+import { MeleeWeapon } from "../weapons/MeleeWeapon";
+import { RangedWeapon } from "../weapons/RangedWeapon";
 
 // this is a JalXil in all but name, from the old test
 export class TestNpc extends Mob {

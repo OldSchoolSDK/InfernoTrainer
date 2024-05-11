@@ -1,6 +1,6 @@
 {
   "name": "@supalosa/oldschool-trainer-sdk",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "",
   "main": "_bundles/main.js",
   "types": "lib/index.d.ts",

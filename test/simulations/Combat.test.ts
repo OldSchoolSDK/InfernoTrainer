@@ -4,8 +4,8 @@ import { Blowpipe } from "../../src/content/weapons/Blowpipe";
 import { TwistedBow } from "../../src/content/weapons/TwistedBow";
 import { Random } from "../../src/sdk/Random";
 import { Viewport } from "../../src/sdk/Viewport";
-import { TestRegion } from "../utils/TestRegion";
-import { TestNpc } from "../utils/TestNpc";
+import { TestRegion } from "../../src/sdk/testing/TestRegion";
+import { TestNpc } from "../../src/sdk/testing/TestNpc";
 import { Settings } from "../../src";
 
 describe("basic combat scenario", () => {

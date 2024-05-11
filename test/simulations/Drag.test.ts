@@ -3,8 +3,8 @@ import { World } from "../../src/sdk/World";
 import { Viewport } from "../../src/sdk/Viewport";
 import { Wall } from "../../src/content/Wall";
 import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-import { TestRegion } from "../utils/TestRegion";
-import { TestNpc } from "../utils/TestNpc";
+import { TestRegion } from "../../src/sdk/testing/TestRegion";
+import { TestNpc } from "../../src/sdk/testing/TestNpc";
 
 
 // check that we accurately drag around pillars in the expected direction
