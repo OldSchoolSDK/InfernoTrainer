@@ -13,6 +13,7 @@ module.exports = {
     },
     umdNamedDefine: true,
     path: path.resolve(__dirname, "_bundles"),
+    publicPath: '', // workaround: https://github.com/cypress-io/cypress/issues/18435
   },
   devtool: "source-map",
   resolve: {
