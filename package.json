@@ -1,8 +1,8 @@
 {
   "name": "@supalosa/oldschool-trainer-sdk",
-  "version": "0.0.14",
+  "version": "0.0.17",
   "description": "",
-  "main": "src/sdk/index.js",
+  "main": "_bundles/main/index.js",
   "types": "lib/index.d.ts",
   "node": "^>=16.0.0",
   "scripts": {
@@ -21,6 +21,10 @@
   "bugs": {
     "url": "https://github.com/OldSchoolSDK/Engine/issues"
   },
+  "files": [
+    "lib",
+    "_bundles"
+  ],
   "homepage": "https://github.com/OldSchoolSDK/Engine#readme",
   "devDependencies": {
     "@types/jest": "^27.5.2",
