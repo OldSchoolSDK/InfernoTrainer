@@ -40,4 +40,7 @@ module.exports = {
       },
     ],
   },
+  externals: {
+    three: 'three'
+  }
 };
