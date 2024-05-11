@@ -120,6 +120,10 @@ export class Mob extends Unit {
         1,
       )
     ) {
+      if (this.aggro && this.aggro.lastInteraction === this && this.aggro.lastInteractionAge === 0) {
+        // cannot move
+        return { dx: this.location.x, dy: this.location.y };
+      }
       // Random movement if player is under the mob.
       if (Random.get() < 0.5) {
         dy = this.location.y;

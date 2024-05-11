@@ -416,6 +416,7 @@ export class Player extends Unit {
   }
 
   setAggro(mob: Unit) {
+    super.setAggro(mob);
     if (mob !== this.aggro) {
       // do spam clicks constantly reset autocast delay? idk
       this.autocastDelay = 1; // not sure if this is actually correct behavior but whatever

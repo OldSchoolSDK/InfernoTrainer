@@ -118,6 +118,9 @@ export abstract class Unit extends Renderable {
   overheadText: string | null = null;
   overheadTextTimer = 0;
 
+  lastInteraction: Unit | null = null;
+  lastInteractionAge = 0;
+
   get deathAnimationLength(): number {
     return 3;
   }
@@ -209,6 +212,8 @@ export abstract class Unit extends Renderable {
 
   setAggro(mob: Unit) {
     this.aggro = mob;
+    this.lastInteraction = mob;
+    this.lastInteractionAge = 0;
   }
 
   grantXp(xpDrop: XpDrop) {
@@ -233,6 +238,7 @@ export abstract class Unit extends Renderable {
       this.overheadText = null;
     }
     this.overheadTextTimer--;
+    this.lastInteractionAge--;
   }
 
   // called when the unit has attacked

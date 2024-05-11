@@ -19,6 +19,8 @@ loader.setMeshoptDecoder(MeshoptDecoder);
 // cache a copy of each model
 const globalModelCache: {[name: string]: GLTF} = {};
 
+const DRAW_HITBOX = false;
+
 /**
  * Render the model using one or more GLTF models. If there are multiple models, they are drawn superimposed on the same spot and are expected
  * to have the same animation set.
@@ -39,7 +41,7 @@ export class GLTFModel implements Model, RenderableListener {
     models: string[],
     scale: number,
     verticalOffset = -0.49,
-    originOffset: Location = { x: 0, y: 0 },
+    originOffset: Location = { x: 0, y: 0 }
   ) {
     return new GLTFModel(r, models, scale, verticalOffset, originOffset);
   }
@@ -108,7 +110,7 @@ export class GLTFModel implements Model, RenderableListener {
     this.clickHull = new THREE.Mesh(this.hullGeometry, hullMaterial);
     this.clickHull.userData.clickable = renderable.selectable;
     this.clickHull.userData.unit = renderable;
-    this.clickHull.visible = false;
+    this.clickHull.visible = DRAW_HITBOX;
   }
 
   async animationChanged(id, blend) {
