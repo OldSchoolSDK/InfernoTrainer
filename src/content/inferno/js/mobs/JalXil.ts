@@ -5,7 +5,8 @@ import { Assets, MultiModelProjectileOffsetInterpolator, Location3, Mob, MeleeWe
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
 
 export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
 export const RangeProjectileModel = Assets.getAssetUrl("models/range_projectile.glb");

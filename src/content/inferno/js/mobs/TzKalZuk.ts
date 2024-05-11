@@ -11,7 +11,8 @@ import { JalXil, RangerModel } from "./JalXil";
 import { JalMejJak } from "./JalMejJak";
 import { JadModel, JalTokJad } from "./JalTokJad";
 
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
+
 import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg";
 
 const ZukModel = Assets.getAssetUrl("models/7706_33011.glb");

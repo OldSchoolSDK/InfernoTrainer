@@ -7,7 +7,8 @@ import { InfernoRegion } from "../InfernoRegion";
 
 import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mage_ranger_598.ogg";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
 
 export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
 export const MageProjectileModel = Assets.getAssetUrl("models/mage_projectile.glb");

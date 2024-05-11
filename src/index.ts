@@ -5,8 +5,7 @@ import { Settings, Region, World, Viewport, MapController, TileMarker, Assets, L
 import NewRelicBrowser from "new-relic-browser";
 import { InfernoRegion } from "./content/inferno/js/InfernoRegion";
 
-import SpecialAttackBarBackground from "./assets/images/attackstyles/interface/special_attack_background.png";
-
+const SpecialAttackBarBackground = Assets.getAssetUrl("/assets/images/attackstyles/interface/special_attack_background.png");
 
 declare global {
   interface Window {

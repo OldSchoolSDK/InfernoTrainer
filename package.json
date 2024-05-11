@@ -44,7 +44,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@supalosa/oldschool-trainer-sdk": "0.0.13",
+    "@supalosa/oldschool-trainer-sdk": "0.0.14",
     "three": "^0.163.0"
   }
 }

@@ -1,12 +1,12 @@
 import { Assets, Mob, ImageLoader, Location, Projectile, Random, LineOfSightMask, Region, UnitOptions, UnitBonuses, DelayedAction, Unit, CollisionType, Settings, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
 import { UnitStats } from "@supalosa/oldschool-trainer-sdk/lib/src/sdk/UnitStats";
 
-import MissSplat from "../../../assets/images/hitsplats/miss.png";
-import DamageSplat from "../../../assets/images/hitsplats/damage.png";
 import { find } from "lodash";
 import { JalXil } from "./mobs/JalXil";
 
 
+const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
+const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
 
 const ShieldModel = Assets.getAssetUrl("models/7707_33036.glb");
 

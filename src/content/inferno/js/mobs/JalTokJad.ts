@@ -10,7 +10,8 @@ import FireWaveCastAndFire from "../../assets/sounds/firewave_cast_and_fire_162.
 import FireWaveHit from "../../assets/sounds/firewave_hit_163.ogg";
 
 import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
 
 export const JadModel = Assets.getAssetUrl("models/7700_33012.glb");
 export const JadRangeProjectileModel = Assets.getAssetUrl("models/jad_range.glb");

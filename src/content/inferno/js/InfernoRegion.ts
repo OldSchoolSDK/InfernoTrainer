@@ -16,9 +16,9 @@ import { TzKalZuk } from "./mobs/TzKalZuk";
 import { ZukShield } from "./ZukShield";
 import { JalTokJad } from "./mobs/JalTokJad";
 import { InfernoScene } from "./InfernoScene";
+import { Wall } from "./Wall";
 
 import SidebarContent from "../sidebar.html";
-import { Wall } from "./Wall";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

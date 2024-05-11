@@ -1,12 +1,12 @@
 "use strict";
+import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model, ImageLoader, Location, EntityNames, UnitStats, BasicModel, Assets } from "@supalosa/oldschool-trainer-sdk";
+
+
 import { filter, remove } from "lodash";
 
-import MissSplat from "../../../assets/images/hitsplats/miss.png";
-import DamageSplat from "../../../assets/images/hitsplats/damage.png";
+const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
+const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
 
-import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model, ImageLoader, Location, EntityNames } from "@supalosa/oldschool-trainer-sdk";
-import { UnitStats } from "@supalosa/oldschool-trainer-sdk/lib/src/sdk/UnitStats";
-import { BasicModel } from "@supalosa/oldschool-trainer-sdk/lib/src/sdk/rendering/BasicModel";
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
