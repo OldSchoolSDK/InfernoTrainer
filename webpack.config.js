@@ -21,6 +21,7 @@ const config = {
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
+    publicPath: '',
   },
   devtool: "source-map",
   devServer: {
@@ -42,8 +43,9 @@ const config = {
           to: "webappicon.png",
           context: `src/`,
         },
-        { from: `assets/fonts/*.woff`, to: "", context: `src/` },
-        { from: `assets/fonts/*.woff2`, to: "", context: `src/` },
+        { from: '*.png', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/", noErrorOnMissing: true },
+        { from: '*.gif', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/",  noErrorOnMissing: true },
+        { from: '*.ogg', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/", noErrorOnMissing: true },
       ],
     }),
     new webpack.EnvironmentPlugin(["COMMIT_REF", "BUILD_DATE", "DEPLOY_URL"]),
