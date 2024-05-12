@@ -2,10 +2,10 @@ const path = require("path");
 const { merge } = require('webpack-merge');
 const CopyPlugin = require("copy-webpack-plugin");
 
-const config = require('./webpack.common.js');
+const common = require('./webpack.common.js');
 
 // used for dev mode only
-module.exports = merge(config, {
+module.exports = merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: './sample/sample.ts',

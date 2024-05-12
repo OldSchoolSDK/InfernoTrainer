@@ -1,11 +1,11 @@
 const path = require("path");
+const webpack = require("webpack");
 const { merge } = require('webpack-merge');
-const CopyPlugin = require("copy-webpack-plugin");
 
-const config = require('./webpack.common.js');
+const common = require('./webpack.common.js');
 
 // used for production builds
-module.exports = merge(config, {
+module.exports = merge(common, {
   mode: "production",
   entry: "./src/index.ts",
   output: {
@@ -23,5 +23,5 @@ module.exports = merge(config, {
   },
   externals: {
     three: 'three'
-  }
+  },
 });
