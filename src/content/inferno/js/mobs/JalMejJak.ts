@@ -1,17 +1,9 @@
 "use strict";
 
-import { Mob } from "../../../../sdk/Mob";
+import { Assets, ProjectileOptions, Weapon, Unit, AttackBonuses, Random, ArcProjectileMotionInterpolator, Projectile, DelayedAction, Mob, UnitBonuses, UnitTypes, Model, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+
 import JalMejJakImage from "../../assets/images/Jal-MejJak.png";
-import { Unit, UnitBonuses, UnitTypes } from "../../../../sdk/Unit";
-import { Weapon, AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { InfernoHealerSpark } from "../InfernoHealerSpark";
-import { ArcProjectileMotionInterpolator, Projectile, ProjectileOptions } from "../../../../sdk/weapons/Projectile";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Random } from "../../../../sdk/Random";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { Model } from "../../../../sdk/rendering/Model";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
 
 const HealerModel = Assets.getAssetUrl("models/zuk_healer.glb");
 const Spark = Assets.getAssetUrl("models/tekton_meteor.glb");
@@ -94,8 +86,8 @@ const SPAWN_DELAY = 1;
 export class JalMejJak extends Mob {
   private lastAggro: Unit = null;
 
-  mobName(): EntityName {
-    return EntityName.JAL_MEJ_JAK;
+  mobName() {
+    return EntityNames.JAL_MEJ_JAK;
   }
 
   get combatLevel() {

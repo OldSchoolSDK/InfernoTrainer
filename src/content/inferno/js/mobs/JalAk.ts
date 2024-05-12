@@ -1,9 +1,6 @@
 "use strict";
+import { Assets, Mob, MeleeWeapon, MagicWeapon, Sound, RangedWeapon, UnitBonuses, Random, AttackIndicators, Unit, Viewport, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
 
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { AttackIndicators, Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
@@ -11,21 +8,14 @@ import { JalAkRekKet } from "./JalAkRekKet";
 import { JalAkRekMej } from "./JalAkRekMej";
 import { JalAkRekXil } from "./JalAkRekXil";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { Unit, UnitBonuses } from "../../../../sdk/Unit";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Random } from "../../../../sdk/Random";
-import { Sound } from "../../../../sdk/utils/SoundCache";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import { Viewport } from "../../../../sdk/Viewport";
 
 const BlobModel = Assets.getAssetUrl("models/7693_33001.glb");
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
 
-  mobName(): EntityName {
-    return EntityName.JAL_AK;
+  mobName() {
+    return EntityNames.JAL_AK;
   }
 
   get combatLevel() {
@@ -166,7 +156,7 @@ export class JalAk extends Mob {
   }
 
   removedFromWorld() {
-    const player = Viewport.viewport.player;
+    const player = Trainer.player;
     const xil = new JalAkRekXil(
       this.region,
       { x: this.location.x + 1, y: this.location.y - 1 },

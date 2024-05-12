@@ -1,37 +1,17 @@
 "use strict";
 
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { AttackIndicators, Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
+import { Assets, UnitOptions, ImageLoader, Location, MultiModelProjectileOffsetInterpolator, Location3, MagicWeapon, Mob, Unit, AttackBonuses, DelayedAction, AttackIndicators, SoundCache, Projectile, ArcProjectileMotionInterpolator, RangedWeapon, FollowTargetInterpolator, Region, MeleeWeapon, Collision, Random, UnitBonuses, Sound, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+
 import JadImage from "../../assets/images/jad/jad_mage_1.png";
-import { Unit, UnitBonuses, UnitOptions } from "../../../../sdk/Unit";
-import { Location, Location3 } from "../../../../sdk/Location";
-import { AttackBonuses } from "../../../../sdk/gear/Weapon";
-import {
-  ArcProjectileMotionInterpolator,
-  FollowTargetInterpolator,
-  MultiModelProjectileOffsetInterpolator,
-  Projectile,
-} from "../../../../sdk/weapons/Projectile";
-import { DelayedAction } from "../../../../sdk/DelayedAction";
 import { YtHurKot } from "./YtHurKot";
-import { Collision } from "../../../../sdk/Collision";
-import { EntityName } from "../../../../sdk/EntityName";
 
 import FireBreath from "../../assets/sounds/firebreath_159.ogg";
 import FireWaveCastAndFire from "../../assets/sounds/firewave_cast_and_fire_162.ogg";
 import FireWaveHit from "../../assets/sounds/firewave_hit_163.ogg";
 
-import { Random } from "../../../../sdk/Random";
-import { Region } from "../../../../sdk/Region";
-import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import { JAD_FRAMES_PER_TICK, JAD_MAGE_FRAMES, JAD_RANGE_FRAMES } from "./JalTokJadAnim";
-import { BasicModel } from "../../../../sdk/rendering/BasicModel";
-import { Sound, SoundCache } from "../../../../sdk/utils/SoundCache";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
 
 export const JadModel = Assets.getAssetUrl("models/7700_33012.glb");
 export const JadRangeProjectileModel = Assets.getAssetUrl("models/jad_range.glb");
@@ -153,8 +133,8 @@ export class JalTokJad extends Mob {
     this.isZukWave = options.isZukWave;
   }
 
-  mobName(): EntityName {
-    return EntityName.JAL_TOK_JAD;
+  mobName() {
+    return EntityNames.JAL_TOK_JAD;
   }
 
   get combatLevel() {

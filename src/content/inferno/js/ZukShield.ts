@@ -1,22 +1,12 @@
-import { CollisionType } from "../../../sdk/Collision";
-import { EntityName } from "../../../sdk/EntityName";
-import { Settings } from "../../../sdk/Settings";
-import { Projectile } from "../../../sdk/weapons/Projectile";
-import { Unit, UnitBonuses, UnitOptions, UnitStats } from "../../../sdk/Unit";
+import { Assets, Mob, ImageLoader, Location, Projectile, Random, LineOfSightMask, Region, UnitOptions, UnitBonuses, DelayedAction, Unit, CollisionType, Settings, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { UnitStats } from "@supalosa/oldschool-trainer-sdk/lib/src/sdk/UnitStats";
 
-import MissSplat from "../../../assets/images/hitsplats/miss.png";
-import DamageSplat from "../../../assets/images/hitsplats/damage.png";
-import { ImageLoader } from "../../../sdk/utils/ImageLoader";
-import { Location } from "../../../sdk/Location";
 import { find } from "lodash";
-import { LineOfSightMask } from "../../../sdk/LineOfSight";
-import { DelayedAction } from "../../../sdk/DelayedAction";
 import { JalXil } from "./mobs/JalXil";
-import { Mob } from "../../../sdk/Mob";
-import { Region } from "../../../sdk/Region";
-import { Random } from "../../../sdk/Random";
-import { Assets } from "../../../sdk/utils/Assets";
-import { GLTFModel } from "../../../sdk/rendering/GLTFModel";
+
+
+const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
+const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
 
 const ShieldModel = Assets.getAssetUrl("models/7707_33036.glb");
 
@@ -97,13 +87,13 @@ export class ZukShield extends Mob {
       new DelayedAction(() => {
         this.region.removeMob(this);
         const ranger = find(this.region.mobs, (mob: Mob) => {
-          return mob.mobName() === EntityName.JAL_XIL;
+          return mob.mobName() === EntityNames.JAL_XIL;
         }) as JalXil;
         if (ranger) {
           ranger.setAggro(this.aggro as Unit);
         }
         const mager = find(this.region.mobs, (mob: Mob) => {
-          return mob.mobName() === EntityName.JAL_ZEK;
+          return mob.mobName() === EntityNames.JAL_ZEK;
         }) as JalXil;
         if (mager) {
           mager.setAggro(this.aggro as Unit);
@@ -124,8 +114,8 @@ export class ZukShield extends Mob {
   contextActions() {
     return [];
   }
-  mobName(): EntityName {
-    return EntityName.INFERNO_SHIELD;
+  mobName() {
+    return EntityNames.INFERNO_SHIELD;
   }
 
   get selectable() {
@@ -177,8 +167,8 @@ export class ZukShield extends Mob {
     return CollisionType.NONE;
   }
 
-  entityName(): EntityName {
-    return EntityName.INFERNO_SHIELD;
+  entityName() {
+    return EntityNames.INFERNO_SHIELD;
   }
 
   canMove() {

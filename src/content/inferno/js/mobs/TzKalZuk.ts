@@ -1,29 +1,18 @@
 "use strict";
 
-import { Mob } from "../../../../sdk/Mob";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
+
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
-import { Unit, UnitBonuses, UnitTypes } from "../../../../sdk/Unit";
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { UnitOptions } from "../../../../sdk/Unit";
-import { Location } from "../../../../sdk/Location";
 import { ZukShield } from "../ZukShield";
 import { find } from "lodash";
-import { EntityName } from "../../../../sdk/EntityName";
-import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import ZukAttackImage from "../../assets/images/zuk_attack.png";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
 import { JalZek, MagerModel } from "./JalZek";
 import { JalXil, RangerModel } from "./JalXil";
 import { JalMejJak } from "./JalMejJak";
 import { JadModel, JalTokJad } from "./JalTokJad";
-import { Viewport } from "../../../../sdk/Viewport";
-import { Region } from "../../../../sdk/Region";
-import { Sound } from "../../../../sdk/utils/SoundCache";
-import { Model } from "../../../../sdk/rendering/Model";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import { Assets } from "../../../../sdk/utils/Assets";
 
-import HitSound from "../../../../assets/sounds/dragon_hit_410.ogg";
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
+
 import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg";
 
 const ZukModel = Assets.getAssetUrl("models/7706_33011.glb");
@@ -82,7 +71,7 @@ export class TzKalZuk extends Mob {
     this.attackDelay = 14;
 
     this.shield = find(region.mobs.concat(region.newMobs), (mob: Unit) => {
-      return mob.mobName() === EntityName.INFERNO_SHIELD;
+      return mob.mobName() === EntityNames.INFERNO_SHIELD;
     }) as ZukShield;
   }
 
@@ -94,7 +83,7 @@ export class TzKalZuk extends Mob {
           { text: ` Jad`, fillStyle: "yellow" },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
+          Trainer.clickController.redClick();
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 479;
@@ -109,7 +98,7 @@ export class TzKalZuk extends Mob {
           { text: ` Healers`, fillStyle: "yellow" },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
+          Trainer.clickController.redClick();
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 239;
@@ -121,8 +110,8 @@ export class TzKalZuk extends Mob {
     ]);
   }
 
-  mobName(): EntityName {
-    return EntityName.TZ_KAL_ZUK;
+  mobName() {
+    return EntityNames.TZ_KAL_ZUK;
   }
 
   attackIfPossible() {

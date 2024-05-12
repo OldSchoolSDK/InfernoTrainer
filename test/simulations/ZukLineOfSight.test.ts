@@ -1,13 +1,7 @@
-import { Player } from "../../src/sdk/Player";
-import { World } from "../../src/sdk/World";
-import { TwistedBow } from "../../src/content/weapons/TwistedBow";
-import { Region } from "../../src/sdk/Region";
-import { Viewport } from "../../src/sdk/Viewport";
-import { Wall } from "../../src/content/Wall";
+import { World, Mob, InvisibleMovementBlocker, Viewport, Player, TwistedBow, TestRegion } from "@supalosa/oldschool-trainer-sdk";
+
+import { Wall } from "../../src/content/inferno/js/Wall";
 import { TzKalZuk } from "../../src/content/inferno/js/mobs/TzKalZuk";
-import { Mob } from "../../src/sdk/Mob";
-import { InvisibleMovementBlocker } from "../../src/content/MovementBlocker";
-import { TestRegion } from "../utils/TestRegion";
 
 // Zuk LOS (dragging behaviour) tests
 describe("player LOS in zuk fight", () => {

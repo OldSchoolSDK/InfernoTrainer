@@ -1,15 +1,12 @@
 "use strict";
 
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
+import { Mob, EntityNames, Settings, MeleeWeapon, UnitBonuses } from "@supalosa/oldschool-trainer-sdk";
+
 import JalAkRekKetImage from "../../assets/images/Jal-AkRek-Ket.png";
-import { Settings } from "../../../../sdk/Settings";
-import { UnitBonuses } from "../../../../sdk/Unit";
-import { EntityName } from "../../../../sdk/EntityName";
 
 export class JalAkRekKet extends Mob {
-  mobName(): EntityName {
-    return EntityName.JAL_AK_REK_KET;
+  mobName() {
+    return EntityNames.JAL_AK_REK_KET;
   }
 
   get combatLevel() {

@@ -1,19 +1,10 @@
 "use strict";
 
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
+import { Assets, Mob, EntityNames, MeleeWeapon, Sound, UnitBonuses, Location, Random, Collision, UnitTypes, Player, GLTFModel } from "@supalosa/oldschool-trainer-sdk";
+
 import MeleerImage from "../../assets/images/meleer.png";
 import MeleerSound from "../../assets/sounds/meleer.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { UnitBonuses, UnitTypes } from "../../../../sdk/Unit";
-import { Collision } from "../../../../sdk/Collision";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Random } from "../../../../sdk/Random";
-import { Player } from "../../../../sdk/Player";
-import { Sound } from "../../../../sdk/utils/SoundCache";
-import { GLTFModel } from "../../../../sdk/rendering/GLTFModel";
-import { Assets } from "../../../../sdk/utils/Assets";
-import { Location } from "../../../../sdk/Location";
 
 const MeleerModel = Assets.getAssetUrl("models/7697_33010.glb");
 
@@ -22,8 +13,8 @@ export class JalImKot extends Mob {
   private digLocation: Location = { x: 0, y: 0 };
   private digCount = 0;
 
-  mobName(): EntityName {
-    return EntityName.JAL_IM_KOT;
+  mobName() {
+    return EntityNames.JAL_IM_KOT;
   }
 
   get combatLevel() {

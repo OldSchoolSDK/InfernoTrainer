@@ -21,6 +21,7 @@ const config = {
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
+    publicPath: '',
   },
   devtool: "source-map",
   devServer: {
@@ -31,6 +32,7 @@ const config = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
+  // url(https://assets-soltrainer.netlify.app/assets/fonts/RuneScape-UF.woff) format("woff");
   plugins: [
     new CopyPlugin({
       patterns: [
@@ -42,6 +44,9 @@ const config = {
           to: "webappicon.png",
           context: `src/`,
         },
+        { from: '*.png', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/", noErrorOnMissing: true },
+        { from: '*.gif', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/", noErrorOnMissing: true },
+        { from: '*.ogg', to: "", context: "node_modules/@supalosa/oldschool-trainer-sdk/_bundles/", noErrorOnMissing: true },
         { from: `assets/fonts/*.woff`, to: "", context: `src/` },
         { from: `assets/fonts/*.woff2`, to: "", context: `src/` },
       ],

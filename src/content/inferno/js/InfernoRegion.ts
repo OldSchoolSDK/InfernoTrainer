@@ -1,35 +1,24 @@
 "use strict";
+import { Region, CardinalDirection, Viewport, Settings, Mob, Player, BrowserUtils, InvisibleMovementBlocker, ImageLoader, Location, TileMarker, ControlPanelController, Trainer, EntityNames } from "@supalosa/oldschool-trainer-sdk";
 
 import InfernoMapImage from "../assets/images/map.png";
 
-import { CardinalDirection, Region } from "../../../sdk/Region";
-import { Settings } from "../../../sdk/Settings";
-import { ImageLoader } from "../../../sdk/utils/ImageLoader";
-import { Viewport } from "../../../sdk/Viewport";
 import { JalAk } from "./mobs/JalAk";
 import { JalImKot } from "./mobs/JalImKot";
 import { JalMejRah } from "./mobs/JalMejRah";
 import { JalXil } from "./mobs/JalXil";
 import { JalZek } from "./mobs/JalZek";
-import { Player } from "../../../sdk/Player";
-import { BrowserUtils } from "../../../sdk/utils/BrowserUtils";
 import { InfernoWaves } from "./InfernoWaves";
 import { InfernoLoadout } from "./InfernoLoadout";
 import { InfernoPillar } from "./InfernoPillar";
-import { EntityName } from "../../../sdk/EntityName";
 import { filter, shuffle } from "lodash";
-import { TileMarker } from "../../TileMarker";
 import { TzKalZuk } from "./mobs/TzKalZuk";
 import { ZukShield } from "./ZukShield";
 import { JalTokJad } from "./mobs/JalTokJad";
-import { Wall } from "../../Wall";
-import { Location } from "../../../sdk/Location";
-import { InfernoScene } from "../../InfernoScene";
-import { InvisibleMovementBlocker } from "../../MovementBlocker";
+import { InfernoScene } from "./InfernoScene";
+import { Wall } from "./Wall";
 
 import SidebarContent from "../sidebar.html";
-import { Mob } from "../../../sdk/Mob";
-import { ControlPanelController } from "../../../sdk/ControlPanelController";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -65,10 +54,10 @@ export class InfernoRegion extends Region {
           { text: "Bat", fillStyle: "blue" },
         ],
         action: () => {
-          Viewport.viewport.clickController.yellowClick();
+          Trainer.clickController.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          const mob = new JalMejRah(this, { x, y }, { aggro: Viewport.viewport.player });
+          const mob = new JalMejRah(this, { x, y }, { aggro: Trainer.player });
           mob.removableWithRightClick = true;
           this.addMob(mob);
         },
@@ -80,10 +69,10 @@ export class InfernoRegion extends Region {
           { text: "Blob", fillStyle: "green" },
         ],
         action: () => {
-          Viewport.viewport.clickController.yellowClick();
+          Trainer.clickController.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          const mob = new JalAk(this, { x, y }, { aggro: Viewport.viewport.player });
+          const mob = new JalAk(this, { x, y }, { aggro: Trainer.player });
           mob.removableWithRightClick = true;
           this.addMob(mob);
         },
@@ -95,10 +84,10 @@ export class InfernoRegion extends Region {
           { text: "Meleer", fillStyle: "yellow" },
         ],
         action: () => {
-          Viewport.viewport.clickController.yellowClick();
+          Trainer.clickController.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          const mob = new JalImKot(this, { x, y }, { aggro: Viewport.viewport.player });
+          const mob = new JalImKot(this, { x, y }, { aggro: Trainer.player });
           mob.removableWithRightClick = true;
           this.addMob(mob);
         },
@@ -110,10 +99,10 @@ export class InfernoRegion extends Region {
           { text: "Ranger", fillStyle: "orange" },
         ],
         action: () => {
-          Viewport.viewport.clickController.yellowClick();
+          Trainer.clickController.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          const mob = new JalXil(this, { x, y }, { aggro: Viewport.viewport.player });
+          const mob = new JalXil(this, { x, y }, { aggro: Trainer.player });
           mob.removableWithRightClick = true;
           this.addMob(mob);
         },
@@ -125,10 +114,10 @@ export class InfernoRegion extends Region {
           { text: "Mager", fillStyle: "red" },
         ],
         action: () => {
-          Viewport.viewport.clickController.yellowClick();
+          Trainer.clickController.yellowClick();
           const x = Viewport.viewport.contextMenu.destinationLocation.x;
           const y = Viewport.viewport.contextMenu.destinationLocation.y;
-          const mob = new JalZek(this, { x, y }, { aggro: Viewport.viewport.player });
+          const mob = new JalZek(this, { x, y }, { aggro: Trainer.player });
           mob.removableWithRightClick = true;
           this.addMob(mob);
         },
@@ -207,31 +196,31 @@ export class InfernoRegion extends Region {
     
     editWaveInput.addEventListener("click", () => {
       const magers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_ZEK;
+        return mob.mobName() === EntityNames.JAL_ZEK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const rangers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_XIL;
+        return mob.mobName() === EntityNames.JAL_XIL;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const meleers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_IM_KOT;
+        return mob.mobName() === EntityNames.JAL_IM_KOT;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const blobs = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_AK;
+        return mob.mobName() === EntityNames.JAL_AK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const bats = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_MEJ_RAJ;
+        return mob.mobName() === EntityNames.JAL_MEJ_RAJ;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
@@ -243,31 +232,31 @@ export class InfernoRegion extends Region {
     });
     exportWaveInput.addEventListener("click", () => {
       const magers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_ZEK;
+        return mob.mobName() === EntityNames.JAL_ZEK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const rangers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_XIL;
+        return mob.mobName() === EntityNames.JAL_XIL;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const meleers = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_IM_KOT;
+        return mob.mobName() === EntityNames.JAL_IM_KOT;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const blobs = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_AK;
+        return mob.mobName() === EntityNames.JAL_AK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
     
       const bats = filter(this.mobs, (mob: Mob) => {
-        return mob.mobName() === EntityName.JAL_MEJ_RAJ;
+        return mob.mobName() === EntityNames.JAL_MEJ_RAJ;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
@@ -314,7 +303,7 @@ export class InfernoRegion extends Region {
       InfernoPillar.addPillarsToWorld(this, southPillar, westPillar, northPillar);
     }
 
-    const randomPillar = (shuffle(this.entities.filter((entity) => entity.entityName() === EntityName.PILLAR)) || [
+    const randomPillar = (shuffle(this.entities.filter((entity) => entity.entityName() === EntityNames.PILLAR)) || [
       null,
     ])[0]; // Since we've only added pillars this is safe. Do not move to after movement blockers.
 

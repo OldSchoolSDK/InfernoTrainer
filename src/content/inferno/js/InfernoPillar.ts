@@ -1,19 +1,12 @@
 "use strict";
-import { filter, remove } from "lodash";
-import { Settings } from "../../../sdk/Settings";
-import { Entity } from "../../../sdk/Entity";
+import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model, ImageLoader, Location, EntityNames, UnitStats, BasicModel, Assets } from "@supalosa/oldschool-trainer-sdk";
 
-import MissSplat from "../../../assets/images/hitsplats/miss.png";
-import DamageSplat from "../../../assets/images/hitsplats/damage.png";
-import { UnitBonuses, UnitStats } from "../../../sdk/Unit";
-import { Projectile } from "../../../sdk/weapons/Projectile";
-import { Location } from "../../../sdk/Location";
-import { ImageLoader } from "../../../sdk/utils/ImageLoader";
-import { DelayedAction } from "../../../sdk/DelayedAction";
-import { Region } from "../../../sdk/Region";
-import { Model } from "../../../sdk/rendering/Model";
-import { BasicModel } from "../../../sdk/rendering/BasicModel";
-import { EntityName } from "../../../sdk/EntityName";
+
+import { filter, remove } from "lodash";
+
+const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
+const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
+
 
 export class InfernoPillar extends Entity {
   incomingProjectiles: Projectile[] = [];
@@ -181,8 +174,8 @@ export class InfernoPillar extends Entity {
     context.restore();
   }
 
-  entityName(): EntityName {
-    return EntityName.PILLAR;
+  entityName() {
+    return EntityNames.PILLAR;
   }
 
   get size() {
