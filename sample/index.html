@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/webappicon.png">
+    <meta name="application-name" content="Inferno Trainer">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script src="//wurfl.io/wurfl.js" crossorigin></script>
+    <title>OSRS SDK Trainer</title>
+    <style>
+      @font-face {
+        font-family: 'OSRS';
+        src: url(/assets/fonts/RuneScape-UF.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-UF.woff2) format("woff2");
+      }
+
+      @font-face {
+        font-family: 'Stats_11';
+        src: url(/assets/fonts/RuneScape-Plain-11.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-Plain-11.woff2) format("woff2");
+      }
+
+      @font-face {
+        font-family: 'Stats_12';
+        src: url(/assets/fonts/RuneScape-Plain-12.woff) format("woff");
+        src: url(/assets/fonts/RuneScape-Plain-12.woff2) format("woff2");
+      }
+      body {
+          overscroll-behavior: contain;
+          overscroll-behavior-y: none;
+      }
+
+      #world{
+        position: fixed;
+      }
+      .hidden {
+        display: none !important; 
+      }
+      body {
+        font-family: 'OSRS';
+        background: black;
+        font-weight: normal;
+        font-style: normal;
+        color: #ffff00;
+        margin: 0;
+        overflow-y: hidden;
+      }
+
+      hr {
+        border-top: 1px solid #FFFF00;
+        border-bottom: 0;
+      }
+
+      button, input, #right_panel a, select {
+        border: 1px #FFFF00 solid;
+        background-color: black;
+        padding: 10px 0;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        font-family: 'OSRS';
+        color: #FFFF00;
+        width: 100%;
+      }
+      select {
+        text-align: center;
+        text-align-last: center;
+        /* webkit*/
+      }
+
+
+
+      input[type="checkbox"] {
+        width: 30px;
+      }
+
+
+      .stats-font-11 {
+        font-family: 'Stats 11'; 
+        font-size: 11;
+      }
+
+      .stats-font-12 {
+        font-family: 'Stats 12'; 
+        font-size: 12;
+      }
+
+      #disclaimer_panel {
+        display: inline;
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+        text-align: left;
+        pointer-events: none;
+      }
+
+      #disclaimer_panel a, a:visited {
+        color: #AAAAFF;
+        pointer-events: all;
+      }
+
+      #right_panel {
+        display: inline-block;
+        width: 200px;
+        top: 0;
+        right: 14px;
+        position: absolute;
+        background: black;
+        padding: 30px 10px;
+      }
+
+      #set_timer {
+        width: 203px;
+        height: 130px;
+        background: #282828;
+        text-align: center;
+        color: white;
+        font-size: 60px;
+      }
+      #set_timer button {
+        width: 96%
+      }
+
+      canvas {
+        image-rendering: pixelated
+      }
+
+    </style>
+  </head>
+  <body>
+    <canvas id="world" onselectstart="return false" oncontextmenu="return false"></canvas>
+    <div id="disclaimer_panel">All assets are property of Jagex.</div>
+    <div id="right_panel">
+      <div id="sidebar_content"><!-- replaced by the Region -->Loading content...</div>
+      Configure key bindings in the settings tab.
+      <div style="
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      ">
+        <input type="checkbox" id="use3dView" name="use3dView">
+        <label for="use3dView">Use 3D View (Experimental)</label>
+        <div id="gpu_warning" />
+      </div>
+    </div>
+    <!-- OffscreenCanvas polyfill -->
+    <script>
+      if (!window.OffscreenCanvas) {
+        window.OffscreenCanvas = class OffscreenCanvas {
+          constructor(width, height) {
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = width;
+            this.canvas.height = height;
+
+            this.canvas.convertToBlob = () => {
+              return new Promise(resolve => {
+                this.canvas.toBlob(resolve);
+              });
+            };
+
+            return this.canvas;
+          }
+        };
+      }      
+    </script>
+    
+    <script src="./sample.js"></script>
+  </body>
+</html>

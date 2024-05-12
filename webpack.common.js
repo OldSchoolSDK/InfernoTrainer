@@ -1,20 +1,6 @@
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
-  mode: "production",
-  entry: "./src/index.ts",
-  output: {
-    filename: "main.js",
-    library: {
-      name: 'OldSchoolSDK',
-      type: 'umd',
-    },
-    umdNamedDefine: true,
-    path: path.resolve(__dirname, "_bundles"),
-    publicPath: '', // workaround: https://github.com/cypress-io/cypress/issues/18435
-  },
   devtool: "source-map",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
@@ -22,7 +8,6 @@ module.exports = {
   optimization: {
     minimize: false
   },
-  plugins: [],
   module: {
     rules: [
       {
@@ -39,8 +24,5 @@ module.exports = {
         loader: "html-loader",
       },
     ],
-  },
-  externals: {
-    three: 'three'
   }
 };
