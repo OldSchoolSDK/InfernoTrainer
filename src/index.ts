@@ -33,6 +33,10 @@ world.addRegion(selectedRegion);
 // Initialise UI
 document.getElementById('sidebar_content').innerHTML = selectedRegion.getSidebarContent();
 
+document.getElementById("reset").addEventListener("click", () => {
+  Trainer.reset();
+});
+
 document.getElementById("settings").addEventListener("click", () => {
   ControlPanelController.controller.setActiveControl('SETTINGS');
 });

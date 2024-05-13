@@ -476,6 +476,9 @@ export class InfernoRegion extends Region {
       this.addEntity(new InfernoScene(this, { x: 0, y: 48 }));
     }
 
+    player.perceivedLocation = player.location;
+    player.destinationLocation = player.location;
+
     return { player };
   }
 
