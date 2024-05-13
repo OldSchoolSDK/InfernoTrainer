@@ -335,10 +335,10 @@ export class Projectile extends Renderable {
       return null;
     }
     if (this.options.models) {
-      return GLTFModel.forRenderableMulti(this, this.options.models, this.options.modelScale, 0);
+      return GLTFModel.forRenderableMulti(this, this.options.models, { scale: this.options.modelScale });
     }
     if (this.options.model) {
-      return GLTFModel.forRenderable(this, this.options.model, this.options.modelScale, 0);
+      return GLTFModel.forRenderable(this, this.options.model, { scale: this.options.modelScale });
     }
     return BasicModel.sphereForRenderable(this);
   }

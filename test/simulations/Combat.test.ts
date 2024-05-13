@@ -54,4 +54,26 @@ describe("basic combat scenario", () => {
     expect(world.globalTickCounter).toEqual(145);
     expect(Random.callCount).toEqual(78);
   });
+  
+  test("red-x prevents random walk", () => {
+    Settings.inputDelay = 0;
+    const region = new TestRegion(60, 60);
+    const world = new World();
+    region.world = world;
+    world.addRegion(region);
+    // player is under the jalxil
+    const player = new Player(region, { x: 26, y: 25 });
+    region.addPlayer(player);
+    Viewport.setupViewport(region, true);
+    Viewport.viewport.setPlayer(player);
+
+    new TwistedBow().inventoryLeftClick(player);
+    const jalxil = new TestNpc(region, { x: 25, y: 25 }, { aggro: player });
+    region.addMob(jalxil);
+
+    world.tickWorld();
+
+
+
+  });
 });

@@ -21,6 +21,15 @@ const globalModelCache: {[name: string]: GLTF} = {};
 
 const DRAW_HITBOX = false;
 
+const DEFAULT_SCALE = 1 / 128;
+const DEFAULT_VERTICAL_OFFSET = -0.49;
+
+export type GLTFModelOptions = {
+  scale?: number;
+  verticalOffset?: number;
+  originOffset?: Location;
+}
+
 /**
  * Render the model using one or more GLTF models. If there are multiple models, they are drawn superimposed on the same spot and are expected
  * to have the same animation set.
@@ -29,21 +38,17 @@ export class GLTFModel implements Model, RenderableListener {
   static forRenderable(
     r: Renderable,
     model: string,
-    scale: number,
-    verticalOffset = -0.49,
-    originOffset: Location = { x: 0, y: 0 },
+    options: GLTFModelOptions = {},
   ) {
-    return new GLTFModel(r, [model], scale, verticalOffset, originOffset);
+    return new GLTFModel(r, [model], options);
   }
 
   static forRenderableMulti(
     r: Renderable,
     models: string[],
-    scale: number,
-    verticalOffset = -0.49,
-    originOffset: Location = { x: 0, y: 0 }
+    options: GLTFModelOptions = {},
   ) {
-    return new GLTFModel(r, models, scale, verticalOffset, originOffset);
+    return new GLTFModel(r, models, options);
   }
 
   private outline: THREE.LineSegments;
@@ -69,14 +74,21 @@ export class GLTFModel implements Model, RenderableListener {
   // models are loaded and inserted into `loadedModel` in indeterminate orders, so we save the index of each model
   private modelOrder: number[] = [];
 
+  // options 
+  private scale: number;
+  private verticalOffset: number;
+  private originOffset: Location;
+
   constructor(
     private renderable: Renderable,
     private models: string[],
-    private scale: number,
-    private verticalOffset,
-    private originOffset,
+    private options: GLTFModelOptions
   ) {
     const { size } = renderable;
+
+    this.scale = options.scale ?? DEFAULT_SCALE;
+    this.verticalOffset = options.verticalOffset ?? DEFAULT_VERTICAL_OFFSET;
+    this.originOffset = options.originOffset ?? { x: 0, y: 0 };
 
     this.outlineMaterial = new THREE.LineBasicMaterial({
       color: OUTLINE_NORMAL,
@@ -299,8 +311,8 @@ export class GLTFModel implements Model, RenderableListener {
       this.loadedModel.visible = visible;
     }
     this.outlineMaterial.color.setHex(this.renderable.selected ? OUTLINE_SELECTED : OUTLINE_NORMAL);
-    if (this.renderable.selected) {
-      drawLineOnTop(this.outline);
+    if (this.renderable.selected || this.renderable.outlineRenderOrder !== null) {
+      drawLineOnTop(this.outline, this.renderable.outlineRenderOrder ?? 1000);
     } else {
       drawLineNormally(this.outline);
     }
@@ -320,6 +332,11 @@ export class GLTFModel implements Model, RenderableListener {
       this.trueTile.position.x = trueX;
       this.trueTile.position.y = -0.495;
       this.trueTile.position.z = trueY;
+      if (this.renderable.trueTileRenderOrder !== null) {
+        drawLineOnTop(this.trueTile, this.renderable.trueTileRenderOrder ?? 1000);
+      } else {
+        drawLineNormally(this.trueTile);
+      }
     }
     this.trueTile.visible = this.renderable.drawTrueTile;
 

@@ -1,4 +1,4 @@
-import { BasicModel, MeleeWeapon, Mob } from "../src";
+import { Assets, BasicModel, GLTFModel, MeleeWeapon, Mob } from "../src";
 
 export class SampleNpc extends Mob {
   override mobName() {
@@ -67,6 +67,6 @@ export class SampleNpc extends Mob {
   }
 
   create3dModel() {
-    return BasicModel.forRenderable(this);
+    return GLTFModel.forRenderable(this, Assets.getAssetUrl("models/verzik.glb"));
   }
 }

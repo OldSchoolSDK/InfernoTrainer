@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-export const drawLineOnTop = (mesh: THREE.Line) => {
-  mesh.renderOrder = 999;
+export const drawLineOnTop = (mesh: THREE.Line, renderOrder: number) => {
+  mesh.renderOrder = renderOrder;
   (mesh.material as THREE.Material).depthTest = false;
   (mesh.material as THREE.Material).transparent = true;
 };

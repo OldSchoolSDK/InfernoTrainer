@@ -49,8 +49,20 @@ export abstract class Renderable {
     return true;
   }
 
+  // If null, render normally in the scene. Otherwise sets the renderOrder which can
+  // draw it above over elements in the scene, and other lines with lower renderOrder.
+  get outlineRenderOrder(): number | null {
+    return null;
+  }
+
   get drawTrueTile(): boolean {
     return false;
+  }
+
+  // If null, render normally in the scene. Otherwise sets the renderOrder which can
+  // draw it above over elements in the scene, and other lines with lower renderOrder.
+  get trueTileRenderOrder(): number | null {
+    return null;
   }
 
   get height(): number {

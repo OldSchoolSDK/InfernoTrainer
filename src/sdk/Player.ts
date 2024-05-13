@@ -963,7 +963,6 @@ export class Player extends Unit {
       Object.values(this.equipment)
         .map((e) => e?.model)
         .filter((e) => !!e),
-      1 / 128,
     );
   }
 
@@ -986,6 +985,11 @@ export class Player extends Unit {
 
   override get drawTrueTile() {
     return true;
+  }
+
+  override get trueTileRenderOrder() {
+    // player's true tile draws above most other things
+    return 1000;
   }
 }
 

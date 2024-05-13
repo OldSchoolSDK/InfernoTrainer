@@ -23,6 +23,12 @@ Sure. Right now the code is undergoing rapid development and the API is not stab
 
 ## Development notes
 
+### Developing the project from this project (with the "sample" environment):
+
+    npm run start
+
+Open up http://localhost:8000 in the browser.
+
 ### Developing the project from a client project:
 
 Modify `package.json`:

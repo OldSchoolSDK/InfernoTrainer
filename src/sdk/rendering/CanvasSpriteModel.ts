@@ -89,8 +89,8 @@ export class CanvasSpriteModel implements Model {
     this.texture.needsUpdate = true;
 
     this.outlineMaterial.color.setHex(this.renderable.selected ? OUTLINE_SELECTED : OUTLINE_NORMAL);
-    if (this.renderable.selected) {
-      drawLineOnTop(this.outline);
+    if (this.renderable.selected || this.renderable.outlineRenderOrder !== null) {
+      drawLineOnTop(this.outline, this.renderable.outlineRenderOrder ?? 100);
     } else {
       drawLineNormally(this.outline);
     }
