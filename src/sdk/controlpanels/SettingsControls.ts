@@ -13,10 +13,6 @@ import ButtonGreenDownIcon from "../../assets/images/interface/button_green_down
 import ButtonActiveIcon from "../../assets/images/interface/button_active.png";
 import ButtonInactiveIcon from "../../assets/images/interface/button_inactive.png";
 
-import InfernoIcon from "../../assets/images/settings/inferno.png";
-import VerzikIcon from "../../assets/images/settings/verzik.png";
-import XarpusIcon from "../../assets/images/settings/xarpus.png";
-
 import InventoryTab from "../../assets/images/controlTabs/inventory.png";
 import SpellbookTab from "../../assets/images/controlTabs/spellbook.png";
 import PrayerTab from "../../assets/images/controlTabs/prayer.png";
@@ -28,8 +24,13 @@ import { BrowserUtils } from "../utils/BrowserUtils";
 import { ControlPanelController } from "../ControlPanelController";
 import { ImageLoader } from "../utils/ImageLoader";
 import { Viewport } from "../Viewport";
+import { ToggleButton } from "./ui/ToggleButton";
+import { KeyBindingButton } from "./ui/KeyBindingButton";
+import { Component } from "./ui/Component";
 
 export class SettingsControls extends BaseControls {
+  static instance: SettingsControls | null = null;
+
   get panelImageReference() {
     return InventoryPanel;
   }
@@ -45,9 +46,6 @@ export class SettingsControls extends BaseControls {
   greenDownImage: HTMLImageElement = ImageLoader.createImage(ButtonGreenDownIcon);
   activeButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon);
   inactiveButtonImage: HTMLImageElement = ImageLoader.createImage(ButtonInactiveIcon);
-  infernoImage: HTMLImageElement = ImageLoader.createImage(InfernoIcon);
-  verzikImage: HTMLImageElement = ImageLoader.createImage(VerzikIcon);
-  xarpusImage: HTMLImageElement = ImageLoader.createImage(XarpusIcon);
   inventoryImage: HTMLImageElement = ImageLoader.createImage(InventoryTab);
   spellbookImage: HTMLImageElement = ImageLoader.createImage(SpellbookTab);
   prayerImage: HTMLImageElement = ImageLoader.createImage(PrayerTab);
@@ -55,8 +53,101 @@ export class SettingsControls extends BaseControls {
   combatImage: HTMLImageElement = ImageLoader.createImage(CombatTab);
   bindingKey?: string;
 
+  private components: Component[] = [
+    // Sound
+    new ToggleButton(
+      "",
+      20,
+      20,
+      () => Settings.playsAudio,
+      () => (Settings.playsAudio = !Settings.playsAudio),
+      this.soundImage,
+      this.disabledOverlay,
+      true,
+    ),
+    // Area Sound
+    new ToggleButton(
+      "",
+      20,
+      60,
+      () => Settings.playsAreaAudio,
+      () => (Settings.playsAreaAudio = !Settings.playsAreaAudio),
+      this.areaSoundImage,
+      this.disabledOverlay,
+      true,
+    ),
+
+    new ToggleButton(
+      "Metronome",
+      140,
+      20,
+      () => Settings.metronome,
+      () => (Settings.metronome = !Settings.metronome),
+    ),
+
+    // Key bindings
+    new KeyBindingButton(
+      () => Settings.inventory_key,
+      22,
+      170,
+      () => this.bindingKey === "inventory",
+      () => this.startKeyBinding("inventory"),
+      this.inventoryImage,
+    ),
+    new KeyBindingButton(
+      () => Settings.spellbook_key,
+      82,
+      170,
+      () => this.bindingKey === "spellbook",
+      () => this.startKeyBinding("spellbook"),
+      this.spellbookImage,
+    ),
+    new KeyBindingButton(
+      () => Settings.prayer_key,
+      142,
+      170,
+      () => this.bindingKey === "prayer",
+      () => this.startKeyBinding("prayer"),
+      this.prayerImage,
+    ),
+    new KeyBindingButton(
+      () => Settings.equipment_key,
+      22,
+      220,
+      () => this.bindingKey === "equipment",
+      () => this.startKeyBinding("equipment"),
+      this.equipmentImage,
+    ),
+    new KeyBindingButton(
+      () => Settings.combat_key,
+      82,
+      220,
+      () => this.bindingKey === "combat",
+      () => this.startKeyBinding("combat"),
+      this.combatImage,
+    ),
+
+    // Menu   
+    new ToggleButton(
+      "Menu",
+      142,
+      220,
+      () => Settings.menuVisible,
+      () => {
+        Settings.menuVisible = !Settings.menuVisible;
+        if (Settings.menuVisible) {
+          document.getElementById("right_panel").classList.remove("hidden");
+        } else {
+          document.getElementById("right_panel").classList.add("hidden");
+        }
+        Viewport.viewport.calculateViewport();
+      },
+    ),
+  ];
+
   constructor() {
     super();
+    SettingsControls.instance = this;
 
     this.bindingKey = null;
 
@@ -64,7 +155,6 @@ export class SettingsControls extends BaseControls {
       const key = event.key;
       if (this.bindingKey) {
         event.preventDefault();
-
         if (this.bindingKey === "inventory") {
           Settings.inventory_key = key;
         } else if (this.bindingKey === "spellbook") {
@@ -85,12 +175,21 @@ export class SettingsControls extends BaseControls {
     });
   }
 
+  addComponent(component: Component) {
+    this.components.push(component);
+  }
+
   get isAvailable(): boolean {
     return true;
   }
 
   get appearsOnLeftInMobile(): boolean {
     return false;
+  }
+
+  startKeyBinding(key: string) {
+    Settings.is_keybinding = true;
+    this.bindingKey = key;
   }
 
   get keyBinding() {
@@ -103,11 +202,7 @@ export class SettingsControls extends BaseControls {
     x = x / scale;
     y = y / scale;
 
-    if (x > 20 && x < 56 && y > 20 && y < 56) {
-      Settings.playsAudio = !Settings.playsAudio;
-    } else if (x > 20 && x < 56 && y > 60 && y < 86) {
-      Settings.playsAreaAudio = !Settings.playsAreaAudio;
-    } else if (x > 74 && x < 89 && y > 20 && y < 36) {
+    if (x > 74 && x < 89 && y > 20 && y < 36) {
       Settings.maxUiScale += 0.05;
     } else if (x > 75 && x < 89 && y > 51 && y < 67) {
       Settings.maxUiScale -= 0.05;
@@ -115,40 +210,10 @@ export class SettingsControls extends BaseControls {
       Settings.inputDelay += 20;
     } else if (x > 100 && x < 115 && y > 51 && y < 67) {
       Settings.inputDelay -= 20;
-    } else if (x > 20 && x < 60 && y > 100 && y < 140) {
-      Settings.displayPlayerLoS = !Settings.displayPlayerLoS;
-    } else if (x > 80 && x < 120 && y > 100 && y < 140) {
-      Settings.displayMobLoS = !Settings.displayMobLoS;
-    } else if (x > 140 && x < 180 && y > 120 && y < 160) {
-      // Settings.lockPOV = !Settings.lockPOV;
-    } else if (x > 140 && x < 180 && y > 70 && y < 110) {
-      Settings.displayFeedback = !Settings.displayFeedback;
-    } else if (x > 140 && x < 180 && y > 20 && y < 60) {
-      Settings.metronome = !Settings.metronome;
-    } else if (x > 20 && x < 60 && y > 170 && y < 210) {
-      Settings.is_keybinding = true;
-      this.bindingKey = "inventory";
-    } else if (x > 80 && x < 120 && y > 170 && y < 210) {
-      Settings.is_keybinding = true;
-      this.bindingKey = "spellbook";
-    } else if (x > 140 && x < 180 && y > 170 && y < 210) {
-      Settings.is_keybinding = true;
-      this.bindingKey = "prayer";
-    } else if (x > 20 && x < 60 && y > 220 && y < 260) {
-      Settings.is_keybinding = true;
-      this.bindingKey = "equipment";
-    } else if (x > 80 && x < 120 && y > 220 && y < 260) {
-      Settings.is_keybinding = true;
-      this.bindingKey = "combat";
-    } else if (x > 140 && x < 180 && y > 220 && y < 260) {
-      Settings.menuVisible = !Settings.menuVisible;
-
-      if (Settings.menuVisible) {
-        document.getElementById("right_panel").classList.remove("hidden");
-      } else {
-        document.getElementById("right_panel").classList.add("hidden");
-      }
-      Viewport.viewport.calculateViewport();
+    } else {
+      this.components.forEach((component) => {
+        component.onPanelClick(x, y);
+      });
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay);
@@ -156,25 +221,9 @@ export class SettingsControls extends BaseControls {
     Settings.persistToStorage();
   }
 
-  drawToggle(context: CanvasRenderingContext2D, x, y, image: HTMLImageElement, value: boolean) {
-    context.drawImage(image, x, y, image.width * Settings.controlPanelScale, image.height * Settings.controlPanelScale);
-    if (!value) {
-      context.drawImage(
-        this.disabledOverlay,
-        x,
-        y,
-        image.width * Settings.controlPanelScale,
-        image.height * Settings.controlPanelScale,
-      );
-    }
-  }
-
   draw(context, ctrl: ControlPanelController, x: number, y: number) {
     super.draw(context, ctrl, x, y);
     const scale = Settings.controlPanelScale;
-
-    this.drawToggle(context, x + 20 * scale, y + 20 * scale, this.soundImage, Settings.playsAudio);
-    this.drawToggle(context, x + 20 * scale, y + 60 * scale, this.areaSoundImage, Settings.playsAreaAudio);
 
     context.drawImage(
       this.redUpImage,
@@ -214,140 +263,16 @@ export class SettingsControls extends BaseControls {
       this.greenDownImage.width * scale,
       this.greenDownImage.height * scale,
     );
-    context.fillText("Lag", x + 107 * scale, y + 81 * scale);
-
-    context.drawImage(
-      Settings.displayPlayerLoS ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 20 * scale,
-      y + 100 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.fillText("P LoS", x + 40 * scale, y + 125 * scale);
-
-    context.drawImage(
-      Settings.displayMobLoS ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 80 * scale,
-      y + 100 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.fillText("M LoS", x + 100 * scale, y + 125 * scale);
-
-    // context.drawImage(Settings.lockPOV ? this.activeButtonImage : this.inactiveButtonImage, x + 140 * scale, y + 120 * scale, this.activeButtonImage.width * scale, this.activeButtonImage.height * scale)
-    // context.fillText('VP Lock', x + 160 * scale, y + 145 * scale)
-
-    context.drawImage(
-      Settings.displayFeedback ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 140 * scale,
-      y + 70 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.fillText("Pray Ind.", x + 160 * scale, y + 95 * scale);
-
-    context.drawImage(
-      Settings.metronome ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 140 * scale,
-      y + 20 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.fillText("Metronome", x + 160 * scale, y + 45 * scale);
-
-    context.drawImage(
-      this.bindingKey === "inventory" ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 22 * scale,
-      y + 170 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.drawImage(
-      this.inventoryImage,
-      x + 25 * scale,
-      y + 172 * scale,
-      this.inventoryImage.width * scale,
-      this.inventoryImage.height * scale,
-    );
-    context.fillText(Settings.inventory_key, x + (25 + 30) * scale, y + (172 + 30) * scale);
-
-    context.drawImage(
-      this.bindingKey === "spellbook" ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 82 * scale,
-      y + 170 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.drawImage(
-      this.spellbookImage,
-      x + 85 * scale,
-      y + 172 * scale,
-      this.spellbookImage.width * scale,
-      this.spellbookImage.height * scale,
-    );
-    context.fillText(Settings.spellbook_key, x + (85 + 30) * scale, y + (172 + 30) * scale);
-
-    context.drawImage(
-      this.bindingKey === "prayer" ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 142 * scale,
-      y + 170 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.drawImage(
-      this.prayerImage,
-      x + 145 * scale,
-      y + 172 * scale,
-      this.prayerImage.width * scale,
-      this.prayerImage.height * scale,
-    );
-    context.fillText(Settings.prayer_key, x + (145 + 30) * scale, y + (172 + 30) * scale);
-
-    context.drawImage(
-      this.bindingKey === "equipment" ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 22 * scale,
-      y + 220 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.drawImage(
-      this.equipmentImage,
-      x + 25 * scale,
-      y + 222 * scale,
-      this.equipmentImage.width * scale,
-      this.equipmentImage.height * scale,
-    );
-    context.fillText(Settings.equipment_key, x + (25 + 30) * scale, y + (222 + 30) * scale);
-
-    context.drawImage(
-      this.bindingKey === "combat" ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 82 * scale,
-      y + 220 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.drawImage(
-      this.combatImage,
-      x + 85 * scale,
-      y + 222 * scale,
-      this.combatImage.width * scale,
-      this.combatImage.height * scale,
-    );
-    context.fillText(Settings.combat_key, x + (85 + 30) * scale, y + (222 + 30) * scale);
-
-    context.drawImage(
-      Settings.menuVisible ? this.activeButtonImage : this.inactiveButtonImage,
-      x + 142 * scale,
-      y + 220 * scale,
-      this.activeButtonImage.width * scale,
-      this.activeButtonImage.height * scale,
-    );
-    context.fillText("Menu", x + 163 * scale, y + 241 * scale);
+    context.fillText("Ping", x + 107 * scale, y + 81 * scale);
 
     if (this.bindingKey === null) {
       context.fillText("Key Bindings", x + 100 * scale, y + (133 + 30) * scale);
     } else {
       context.fillText("Press Key To Bind", x + 100 * scale, y + (133 + 30) * scale);
     }
+
+    this.components.forEach((component) => {
+      component.draw(context, scale, x, y);
+    });
   }
 }

@@ -36,6 +36,7 @@ export class ControlPanelController {
     EQUIPMENT: new EquipmentControls(),
     STATS: new StatsControls(),
     ANCIENTSSPELLBOOK: new AncientsSpellbookControls(),
+    SETTINGS: new SettingsControls(),
   });
 
   static controller = new ControlPanelController();
@@ -68,7 +69,7 @@ export class ControlPanelController {
       new FriendsControls(),
       new AccountControls(),
       new ClanChatControls(),
-      new SettingsControls(),
+      ControlPanelController.controls.SETTINGS,
       new EmotesControls(),
       new MusicControls(),
     ];
@@ -88,7 +89,7 @@ export class ControlPanelController {
       ControlPanelController.controls.STATS,
       new QuestsControls(),
       new MusicControls(),
-      new SettingsControls(),
+      ControlPanelController.controls.SETTINGS,
       new EmptyControls(),
     ];
     this.controls = Settings.mobileCheck() ? this.mobileControls : this.desktopControls;
@@ -245,6 +246,10 @@ export class ControlPanelController {
     }
 
     return intercepted;
+  }
+
+  setActiveControl(index: keyof ((typeof ControlPanelController)["controls"])) {
+    this.selectedControl = ControlPanelController.controls[index];
   }
 
   controlPanelClickDown(e: MouseEvent): boolean {

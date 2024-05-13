@@ -32,6 +32,8 @@ export class Settings {
   static combat_key: string;
   static tile_markers: Location[];
 
+  static tileMarkerColor: string;
+
   static loadout: string;
   static onTask: boolean;
   static player_stats: PlayerStats;
@@ -99,12 +101,22 @@ export class Settings {
     window.localStorage.setItem("metronome", String(Settings.metronome));
     window.localStorage.setItem("displayFeedback", String(Settings.displayFeedback));
     window.localStorage.setItem("tile_markers", JSON.stringify(Settings.tile_markers));
+    window.localStorage.setItem("tileMarkerColor", Settings.tileMarkerColor);
     window.localStorage.setItem("lockPOV", JSON.stringify(Settings.lockPOV));
     window.localStorage.setItem("menuVisible", String(Settings.menuVisible));
     window.localStorage.setItem("use3dView", String(Settings.use3dView));
     window.localStorage.setItem("maxUiScale", String(Settings.maxUiScale));
 
     Settings.checkWasd();
+  }
+
+  static read<T>(key: string, defaultValue: T): T {
+    const val: T | null = window.localStorage.getItem(key) as T | null;
+    if (val === null) {
+      return defaultValue;
+    } else {
+      return val;
+    }
   }
 
   static readFromStorage() {
@@ -144,6 +156,8 @@ export class Settings {
     Settings.combat_key = window.localStorage.getItem("combat_key") || "F5";
     Settings.player_stats = DeserializePlayerStats(window.localStorage.getItem("stats"));
     Settings.tile_markers = JSON.parse(window.localStorage.getItem("tile_markers"));
+
+    Settings.tileMarkerColor = Settings.read("tileMarkerColor", "#FF0000");
 
     if (window.localStorage.getItem("menuVisible") === "true") {
       Settings.menuVisible = true;

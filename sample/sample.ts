@@ -2,7 +2,7 @@
 
 import "three";
 
-import { Assets, Settings, Region, World, Viewport, MapController, ImageLoader, Location, TileMarker, Trainer, Chrome } from "../src";
+import { Assets, Settings, Region, World, Viewport, MapController, ImageLoader, Location, TileMarker, Trainer, Chrome, ControlPanelController } from "../src";
 
 import { SampleRegion } from "./SampleRegion";
 
@@ -37,6 +37,12 @@ use3dViewCheckbox.addEventListener("change", () => {
   window.location.reload();
 });
 
+document.getElementById("settings").addEventListener("click", () => {
+    ControlPanelController.controller.setActiveControl('SETTINGS');
+});
+
+
+
 const { player } = selectedRegion.initialiseRegion();
 
 Viewport.setupViewport(selectedRegion);
@@ -49,7 +55,7 @@ ImageLoader.onAllImagesLoaded(() => {
 if (Settings.tile_markers) {
   Settings.tile_markers
     .map((location: Location) => {
-      return new TileMarker(selectedRegion, location, "#FF0000");
+      return new TileMarker(selectedRegion, location, Settings.tileMarkerColor);
     })
     .forEach((tileMarker: TileMarker) => {
       selectedRegion.addEntity(tileMarker);
