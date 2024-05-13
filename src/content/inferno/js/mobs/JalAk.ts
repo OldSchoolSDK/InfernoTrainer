@@ -179,7 +179,7 @@ export class JalAk extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, BlobModel, 0.0075);
+    return GLTFModel.forRenderable(this, BlobModel);
   }
 
   override get attackAnimationId() {

@@ -100,7 +100,7 @@ export class JalMejRah extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, BatModel, 0.0075);
+    return GLTFModel.forRenderable(this, BatModel);
   }
 
   override get attackAnimationId() {

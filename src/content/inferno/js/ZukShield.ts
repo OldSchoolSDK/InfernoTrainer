@@ -195,7 +195,7 @@ export class ZukShield extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, ShieldModel, 0.0075);
+    return GLTFModel.forRenderable(this, ShieldModel);
   }
 
   get animationIndex() {

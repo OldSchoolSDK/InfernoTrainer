@@ -139,7 +139,7 @@ export class JalNib extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, NibblerModel, 0.0075);
+    return GLTFModel.forRenderable(this, NibblerModel);
   }
 
   override get attackAnimationId() {

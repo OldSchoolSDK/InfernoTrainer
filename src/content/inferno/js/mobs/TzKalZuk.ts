@@ -313,7 +313,7 @@ export class TzKalZuk extends Mob {
   }
 
   create3dModel(): Model {
-    return GLTFModel.forRenderable(this, ZukModel, 0.0075);
+    return GLTFModel.forRenderable(this, ZukModel);
   }
 
   getPerceivedRotation(tickPercent: any) {

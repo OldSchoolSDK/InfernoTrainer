@@ -177,7 +177,7 @@ export class JalMejJak extends Mob {
   }
 
   create3dModel(): Model {
-    return GLTFModel.forRenderable(this, HealerModel, 1 / 128, 1.0);
+    return GLTFModel.forRenderable(this, HealerModel, { scale: 1 / 128, verticalOffset: 1.0 });
   }
 
   get idlePoseId() {

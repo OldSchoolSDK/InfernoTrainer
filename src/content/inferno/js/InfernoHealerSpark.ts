@@ -37,7 +37,7 @@ export class InfernoHealerSpark extends Entity {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, Splat, 1 / 128, -1);
+    return GLTFModel.forRenderable(this, Splat, { verticalOffset: -1 });
   }
 
   get animationIndex() {

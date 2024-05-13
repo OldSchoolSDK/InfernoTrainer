@@ -310,7 +310,7 @@ export class JalTokJad extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, JadModel, 0.0075);
+    return GLTFModel.forRenderable(this, JadModel);
   }
 
   get attackAnimationId() {

@@ -1,6 +1,6 @@
 "use strict";
 
-import { Settings, Region, World, Viewport, MapController, TileMarker, Assets, Location, Chrome, ImageLoader, Trainer } from "@supalosa/oldschool-trainer-sdk";
+import { Settings, Region, World, Viewport, MapController, TileMarker, Assets, Location, Chrome, ImageLoader, Trainer, ControlPanelController } from "@supalosa/oldschool-trainer-sdk";
 
 import NewRelicBrowser from "new-relic-browser";
 import { InfernoRegion } from "./content/inferno/js/InfernoRegion";
@@ -33,13 +33,17 @@ world.addRegion(selectedRegion);
 // Initialise UI
 document.getElementById('sidebar_content').innerHTML = selectedRegion.getSidebarContent();
 
-const use3dViewCheckbox = document.getElementById("use3dView") as HTMLInputElement;
-use3dViewCheckbox.checked = Settings.use3dView;
-use3dViewCheckbox.addEventListener("change", () => {
-  Settings.use3dView = use3dViewCheckbox.checked;
-  Settings.persistToStorage();
-  window.location.reload();
+document.getElementById("settings").addEventListener("click", () => {
+  ControlPanelController.controller.setActiveControl('SETTINGS');
 });
+
+const tileMarkerColor = document.getElementById("tileMarkerColor") as HTMLInputElement;
+tileMarkerColor.addEventListener("input", () => {
+  Settings.tileMarkerColor = tileMarkerColor.value;
+  TileMarker.onSetColor(Settings.tileMarkerColor);
+  Settings.persistToStorage();
+}, false);
+tileMarkerColor.value = Settings.tileMarkerColor;
 
 const { player } = selectedRegion.initialiseRegion();
 
@@ -49,16 +53,8 @@ Viewport.viewport.setPlayer(player);
 ImageLoader.onAllImagesLoaded(() => {
   MapController.controller.updateOrbsMask(player.currentStats, player.stats);
 });
+TileMarker.loadAll(selectedRegion);
 
-if (Settings.tile_markers) {
-  Settings.tile_markers
-    .map((location: Location) => {
-      return new TileMarker(selectedRegion, location, "#FF0000");
-    })
-    .forEach((tileMarker: TileMarker) => {
-      selectedRegion.addEntity(tileMarker);
-    });
-}
 
 player.perceivedLocation = player.location;
 player.destinationLocation = player.location;

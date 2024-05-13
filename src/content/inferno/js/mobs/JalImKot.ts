@@ -171,7 +171,7 @@ export class JalImKot extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, MeleerModel, 0.0075);
+    return GLTFModel.forRenderable(this, MeleerModel);
   }
 
   get deathAnimationLength() {

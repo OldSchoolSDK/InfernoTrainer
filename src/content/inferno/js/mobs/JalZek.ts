@@ -193,7 +193,7 @@ export class JalZek extends Mob {
   }
 
   create3dModel() {
-    return GLTFModel.forRenderable(this, MagerModel, 0.0075);
+    return GLTFModel.forRenderable(this, MagerModel);
   }
 
   override get attackAnimationId() {

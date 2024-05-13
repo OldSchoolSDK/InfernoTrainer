@@ -134,7 +134,7 @@ export class JalXil extends Mob {
   }
 
   override create3dModel() {
-    return GLTFModel.forRenderable(this, RangerModel, 0.0075);
+    return GLTFModel.forRenderable(this, RangerModel);
   }
 
   override get deathAnimationLength() {
