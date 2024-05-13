@@ -13,6 +13,14 @@ import { TileMarkerModel } from "../sdk/rendering/TileMarkerModel";
 export class TileMarker extends Entity {
   private _color = "#00FF00";
 
+  static saveableMarkers: TileMarker[] = [];
+  static onSetColor(color: string) {
+    // saveable tile markers change color
+    TileMarker.saveableMarkers.forEach((marker) => {
+      marker._color = color;
+    });
+  }
+
   _size = 1;
   saveable = true;
   constructor(region: Region, location: Location, color: string, size = 1, saveable = true) {
@@ -20,6 +28,9 @@ export class TileMarker extends Entity {
     this._color = color;
     this._size = size;
     this.saveable = saveable;
+    if (saveable) {
+      TileMarker.saveableMarkers.push(this);
+    }
   }
 
   entityName() {

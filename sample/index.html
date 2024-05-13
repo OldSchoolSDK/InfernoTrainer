@@ -55,7 +55,7 @@
         border-bottom: 0;
       }
 
-      button, input, #right_panel a, select {
+      button, input[type="text"], #right_panel a, select {
         border: 1px #FFFF00 solid;
         background-color: black;
         padding: 10px 0;
@@ -69,13 +69,12 @@
         color: #FFFF00;
         width: 100%;
       }
+
       select {
         text-align: center;
         text-align-last: center;
         /* webkit*/
       }
-
-
 
       input[type="checkbox"] {
         width: 30px;
@@ -140,14 +139,18 @@
     <div id="right_panel">
       <div id="sidebar_content"><!-- replaced by the Region -->Loading content...</div>
       <button id="settings">Settings</button>
+      <hr />
+      <span>More settings:</span>
+      <div>
+        <input type="color" id="tileMarkerColor" name="tileMarkerColor" value="#FF0000" />
+        <label for="tileMarkerColor">Tile Markers</label>
+      </div>
       <div style="
         width: 100%;
         text-align: center;
         padding-top: 10px;
         padding-bottom: 10px;
       ">
-        <input type="checkbox" id="use3dView" name="use3dView">
-        <label for="use3dView">Use 3D View (Experimental)</label>
         <div id="gpu_warning" />
       </div>
     </div>

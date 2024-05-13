@@ -10,10 +10,11 @@ export class TileMarkerModel implements Model {
   }
 
   private outline: THREE.LineSegments;
+  private lineMaterial: THREE.LineBasicMaterial;
 
   constructor(private renderable: Renderable, renderOrder: number | null) {
     const { size } = renderable;
-    const lineMaterial = new THREE.LineBasicMaterial({
+    this.lineMaterial = new THREE.LineBasicMaterial({
       color: renderable.colorHex,
       linewidth: 2,
     });
@@ -28,7 +29,7 @@ export class TileMarkerModel implements Model {
       new THREE.Vector3(0, 0, 0),
     ];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    this.outline = new THREE.LineSegments(geometry, lineMaterial);
+    this.outline = new THREE.LineSegments(geometry, this.lineMaterial);
     if (renderOrder !== null) {
       drawLineOnTop(this.outline, renderOrder);
     }
@@ -43,6 +44,7 @@ export class TileMarkerModel implements Model {
     this.outline.position.x = x;
     this.outline.position.y = -0.49;
     this.outline.position.z = y;
+    this.lineMaterial.color.setHex(this.renderable.colorHex);
   }
 
   destroy(scene: THREE.Scene) {
