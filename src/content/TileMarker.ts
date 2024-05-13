@@ -21,6 +21,18 @@ export class TileMarker extends Entity {
     });
   }
 
+  static loadAll(region: Region) {
+    if (Settings.tile_markers) {
+      Settings.tile_markers
+        .map((location: Location) => {
+          return new TileMarker(region, location, Settings.tileMarkerColor);
+        })
+        .forEach((tileMarker: TileMarker) => {
+          region.addEntity(tileMarker);
+        });
+    }
+  }
+
   _size = 1;
   saveable = true;
   constructor(region: Region, location: Location, color: string, size = 1, saveable = true) {
@@ -55,7 +67,6 @@ export class TileMarker extends Entity {
 
   draw() {
     this.region.context.lineWidth = 2;
-
     this.region.context.strokeStyle = this._color;
 
     this.region.context.strokeRect(

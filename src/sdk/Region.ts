@@ -8,6 +8,10 @@ import type { Player } from "./Player";
 import { Settings } from "./Settings";
 import type { World } from "./World";
 import type { Projectile } from "./weapons/Projectile";
+import { TileMarker } from "../content";
+import { Viewport } from "./Viewport";
+import { Trainer } from "./Trainer";
+import { Button } from "./ui/Button";
 
 interface GroundYItems {
   [key: number]: Item[];
@@ -101,8 +105,12 @@ export abstract class Region {
   removeMob(mob: Mob) {
     remove(this.mobs, mob);
   }
+
   removePlayer(player: Player) {
     remove(this.players, player);
+    if (this.players.length === 0) {
+      this.onGameOver();
+    }
   }
   addGroundItem(player: Player, item: Item, x: number, y: number) {
     if (!this.groundItems[x]) {
@@ -180,6 +188,25 @@ export abstract class Region {
   }
 
   abstract initialiseRegion(): { player: Player };
+
+  reset() {
+    this.players = [];
+    this.mobs = [];
+    this.newMobs = [];
+    this.entities = [];
+    this.projectiles = [];
+    this.groundItems = {};
+    TileMarker.loadAll(this);
+    Viewport.viewport.reset();
+    const reset = this.initialiseRegion();
+    Viewport.viewport.setPlayer(reset.player);
+    return reset;
+  }
+
+  onGameOver() {
+    // Override me
+    Viewport.viewport.components.push(new Button("Reset", 120, 60, () => Trainer.reset()));
+  }
 
   getSidebarContent(): string {
     return "Nothing to see here";

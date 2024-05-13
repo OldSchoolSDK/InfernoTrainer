@@ -17,6 +17,8 @@ import { Mob } from "./Mob";
 import { Item } from "./Item";
 import { Viewport2d } from "./Viewport2d";
 import { Trainer } from "./Trainer";
+import { Component } from "./ui/Component";
+import { ToggleButton } from "./ui/ToggleButton";
 
 type ViewportEntitiesClick = {
   type: "entities";
@@ -45,6 +47,7 @@ type ViewportDrawResult = {
 
 export interface ViewportDelegate {
   initialise(world: World, region: Region): Promise<void>;
+  reset();
 
   draw(world: World, region: Region): ViewportDrawResult;
 
@@ -74,6 +77,9 @@ export class Viewport {
   width: number;
   height: number;
 
+
+  public components: Component[] = [];
+
   constructor(private delegate: ViewportDelegate) {}
 
   /**
@@ -86,6 +92,7 @@ export class Viewport {
   get context() {
     return this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
+
   setPlayer(player: Player) {
     Trainer.setPlayer(player);
     window.addEventListener("orientationchange", () => this.calculateViewport());
@@ -96,8 +103,10 @@ export class Viewport {
     this.calculateViewport();
     this.canvas.width = Settings._tileSize * 2 * this.width;
     this.canvas.height = Settings._tileSize * 2 * this.height;
-    this.clickController = new ClickController(this);
-    this.clickController.registerClickActions();
+    if (!this.clickController) {
+      this.clickController = new ClickController(this);
+      this.clickController.registerClickActions();
+    }
     Trainer.setClickController(this.clickController);
   }
 
@@ -105,6 +114,11 @@ export class Viewport {
   async initialise() {
     await this.delegate.initialise(Trainer.player.region.world, Trainer.player.region);
     return;
+  }
+
+  reset() {
+    this.delegate.reset();
+    this.components = [];
   }
 
   calculateViewport() {
@@ -182,21 +196,6 @@ export class Viewport {
     this.context.restore();
     this.context.save();
 
-    if (Settings.mobileCheck()) {
-      this.context.fillStyle = "#FFFF00";
-      this.context.font = 16 + "px OSRS";
-      this.context.textAlign = "center";
-
-      this.context.drawImage(
-        this.activeButtonImage,
-        20,
-        20,
-        this.activeButtonImage.width,
-        this.activeButtonImage.height,
-      );
-      this.context.fillText("RESET", 40, 45);
-    }
-
     // draw control panel
     ControlPanelController.controller.draw(this.context);
     XpDropController.controller.draw(
@@ -208,18 +207,20 @@ export class Viewport {
     MapController.controller.draw(this.context);
     this.contextMenu.draw(this.context);
 
+    this.components.forEach((component) => component.draw(this.context, Settings.maxUiScale, 0, 0));
+
     if (this.clickController.clickAnimation) {
       this.clickController.clickAnimation.draw(this.context);
     }
 
     this.context.restore();
     this.context.save();
-
     this.context.textAlign = "left";
     if (world.getReadyTimer > 0) {
       this.context.font = "72px OSRS";
       this.context.textAlign = "center";
       this.drawText(`GET READY...${world.getReadyTimer}`, width / 2, height / 2 - 50);
     }
+    this.context.restore();
   }
 }

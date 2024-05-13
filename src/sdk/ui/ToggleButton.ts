@@ -1,8 +1,8 @@
 import { Component } from "./Component";
-import { ImageLoader } from "../../utils/ImageLoader";
+import { ImageLoader } from "../utils/ImageLoader";
 
-import ButtonActiveIcon from "../../../assets/images/interface/button_active.png";
-import ButtonInactiveIcon from "../../../assets/images/interface/button_inactive.png";
+import ButtonActiveIcon from "../../assets/images/interface/button_active.png";
+import ButtonInactiveIcon from "../../assets/images/interface/button_inactive.png";
 
 const ACTIVE_BUTTON_IMAGE: HTMLImageElement = ImageLoader.createImage(ButtonActiveIcon);
 const INACTIVE_BUTTON_IMAGE: HTMLImageElement = ImageLoader.createImage(ButtonInactiveIcon);
@@ -38,6 +38,8 @@ export class ToggleButton implements Component {
       );
     }
     context.save();
+    context.fillStyle = "#FFFF00";
+    context.font = 16 * scale + "px OSRS";
     context.textBaseline = "middle";
     context.textAlign = "center";
     context.fillText(
@@ -56,6 +58,12 @@ export class ToggleButton implements Component {
       y <= this.yOffset + this.activeButtonImage.height
     ) {
       this.onClick();
+      return true;
     }
+    return false;
+  }
+
+  onMouseMove(x: number, y: number) {
+    return false;
   }
 }

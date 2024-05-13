@@ -16,7 +16,7 @@ export class SampleNpc extends Mob {
 
     this.stats = {
       attack: 50,
-      strength: 50,
+      strength: 500,
       defence: 50,
       range: 50,
       magic: 50,
@@ -29,7 +29,7 @@ export class SampleNpc extends Mob {
     return {
       attack: {
         stab: 0,
-        slash: 0,
+        slash: 500,
         crush: 0,
         magic: 0,
         range: 0,

@@ -76,15 +76,6 @@ export class ClickController {
       return;
     }
 
-    if (Settings.mobileCheck()) {
-      if (e.offsetX > 20 && e.offsetX < 60) {
-        if (e.offsetY > 20 && e.offsetY < 60) {
-          // reset button
-          location.reload();
-        }
-      }
-    }
-
     const intercepted = ControlPanelController.controller.controlPanelClickUp(e);
     if (intercepted) {
       return;
@@ -98,6 +89,11 @@ export class ClickController {
   }
 
   mouseMoved(e: MouseEvent) {
+
+    const scale = Settings.maxUiScale;
+    if (this.viewport.components.some((component) => component.onMouseMove(e.offsetX / scale, e.offsetY / scale))) {
+      return;
+    }
     const world = Trainer.player.region.world;
     const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
     this.recentlySelectedMobs.forEach((mob) => {
@@ -136,6 +132,12 @@ export class ClickController {
     if (controlPanelIntercepted) {
       return;
     }
+
+    const scale = Settings.maxUiScale;
+    if (this.viewport.components.some((component) => component.onPanelClick(e.offsetX / scale, e.offsetY / scale))) {
+      return;
+    }
+
     const clickedOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
     if (!clickedOn) {
       return null;

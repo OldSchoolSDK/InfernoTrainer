@@ -19,6 +19,10 @@ export class Viewport2d implements ViewportDelegate {
     return;
   }
 
+  reset() {
+    // do nothing
+  }
+
   draw(world: World, region: Region) {
     region.context.save();
     region.drawWorldBackground(region.context, Settings.tileSize);

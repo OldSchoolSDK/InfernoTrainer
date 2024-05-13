@@ -991,6 +991,9 @@ export class Player extends Unit {
     // player's true tile draws above most other things
     return 1000;
   }
+  override get deathAnimationLength() {
+    return 1;
+  }
 }
 
 class ClickMarker extends TileMarker {

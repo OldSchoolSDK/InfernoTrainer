@@ -55,6 +55,8 @@ export class Viewport3d implements ViewportDelegate {
 
   private clock = new THREE.Clock();
 
+  private animateHandle: number;
+
   constructor(faceCameraSouth = true) {
     this.scene = new THREE.Scene();
 
@@ -236,7 +238,7 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   animate() {
-    requestAnimationFrame(() => this.animate());
+    this.animateHandle = requestAnimationFrame(() => this.animate());
 
     this.render();
 
@@ -285,6 +287,11 @@ export class Viewport3d implements ViewportDelegate {
     // preload by adding a bunch of models to the scene but out of sight
     await Trainer.player.region.preload();
     await this.renderer.compileAsync(this.scene, this.camera);
+  }
+
+  reset() {
+    this.knownActors.forEach((actor) => actor.destroy(this.scene));
+    this.knownActors = new Map();
   }
 
   private updateCanvasSize() {
