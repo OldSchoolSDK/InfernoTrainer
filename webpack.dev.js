@@ -18,6 +18,9 @@ module.exports = merge(common, {
     contentBase: path.join(__dirname, "_bundles"),
     compress: true,
     port: 8000,
+    host: '0.0.0.0',
+    disableHostCheck: true,
+    openPage: 'http://localhost:8000/'
   },
   plugins: [
     new CopyPlugin({

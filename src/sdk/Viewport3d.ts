@@ -18,6 +18,7 @@ import _ from "lodash";
 import { Unit } from "./Unit";
 import { Projectile } from "./weapons/Projectile";
 import { Trainer } from "./Trainer";
+import { Pathing } from "./Pathing";
 
 // how many pixels wide should 2d elements be scaled to
 const SPRITE_SCALE = 32;
@@ -26,6 +27,10 @@ const MIN_PITCH = -Math.PI / 2;
 const MAX_PITCH = 0.1;
 
 const FLOOR_Y_POS = -0.5;
+
+const ROTATE_MULT = 0.003;
+const ZOOM_MULT = 0.005;
+const TOUCH_MULT = 2;
 
 export class Viewport3d implements ViewportDelegate {
   private canvas: OffscreenCanvas;
@@ -45,6 +50,9 @@ export class Viewport3d implements ViewportDelegate {
 
   private yawDelta = 0;
   private pitchDelta = 0;
+
+  private touchStart: Touch | null = null;
+  private touchStart2: Touch | null = null;
 
   private stats = new Stats();
 
@@ -146,8 +154,8 @@ export class Viewport3d implements ViewportDelegate {
   // implementation from https://codepen.io/seanwasere/pen/BaMBoPd
   onDocumentMouseMove(e: MouseEvent) {
     if ((e.buttons & 4) !== 4) return;
-    this.yaw.rotation.y -= e.movementX * 0.002;
-    const v = this.pitch.rotation.x - e.movementY * 0.002;
+    this.yaw.rotation.y -= e.movementX * ROTATE_MULT;
+    const v = this.pitch.rotation.x - e.movementY * ROTATE_MULT;
     if (v > MIN_PITCH && v < MAX_PITCH) {
       this.pitch.rotation.x = v;
     }
@@ -155,12 +163,56 @@ export class Viewport3d implements ViewportDelegate {
   }
 
   onDocumentMouseWheel(e: WheelEvent) {
-    const v = this.camera.position.z + e.deltaY * 0.005;
+    const v = this.camera.position.z + e.deltaY * ZOOM_MULT;
     if (v >= 2 && v <= 20) {
       this.camera.position.z = v;
     }
     e.preventDefault();
     return false;
+  }
+
+  onDocumentTouchStart(e: TouchEvent) {
+    if (e.touches.length >= 1) {
+      this.touchStart = e.touches[0];
+    }
+    if (e.touches.length === 2) {
+      this.touchStart2 = e.touches[1];
+    }
+  }
+
+  onDocumentTouchMove(e: TouchEvent) {
+    if (!this.touchStart) {
+      return;
+    }
+    if (e.touches.length === 1) {
+      // drag - rotate
+      const deltaX = (e.touches[0].clientX - this.touchStart.clientX) * TOUCH_MULT;
+      const deltaY = (e.touches[0].clientY - this.touchStart.clientY) * TOUCH_MULT;
+      this.yaw.rotation.y -= deltaX * ROTATE_MULT;
+      const v = this.pitch.rotation.x - deltaY * ROTATE_MULT;
+      if (v > MIN_PITCH && v < MAX_PITCH) {
+        this.pitch.rotation.x = v;
+      }
+      this.touchStart = e.touches[0];
+    } else if (e.touches.length === 2 && this.touchStart2 !== null) {
+      // pinch - zoom
+      const oldDist = Pathing.dist(this.touchStart.clientX, this.touchStart.clientY, this.touchStart2.clientX, this.touchStart2.clientY);
+      const currentDist = Pathing.dist(e.touches[0].clientX, e.touches[0].clientY, e.touches[1].clientX, e.touches[1].clientY);
+      const delta = (oldDist - currentDist) * TOUCH_MULT;
+      const v = this.camera.position.z + delta * ZOOM_MULT;
+      if (v >= 2 && v <= 20) {
+        this.camera.position.z = v;
+      }
+      this.touchStart = e.touches[0];
+      this.touchStart2 = e.touches[1];
+    }
+    e.preventDefault();
+    return false;
+  }
+
+  onDocumentTouchEnd(e: TouchEvent) {
+    this.touchStart = null;
+    this.touchStart2 = null;
   }
 
   onKeyDown(e: KeyboardEvent) {
@@ -221,6 +273,9 @@ export class Viewport3d implements ViewportDelegate {
   initCameraEvents(canvas) {
     canvas.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
     canvas.addEventListener("wheel", this.onDocumentMouseWheel.bind(this), false);
+    canvas.addEventListener("touchstart", this.onDocumentTouchStart.bind(this), false);
+    canvas.addEventListener("touchmove", this.onDocumentTouchMove.bind(this), false);
+    canvas.addEventListener("touchend", this.onDocumentTouchEnd.bind(this), false);
     window.addEventListener("keydown", this.onKeyDown.bind(this), false);
     window.addEventListener("keyup", this.onKeyUp.bind(this), false);
   }
