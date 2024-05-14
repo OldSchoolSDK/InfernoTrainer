@@ -24,6 +24,7 @@ export class Settings {
   static lockPOV: boolean;
   static displayFeedback: boolean;
   static metronome: boolean;
+  static antiDrag: number;
 
   static inventory_key: string;
   static spellbook_key: string;
@@ -106,6 +107,7 @@ export class Settings {
     window.localStorage.setItem("menuVisible", String(Settings.menuVisible));
     window.localStorage.setItem("use3dView", String(Settings.use3dView));
     window.localStorage.setItem("maxUiScale", String(Settings.maxUiScale));
+    window.localStorage.setItem("antiDrag", String(Settings.antiDrag));
 
     Settings.checkWasd();
   }
@@ -174,6 +176,8 @@ export class Settings {
       Settings.rotated = "north";
     }
     Settings.maxUiScale = parseFloat(window.localStorage.getItem("maxUiScale")) || 1.0;
+
+    Settings.antiDrag = parseInt(Settings.read("antiDrag", "5"));
 
     Settings.checkWasd();
   }

@@ -13,11 +13,20 @@ import { MapController } from "../MapController";
 import { Viewport } from "../Viewport";
 import { InputController } from "../Input";
 import { Trainer } from "../Trainer";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+const MS_PER_ANTI_DRAG = 20; // per client tick
+const DRAG_RADIUS = 5;
+
 export class InventoryControls extends BaseControls {
+  antiDragTimerAt = 0;
+
   clickedDownItem: Item = null;
   clickedDownLocation: Location = null;
+  draggedItem = false;
+
+
   cursorLocation: Location = null;
   // this is the visual representation of the inventory, which updates instantly when items are moved but is refreshed
   // every tick
@@ -37,6 +46,7 @@ export class InventoryControls extends BaseControls {
 
   cursorMovedto(x: number, y: number) {
     this.cursorLocation = { x, y };
+    this.draggedItem ||= Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > DRAG_RADIUS && this.canDrag();
   }
 
   get isAvailable(): boolean {
@@ -55,9 +65,6 @@ export class InventoryControls extends BaseControls {
     const scale = Settings.controlPanelScale;
 
     let menuOptions: MenuOption[] = [];
-    // mobs.forEach((mob) => {
-    //   menuOptions = menuOptions.concat(mob.contextActions(x, y))
-    // })
 
     const clickedItem = first(
       filter(Trainer.player.inventory, (inventoryItem: Item, index: number) => {
@@ -110,14 +117,26 @@ export class InventoryControls extends BaseControls {
 
     const isPlaceholder: boolean = clickedItem && !!(clickedItem as any).isPlaceholder;
 
-    if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem) {
+    if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem && !this.draggedItem) {
+      // clicking an item
       if (clickedItem.hasInventoryLeftClick) {
         InputController.controller.queueAction(() => clickedItem.inventoryLeftClick(Trainer.player));
         MapController.controller.updateOrbsMask(null, null);
       } else {
         clickedItem.selected = true;
       }
-    } else if (!isPlaceholder && clickedItem) {
+      this.clickedDownItem = null;
+      this.cursorLocation = null;
+      return;
+    }
+    
+    if (!this.canDrag()) {
+      this.clickedDownItem = null;
+      this.cursorLocation = null;
+      return;
+    }
+    
+    if (!isPlaceholder && clickedItem) {
       const theItemWereReplacing = clickedItem;
       const theItemWereReplacingPosition = clickedItem.inventoryPosition(Trainer.player);
       const thisPosition = this.clickedDownItem.inventoryPosition(Trainer.player);
@@ -143,10 +162,11 @@ export class InventoryControls extends BaseControls {
   panelClickDown(x: number, y: number) {
     this.cursorLocation = { x, y };
     this.clickedDownLocation = { x, y };
+    this.draggedItem = false;
     const scale = Settings.controlPanelScale;
 
     const clickedItem = first(
-      filter(Trainer.player.inventory, (inventoryItem: Item, index: number) => {
+      filter(this.inventoryCache, (inventoryItem: Item, index: number) => {
         if (!inventoryItem) {
           return;
         }
@@ -162,7 +182,12 @@ export class InventoryControls extends BaseControls {
 
     if (clickedItem) {
       this.clickedDownItem = clickedItem;
+      this.antiDragTimerAt = Date.now() + Settings.antiDrag * MS_PER_ANTI_DRAG;
     }
+  }
+
+  private canDrag() {
+    return Date.now() >= this.antiDragTimerAt;
   }
 
   draw(context, ctrl: ControlPanelController, x: number, y: number) {
@@ -185,14 +210,7 @@ export class InventoryControls extends BaseControls {
         const yOff = Math.floor((32 - sprite.height) / 2);
         if (inventoryItem === this.clickedDownItem) {
           context.globalAlpha = 0.4;
-          if (
-            Pathing.dist(
-              this.cursorLocation.x,
-              this.cursorLocation.y,
-              this.clickedDownLocation.x,
-              this.clickedDownLocation.y,
-            ) > 5
-          ) {
+          if (this.draggedItem) {
             context.drawImage(
               sprite,
               x + this.cursorLocation.x - (sprite.width * scale) / 2,
