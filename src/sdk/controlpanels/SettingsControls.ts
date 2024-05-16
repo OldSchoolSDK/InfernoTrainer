@@ -217,7 +217,7 @@ export class SettingsControls extends BaseControls {
     }
 
     Settings.inputDelay = Math.max(0, Settings.inputDelay);
-    Settings.maxUiScale = Math.max(0.5, Math.min(1.5, Settings.maxUiScale));
+    Settings.maxUiScale = Math.max(0.5, Math.min(2.0, Settings.maxUiScale));
     Settings.persistToStorage();
   }
 

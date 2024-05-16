@@ -28,7 +28,7 @@ const MAX_PITCH = 0.1;
 
 const FLOOR_Y_POS = -0.5;
 
-const ROTATE_MULT = 0.003;
+const ROTATE_MULT = 0.006;
 const ZOOM_MULT = 0.005;
 const TOUCH_MULT = 2;
 
