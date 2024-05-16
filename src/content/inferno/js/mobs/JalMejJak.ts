@@ -180,6 +180,11 @@ export class JalMejJak extends Mob {
     return GLTFModel.forRenderable(this, HealerModel, { scale: 1 / 128, verticalOffset: 1.0 });
   }
 
+  get outlineRenderOrder() {
+    // to allow it to draw in front of the shield
+    return 999;
+  }
+
   get idlePoseId() {
     return 0;
   }

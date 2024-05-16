@@ -231,7 +231,7 @@ export class JalTokJad extends Mob {
   }
 
   get attackRange() {
-    return 15;
+    return 50;
   }
 
   get size() {
