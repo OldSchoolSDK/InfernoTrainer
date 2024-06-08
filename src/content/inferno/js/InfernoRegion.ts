@@ -470,7 +470,53 @@ export class InfernoRegion extends Region {
 
     waveInput.addEventListener("focus", () => (ControlPanelController.controller.isUsingExternalUI = true));
     waveInput.addEventListener("focusout", () => (ControlPanelController.controller.isUsingExternalUI = false));
-      
+    
+    // set timer
+    let timer_mode = "Start Set Timer";
+    let timer_time = 210;
+    
+    setInterval(() => {
+      if (
+        timer_mode === "Start Set Timer" ||
+        timer_mode === "Resume"
+      ) {
+        return;
+      }
+      timer_time--;
+      if (timer_time <= 0) {
+        timer_time = 210;
+        timer_mode = "Start Set Timer";
+      }
+      document.getElementById("set_timer_time").innerText =
+        String(Math.floor(timer_time / 60)) +
+        ":" +
+        String(timer_time % 60).padStart(2, "0");
+      document.getElementById("set_timer_button").innerText =
+        timer_mode;
+    }, 1000);
+    document
+      .getElementById("set_timer_button")
+      .addEventListener("click", () => {
+        if (timer_mode === "Start Set Timer") {
+          timer_mode = "Pause";
+        } else if (timer_mode === "Pause") {
+          timer_mode = "Resume";
+        } else if (timer_mode === "Resume") {
+          timer_mode = "Reset";
+          timer_time += 105;
+        } else if (timer_mode === "Reset") {
+          timer_time = 210;
+          timer_mode = "Start Set Timer";
+        }
+        document.getElementById("set_timer_time").innerText =
+          String(Math.floor(timer_time / 60)) +
+          ":" +
+          String(timer_time % 60).padStart(2, "0");
+        document.getElementById("set_timer_button").innerText =
+          timer_mode;
+      });
+
+
     // Add 3d scene
     if (Settings.use3dView) {
       this.addEntity(new InfernoScene(this, { x: 0, y: 48 }));
