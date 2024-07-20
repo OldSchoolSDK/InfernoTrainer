@@ -7,6 +7,7 @@ import { DelayedAction } from "./DelayedAction";
 import { Viewport } from "./Viewport";
 import MetronomeSound from "../assets/sounds/bonk.ogg";
 import { Pathing } from "./Pathing";
+import { EventBus } from "./EventBus";
 
 export class World {
   regions: Region[] = [];
@@ -22,6 +23,7 @@ export class World {
   startTime: number;
   frameCount = 0;
   tickTimer = 0;
+  eventBus: EventBus = new EventBus();
 
   addRegion(region: Region) {
     this.regions.push(region);
