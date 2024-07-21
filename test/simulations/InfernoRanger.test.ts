@@ -6,6 +6,7 @@ import { TwistedBow } from "../../src/content/weapons/TwistedBow";
 import { Settings } from "../../src/sdk/Settings";
 import { Region } from "../../src/sdk/Region";
 import { Random } from "../../src/sdk/Random";
+import { PlayerCreated } from "../../src/sdk/events/player/PlayerCreated";
 
 jest.mock("../../src/sdk/XpDropController", () => {
   return {
@@ -63,10 +64,14 @@ describe("basic combat scenario", () => {
   test("when player tries to kill an inferno ranger...", () => {
     const region = new TestRegion60x60();
     const world = new World();
-    region.world = world;
+    region.setWorld(world);
     world.addRegion(region);
     const player = new Player(region, { x: 30, y: 60 });
-    region.addPlayer(player);
+    const playerCreatedEvent = new PlayerCreated(
+      player,
+      region
+    );
+    world.eventBus.publish(playerCreatedEvent);
 
     new TwistedBow().inventoryLeftClick(player);
     const jalxil = new JalXil(region, { x: 25, y: 25 }, { aggro: player });

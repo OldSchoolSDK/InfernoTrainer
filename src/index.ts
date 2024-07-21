@@ -30,6 +30,7 @@ import { MapController } from "./sdk/MapController";
 import { Blowpipe } from "./content/weapons/Blowpipe";
 import { NecklaceOfAnguish } from "./content/equipment/NecklaceOfAnguish";
 import { PegasianBoots } from "./content/equipment/PegasianBoots";
+import { PlayerCreated } from "./sdk/events/player/PlayerCreated";
 
 declare global {
   interface Window {
@@ -44,7 +45,7 @@ const selectedRegion = new InfernoRegion();
 // Create world
 const world = new World();
 world.getReadyTimer = 6;
-selectedRegion.world = world;
+selectedRegion.setWorld(world);
 world.addRegion(selectedRegion);
 
 // create player
@@ -53,7 +54,12 @@ const player = new Player(selectedRegion, {
   y: parseInt(BrowserUtils.getQueryVar("y")) || 25,
 });
 
-selectedRegion.addPlayer(player);
+// Publish PlayerCreated event
+const playerCreatedEvent = new PlayerCreated(
+  player, 
+  selectedRegion
+);
+world.eventBus.publish(playerCreatedEvent);
 
 // const player2 = new Player(
 //   selectedRegion,

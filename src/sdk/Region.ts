@@ -8,6 +8,7 @@ import { Player } from "./Player";
 import { Settings } from "./Settings";
 import { Unit } from "./Unit";
 import { World } from "./World";
+import { PlayerCreated } from "./events/player/PlayerCreated";
 
 interface GroundYItems {
   [key: number]: Item[];
@@ -49,8 +50,8 @@ export class Region {
     // Override me
   }
 
-  addPlayer(player: Player) {
-    this.players.push(player);
+  handlePlayerCreated(event: PlayerCreated) {
+    this.players.push(event.player);
   }
 
   rightClickActions() {
@@ -66,6 +67,17 @@ export class Region {
       }
     }
     return this.canvas.getContext("2d");
+  }
+
+  setWorld(world: World) {
+    this.world = world;
+    
+    // Subscribe to the PlayerCreated event
+    this.world.eventBus.subscribe('PlayerCreated', (event: PlayerCreated) => {
+      if (event.region === this) { // Check if the event is for this region
+        this.handlePlayerCreated(event);
+      }
+    });
   }
 
   addEntity(entity: Entity) {
