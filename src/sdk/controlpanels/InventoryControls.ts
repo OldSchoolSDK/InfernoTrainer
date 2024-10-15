@@ -87,6 +87,10 @@ export class InventoryControls extends BaseControls {
     Viewport.viewport.contextMenu.setActive();
   }
 
+  onMouseUp(): void {
+    this.clickedDownItem = null;
+  }
+
   panelClickUp(x: number, y: number) {
     if (!this.clickedDownItem) {
       return;
