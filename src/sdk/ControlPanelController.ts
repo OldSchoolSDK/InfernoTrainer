@@ -244,6 +244,7 @@ export class ControlPanelController {
         this.selectedControl.panelClickUp(relativeX, relativeY);
       }
     }
+    this.selectedControl.onMouseUp();
 
     return intercepted;
   }
