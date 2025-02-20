@@ -106,7 +106,30 @@ export class InventoryControls extends BaseControls {
         isPlaceholder: true,
       };
     });
-    const clickedItem = first(
+    const clickedDownItem = this.clickedDownItem;
+    const isPlaceholder: boolean = clickedDownItem && !!(clickedDownItem as any).isPlaceholder;
+
+    if (!isPlaceholder && !this.draggedItem) {
+      // clicking an item
+      if (clickedDownItem.hasInventoryLeftClick) {
+        InputController.controller.queueAction(() => clickedDownItem.inventoryLeftClick(Trainer.player));
+        MapController.controller.updateOrbsMask(null, null);
+      } else {
+        clickedDownItem.selected = true;
+      }
+      this.clickedDownItem = null;
+      this.cursorLocation = null;
+      return;
+    }
+
+    // prevent swapping due to anti-drag
+    if (!this.canDrag()) {
+      this.clickedDownItem = null;
+      this.cursorLocation = null;
+      return;
+    }
+
+    const clickedUpItem = first(
       filter(sanitizedInventory, (inventoryItem: Item, index: number) => {
         if (!inventoryItem) {
           return;
@@ -119,30 +142,10 @@ export class InventoryControls extends BaseControls {
       }),
     ) as Item;
 
-    const isPlaceholder: boolean = clickedItem && !!(clickedItem as any).isPlaceholder;
-
-    if (!isPlaceholder && clickedItem && this.clickedDownItem === clickedItem && !this.draggedItem) {
-      // clicking an item
-      if (clickedItem.hasInventoryLeftClick) {
-        InputController.controller.queueAction(() => clickedItem.inventoryLeftClick(Trainer.player));
-        MapController.controller.updateOrbsMask(null, null);
-      } else {
-        clickedItem.selected = true;
-      }
-      this.clickedDownItem = null;
-      this.cursorLocation = null;
-      return;
-    }
-    
-    if (!this.canDrag()) {
-      this.clickedDownItem = null;
-      this.cursorLocation = null;
-      return;
-    }
-    
-    if (!isPlaceholder && clickedItem) {
-      const theItemWereReplacing = clickedItem;
-      const theItemWereReplacingPosition = clickedItem.inventoryPosition(Trainer.player);
+    // swapping gear
+    if (!isPlaceholder && clickedUpItem) {
+      const theItemWereReplacing = clickedUpItem;
+      const theItemWereReplacingPosition = clickedUpItem.inventoryPosition(Trainer.player);
       const thisPosition = this.clickedDownItem.inventoryPosition(Trainer.player);
       // update the local cache immediately, but the real position updates upon server tick
       this.inventoryCache[theItemWereReplacingPosition] = this.clickedDownItem;
@@ -150,9 +153,9 @@ export class InventoryControls extends BaseControls {
       InputController.controller.queueAction(() => {
         Trainer.player.swapItemPositions(theItemWereReplacingPosition, thisPosition);
       });
-    } else if (clickedItem) {
+    } else if (clickedUpItem) {
       const thisPosition = this.clickedDownItem.inventoryPosition(Trainer.player);
-      const clickedPosition = clickedItem.inventoryPosition(Trainer.player);
+      const clickedPosition = clickedUpItem.inventoryPosition(Trainer.player);
       this.inventoryCache[clickedPosition] = this.clickedDownItem;
       this.inventoryCache[thisPosition] = null;
       InputController.controller.queueAction(() => {
