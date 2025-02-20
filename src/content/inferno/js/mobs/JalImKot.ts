@@ -162,7 +162,9 @@ export class JalImKot extends Mob {
   endDig() {
     if (this.aggro.type === UnitTypes.PLAYER) {
       const player = this.aggro as Player;
-      player.interruptCombat();
+      if (player.aggro === this) {
+        player.interruptCombat();
+      }
     }
     this.attackDelay = 6;
     this.freeze(2);
