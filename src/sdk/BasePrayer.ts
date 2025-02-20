@@ -77,7 +77,14 @@ export class BasePrayer {
     if (player.stats.prayer < this.levelRequirement()) {
       return;
     }
-    this.isLit = !this.isLit;
+    const conflictingPrayers = player.prayerController.prayers
+      .filter(it => this.groups.some(group => it.groups.includes(group)))
+      .sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
+    if (this.isLit && conflictingPrayers[0] === this) {
+      this.isLit = false;
+    } else {
+      this.isLit = true;
+    }
     if (this.isLit) {
       this.lastActivated = Date.now();
     } else {
