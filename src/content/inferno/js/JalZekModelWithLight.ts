@@ -29,7 +29,7 @@ export class JalZekModelWithLight extends GLTFModel {
 
   private createLight() {
     this.underglowLight = new THREE.PointLight(
-      0x00FFFF, // neon cyan currently to stand out (not sure how to override the existing red  underglow thing) xd
+      0xFF0000, // red
       this.NORMAL_UNDERGLOW_INTENSITY,
       this.jalZekRenderable.size * 16.0 // MAXXING OUT!!
     );
