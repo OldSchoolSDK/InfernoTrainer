@@ -12,13 +12,13 @@ import { JalZek } from "./mobs/JalZek";
 export class JalZekModelWithLight extends GLTFModel {
   underglowLight: THREE.PointLight | null = null;
   jalZekRenderable: JalZek;
-   lightParented = false;
- primaryModelPath: string;
+  lightParented = false;
+  primaryModelPath: string;
 
   // light props
   readonly NORMAL_UNDERGLOW_INTENSITY: number = 32.0;
-   readonly FLICKER_OFF_INTENSITY: number = 0.05;
-   readonly FLICKER_ON_INTENSITY: number = 64.0;
+  readonly FLICKER_OFF_INTENSITY: number = 0.05;
+  readonly FLICKER_ON_INTENSITY: number = 50.0;
 
   constructor(renderable: JalZek, modelPath: string, options?: GLTFModelOptions) {
     super(renderable, [modelPath], options || {});
@@ -31,7 +31,8 @@ export class JalZekModelWithLight extends GLTFModel {
     this.underglowLight = new THREE.PointLight(
       0xFF0000, // red
       this.NORMAL_UNDERGLOW_INTENSITY,
-      this.jalZekRenderable.size * 16.0 // MAXXING OUT!!
+      this.jalZekRenderable.size * 3.0, // reduced radius
+      7 // increased decay for sharper falloff
     );
     this.underglowLight.position.set(0, -1.0, 0);
     this.underglowLight.visible = true;
