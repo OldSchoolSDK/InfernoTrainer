@@ -1,11 +1,4 @@
-import {
-  Assets,
-  GLTFModel,
-  Model,
-  Location3,
-  Renderable,
-  GLTFModelOptions
-} from "@supalosa/oldschool-trainer-sdk";
+import { Assets, GLTFModel, Model, Location3, Renderable, GLTFModelOptions } from "@supalosa/oldschool-trainer-sdk";
 import * as THREE from "three";
 import { JalZek } from "./mobs/JalZek";
 
@@ -29,10 +22,10 @@ export class JalZekModelWithLight extends GLTFModel {
 
   private createLight() {
     this.underglowLight = new THREE.PointLight(
-      0xFF0000, // red
+      0xff0000, // red
       this.NORMAL_UNDERGLOW_INTENSITY,
       this.jalZekRenderable.size * 3.0, // reduced radius
-      7 // increased decay for sharper falloff
+      7, // increased decay for sharper falloff
     );
     this.underglowLight.position.set(0, -1.0, 0);
     this.underglowLight.visible = true;
@@ -51,7 +44,7 @@ export class JalZekModelWithLight extends GLTFModel {
     rotation: number,
     pitch: number,
     modelIsVisible: boolean,
-    modelOffsets: Location3[]
+    modelOffsets: Location3[],
   ): void {
     super.draw(scene, clockDelta, tickPercent, location, rotation, pitch, modelIsVisible, modelOffsets);
 
@@ -111,4 +104,4 @@ export class JalZekModelWithLight extends GLTFModel {
     this.lightParented = false;
     super.destroy(scene);
   }
-} 
+}

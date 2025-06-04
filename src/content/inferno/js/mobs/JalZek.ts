@@ -1,6 +1,22 @@
 "use strict";
 
-import { Assets, Mob, Projectile, MeleeWeapon, MagicWeapon, Sound, UnitBonuses, Collision, AttackIndicators, Random, Viewport, GLTFModel, EntityNames, Trainer, Model } from "@supalosa/oldschool-trainer-sdk";
+import {
+  Assets,
+  Mob,
+  Projectile,
+  MeleeWeapon,
+  MagicWeapon,
+  Sound,
+  UnitBonuses,
+  Collision,
+  AttackIndicators,
+  Random,
+  Viewport,
+  GLTFModel,
+  EntityNames,
+  Trainer,
+  Model,
+} from "@supalosa/oldschool-trainer-sdk";
 
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { InfernoRegion } from "../InfernoRegion";
@@ -16,11 +32,11 @@ export const MageProjectileModel = Assets.getAssetUrl("models/mage_projectile.gl
 
 export class JalZek extends Mob {
   shouldRespawnMobs: boolean;
-   isFlickering = false;
-   // flicker only the tick before the attack animation happns
-   flickerDurationTicks = 1; 
-   flickerTicksRemaining = 0;
-   extendedGltfModelInstance: JalZekModelWithLight | null = null;
+  isFlickering = false;
+  // flicker only the tick before the attack animation happns
+  flickerDurationTicks = 1;
+  flickerTicksRemaining = 0;
+  extendedGltfModelInstance: JalZekModelWithLight | null = null;
 
   mobName() {
     return EntityNames.JAL_ZEK;
@@ -153,30 +169,30 @@ export class JalZek extends Mob {
     return { x: 21, y: 22 };
   }
 
-   create3dModel() {
+  create3dModel() {
     if (!this.extendedGltfModelInstance) {
       this.extendedGltfModelInstance = new JalZekModelWithLight(this, MagerModel);
     }
     return this.extendedGltfModelInstance;
   }
 
-   updateUnderglowVisuals() {
+  updateUnderglowVisuals() {
     if (this.extendedGltfModelInstance) {
       this.extendedGltfModelInstance.setFlickerVisualState(this.isFlickering);
     }
   }
 
-   attackStep() {
+  attackStep() {
     super.attackStep();
 
     if (this.isFlickering) {
       this.flickerTicksRemaining--;
       // double flicker on the flicker tick
-      this.extendedGltfModelInstance?.setFlickerVisualState(true); 
+      this.extendedGltfModelInstance?.setFlickerVisualState(true);
       if (this.flickerTicksRemaining <= 0) {
         this.isFlickering = false;
         // reset to normal
-        this.extendedGltfModelInstance?.setFlickerVisualState(false); 
+        this.extendedGltfModelInstance?.setFlickerVisualState(false);
         // Set attack style before attacking
         this.attackStyle = this.attackStyleForNewAttack();
         this.attackFeedback = AttackIndicators.NONE;
@@ -211,7 +227,7 @@ export class JalZek extends Mob {
     this.attackIfPossible();
   }
 
-   attackIfPossible() {
+  attackIfPossible() {
     this.hadLOS = this.hasLOS;
     this.setHasLOS();
 
@@ -219,17 +235,24 @@ export class JalZek extends Mob {
       return;
     }
 
-    const isUnderAggro = Collision.collisionMath(this.location.x, this.location.y, this.size, this.aggro.location.x, this.aggro.location.y, 1);
+    const isUnderAggro = Collision.collisionMath(
+      this.location.x,
+      this.location.y,
+      this.size,
+      this.aggro.location.x,
+      this.aggro.location.y,
+      1,
+    );
 
     if (!isUnderAggro && this.hasLOS) {
       // start flicker BEFORE initiating attack
       this.isFlickering = true;
       this.flickerTicksRemaining = this.flickerDurationTicks;
       //resetting visual state
-      this.extendedGltfModelInstance?.setFlickerVisualState(false); 
+      this.extendedGltfModelInstance?.setFlickerVisualState(false);
       // wait for flicker to finish before attacking
       this.attackDelay = this.flickerDurationTicks;
-      return; 
+      return;
     }
   }
 
