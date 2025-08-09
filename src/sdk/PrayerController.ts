@@ -30,6 +30,8 @@ import { ThickSkin } from "../content/prayers/ThickSkin";
 import { UltimateStrength } from "../content/prayers/UltimateStrength";
 import { BasePrayer, PrayerGroups } from "./BasePrayer";
 import { Player } from "./Player";
+import { Settings } from "./Settings";
+import RedemptionHealSound from "../assets/sounds/redemption_heal_2681.ogg";
 
 export class PrayerController {
   drainCounter = 0;
@@ -75,8 +77,26 @@ export class PrayerController {
     // deactivate prayers when out of prayer
 
     if (this.player.currentStats.prayer <= 0) {
-      this.activePrayers().forEach((prayer) => prayer.deactivate());
-      this.player.currentStats.prayer = 0;
+      this.deactivateAll(player);
+    }
+  }
+
+  deactivateAll(player: Player) {
+    this.activePrayers().forEach((prayer) => prayer.deactivate());
+    this.player.currentStats.prayer = 0;
+  }
+
+  checkRedemption(player: Player) {
+    if (
+      this.isPrayerActiveByName("Redemption") &&
+      this.player.currentStats.hitpoint > 0 &&
+      this.player.currentStats.hitpoint <= Math.floor(this.player.stats.hitpoint / 10)
+    ) {
+      this.deactivateAll(player);
+      player.currentStats.hitpoint += Math.floor(player.stats.prayer / 4);
+      if (Settings.playsAudio) {
+        new Audio(RedemptionHealSound).play();
+      }
     }
   }
 

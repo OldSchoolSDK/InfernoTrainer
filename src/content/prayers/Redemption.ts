@@ -3,6 +3,7 @@
 import { BasePrayer, PrayerGroups } from "../../sdk/BasePrayer";
 import { Settings } from "../../sdk/Settings";
 import OverheadImg from "../../assets/images/prayers/redemptionOver.png";
+import OnSound from "../../assets/sounds/redemption_2680.ogg"
 
 export class Redemption extends BasePrayer {
   get name() {
@@ -28,12 +29,12 @@ export class Redemption extends BasePrayer {
     return OverheadImg;
   }
   feature() {
-    return "";
+    return "redemption";
   }
 
   playOnSound() {
     if (Settings.playsAudio) {
-      // new Audio(OnSound).play();
+      new Audio(OnSound).play();
     }
   }
 
