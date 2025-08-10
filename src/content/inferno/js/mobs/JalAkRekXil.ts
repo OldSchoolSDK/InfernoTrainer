@@ -2,7 +2,7 @@
 
 import { Mob, EntityNames, Settings, RangedWeapon, UnitBonuses } from "@supalosa/oldschool-trainer-sdk";
 
-import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
+import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Xil.png";
 
 export class JalAkRekXil extends Mob {
   mobName() {
