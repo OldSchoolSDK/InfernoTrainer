@@ -174,10 +174,6 @@ export class Player extends Unit {
     return openSpots;
   }
 
-  postAttacksEvent() {
-    this.eats.checkRedemption(this);
-  }
-
   swapItemPositions(pos1: number, pos2: number) {
     // positions can be negative if an item is destroyed due to consuming it on the same tick
     const temp = this.inventory[pos1] ?? null;
@@ -791,13 +787,7 @@ export class Player extends Unit {
   }
 
   damageTaken() {
-    if (
-      this.prayerController.isPrayerActiveByName("Redemption") &&
-      this.currentStats.hitpoint > 0 &&
-      this.currentStats.hitpoint < Math.floor(this.stats.hitpoint / 10)
-    ) {
-      this.eats.redemptioned = true;
-    }
+    this.prayerController.checkRedemption(this);
   }
 
   pretick() {

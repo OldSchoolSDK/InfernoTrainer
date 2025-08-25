@@ -13,7 +13,6 @@ export class Eating {
   currentFood: Food;
   currentPotion: Potion;
   currentComboFood: Karambwan;
-  redemptioned = false;
 
   tickFood(player: Player) {
     this.foodDelay--;
@@ -32,14 +31,6 @@ export class Eating {
       this.currentComboFood.eat(player);
       player.attackDelay += 3;
       this.currentComboFood = null;
-    }
-  }
-
-  checkRedemption(player: Player) {
-    if (this.redemptioned) {
-      player.currentStats.prayer = 0;
-      player.currentStats.hitpoint += Math.floor(player.stats.prayer / 4);
-      this.redemptioned = false;
     }
   }
 
