@@ -207,6 +207,15 @@ export class InfernoRegion extends Region {
     });
   }
 
+  initializeDisplaySetTimerToggle() {
+    const displaySetTimerCheckbox = document.getElementById("displaySetTimer") as HTMLInputElement;
+    displaySetTimerCheckbox.checked = Settings.displaySetTimer;
+    displaySetTimerCheckbox.addEventListener("change", () => {
+      Settings.displaySetTimer = displaySetTimerCheckbox.checked;
+      Settings.persistToStorage();
+    });
+  }
+
   initialiseRegion() {
     const waveInput: HTMLInputElement = document.getElementById("waveinput") as HTMLInputElement;
 
@@ -303,6 +312,7 @@ export class InfernoRegion extends Region {
 
     this.initializeAndGetUse3dView();
     this.initializeSpawnIndicatorsToggle();
+    this.initializeDisplaySetTimerToggle();
     this.wave = parseInt(BrowserUtils.getQueryVar("wave"));
 
     if (isNaN(this.wave)) {
