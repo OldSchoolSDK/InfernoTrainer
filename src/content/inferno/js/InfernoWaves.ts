@@ -12,6 +12,17 @@ import { JalNib } from "./mobs/JalNib";
 import { JalXil } from "./mobs/JalXil";
 
 export class InfernoWaves {
+  static spawns = [
+    { x: 12, y: 19 },
+    { x: 33, y: 19 },
+    { x: 14, y: 25 },
+    { x: 34, y: 26 },
+    { x: 27, y: 31 },
+    { x: 16, y: 37 },
+    { x: 34, y: 39 },
+    { x: 12, y: 42 },
+    { x: 26, y: 42 },
+  ];
   static shuffle(array) {
     let currentIndex = array.length,
       randomIndex;
@@ -19,7 +30,7 @@ export class InfernoWaves {
     // While there remain elements to shuffle...
     while (currentIndex != 0) {
       // Pick a remaining element...
-      randomIndex = Math.floor(Random.get() * currentIndex);
+      randomIndex = Math.floor((Random.get() || Math.random()) * currentIndex);
       currentIndex--;
 
       // And swap it with the current element.
@@ -30,7 +41,9 @@ export class InfernoWaves {
   }
 
   static getRandomSpawns() {
-    return InfernoWaves.shuffle(InfernoWaves.spawns);
+    // Deep copy to prevent shared object references from corrupting the static array
+    const originalSpawns = InfernoWaves.spawns.map(spawn => ({ x: spawn.x, y: spawn.y }));
+    return InfernoWaves.shuffle(originalSpawns);
   }
 
   static spawn(region: Region, player: Player, randomPillar: Entity, spawns: Location[], wave: number) {
@@ -39,19 +52,34 @@ export class InfernoWaves {
     let i = 0;
     Array(mobCounts[5])
       .fill(0)
-      .forEach(() => mobs.push(new JalZek(region, spawns[i++], { aggro: player })));
+      .forEach(() => {
+        const spawnLocation = spawns[i++];
+        mobs.push(new JalZek(region, spawnLocation, { aggro: player }));
+      });
     Array(mobCounts[4])
       .fill(0)
-      .forEach(() => mobs.push(new JalXil(region, spawns[i++], { aggro: player })));
+      .forEach(() => {
+        const spawnLocation = spawns[i++];
+        mobs.push(new JalXil(region, spawnLocation, { aggro: player }));
+      });
     Array(mobCounts[3])
       .fill(0)
-      .forEach(() => mobs.push(new JalImKot(region, spawns[i++], { aggro: player })));
+      .forEach(() => {
+        const spawnLocation = spawns[i++];
+        mobs.push(new JalImKot(region, spawnLocation, { aggro: player }));
+      });
     Array(mobCounts[2])
       .fill(0)
-      .forEach(() => mobs.push(new JalAk(region, spawns[i++], { aggro: player })));
+      .forEach(() => {
+        const spawnLocation = spawns[i++];
+        mobs.push(new JalAk(region, spawnLocation, { aggro: player }));
+      });
     Array(mobCounts[1])
       .fill(0)
-      .forEach(() => mobs.push(new JalMejRah(region, spawns[i++], { aggro: player })));
+      .forEach(() => {
+        const spawnLocation = spawns[i++];
+        mobs.push(new JalMejRah(region, spawnLocation, { aggro: player }));
+      });
 
     mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], region, randomPillar));
     return mobs;
@@ -120,18 +148,6 @@ export class InfernoWaves {
       .forEach(() => mobs.push(new JalNib(region, nibblerSpawns.shift(), options)));
     return mobs;
   }
-
-  static spawns = [
-    { x: 12, y: 19 },
-    { x: 33, y: 19 },
-    { x: 14, y: 25 },
-    { x: 34, y: 26 },
-    { x: 27, y: 31 },
-    { x: 16, y: 37 },
-    { x: 34, y: 39 },
-    { x: 12, y: 42 },
-    { x: 26, y: 42 },
-  ];
 
   // cba to convert this to any other format
   // nibblers, bats, blobs, melee, ranger, mager
