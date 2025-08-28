@@ -1,5 +1,5 @@
 "use strict";
-import { Region, CardinalDirection, Viewport, Settings, Mob, Player, BrowserUtils, InvisibleMovementBlocker, ImageLoader, Location, TileMarker, ControlPanelController, Trainer, EntityNames } from "osrs-sdk";
+import { BrowserUtils, CardinalDirection, ControlPanelController, Entity, EntityNames, ImageLoader, InvisibleMovementBlocker, Location, Mob, Player, Region, Settings, TileMarker, Trainer, Viewport } from "osrs-sdk";
 
 import InfernoMapImage from "../assets/images/map.png";
 
@@ -25,6 +25,9 @@ import SidebarContent from "../sidebar.html";
 export class InfernoRegion extends Region {
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage);
+
+  // Spawn indicator entities
+  private spawnIndicators: Entity[] = [];
 
   get initialFacing() {
     return this.wave === 69 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
@@ -187,6 +190,23 @@ export class InfernoRegion extends Region {
     return use3dViewCheckbox.checked;
   }
 
+  initializeSpawnIndicatorsToggle() {
+    const spawnIndicatorsCheckbox = document.getElementById("spawnIndicators") as HTMLInputElement;
+    spawnIndicatorsCheckbox.checked = Settings.spawnIndicators;
+    spawnIndicatorsCheckbox.addEventListener("change", () => {
+      Settings.spawnIndicators = spawnIndicatorsCheckbox.checked;
+      Settings.persistToStorage();
+      // Update current spawn indicators visibility
+      if (!Settings.spawnIndicators) {
+        this.clearSpawnIndicators();
+      } else {
+        // Refresh spawn indicators if enabled
+        const spawns = InfernoWaves.getRandomSpawns();
+        this.updateSpawnIndicators(spawns);
+      }
+    });
+  }
+
   initialiseRegion() {
     const waveInput: HTMLInputElement = document.getElementById("waveinput") as HTMLInputElement;
 
@@ -282,6 +302,7 @@ export class InfernoRegion extends Region {
     const northPillar = this.initializeAndGetNorthPillar();
 
     this.initializeAndGetUse3dView();
+    this.initializeSpawnIndicatorsToggle();
     this.wave = parseInt(BrowserUtils.getQueryVar("wave"));
 
     if (isNaN(this.wave)) {
@@ -354,12 +375,9 @@ export class InfernoRegion extends Region {
       player.location = { x: 28, y: 17 };
       this.world.getReadyTimer = -1;
 
-      InfernoWaves.getRandomSpawns().forEach((spawn: Location) => {
-        [2, 3, 4].forEach((size: number) => {
-          const tileMarker = new TileMarker(this, spawn, "#FF730073", size, false);
-          this.addEntity(tileMarker);
-        });
-      });
+      // Use our spawn indicator system instead of manual tile markers
+      const spawns = InfernoWaves.getRandomSpawns();
+      this.updateSpawnIndicators(spawns);
 
       importSpawn(this);
     } else if (this.wave < 67) {
@@ -550,6 +568,41 @@ export class InfernoRegion extends Region {
   drawDefaultFloor() {
     // replaced by an Entity in 3d view
     return !Settings.use3dView;
+  }
+
+  // Spawn indicator management methods
+  private clearSpawnIndicators() {
+    this.spawnIndicators.forEach(indicator => {
+      this.removeEntity(indicator);
+    });
+    this.spawnIndicators = [];
+  }
+
+  private updateSpawnIndicators(spawns: Location[]) {
+    // Clear existing indicators
+    this.clearSpawnIndicators();
+
+    // Only show spawn indicators if the setting is enabled
+    if (!Settings.spawnIndicators) {
+      return;
+    }
+
+    console.log("Updating spawn indicators for spawns:", spawns);
+
+    // Add new indicators for current spawn points
+    spawns.forEach((spawn: Location, index: number) => {
+      // Create multiple size indicators with completely isolated location objects
+      [2, 3, 4].forEach((size: number) => {
+        const color = index < 9 ? "#00FF0050" : "#FF000050"; // Green for valid spawns, red for overflow
+        // Create a completely isolated copy of the location to prevent any reference sharing
+        const isolatedLocation = { x: spawn.x, y: spawn.y };
+        const tileMarker = new TileMarker(this, isolatedLocation, color, size, false);
+        this.addEntity(tileMarker);
+        this.spawnIndicators.push(tileMarker);
+      });
+    });
+
+    console.log(`Added ${this.spawnIndicators.length} spawn indicator entities`);
   }
 
   getSidebarContent() {
