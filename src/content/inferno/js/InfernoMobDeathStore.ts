@@ -20,4 +20,8 @@ export class InfernoMobDeathStore {
     }
     return null;
   }
+
+  static clearDeadMobs() {
+    InfernoMobDeathStore.deadMobs = [];
+  }
 }

@@ -3,20 +3,21 @@ import { BrowserUtils, CardinalDirection, ControlPanelController, Entity, Entity
 
 import InfernoMapImage from "../assets/images/map.png";
 
+import { filter, shuffle } from "lodash";
+import { InfernoLoadout } from "./InfernoLoadout";
+import { InfernoMobDeathStore } from "./InfernoMobDeathStore";
+import { InfernoPillar } from "./InfernoPillar";
+import { InfernoScene } from "./InfernoScene";
+import { InfernoWaves } from "./InfernoWaves";
 import { JalAk } from "./mobs/JalAk";
 import { JalImKot } from "./mobs/JalImKot";
 import { JalMejRah } from "./mobs/JalMejRah";
+import { JalTokJad } from "./mobs/JalTokJad";
 import { JalXil } from "./mobs/JalXil";
 import { JalZek } from "./mobs/JalZek";
-import { InfernoWaves } from "./InfernoWaves";
-import { InfernoLoadout } from "./InfernoLoadout";
-import { InfernoPillar } from "./InfernoPillar";
-import { filter, shuffle } from "lodash";
 import { TzKalZuk } from "./mobs/TzKalZuk";
-import { ZukShield } from "./ZukShield";
-import { JalTokJad } from "./mobs/JalTokJad";
-import { InfernoScene } from "./InfernoScene";
 import { Wall } from "./Wall";
+import { ZukShield } from "./ZukShield";
 
 import SidebarContent from "../sidebar.html";
 
@@ -25,6 +26,11 @@ import SidebarContent from "../sidebar.html";
 export class InfernoRegion extends Region {
   wave: number;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage);
+
+  // Wave progression properties
+  private waveCompleteTimer = -1; // -1 = not triggered, 0-7 = countdown to next wave
+  private lastMobCount = 0;
+  private waveProgressionEnabled = false;
 
   // Spawn indicator entities
   private spawnIndicators: Entity[] = [];
@@ -190,6 +196,15 @@ export class InfernoRegion extends Region {
     return use3dViewCheckbox.checked;
   }
 
+  initializeWaveProgressionToggle() {
+    const waveProgressionCheckbox = document.getElementById("waveProgression") as HTMLInputElement;
+    waveProgressionCheckbox.checked = Settings.waveProgression;
+    waveProgressionCheckbox.addEventListener("change", () => {
+      Settings.waveProgression = waveProgressionCheckbox.checked;
+      Settings.persistToStorage();
+    });
+  }
+
   initializeSpawnIndicatorsToggle() {
     const spawnIndicatorsCheckbox = document.getElementById("spawnIndicators") as HTMLInputElement;
     spawnIndicatorsCheckbox.checked = Settings.spawnIndicators;
@@ -311,6 +326,7 @@ export class InfernoRegion extends Region {
     const northPillar = this.initializeAndGetNorthPillar();
 
     this.initializeAndGetUse3dView();
+    this.initializeWaveProgressionToggle();
     this.initializeSpawnIndicatorsToggle();
     this.initializeDisplaySetTimerToggle();
     this.wave = parseInt(BrowserUtils.getQueryVar("wave"));
@@ -385,6 +401,9 @@ export class InfernoRegion extends Region {
       player.location = { x: 28, y: 17 };
       this.world.getReadyTimer = -1;
 
+      // Clear death store when starting any wave
+      InfernoMobDeathStore.clearDeadMobs();
+
       // Use our spawn indicator system instead of manual tile markers
       const spawns = InfernoWaves.getRandomSpawns();
       this.updateSpawnIndicators(spawns);
@@ -396,20 +415,22 @@ export class InfernoRegion extends Region {
         // Backwards compatibility layer for runelite plugin
         this.wave = 1;
 
+        // Clear death store when starting any wave
+        InfernoMobDeathStore.clearDeadMobs();
+
         importSpawn(this);
       } else {
         // Native approach
-        const spawns = BrowserUtils.getQueryVar("spawns")
+        const customSpawns = BrowserUtils.getQueryVar("spawns")
           ? JSON.parse(decodeURIComponent(BrowserUtils.getQueryVar("spawns")))
-          : InfernoWaves.getRandomSpawns();
+          : undefined;
 
-        InfernoWaves.spawn(this, player, randomPillar, spawns, this.wave).forEach(this.addMob.bind(this));
-
-        const encodedSpawn = encodeURIComponent(JSON.stringify(spawns));
-        replayLink.href = `/?wave=${this.wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`;
-        waveInput.value = String(this.wave);
+        this.spawnRegularWave(player, randomPillar, customSpawns);
       }
     } else if (this.wave === 67) {
+      // Clear death store when starting special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
       player.location = { x: 18, y: 25 };
       const jad = new JalTokJad(
         this,
@@ -418,6 +439,9 @@ export class InfernoRegion extends Region {
       );
       this.addMob(jad);
     } else if (this.wave === 68) {
+      // Clear death store when starting special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
       player.location = { x: 25, y: 27 };
 
       const jad1 = new JalTokJad(
@@ -441,6 +465,9 @@ export class InfernoRegion extends Region {
       );
       this.addMob(jad3);
     } else if (this.wave === 69) {
+      // Clear death store when starting special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
       player.location = { x: 25, y: 15 };
 
       // spawn zuk
@@ -613,6 +640,206 @@ export class InfernoRegion extends Region {
     });
 
     console.log(`Added ${this.spawnIndicators.length} spawn indicator entities`);
+  }
+
+  postTick() {
+    super.postTick();
+    this.handleWaveProgression();
+  }
+
+  private handleWaveProgression() {
+    // Only enable wave progression for waves 1-69 and if the setting is enabled
+    if (this.wave >= 1 && this.wave <= 69 && Settings.waveProgression) {
+      this.waveProgressionEnabled = true;
+    } else {
+      this.waveProgressionEnabled = false;
+    }
+
+    if (!this.waveProgressionEnabled) {
+      return;
+    }
+
+    // Count current alive mobs (with special handling for nibblers)
+    const aliveMobs = this.mobs.filter(mob => {
+      return mob.dying === -1;
+    });
+
+    const currentMobCount = aliveMobs.length;
+
+    // Check if wave just completed (all relevant mobs dead)
+    if (currentMobCount === 0 && this.lastMobCount > 0 && this.waveCompleteTimer === -1) {
+      // Wave completed! Start 9-tick timer (1 extra tick to allow for bloblet spawning)
+      this.waveCompleteTimer = 9;
+      console.log(`Wave ${this.wave} completed! Next wave spawning in 9 ticks (allowing for bloblets)...`);
+
+      // Update wave display
+      const waveInput = document.getElementById("waveinput") as HTMLInputElement;
+      if (waveInput) {
+        waveInput.value = String(this.wave + 1);
+      }
+    }
+
+    // Cancel wave completion if mobs spawned during countdown (e.g., bloblets)
+    if (this.waveCompleteTimer > 0 && currentMobCount > 0) {
+      console.log(`Wave ${this.wave} completion cancelled - new mobs detected (likely bloblets)`);
+      this.waveCompleteTimer = -1;
+
+      // Revert wave display
+      const waveInput = document.getElementById("waveinput") as HTMLInputElement;
+      if (waveInput) {
+        waveInput.value = String(this.wave);
+      }
+    }
+
+    // Handle countdown timer
+    if (this.waveCompleteTimer > 0) {
+      this.waveCompleteTimer--;
+
+      if (this.waveCompleteTimer === 0) {
+        // Timer finished, spawn next wave
+        this.spawnNextWave();
+        this.waveCompleteTimer = -1;
+      }
+    }
+
+    this.lastMobCount = currentMobCount;
+  }
+
+  private spawnRegularWave(player: any, randomPillar: any, customSpawns?: Location[]) {
+    // Common logic for spawning regular waves (1-66)
+    const spawns = customSpawns || InfernoWaves.getRandomSpawns();
+
+    // Clear death store to prevent resurrection of mobs from previous waves
+    InfernoMobDeathStore.clearDeadMobs();
+
+    // Add spawn indicators before spawning mobs
+    this.updateSpawnIndicators(spawns);
+
+    // Spawn the mobs
+    InfernoWaves.spawn(this, player, randomPillar, spawns, this.wave).forEach(this.addMob.bind(this));
+
+    // Update replay link and wave input
+    const encodedSpawn = encodeURIComponent(JSON.stringify(spawns));
+    const replayLink = document.getElementById("replayLink") as HTMLLinkElement;
+    if (replayLink) {
+      replayLink.href = `/?wave=${this.wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`;
+    }
+    
+    const waveInput = document.getElementById("waveinput") as HTMLInputElement;
+    if (waveInput) {
+      waveInput.value = String(this.wave);
+    }
+  }
+
+  private spawnNextWave() {
+    if (this.wave >= 69) {
+      // Don't spawn anything after wave 69
+      console.log("Inferno completed! No more waves to spawn.");
+      this.waveProgressionEnabled = false;
+      return;
+    }
+
+    // Increment to next wave
+    this.wave++;
+    console.log(`Spawning wave ${this.wave}...`);
+
+    // Get player reference
+    const player = this.players[0];
+    if (!player) {
+      console.error("No player found for wave progression");
+      return;
+    }
+
+    // Get random pillar for nibblers
+    const randomPillar = (shuffle(this.entities.filter((entity) => entity.entityName() === EntityNames.PILLAR)) || [null])[0];
+
+    // Spawn the next wave based on wave number
+    if (this.wave >= 1 && this.wave <= 66) {
+      // Regular waves (1-66)
+      this.spawnRegularWave(player, randomPillar);
+    } else if (this.wave === 67) {
+      // Jad wave - clear spawn indicators since it's a special spawn
+      this.clearSpawnIndicators();
+
+      // Clear death store for special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
+      player.location = { x: 18, y: 25 };
+      const jad = new JalTokJad(
+        this,
+        { x: 23, y: 27 },
+        { aggro: player, attackSpeed: 8, stun: 1, healers: 5, isZukWave: false },
+      );
+      this.addMob(jad);
+    } else if (this.wave === 68) {
+      // Triple Jad wave - clear spawn indicators since it's a special spawn
+      this.clearSpawnIndicators();
+
+      // Clear death store for special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
+      player.location = { x: 25, y: 27 };
+
+      const jad1 = new JalTokJad(
+        this,
+        { x: 18, y: 24 },
+        { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false },
+      );
+      this.addMob(jad1);
+
+      const jad2 = new JalTokJad(
+        this,
+        { x: 28, y: 24 },
+        { aggro: player, attackSpeed: 9, stun: 7, healers: 3, isZukWave: false },
+      );
+      this.addMob(jad2);
+
+      const jad3 = new JalTokJad(
+        this,
+        { x: 23, y: 35 },
+        { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false },
+      );
+      this.addMob(jad3);
+    } else if (this.wave === 69) {
+      // Zuk wave
+      // Clear death store for special waves
+      InfernoMobDeathStore.clearDeadMobs();
+
+      player.location = { x: 25, y: 15 };
+
+      // Remove pillars for Zuk wave
+      this.entities = this.entities.filter(entity => entity.entityName() !== EntityNames.PILLAR);
+
+      // Spawn zuk
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      this.addMob(shield);
+
+      this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));
+
+      // Add walls
+      for (let y = 0; y <= 8; y++) {
+        this.addEntity(new Wall(this, { x: 21, y }));
+        this.addEntity(new Wall(this, { x: 29, y }));
+      }
+
+      // Add tile markers
+      this.addEntity(new TileMarker(this, { x: 14, y: 14 }, "#00FF00", 1, false));
+      this.addEntity(new TileMarker(this, { x: 16, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 17, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 18, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 20, y: 14 }, "#00FF00", 1, false));
+      this.addEntity(new TileMarker(this, { x: 30, y: 14 }, "#00FF00", 1, false));
+      this.addEntity(new TileMarker(this, { x: 32, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 33, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 34, y: 14 }, "#FF0000", 1, false));
+      this.addEntity(new TileMarker(this, { x: 36, y: 14 }, "#00FF00", 1, false));
+    }
+
+    // Update wave input display
+    const waveInput = document.getElementById("waveinput") as HTMLInputElement;
+    if (waveInput) {
+      waveInput.value = String(this.wave);
+    }
   }
 
   getSidebarContent() {
