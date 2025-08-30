@@ -1,15 +1,8 @@
 "use strict";
 
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
+import { Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Mob, Location, Region, UnitOptions, Projectile, MeleeWeapon, UnitBonuses, UnitTypes, EntityNames } from "osrs-sdk";
+
 import HurKotImage from "../../assets/images/Yt-HurKot.png";
-import { Location } from "../../../../sdk/Location";
-import { Unit, UnitBonuses, UnitOptions, UnitTypes } from "../../../../sdk/Unit";
-import { Weapon, AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { Projectile, ProjectileOptions } from "../../../../sdk/weapons/Projectile";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Random } from "../../../../sdk/Random";
-import { Region } from "../../../../sdk/Region";
 
 class HealWeapon extends Weapon {
   calculateHitDelay(distance: number) {
@@ -33,8 +26,8 @@ export class YtHurKot extends Mob {
     super(region, location, options);
     this.myJad = this.aggro as Unit;
   }
-  mobName(): EntityName {
-    return EntityName.YT_HUR_KOT;
+  mobName() {
+    return EntityNames.YT_HUR_KOT;
   }
 
   attackStep() {
@@ -104,7 +97,7 @@ export class YtHurKot extends Mob {
   }
 
   attackStyleForNewAttack() {
-    return this.aggro.type === UnitTypes.PLAYER ? "crush" : "heal";
+    return this.aggro?.type === UnitTypes.PLAYER ? "crush" : "heal";
   }
 
   get attackRange() {
@@ -119,15 +112,11 @@ export class YtHurKot extends Mob {
     return HurKotImage;
   }
 
-  get sound() {
-    return null;
-  }
-
   get color() {
     return "#ACFF5633";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
+  attackAnimation(tickPercent: number, context) {
+    context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
   }
 }

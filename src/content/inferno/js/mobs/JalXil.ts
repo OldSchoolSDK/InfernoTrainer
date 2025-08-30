@@ -1,34 +1,40 @@
 "use strict";
 
-import { Settings } from "../../../../sdk/Settings";
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
-import RangeImage from "../../assets/images/ranger.png";
-import RangerSound from "../../assets/sounds/ranger.ogg";
-import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { Unit, UnitBonuses } from "../../../../sdk/Unit";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
-import { DelayedAction } from "../../../../sdk/DelayedAction";
-import { EntityName } from "../../../../sdk/EntityName";
+import { Assets, MultiModelProjectileOffsetInterpolator, Location3, Mob, MeleeWeapon, RangedWeapon, Sound, UnitBonuses, Projectile, GLTFModel, EntityNames } from "osrs-sdk";
 
-class JalXilWeapon extends RangedWeapon {
-  registerProjectile(from: Unit, to: Unit) {
-    DelayedAction.registerDelayedAction(
-      new DelayedAction(() => {
-        to.addProjectile(new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 }));
-      }, 2),
-    );
+import RangeImage from "../../assets/images/ranger.png";
+import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";
+import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
+
+export const RangerModel = Assets.getAssetUrl("models/7698_33014.glb");
+export const RangeProjectileModel = Assets.getAssetUrl("models/range_projectile.glb");
+
+// draw the projectiles coming from the shoulders but converging on the target.
+// the projectile is already rotated towards the target so we only need to offset on the x direction
+const JalXilOffsetsInterpolator: MultiModelProjectileOffsetInterpolator ={
+  interpolateOffsets: function (from: Location3, to: Location3, percent: number): Location3[] {
+    const r = 0.6 * (1.0 - percent);
+    const res = [
+      { x: r, y: 0, z: 0},
+      { x: -r, y: 0, z: 0}
+    ];
+    return res;
   }
 }
 
 export class JalXil extends Mob {
-  mobName(): EntityName {
-    return EntityName.JAL_XIL;
+  mobName() {
+    return EntityNames.JAL_XIL;
   }
 
   get combatLevel() {
     return 370;
+  }
+
+  override get height() {
+    return 4;
   }
 
   dead() {
@@ -38,10 +44,18 @@ export class JalXil extends Mob {
 
   setStats() {
     this.stunned = 1;
-
+``
     this.weapons = {
       crush: new MeleeWeapon(),
-      range: new JalXilWeapon(),
+      range: new RangedWeapon({
+        models: [RangeProjectileModel, RangeProjectileModel],
+        offsetsInterpolator: JalXilOffsetsInterpolator,
+        modelScale: 1/128,
+        projectileSound: new Sound(RangerSound, 0.1),
+        verticalOffset: -1,
+        reduceDelay: -2,
+        visualDelayTicks: 3,
+      }),
     };
 
     // non boosted numbers
@@ -99,8 +113,8 @@ export class JalXil extends Mob {
     return RangeImage;
   }
 
-  get sound() {
-    return RangerSound;
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
   }
 
   shouldChangeAggro(projectile: Projectile) {
@@ -112,16 +126,26 @@ export class JalXil extends Mob {
   }
 
   canMeleeIfClose() {
-    return "crush";
+    return "crush" as const;
   }
 
-  playAttackSound() {
-    setTimeout(() => {
-      super.playAttackSound();
-    }, 1.75 * Settings.tickMs);
+  attackAnimation(tickPercent: number, context) {
+    context.rotate(Math.sin(-tickPercent * Math.PI));
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.rotate(Math.sin(-tickPercent * Math.PI));
+  override create3dModel() {
+    return GLTFModel.forRenderable(this, RangerModel);
+  }
+
+  override get deathAnimationLength() {
+    return 5;
+  }
+
+  override get deathAnimationId() {
+    return 4;
+  }
+
+  override get attackAnimationId() {
+    return 2;
   }
 }

@@ -1,9 +1,6 @@
 "use strict";
+import { Assets, Mob, MeleeWeapon, MagicWeapon, Sound, RangedWeapon, UnitBonuses, Random, AttackIndicators, Unit, Viewport, GLTFModel, EntityNames, Trainer } from "osrs-sdk";
 
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { MeleeWeapon } from "../../../../sdk/weapons/MeleeWeapon";
-import { AttackIndicators, Mob } from "../../../../sdk/Mob";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";
 
@@ -11,15 +8,14 @@ import { JalAkRekKet } from "./JalAkRekKet";
 import { JalAkRekMej } from "./JalAkRekMej";
 import { JalAkRekXil } from "./JalAkRekXil";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
-import { Unit, UnitBonuses } from "../../../../sdk/Unit";
-import { EntityName } from "../../../../sdk/EntityName";
-import { Random } from "../../../../sdk/Random";
+
+const BlobModel = Assets.getAssetUrl("models/7693_33001.glb");
 
 export class JalAk extends Mob {
   playerPrayerScan?: string = null;
 
-  mobName(): EntityName {
-    return EntityName.JAL_AK;
+  mobName() {
+    return EntityNames.JAL_AK;
   }
 
   get combatLevel() {
@@ -36,8 +32,12 @@ export class JalAk extends Mob {
 
     this.weapons = {
       crush: new MeleeWeapon(),
-      magic: new MagicWeapon(),
-      range: new RangedWeapon(),
+      magic: new MagicWeapon({
+        sound: new Sound(BlobSound)
+      }),
+      range: new RangedWeapon({
+        sound: new Sound(BlobSound)
+      }),
     };
 
     // non boosted numbers
@@ -93,15 +93,16 @@ export class JalAk extends Mob {
     return 3;
   }
 
+  get height() {
+    return 2;
+  }
+
   get image() {
     return BlobImage;
   }
-
-  get sound() {
-    return BlobSound;
-  }
-  attackAnimation(tickPercent: number) {
-    this.region.context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4);
+  
+  attackAnimation(tickPercent: number, context) {
+    context.scale(1 + Math.sin(tickPercent * Math.PI) / 4, 1 - Math.sin(tickPercent * Math.PI) / 4);
   }
 
   shouldShowAttackAnimation() {
@@ -116,7 +117,7 @@ export class JalAk extends Mob {
   }
 
   canMeleeIfClose() {
-    return "crush";
+    return "crush" as const;
   }
 
   magicMaxHit() {
@@ -124,7 +125,6 @@ export class JalAk extends Mob {
   }
 
   attackIfPossible() {
-    this.attackDelay--;
     this.attackFeedback = AttackIndicators.NONE;
 
     this.hadLOS = this.hasLOS;
@@ -150,28 +150,43 @@ export class JalAk extends Mob {
 
     // Perform attack. Blobs can hit through LoS if they got a scan.
     if (this.playerPrayerScan && this.attackDelay <= 0) {
-      this.attack();
-      this.attackDelay = this.attackSpeed;
+      this.attack() && this.didAttack();
       this.playerPrayerScan = null;
     }
   }
 
   removedFromWorld() {
+    const player = Trainer.player;
     const xil = new JalAkRekXil(
       this.region,
       { x: this.location.x + 1, y: this.location.y - 1 },
-      { aggro: this.aggro, cooldown: 4 },
+      { aggro: player, cooldown: 4 },
     );
     this.region.addMob(xil as Mob);
 
-    const ket = new JalAkRekKet(this.region, this.location, { aggro: this.aggro, cooldown: 4 });
+    const ket = new JalAkRekKet(this.region, this.location, {
+      aggro: player,
+      cooldown: 4,
+    });
     this.region.addMob(ket as Mob);
 
     const mej = new JalAkRekMej(
       this.region,
       { x: this.location.x + 2, y: this.location.y - 2 },
-      { aggro: this.aggro, cooldown: 4 },
+      { aggro: player, cooldown: 4 },
     );
     this.region.addMob(mej as Mob);
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, BlobModel);
+  }
+
+  override get attackAnimationId() {
+    return this.attackStyle === "magic" ? 2 : 4;
+  }
+
+  override get deathAnimationId() {
+    return 3;
   }
 }

@@ -1,15 +1,12 @@
 "use strict";
 
-import { Mob } from "../../../../sdk/Mob";
+import { Mob, EntityNames, Settings, MagicWeapon, UnitBonuses } from "osrs-sdk";
+
 import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Mej.png";
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { Settings } from "../../../../sdk/Settings";
-import { UnitBonuses } from "../../../../sdk/Unit";
-import { EntityName } from "../../../../sdk/EntityName";
 
 export class JalAkRekMej extends Mob {
-  mobName(): EntityName {
-    return EntityName.JAL_AK_REK_MEJ;
+  mobName() {
+    return EntityNames.JAL_AK_REK_MEJ;
   }
 
   get combatLevel() {
@@ -92,15 +89,11 @@ export class JalAkRekMej extends Mob {
     return JalAkRekMejImage;
   }
 
-  get sound(): string {
-    return null;
-  }
-
   attackStyleForNewAttack() {
     return "magic";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
   }
 }

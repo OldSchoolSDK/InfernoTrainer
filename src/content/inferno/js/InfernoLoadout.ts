@@ -1,59 +1,70 @@
-import { UnitOptions } from "../../../sdk/Unit";
-
-import { JusticiarFaceguard } from "../../equipment/JusticiarFaceguard";
-import { NecklaceOfAnguish } from "../../equipment/NecklaceOfAnguish";
-import { ArmadylChestplate } from "../../equipment/ArmadylChestplate";
-import { ArmadylChainskirt } from "../../equipment/ArmadylChainskirt";
-import { PegasianBoots } from "../../equipment/PegasianBoots";
-import { AvasAssembler } from "../../equipment/AvasAssembler";
-import { AvasAccumulator } from "../../equipment/AvasAccumulator";
-import { HolyBlessing } from "../../equipment/HolyBlessing";
-import { OccultNecklace } from "../../equipment/OccultNecklace";
-import { BarrowsGloves } from "../../equipment/BarrowsGloves";
-import { RingOfSufferingImbued } from "../../equipment/RingOfSufferingImbued";
-import { SlayerHelmet } from "../../equipment/SlayerHelmet";
-import { CrystalHelm } from "../../equipment/CrystalHelm";
-import { CrystalBody } from "../../equipment/CrystalBody";
-import { CrystalLegs } from "../../equipment/CrystalLegs";
-import { CrystalShield } from "../../equipment/CrystalShield";
-import { BowOfFaerdhinen } from "../../weapons/BowOfFaerdhinen";
-import { JusticiarChestguard } from "../../equipment/JusticiarChestguard";
-import { JusticiarLegguards } from "../../equipment/JusticiarLegguards";
-import { KodaiWand } from "../../weapons/KodaiWand";
-import { DragonArrows } from "../../equipment/DragonArrows";
-import { RobinhoodHat } from "../../equipment/RobinHoodHat";
-import { GuthixRobetop } from "../../equipment/GuthixRobeTop";
-import { RangerBoots } from "../../equipment/RangerBoots";
-import { RuneKiteshield } from "../../equipment/RuneKiteshield";
-import { DagonhaiRobeTop } from "../../equipment/DagonhaiRobeTop";
-import { AncientStaff } from "../../weapons/AncientStaff";
-import { AhrimsRobeskirt } from "../../equipment/AhrimsRobeskirt";
-import { AhrimsRobetop } from "../../equipment/AhrimsRobetop";
-import { SaradominBody } from "../../equipment/SaradominBody";
-import { SaradominChaps } from "../../equipment/SaradominChaps";
-import { SaradominCoif } from "../../equipment/SaradominCoif";
-import { DiamondBoltsE } from "../../equipment/DiamontBoltsE";
-import { RubyBoltsE } from "../../equipment/RubyBoltsE";
-import { RuneCrossbow } from "../../equipment/RuneCrossbow";
-import { MagesBook } from "../../equipment/MagesBook";
-import { BlackDhideChaps } from "../../equipment/BlackDhideChaps";
-import { BlackDhideVambraces } from "../../equipment/BlackDhideVambraces";
-import { AncestralRobetop } from "../../equipment/AncestralRobetop";
-import { AncestralRobebottom } from "../../equipment/AncestralRobebottom";
-import { StaminaPotion } from "../../items/StaminaPotion";
-import { SaradominBrew } from "../../items/SaradominBrew";
-import { SuperRestore } from "../../items/SuperRestore";
-import { BastionPotion } from "../../items/BastionPotion";
-
-import { TwistedBow } from "../../weapons/TwistedBow";
-import { Blowpipe } from "../../weapons/Blowpipe";
-import { Weapon } from "../../../sdk/gear/Weapon";
-import { ItemName } from "../../../sdk/ItemName";
-import { Item } from "../../../sdk/Item";
+import {
+  ScytheOfVitur,
+  TorvaFullhelm,
+  OccultNecklace,
+  InfernalCape,
+  DragonArrows,
+  TorvaPlatebody,
+  TorvaPlatelegs,
+  PrimordialBoots,
+  ZaryteVambraces,
+  RingOfSufferingImbued,
+  TwistedBow,
+  MasoriBodyF,
+  DizanasQuiver,
+  PegasianBoots,
+  NecklaceOfAnguish,
+  MasoriChapsF,
+  MasoriMaskF,
+  SaradominBrew,
+  SuperRestore,
+  BastionPotion,
+  StaminaPotion,
+  BlackChinchompa,
+  Blowpipe,
+  BrowserUtils,
+  KodaiWand,
+  CrystalShield,
+  AncestralRobetop,
+  AncestralRobebottom,
+  JusticiarChestguard,
+  JusticiarLegguards,
+  CrystalHelm,
+  AvasAssembler,
+  HolyBlessing,
+  BarrowsGloves,
+  CrystalBody,
+  BowOfFaerdhinen,
+  CrystalLegs,
+  AncientStaff,
+  SaradominCoif,
+  RubyBoltsE,
+  AhrimsRobetop,
+  AhrimsRobeskirt,
+  RuneCrossbow,
+  DiamondBoltsE,
+  JusticiarFaceguard,
+  SaradominBody,
+  SaradominChaps,
+  RuneKiteshield,
+  DagonhaiRobeTop,
+  RangerBoots,
+  MagesBook,
+  AvasAccumulator,
+  BlackDhideChaps,
+  BlackDhideVambraces,
+  Item,
+  ItemName,
+  Player,
+  UnitOptions,
+  Weapon,
+  Chest,
+  Legs,
+  SlayerHelmet,
+  RobinHoodHat,
+  GuthixRobeTop,
+} from "osrs-sdk";
 import { filter, indexOf, map } from "lodash";
-import { Chest } from "../../../sdk/gear/Chest";
-import { Legs } from "../../../sdk/gear/Legs";
-import { Player } from "../../../sdk/Player";
 
 export class InfernoLoadout {
   wave: number;
@@ -66,28 +77,112 @@ export class InfernoLoadout {
     this.onTask = onTask;
   }
 
+  loadoutMaxMelee() {
+    return {
+      equipment: {
+        weapon: new ScytheOfVitur(),
+        offhand: null,
+        helmet: new TorvaFullhelm(),
+        necklace: new OccultNecklace(), // TODO
+        cape: new InfernalCape(),
+        ammo: new DragonArrows(),
+        chest: new TorvaPlatebody(),
+        legs: new TorvaPlatelegs(),
+        feet: new PrimordialBoots(),
+        gloves: new ZaryteVambraces(), // TODO
+        ring: new RingOfSufferingImbued(), // TODO
+      },
+      inventory: [
+        new TwistedBow(),
+        new MasoriBodyF(),
+        new DizanasQuiver(),
+        new PegasianBoots(),
+        new NecklaceOfAnguish(),
+        new MasoriChapsF(),
+        new MasoriMaskF(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new BastionPotion(),
+        new StaminaPotion(),
+        new SuperRestore(),
+        new SuperRestore(),
+      ],
+    };
+  }
+
+  loadoutMaxTbowSpeedrunner() {
+    return {
+      ...this.loadoutMaxTbow(),
+      inventory: [
+        new BlackChinchompa(),
+        new Blowpipe(),
+        new MasoriBodyF(),
+        new TwistedBow(!!BrowserUtils.getQueryVar("geno")),
+        new BastionPotion(),
+        new NecklaceOfAnguish(),
+        new MasoriChapsF(),
+        null,
+        new BastionPotion(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new BastionPotion(),
+        new StaminaPotion(),
+        new BastionPotion(),
+      ],
+    };
+  }
+
   loadoutMaxTbow() {
     return {
       equipment: {
         weapon: new KodaiWand(),
         offhand: new CrystalShield(),
-        helmet: new JusticiarFaceguard(),
+        helmet: new MasoriMaskF(),
         necklace: new OccultNecklace(),
-        cape: new AvasAssembler(),
+        cape: new DizanasQuiver(),
         ammo: new DragonArrows(),
         chest: new AncestralRobetop(),
         legs: new AncestralRobebottom(),
         feet: new PegasianBoots(),
-        gloves: new BarrowsGloves(),
+        gloves: new ZaryteVambraces(),
         ring: new RingOfSufferingImbued(),
       },
       inventory: [
         new Blowpipe(),
-        new ArmadylChestplate(),
+        new MasoriBodyF(),
         new TwistedBow(),
         new JusticiarChestguard(),
         new NecklaceOfAnguish(),
-        new ArmadylChainskirt(),
+        new MasoriChapsF(),
         null,
         new JusticiarLegguards(),
         new SaradominBrew(),
@@ -267,11 +362,11 @@ export class InfernoLoadout {
       equipment: {
         weapon: new KodaiWand(),
         offhand: new MagesBook(),
-        helmet: new RobinhoodHat(),
+        helmet: new RobinHoodHat(),
         necklace: new OccultNecklace(),
         cape: new AvasAccumulator(),
         ammo: new DragonArrows(),
-        chest: new GuthixRobetop(),
+        chest: new GuthixRobeTop(),
         legs: new BlackDhideChaps(),
         feet: new RangerBoots(),
         gloves: new BlackDhideVambraces(),
@@ -349,6 +444,9 @@ export class InfernoLoadout {
   getLoadout(): UnitOptions {
     let loadout: UnitOptions;
     switch (this.loadoutType) {
+      case "max_tbow_speed":
+        loadout = this.loadoutMaxTbowSpeedrunner();
+        break;
       case "max_tbow":
         loadout = this.loadoutMaxTbow();
         break;
@@ -364,9 +462,12 @@ export class InfernoLoadout {
       case "rcb":
         loadout = this.loadoutRcb();
         break;
+      case "max_melee":
+        loadout = this.loadoutMaxMelee();
+        break;
     }
 
-    if (this.wave > 66) {
+    if (this.wave > 66 && this.wave <= 69) {
       // switch necklace to range dps necklace
       loadout.inventory[this.findItemByName(loadout.inventory, ItemName.NECKLACE_OF_ANGUISH)] = new OccultNecklace();
       loadout.equipment.necklace = new NecklaceOfAnguish();
@@ -388,6 +489,7 @@ export class InfernoLoadout {
       // Swap out chest
       const mageChest = loadout.equipment.chest;
       const rangeChest = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.MASORI_BODY_F,
         ItemName.ARMADYL_CHESTPLATE,
         ItemName.SARADOMIN_D_HIDE_BODY,
         ItemName.CRYSTAL_BODY,
@@ -400,6 +502,7 @@ export class InfernoLoadout {
       // Swap out body
       const mageLegs = loadout.equipment.legs;
       const rangeLegs = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.MASORI_CHAPS_F,
         ItemName.ARMADYL_CHAINSKIRT,
         ItemName.SARADOMIN_D_HIDE_CHAPS,
         ItemName.CRYSTAL_LEGS,
