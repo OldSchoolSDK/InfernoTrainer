@@ -1,19 +1,15 @@
 "use strict";
+
+import { Random, Region, Player, Entity, Mob, Collision, UnitOptions, Location, Unit } from "@supalosa/oldschool-trainer-sdk";
+
 import { shuffle } from "lodash";
-import { Entity } from "../../../sdk/Entity";
-import { Mob } from "../../../sdk/Mob";
-import { Unit, UnitOptions } from "../../../sdk/Unit";
+
 import { JalMejRah } from "./mobs/JalMejRah";
 import { JalAk } from "./mobs/JalAk";
 import { JalZek } from "./mobs/JalZek";
 import { JalImKot } from "./mobs/JalImKot";
 import { JalNib } from "./mobs/JalNib";
 import { JalXil } from "./mobs/JalXil";
-import { Location } from "../../../sdk/Location";
-import { Collision } from "../../../sdk/Collision";
-import { Random } from "../../../sdk/Random";
-import { Region } from "../../../sdk/Region";
-import { Player } from "../../../sdk/Player";
 
 export class InfernoWaves {
   static shuffle(array) {

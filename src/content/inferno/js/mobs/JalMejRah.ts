@@ -1,15 +1,12 @@
 "use strict";
 
-import { EntityName } from "../../../../sdk/EntityName";
-import { AttackBonuses } from "../../../../sdk/gear/Weapon";
-import { Mob } from "../../../../sdk/Mob";
-import { Player } from "../../../../sdk/Player";
-import { Unit, UnitBonuses } from "../../../../sdk/Unit";
-import { ProjectileOptions } from "../../../../sdk/weapons/Projectile";
-import { RangedWeapon } from "../../../../sdk/weapons/RangedWeapon";
+import { Assets, RangedWeapon, Unit, AttackBonuses, ProjectileOptions, Player, Mob, Sound, UnitBonuses, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
+
+const BatModel = Assets.getAssetUrl("models/7692_33018.glb");
 
 class JalMejRahWeapon extends RangedWeapon {
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
@@ -20,8 +17,8 @@ class JalMejRahWeapon extends RangedWeapon {
   }
 }
 export class JalMejRah extends Mob {
-  mobName(): EntityName {
-    return EntityName.JAL_MEJ_RAJ;
+  mobName() {
+    return EntityNames.JAL_MEJ_RAJ;
   }
 
   get combatLevel() {
@@ -37,7 +34,7 @@ export class JalMejRah extends Mob {
     this.stunned = 1;
 
     this.weapons = {
-      range: new JalMejRahWeapon(),
+      range: new JalMejRahWeapon({ sound: new Sound(BatSound, 0.5) }),
     };
 
     // non boosted numbers
@@ -94,15 +91,23 @@ export class JalMejRah extends Mob {
     return BatImage;
   }
 
-  get sound() {
-    return BatSound;
-  }
-
   attackStyleForNewAttack() {
     return "range";
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, BatModel);
+  }
+
+  override get attackAnimationId() {
+    return 1;
+  }
+
+  override get deathAnimationId() {
+    return 3;
   }
 }

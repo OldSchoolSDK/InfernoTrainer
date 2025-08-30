@@ -1,23 +1,23 @@
 "use strict";
 
-import { Mob } from "../../../../sdk/Mob";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
+
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
-import { Unit, UnitBonuses, UnitTypes } from "../../../../sdk/Unit";
-import { MagicWeapon } from "../../../../sdk/weapons/MagicWeapon";
-import { UnitOptions } from "../../../../sdk/Unit";
-import { Location } from "../../../../sdk/Location";
 import { ZukShield } from "../ZukShield";
 import { find } from "lodash";
-import { EntityName } from "../../../../sdk/EntityName";
-import { ImageLoader } from "../../../../sdk/utils/ImageLoader";
 import ZukAttackImage from "../../assets/images/zuk_attack.png";
-import { Projectile } from "../../../../sdk/weapons/Projectile";
-import { JalZek } from "./JalZek";
-import { JalXil } from "./JalXil";
+import { JalZek, MagerModel } from "./JalZek";
+import { JalXil, RangerModel } from "./JalXil";
 import { JalMejJak } from "./JalMejJak";
-import { JalTokJad } from "./JalTokJad";
-import { Viewport } from "../../../../sdk/Viewport";
-import { Region } from "../../../../sdk/Region";
+import { JadModel, JalTokJad } from "./JalTokJad";
+
+const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
+
+import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg";
+
+const ZukModel = Assets.getAssetUrl("models/7706_33011.glb");
+const ZukBall = Assets.getAssetUrl("models/zuk_projectile.glb");
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const zukWeaponImage = ImageLoader.createImage(ZukAttackImage);
@@ -31,7 +31,30 @@ class ZukWeapon extends MagicWeapon {
     return false;
   }
   registerProjectile(from: Unit, to: Unit) {
-    to.addProjectile(new Projectile(this, this.damage, from, to, "range", { reduceDelay: 2 }));
+    const sound = new Sound(ZukAttackSound, 0.03);
+    if (to.isPlayer) {
+      // louder!
+      sound.volume = 0.1;
+    }
+    to.addProjectile(
+      new ZukProjectile(this, this.damage, from, to, "range", {
+        model: ZukBall,
+        modelScale: 1 / 128,
+        setDelay: 4,
+        visualDelayTicks: 2,
+        sound,
+      }),
+    );
+  }
+}
+
+class ZukProjectile extends Projectile {
+  get size() {
+    return 2;
+  }
+
+  get color() {
+    return "#FFAA00";
   }
 }
 
@@ -47,10 +70,8 @@ export class TzKalZuk extends Mob {
     super(region, location, options);
     this.attackDelay = 14;
 
-    // this.currentStats.hitpoint = 80;
-
     this.shield = find(region.mobs.concat(region.newMobs), (mob: Unit) => {
-      return mob.mobName() === EntityName.INFERNO_SHIELD;
+      return mob.mobName() === EntityNames.INFERNO_SHIELD;
     }) as ZukShield;
   }
 
@@ -62,7 +83,7 @@ export class TzKalZuk extends Mob {
           { text: ` Jad`, fillStyle: "yellow" },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
+          Trainer.clickController.redClick();
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 479;
@@ -77,7 +98,7 @@ export class TzKalZuk extends Mob {
           { text: ` Healers`, fillStyle: "yellow" },
         ],
         action: () => {
-          Viewport.viewport.clickController.redClick();
+          Trainer.clickController.redClick();
           this.setTimer = 400;
 
           this.currentStats.hitpoint = 239;
@@ -89,13 +110,11 @@ export class TzKalZuk extends Mob {
     ]);
   }
 
-  mobName(): EntityName {
-    return EntityName.TZ_KAL_ZUK;
+  mobName() {
+    return EntityNames.TZ_KAL_ZUK;
   }
 
   attackIfPossible() {
-    this.attackDelay--;
-
     this.attackStyle = this.attackStyleForNewAttack();
 
     if (this.timerPaused === false) {
@@ -112,7 +131,7 @@ export class TzKalZuk extends Mob {
     }
 
     if (this.canAttack() && this.attackDelay <= 0) {
-      this.attack();
+      this.attack() && this.didAttack();
     }
   }
   damageTaken() {
@@ -129,7 +148,14 @@ export class TzKalZuk extends Mob {
         const jad = new JalTokJad(
           this.region,
           { x: 24, y: 25 },
-          { aggro: this.shield, attackSpeed: 8, stun: 1, healers: 3, isZukWave: true, spawnDelay: 7 },
+          {
+            aggro: this.shield,
+            attackSpeed: 8,
+            stun: 1,
+            healers: 3,
+            isZukWave: true,
+            spawnDelay: 7,
+          },
         );
         this.region.addMob(jad);
       }
@@ -154,13 +180,21 @@ export class TzKalZuk extends Mob {
     if (this.currentStats.hitpoint <= 0) {
       this.region.mobs.forEach((mob: Mob) => {
         if ((mob as any) !== this) {
-          this.region.removeMob(mob);
+          mob.dying = 0;
         }
       });
     }
   }
 
+  override visible() {
+    // always visible, even during countdown
+    return true;
+  }
+
   attack() {
+    if (!this.aggro || this.aggro.dying >= 0) {
+      return false;
+    }
     let shieldOrPlayer: Unit = this.shield;
 
     if (this.aggro.location.x < this.shield.location.x || this.aggro.location.x >= this.shield.location.x + 5) {
@@ -173,8 +207,7 @@ export class TzKalZuk extends Mob {
       attackStyle: "typeless",
       magicBaseSpellDamage: shieldOrPlayer.type === UnitTypes.PLAYER ? this.magicMaxHit() : 0,
     });
-
-    this.attackDelay = this.attackSpeed;
+    return true;
   }
 
   get combatLevel() {
@@ -189,10 +222,15 @@ export class TzKalZuk extends Mob {
     return 251;
   }
 
+  override get xpBonusMultiplier() {
+    return 1.575;
+  }
+
   setStats() {
     this.stunned = 8;
 
     this.weapons = {
+      // sound is handled internally in ZukWeapon
       typeless: new ZukWeapon(),
     };
 
@@ -200,7 +238,7 @@ export class TzKalZuk extends Mob {
     this.stats = {
       attack: 350,
       strength: 600,
-      defence: 260,
+      defence: 234,
       range: 400,
       magic: 150,
       hitpoint: 1200,
@@ -253,25 +291,61 @@ export class TzKalZuk extends Mob {
     return 7;
   }
 
+  get height() {
+    return 4;
+  }
+
   get image() {
     return ZukImage;
   }
 
-  get sound() {
-    return null;
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.1);
   }
 
-  attackAnimation(tickPercent: number) {
-    this.region.context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
+  attackAnimation(tickPercent: number, context: OffscreenCanvasRenderingContext2D) {
+    context.transform(1, 0, Math.sin(-tickPercent * Math.PI * 2) / 2, 1, 0, 0);
   }
 
-  drawOverTile(tickPercent: number) {
-    super.drawOverTile(tickPercent);
+  drawOverTile(tickPercent: number, context: OffscreenCanvasRenderingContext2D, scale: number) {
+    super.drawOverTile(tickPercent, context, scale);
     // Draw mob
+  }
 
-    this.region.context.fillStyle = "#FFFF00";
-    this.region.context.font = "16px OSRS";
+  create3dModel(): Model {
+    return GLTFModel.forRenderable(this, ZukModel);
+  }
 
-    this.region.context.fillText(String(this.currentStats.hitpoint), 0, 0);
+  getPerceivedRotation(tickPercent: any) {
+    // zuk doesn't rotate for some reason
+    return -Math.PI / 2;
+  }
+
+  drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove) {
+    super.drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove);
+
+    context.fillStyle = "#FFFF00";
+    context.font = "24px OSRS";
+
+    context.fillText(String(this.currentStats.hitpoint), offset.x, offset.y + 120);
+  }
+
+  async preload() {
+    await super.preload();
+    await GLTFModel.preload(RangerModel);
+    await GLTFModel.preload(MagerModel);
+    await GLTFModel.preload(JadModel);
+  }
+
+  get deathAnimationLength() {
+    return 6;
+  }
+
+  get attackAnimationId() {
+    return 1;
+  }
+
+  override get deathAnimationId() {
+    return 3;
   }
 }

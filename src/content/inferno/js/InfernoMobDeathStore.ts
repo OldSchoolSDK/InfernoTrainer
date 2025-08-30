@@ -1,7 +1,6 @@
+import { Mob, Region } from "@supalosa/oldschool-trainer-sdk";
+
 import { shuffle, remove } from "lodash";
-import { Mob } from "../../../sdk/Mob";
-import { Region } from "../../../sdk/Region";
-import { InfernoRegion } from "./InfernoRegion";
 
 export class InfernoMobDeathStore {
   static mobDeathStore = new InfernoMobDeathStore();

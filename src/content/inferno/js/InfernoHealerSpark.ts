@@ -1,15 +1,10 @@
 "use strict";
 
-import { Settings } from "../../../sdk/Settings";
-import { Unit } from "../../../sdk/Unit";
-import { Projectile, ProjectileOptions } from "../../../sdk/weapons/Projectile";
-import { Location } from "../../../sdk/Location";
-import { Entity } from "../../../sdk/Entity";
-import { Collision, CollisionType } from "../../../sdk/Collision";
-import { Weapon, AttackBonuses } from "../../../sdk/gear/Weapon";
-import { LineOfSightMask } from "../../../sdk/LineOfSight";
-import { Random } from "../../../sdk/Random";
-import { Region } from "../../../sdk/Region";
+import { Assets, Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Entity, Region, GLTFModel, Location, CollisionType, LineOfSightMask, Pathing, Viewport, SoundCache, Sound, Collision, Settings, Trainer } from "@supalosa/oldschool-trainer-sdk";
+
+import FireWaveHit from "../assets/sounds/firewave_hit_163.ogg";
+
+const Splat = Assets.getAssetUrl("models/tekton_meteor_splat.glb");
 
 class InfernoSparkWeapon extends Weapon {
   calculateHitDelay(distance: number) {
@@ -33,12 +28,24 @@ export class InfernoHealerSpark extends Entity {
   to: Unit;
   weapon: InfernoSparkWeapon = new InfernoSparkWeapon();
 
-  hasSparked = false;
+  age = 0;
 
   constructor(region: Region, location: Location, from: Unit, to: Unit) {
     super(region, location);
     this.from = from;
     this.to = to;
+  }
+
+  create3dModel() {
+    return GLTFModel.forRenderable(this, Splat, { verticalOffset: -1 });
+  }
+
+  get animationIndex() {
+    return 0;
+  }
+
+  get color() {
+    return "#FFFF00";
   }
 
   get collisionType() {
@@ -49,16 +56,40 @@ export class InfernoHealerSpark extends Entity {
     return LineOfSightMask.NONE;
   }
 
+  shouldDestroy() {
+    return this.dying === 0;
+  }
+
+  get drawOutline() {
+    return false;
+  }
+
+  visible() {
+    return this.dying < 0 && this.age >= 1;
+  }
+
   tick() {
-    if (this.dying === -1) {
-      this.dying = 0;
-    }
-    if (
-      !this.hasSparked &&
-      Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, this.to.location.x, this.to.location.y, 1)
-    ) {
-      this.weapon.attack(this.from, this.from.aggro as Unit, {});
-      this.hasSparked = true;
+    ++this.age;
+    if (this.age == 1) {
+      let attemptedVolume =
+        1 /
+        Pathing.dist(
+          Trainer.player.location.x,
+          Trainer.player.location.y,
+          this.location.x,
+          this.location.y,
+        );
+      attemptedVolume = Math.min(1, Math.max(0, Math.sqrt(attemptedVolume)));
+      SoundCache.play(new Sound(FireWaveHit, 0.025 * attemptedVolume), true);
+      if (
+        Collision.collisionMath(this.location.x - 1, this.location.y + 1, 3, this.to.location.x, this.to.location.y, 1)
+      ) {
+        this.weapon.attack(this.from, this.to as Unit, {});
+      }
+    } else if (this.age == 3) {
+      this.playAnimation(0).then(() => {
+        this.dying = 0;
+      })
     }
   }
 
