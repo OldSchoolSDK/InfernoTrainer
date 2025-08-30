@@ -1,6 +1,6 @@
 "use strict";
 
-import { Mob, EntityNames, Settings, RangedWeapon, UnitBonuses } from "@supalosa/oldschool-trainer-sdk";
+import { Mob, EntityNames, Settings, RangedWeapon, UnitBonuses } from "osrs-sdk";
 
 import JalAkRekMejImage from "../../assets/images/Jal-AkRek-Xil.png";
 

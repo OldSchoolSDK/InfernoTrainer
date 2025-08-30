@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, MultiModelProjectileOffsetInterpolator, Location3, Mob, MeleeWeapon, RangedWeapon, Sound, UnitBonuses, Projectile, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, MultiModelProjectileOffsetInterpolator, Location3, Mob, MeleeWeapon, RangedWeapon, Sound, UnitBonuses, Projectile, GLTFModel, EntityNames } from "osrs-sdk";
 
 import RangeImage from "../../assets/images/ranger.png";
 import RangerSound from "../../assets/sounds/mage_ranger_598.ogg";

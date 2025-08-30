@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, Entity, CollisionType, LineOfSightMask, Model, GLTFModel } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, Entity, CollisionType, LineOfSightMask, Model, GLTFModel } from "osrs-sdk";
 
 
 // note: v1 has the rocks where zuk should be - we could use that in the future

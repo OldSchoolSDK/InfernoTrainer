@@ -1,5 +1,5 @@
-import { Assets, Mob, ImageLoader, Location, Projectile, Random, LineOfSightMask, Region, UnitOptions, UnitBonuses, DelayedAction, Unit, CollisionType, Settings, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
-import { UnitStats } from "@supalosa/oldschool-trainer-sdk/lib/src/sdk/UnitStats";
+import { Assets, Mob, ImageLoader, Location, Projectile, Random, LineOfSightMask, Region, UnitOptions, UnitBonuses, DelayedAction, Unit, CollisionType, Settings, GLTFModel, EntityNames } from "osrs-sdk";
+import { UnitStats } from "osrs-sdk/lib/src/sdk/UnitStats";
 
 import { find } from "lodash";
 import { JalXil } from "./mobs/JalXil";

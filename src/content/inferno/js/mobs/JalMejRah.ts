@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, RangedWeapon, Unit, AttackBonuses, ProjectileOptions, Player, Mob, Sound, UnitBonuses, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, RangedWeapon, Unit, AttackBonuses, ProjectileOptions, Player, Mob, Sound, UnitBonuses, GLTFModel, EntityNames } from "osrs-sdk";
 
 import BatImage from "../../assets/images/bat.png";
 import BatSound from "../../assets/sounds/bat.ogg";

@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer } from "osrs-sdk";
 
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
 import { ZukShield } from "../ZukShield";

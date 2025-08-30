@@ -63,7 +63,7 @@ import {
   SlayerHelmet,
   RobinHoodHat,
   GuthixRobeTop,
-} from "@supalosa/oldschool-trainer-sdk";
+} from "osrs-sdk";
 import { filter, indexOf, map } from "lodash";
 
 export class InfernoLoadout {

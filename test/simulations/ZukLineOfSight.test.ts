@@ -1,4 +1,4 @@
-import { World, Mob, InvisibleMovementBlocker, Viewport, Player, TwistedBow, TestRegion } from "@supalosa/oldschool-trainer-sdk";
+import { World, Mob, InvisibleMovementBlocker, Viewport, Player, TwistedBow, TestRegion } from "osrs-sdk";
 
 import { Wall } from "../../src/content/inferno/js/Wall";
 import { TzKalZuk } from "../../src/content/inferno/js/mobs/TzKalZuk";

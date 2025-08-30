@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Entity, Region, GLTFModel, Location, CollisionType, LineOfSightMask, Pathing, Viewport, SoundCache, Sound, Collision, Settings, Trainer } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Entity, Region, GLTFModel, Location, CollisionType, LineOfSightMask, Pathing, Viewport, SoundCache, Sound, Collision, Settings, Trainer } from "osrs-sdk";
 
 import FireWaveHit from "../assets/sounds/firewave_hit_163.ogg";
 

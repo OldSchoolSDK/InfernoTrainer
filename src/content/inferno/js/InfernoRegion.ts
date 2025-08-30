@@ -1,5 +1,5 @@
 "use strict";
-import { Region, CardinalDirection, Viewport, Settings, Mob, Player, BrowserUtils, InvisibleMovementBlocker, ImageLoader, Location, TileMarker, ControlPanelController, Trainer, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Region, CardinalDirection, Viewport, Settings, Mob, Player, BrowserUtils, InvisibleMovementBlocker, ImageLoader, Location, TileMarker, ControlPanelController, Trainer, EntityNames } from "osrs-sdk";
 
 import InfernoMapImage from "../assets/images/map.png";
 

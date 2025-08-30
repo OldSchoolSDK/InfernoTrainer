@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, ProjectileOptions, Weapon, Unit, AttackBonuses, Random, ArcProjectileMotionInterpolator, Projectile, DelayedAction, Mob, UnitBonuses, UnitTypes, Model, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, ProjectileOptions, Weapon, Unit, AttackBonuses, Random, ArcProjectileMotionInterpolator, Projectile, DelayedAction, Mob, UnitBonuses, UnitTypes, Model, GLTFModel, EntityNames } from "osrs-sdk";
 
 import JalMejJakImage from "../../assets/images/Jal-MejJak.png";
 import { InfernoHealerSpark } from "../InfernoHealerSpark";

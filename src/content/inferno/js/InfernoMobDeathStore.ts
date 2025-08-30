@@ -1,4 +1,4 @@
-import { Mob, Region } from "@supalosa/oldschool-trainer-sdk";
+import { Mob, Region } from "osrs-sdk";
 
 import { shuffle, remove } from "lodash";
 

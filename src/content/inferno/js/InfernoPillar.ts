@@ -1,5 +1,5 @@
 "use strict";
-import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model, ImageLoader, Location, EntityNames, UnitStats, BasicModel, Assets } from "@supalosa/oldschool-trainer-sdk";
+import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model, ImageLoader, Location, EntityNames, UnitStats, BasicModel, Assets } from "osrs-sdk";
 
 
 import { filter, remove } from "lodash";

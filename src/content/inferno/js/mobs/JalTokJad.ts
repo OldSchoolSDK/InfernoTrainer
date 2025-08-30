@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, UnitOptions, ImageLoader, Location, MultiModelProjectileOffsetInterpolator, Location3, MagicWeapon, Mob, Unit, AttackBonuses, DelayedAction, AttackIndicators, SoundCache, Projectile, ArcProjectileMotionInterpolator, RangedWeapon, FollowTargetInterpolator, Region, MeleeWeapon, Collision, Random, UnitBonuses, Sound, GLTFModel, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, UnitOptions, ImageLoader, Location, MultiModelProjectileOffsetInterpolator, Location3, MagicWeapon, Mob, Unit, AttackBonuses, DelayedAction, AttackIndicators, SoundCache, Projectile, ArcProjectileMotionInterpolator, RangedWeapon, FollowTargetInterpolator, Region, MeleeWeapon, Collision, Random, UnitBonuses, Sound, GLTFModel, EntityNames } from "osrs-sdk";
 
 import JadImage from "../../assets/images/jad/jad_mage_1.png";
 import { YtHurKot } from "./YtHurKot";

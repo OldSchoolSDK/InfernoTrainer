@@ -1,6 +1,6 @@
 "use strict";
 
-import { Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Mob, Location, Region, UnitOptions, Projectile, MeleeWeapon, UnitBonuses, UnitTypes, EntityNames } from "@supalosa/oldschool-trainer-sdk";
+import { Weapon, Unit, AttackBonuses, ProjectileOptions, Random, Mob, Location, Region, UnitOptions, Projectile, MeleeWeapon, UnitBonuses, UnitTypes, EntityNames } from "osrs-sdk";
 
 import HurKotImage from "../../assets/images/Yt-HurKot.png";
 

@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, MeleeWeapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Location, Mob, Region, UnitOptions, Sound, UnitBonuses, Collision, AttackIndicators, Pathing, GLTFModel, EntityNames, LocationUtils } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, MeleeWeapon, Unit, AttackBonuses, ProjectileOptions, Random, Projectile, Location, Mob, Region, UnitOptions, Sound, UnitBonuses, Collision, AttackIndicators, Pathing, GLTFModel, EntityNames, LocationUtils } from "osrs-sdk";
 
 import NibblerImage from "../../assets/images/nib.png";
 import NibblerSound from "../../assets/sounds/meleer.ogg";

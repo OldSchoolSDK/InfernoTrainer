@@ -16,7 +16,7 @@ import {
   EntityNames,
   Trainer,
   Model,
-} from "@supalosa/oldschool-trainer-sdk";
+} from "osrs-sdk";
 
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 import { InfernoRegion } from "../InfernoRegion";

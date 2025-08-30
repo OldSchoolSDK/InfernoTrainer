@@ -1,6 +1,6 @@
 "use strict";
 
-import { Entity, CollisionType } from "@supalosa/oldschool-trainer-sdk";
+import { Entity, CollisionType } from "osrs-sdk";
 
 export class Wall extends Entity {
   get collisionType() {

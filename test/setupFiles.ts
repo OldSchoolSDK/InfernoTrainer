@@ -19,11 +19,11 @@ global.fetch = jest.fn().mockImplementation(() => ({
   arrayBuffer: () => null,
 }));
 
-import { Random, Settings } from "@supalosa/oldschool-trainer-sdk";
+import { Random, Settings } from "osrs-sdk";
 
-jest.mock("@supalosa/oldschool-trainer-sdk", () => {
-  const originalModule = jest.requireActual<typeof import("@supalosa/oldschool-trainer-sdk")>(
-    "@supalosa/oldschool-trainer-sdk",
+jest.mock("osrs-sdk", () => {
+  const originalModule = jest.requireActual<typeof import("osrs-sdk")>(
+    "osrs-sdk",
   );
   return {
     ...originalModule,

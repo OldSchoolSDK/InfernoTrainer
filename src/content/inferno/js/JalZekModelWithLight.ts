@@ -1,4 +1,4 @@
-import { Assets, GLTFModel, Model, Location3, Renderable, GLTFModelOptions } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, GLTFModel, Model, Location3, Renderable, GLTFModelOptions } from "osrs-sdk";
 import * as THREE from "three";
 import { JalZek } from "./mobs/JalZek";
 

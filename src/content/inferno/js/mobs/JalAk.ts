@@ -1,5 +1,5 @@
 "use strict";
-import { Assets, Mob, MeleeWeapon, MagicWeapon, Sound, RangedWeapon, UnitBonuses, Random, AttackIndicators, Unit, Viewport, GLTFModel, EntityNames, Trainer } from "@supalosa/oldschool-trainer-sdk";
+import { Assets, Mob, MeleeWeapon, MagicWeapon, Sound, RangedWeapon, UnitBonuses, Random, AttackIndicators, Unit, Viewport, GLTFModel, EntityNames, Trainer } from "osrs-sdk";
 
 import BlobImage from "../../assets/images/blob.png";
 import BlobSound from "../../assets/sounds/blob.ogg";

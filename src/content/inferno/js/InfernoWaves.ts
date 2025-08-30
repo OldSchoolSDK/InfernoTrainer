@@ -1,6 +1,6 @@
 "use strict";
 
-import { Random, Region, Player, Entity, Mob, Collision, UnitOptions, Location, Unit } from "@supalosa/oldschool-trainer-sdk";
+import { Random, Region, Player, Entity, Mob, Collision, UnitOptions, Location, Unit } from "osrs-sdk";
 
 import { shuffle } from "lodash";
 
