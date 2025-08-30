@@ -1,64 +1,66 @@
-'use strict'
-import { shuffle } from 'lodash'
-import { Entity } from '../../../sdk/Entity'
-import { Mob } from '../../../sdk/Mob'
-import { Unit, UnitOptions } from '../../../sdk/Unit'
-import { JalMejRah } from './mobs/JalMejRah'
-import { JalAk } from './mobs/JalAk'
-import { JalZek } from './mobs/JalZek'
-import { JalImKot } from './mobs/JalImKot'
-import { JalNib } from './mobs/JalNib'
-import { JalXil } from './mobs/JalXil'
-import { Location } from "../../../sdk/Location"
-import { Collision } from '../../../sdk/Collision'
-import { Random } from '../../../sdk/Random'
-import { Region } from '../../../sdk/Region'
-import { Player } from '../../../sdk/Player'
+"use strict";
 
+import { Random, Region, Player, Entity, Mob, Collision, UnitOptions, Location, Unit } from "osrs-sdk";
+
+import { shuffle } from "lodash";
+
+import { JalMejRah } from "./mobs/JalMejRah";
+import { JalAk } from "./mobs/JalAk";
+import { JalZek } from "./mobs/JalZek";
+import { JalImKot } from "./mobs/JalImKot";
+import { JalNib } from "./mobs/JalNib";
+import { JalXil } from "./mobs/JalXil";
 
 export class InfernoWaves {
-
   static shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-  
+    let currentIndex = array.length,
+      randomIndex;
+
     // While there remain elements to shuffle...
     while (currentIndex != 0) {
-  
       // Pick a remaining element...
       randomIndex = Math.floor(Random.get() * currentIndex);
       currentIndex--;
-  
+
       // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-  
+
     return array;
   }
 
-  static getRandomSpawns () {
-    return InfernoWaves.shuffle(InfernoWaves.spawns)
+  static getRandomSpawns() {
+    return InfernoWaves.shuffle(InfernoWaves.spawns);
   }
 
-  static spawn (region: Region, player: Player, randomPillar: Entity, spawns: Location[], wave: number) {
+  static spawn(region: Region, player: Player, randomPillar: Entity, spawns: Location[], wave: number) {
+    const mobCounts = InfernoWaves.waves[wave - 1];
+    let mobs: Mob[] = [];
+    let i = 0;
+    Array(mobCounts[5])
+      .fill(0)
+      .forEach(() => mobs.push(new JalZek(region, spawns[i++], { aggro: player })));
+    Array(mobCounts[4])
+      .fill(0)
+      .forEach(() => mobs.push(new JalXil(region, spawns[i++], { aggro: player })));
+    Array(mobCounts[3])
+      .fill(0)
+      .forEach(() => mobs.push(new JalImKot(region, spawns[i++], { aggro: player })));
+    Array(mobCounts[2])
+      .fill(0)
+      .forEach(() => mobs.push(new JalAk(region, spawns[i++], { aggro: player })));
+    Array(mobCounts[1])
+      .fill(0)
+      .forEach(() => mobs.push(new JalMejRah(region, spawns[i++], { aggro: player })));
 
-    const mobCounts = InfernoWaves.waves[wave - 1]
-    let mobs: Mob[] = []
-    let i = 0
-    Array(mobCounts[5]).fill(0).forEach(() => mobs.push(new JalZek(region, spawns[i++], { aggro: player })))
-    Array(mobCounts[4]).fill(0).forEach(() => mobs.push(new JalXil(region, spawns[i++], { aggro: player })))
-    Array(mobCounts[3]).fill(0).forEach(() => mobs.push(new JalImKot(region, spawns[i++], { aggro: player })))
-    Array(mobCounts[2]).fill(0).forEach(() => mobs.push(new JalAk(region, spawns[i++], { aggro: player })))
-    Array(mobCounts[1]).fill(0).forEach(() => mobs.push(new JalMejRah(region, spawns[i++], { aggro: player })))
-
-    mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], region, randomPillar))
-    return mobs
+    mobs = mobs.concat(InfernoWaves.spawnNibblers(mobCounts[0], region, randomPillar));
+    return mobs;
   }
 
-  static spawnEnduranceMode (region: Region, player: Player, concurrentSpawns: number, check = false) {
+  static spawnEnduranceMode(region: Region, player: Player, concurrentSpawns: number, check = false) {
     let j = 0;
 
-    const mobs: Mob[] = []
+    const mobs: Mob[] = [];
     let randomSpawns = [
       { x: 12, y: 19 },
       { x: 33, y: 19 },
@@ -68,40 +70,34 @@ export class InfernoWaves {
       { x: 16, y: 37 },
       { x: 34, y: 39 },
       { x: 12, y: 42 },
-      { x: 26, y: 42 }
+      { x: 26, y: 42 },
     ];
 
     randomSpawns = shuffle(randomSpawns);
-    
-    for (let i=0;i<concurrentSpawns;i++) {
-      const mobTypes: typeof Mob[] = [
-        JalZek,
-        JalXil,
-        JalImKot,
-        JalAk,
-        JalMejRah
-      ];
 
-      const randomType = mobTypes[Math.floor(Random.get() * 5)]
+    for (let i = 0; i < concurrentSpawns; i++) {
+      const mobTypes: (typeof Mob)[] = [JalZek, JalXil, JalImKot, JalAk, JalMejRah];
+
+      const randomType = mobTypes[Math.floor(Random.get() * 5)];
 
       let randomSpawn = null;
       if (check) {
-        do{
-          randomSpawn = randomSpawns[j++]
-        } while(j < randomSpawns.length && Collision.collidesWithAnyMobs(region, randomSpawn.x, randomSpawn.y, 4));
-      }else{
-        randomSpawn = randomSpawns[j++]
+        do {
+          randomSpawn = randomSpawns[j++];
+        } while (j < randomSpawns.length && Collision.collidesWithAnyMobs(region, randomSpawn.x, randomSpawn.y, 4));
+      } else {
+        randomSpawn = randomSpawns[j++];
       }
-      if (randomSpawn){
+      if (randomSpawn) {
         mobs.push(new randomType(region, randomSpawn, { aggro: player }));
       }
     }
 
-    return mobs
+    return mobs;
   }
 
-  static spawnNibblers (n: number, region: Region, pillar: Entity) {
-    const mobs: Mob[] = []
+  static spawnNibblers(n: number, region: Region, pillar: Entity) {
+    const mobs: Mob[] = [];
     const nibblerSpawns = shuffle([
       { x: 8 + 11, y: 13 + 14 },
       { x: 9 + 11, y: 13 + 14 },
@@ -111,16 +107,18 @@ export class InfernoWaves {
       { x: 10 + 11, y: 12 + 14 },
       { x: 8 + 11, y: 11 + 14 },
       { x: 9 + 11, y: 11 + 14 },
-      { x: 10 + 11, y: 11 + 14 }
-    ])
+      { x: 10 + 11, y: 11 + 14 },
+    ]);
 
     const unknownPillar = pillar as unknown;
 
     // hack hack hack
     const options: UnitOptions = { aggro: unknownPillar as Unit /* TODO: || world.player */ };
 
-    Array(n).fill(0).forEach(() => mobs.push(new JalNib(region, nibblerSpawns.shift(), options)))
-    return mobs
+    Array(n)
+      .fill(0)
+      .forEach(() => mobs.push(new JalNib(region, nibblerSpawns.shift(), options)));
+    return mobs;
   }
 
   static spawns = [
@@ -132,7 +130,7 @@ export class InfernoWaves {
     { x: 16, y: 37 },
     { x: 34, y: 39 },
     { x: 12, y: 42 },
-    { x: 26, y: 42 }
+    { x: 26, y: 42 },
   ];
 
   // cba to convert this to any other format
@@ -203,6 +201,6 @@ export class InfernoWaves {
     [3, 0, 2, 1, 1, 1], // 63
     [3, 0, 0, 2, 1, 1], // 64
     [3, 0, 0, 0, 2, 1], // 65
-    [3, 0, 0, 0, 0, 2] // 66
+    [3, 0, 0, 0, 0, 2], // 66
   ];
 }

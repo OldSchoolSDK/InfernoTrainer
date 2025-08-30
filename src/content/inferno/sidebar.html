@@ -1,0 +1,58 @@
+
+<div id="set_timer">
+    <div id="set_timer_time">3:30</div>
+    <button id="set_timer_button">Start Set Timer</button>
+  </div>
+
+  <input id="waveinput" type="text" placeholder="#" style="width: 20%" />
+  <button
+    id="playWaveNum"
+    style="width: calc(80% - 5px); position: absolute"
+  >
+    New Wave
+  </button>
+  <a id="replayLink">Replay Wave</a>
+  <button id="pauseResumeLink">Pause Wave</button>
+
+  <select name="loadouts" id="loadouts">
+    <option value="max_tbow_speed">Max Tbow + Chins</option>
+    <option value="max_tbow">Max Tbow</option>
+    <option value="max_fbow">Max Fbow</option>
+    <!-- <option value="budget_fbow">Budget Fbow</option>-->
+    <option value="rcb">RCB</option>
+    <option value="zerker">Zerker</option>
+    <option value="pure">Pure</option>
+    <option value="max_melee">Max Melee (WIP)</option>
+  </select>
+  <div
+    style="
+      width: 100%;
+      text-align: center;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    "
+  >
+    <input type="checkbox" id="onTask" name="onTask" />
+    <label for="onTask">On Task?</label>
+  </div>
+  <div id="pillars">
+    <label>Pillars</label>
+    <input type="checkbox" id="southPillar" name="southPillar" checked />
+    <label for="southPillar">S</label>
+    <input type="checkbox" id="westPillar" name="westPillar" checked />
+    <label for="westPillar">W</label>
+    <input type="checkbox" id="northPillar" name="northPillar" checked />
+    <label for="northPillar">N</label>
+  </div>
+  <a href="/?wave=0">Custom Mob Mode</a>
+  <button id="exportCustomWave">Play/Export Wave</button>
+  <button id="editWave">Edit Wave</button>
+  <hr />
+
+  <a href="https://github.com/OldSchoolSDK/Engine" target="_blank"
+    >Explore Source on GitHub</a
+  >
+  <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank"
+    >Join Our Discord</a
+  >
+  <a href="https://oldschool.runescape.wiki/w/Inferno">Mob Explanations</a>

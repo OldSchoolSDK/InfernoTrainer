@@ -1,28 +1,24 @@
-'use strict'
+"use strict";
 
-import { MeleeWeapon } from '../../../../sdk/weapons/MeleeWeapon'
-import { Mob } from '../../../../sdk/Mob'
-import JalAkRekKetImage from '../../assets/images/Jal-AkRek-Ket.png'
-import { Settings } from '../../../../sdk/Settings'
-import { UnitBonuses } from '../../../../sdk/Unit'
-import { EntityName } from "../../../../sdk/EntityName"
+import { Mob, EntityNames, Settings, MeleeWeapon, UnitBonuses } from "osrs-sdk";
+
+import JalAkRekKetImage from "../../assets/images/Jal-AkRek-Ket.png";
 
 export class JalAkRekKet extends Mob {
-  
-  mobName(): EntityName { 
-    return EntityName.JAL_AK_REK_KET;
+  mobName() {
+    return EntityNames.JAL_AK_REK_KET;
   }
-  
-  get combatLevel () {
-    return 70
+
+  get combatLevel() {
+    return 70;
   }
 
   drawUnderTile() {
-
     if (this.dying > -1) {
-      this.region.context.fillStyle = '#964B0073'
-    }{
-      this.region.context.fillStyle = '#FF0000'
+      this.region.context.fillStyle = "#964B0073";
+    }
+    {
+      this.region.context.fillStyle = "#FF0000";
     }
 
     // Draw mob
@@ -30,15 +26,14 @@ export class JalAkRekKet extends Mob {
       -(this.size * Settings.tileSize) / 2,
       -(this.size * Settings.tileSize) / 2,
       this.size * Settings.tileSize,
-      this.size * Settings.tileSize
-    )
+      this.size * Settings.tileSize,
+    );
   }
 
-  setStats () {
-
+  setStats() {
     this.weapons = {
-      crush: new MeleeWeapon()
-    }
+      crush: new MeleeWeapon(),
+    };
 
     // non boosted numbers
     this.stats = {
@@ -47,12 +42,11 @@ export class JalAkRekKet extends Mob {
       defence: 95,
       range: 1,
       magic: 1,
-      hitpoint: 15
-    }
+      hitpoint: 15,
+    };
 
     // with boosts
-    this.currentStats = JSON.parse(JSON.stringify(this.stats))
-
+    this.currentStats = JSON.parse(JSON.stringify(this.stats));
   }
 
   get bonuses(): UnitBonuses {
@@ -62,49 +56,45 @@ export class JalAkRekKet extends Mob {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 25
+        range: 25,
       },
       defence: {
         stab: 25,
         slash: 25,
         crush: 25,
         magic: 0,
-        range: 0
+        range: 0,
       },
       other: {
         meleeStrength: 25,
         rangedStrength: 0,
         magicDamage: 0,
-        prayer: 0
-      }
+        prayer: 0,
+      },
     };
   }
 
-  get attackSpeed () {
-    return 4
+  get attackSpeed() {
+    return 4;
   }
 
-  get attackRange () {
-    return 1
+  get attackRange() {
+    return 1;
   }
 
-  get size () {
-    return 1
+  get size() {
+    return 1;
   }
 
-  get image () {
-    return JalAkRekKetImage
+  get image() {
+    return JalAkRekKetImage;
   }
 
-  get sound (): string {
-    return null
+  attackStyleForNewAttack() {
+    return "crush";
   }
 
-  attackStyleForNewAttack () {
-    return 'crush'
-  }
-
-  attackAnimation (tickPercent: number) {
-    this.region.context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2))
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
   }
 }

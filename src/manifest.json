@@ -2,7 +2,7 @@
   "short_name": "Inferno",
   "name": "Inferno Trainer",
   "icons": [
-    { 
+    {
       "src": "/webappicon.png",
       "sizes": "192x192",
       "type": "image/png"

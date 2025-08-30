@@ -1,15 +1,12 @@
-'use strict'
+"use strict";
 
-import { EntityName } from "../../../../sdk/EntityName"
-import { AttackBonuses } from "../../../../sdk/gear/Weapon"
-import { Mob } from '../../../../sdk/Mob'
-import { Player } from "../../../../sdk/Player"
-import { Unit, UnitBonuses } from '../../../../sdk/Unit'
-import { ProjectileOptions } from "../../../../sdk/weapons/Projectile"
-import { RangedWeapon } from '../../../../sdk/weapons/RangedWeapon'
-import BatImage from '../../assets/images/bat.png'
-import BatSound from '../../assets/sounds/bat.ogg'
-import { InfernoMobDeathStore } from '../InfernoMobDeathStore'
+import { Assets, RangedWeapon, Unit, AttackBonuses, ProjectileOptions, Player, Mob, Sound, UnitBonuses, GLTFModel, EntityNames } from "osrs-sdk";
+
+import BatImage from "../../assets/images/bat.png";
+import BatSound from "../../assets/sounds/bat.ogg";
+import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
+
+const BatModel = Assets.getAssetUrl("models/7692_33018.glb");
 
 class JalMejRahWeapon extends RangedWeapon {
   attack(from: Unit, to: Unit, bonuses: AttackBonuses = {}, options: ProjectileOptions = {}): boolean {
@@ -20,26 +17,25 @@ class JalMejRahWeapon extends RangedWeapon {
   }
 }
 export class JalMejRah extends Mob {
-
-  mobName(): EntityName { 
-    return EntityName.JAL_MEJ_RAJ;
-  }
-  
-  get combatLevel () {
-    return 85
+  mobName() {
+    return EntityNames.JAL_MEJ_RAJ;
   }
 
-  dead () {
-    super.dead()
-    InfernoMobDeathStore.npcDied(this)
+  get combatLevel() {
+    return 85;
   }
 
-  setStats () {
-    this.stunned = 1
+  dead() {
+    super.dead();
+    InfernoMobDeathStore.npcDied(this);
+  }
+
+  setStats() {
+    this.stunned = 1;
 
     this.weapons = {
-      range: new JalMejRahWeapon()
-    }
+      range: new JalMejRahWeapon({ sound: new Sound(BatSound, 0.5) }),
+    };
 
     // non boosted numbers
     this.stats = {
@@ -48,12 +44,11 @@ export class JalMejRah extends Mob {
       defence: 55,
       range: 120,
       magic: 120,
-      hitpoint: 25
-    }
+      hitpoint: 25,
+    };
 
     // with boosts
-    this.currentStats = JSON.parse(JSON.stringify(this.stats))
-
+    this.currentStats = JSON.parse(JSON.stringify(this.stats));
   }
 
   get bonuses(): UnitBonuses {
@@ -63,51 +58,56 @@ export class JalMejRah extends Mob {
         slash: 0,
         crush: 0,
         magic: 0,
-        range: 25
+        range: 25,
       },
       defence: {
         stab: 30,
         slash: 30,
         crush: 30,
         magic: -20,
-        range: 45
+        range: 45,
       },
       other: {
         meleeStrength: 0,
         rangedStrength: 30,
         magicDamage: 0,
-        prayer: 0
-      }
+        prayer: 0,
+      },
     };
   }
-  get attackSpeed () {
-    return 3
+  get attackSpeed() {
+    return 3;
   }
 
-  get attackRange () {
-    return 4
+  get attackRange() {
+    return 4;
   }
 
-  get size () {
-    return 2
+  get size() {
+    return 2;
   }
 
-  get image () {
-    return BatImage
+  get image() {
+    return BatImage;
   }
 
-  get sound () {
-    return BatSound
+  attackStyleForNewAttack() {
+    return "range";
   }
 
-  
-  attackStyleForNewAttack () {
-    return 'range'
+  attackAnimation(tickPercent: number, context) {
+    context.translate(Math.sin(tickPercent * Math.PI * 4) * 2, Math.sin(tickPercent * Math.PI * -2));
   }
 
-  attackAnimation (tickPercent: number) {
-    this.region.context.translate(
-      Math.sin(tickPercent * Math.PI * 4) * 2, 
-      Math.sin(tickPercent * Math.PI * -2))
+  create3dModel() {
+    return GLTFModel.forRenderable(this, BatModel);
+  }
+
+  override get attackAnimationId() {
+    return 1;
+  }
+
+  override get deathAnimationId() {
+    return 3;
   }
 }
