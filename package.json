@@ -1,5 +1,5 @@
 {
-  "name": "@supalosa/oldschool-trainer-sdk",
+  "name": "inferno-trainer",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OldSchoolSDK/Engine.git"
+    "url": "git+https://github.com/OldSchoolSDK/InfernoTrainer.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/OldSchoolSDK/Engine/issues"
+    "url": "https://github.com/OldSchoolSDK/InfernoTrainer/issues"
   },
-  "homepage": "https://github.com/OldSchoolSDK/Engine#readme",
+  "homepage": "https://github.com/OldSchoolSDK/InfernoTrainer#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.171",
@@ -44,7 +44,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@supalosa/oldschool-trainer-sdk": "0.1.0",
+    "osrs-sdk": "0.1.1",
     "three": "^0.163.0"
   }
 }
