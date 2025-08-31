@@ -8,6 +8,7 @@ import { InfernoLoadout } from "./InfernoLoadout";
 import { InfernoMobDeathStore } from "./InfernoMobDeathStore";
 import { InfernoPillar } from "./InfernoPillar";
 import { InfernoScene } from "./InfernoScene";
+import { InfernoSettings } from "./InfernoSettings";
 import { InfernoWaves } from "./InfernoWaves";
 import { JalAk } from "./mobs/JalAk";
 import { JalImKot } from "./mobs/JalImKot";
@@ -198,21 +199,21 @@ export class InfernoRegion extends Region {
 
   initializeWaveProgressionToggle() {
     const waveProgressionCheckbox = document.getElementById("waveProgression") as HTMLInputElement;
-    waveProgressionCheckbox.checked = Settings.waveProgression === true;
+    waveProgressionCheckbox.checked = InfernoSettings.waveProgression === true;
     waveProgressionCheckbox.addEventListener("change", () => {
-      Settings.waveProgression = waveProgressionCheckbox.checked;
-      Settings.persistToStorage();
+      InfernoSettings.waveProgression = waveProgressionCheckbox.checked;
+      InfernoSettings.persistToStorage();
     });
   }
 
   initializeSpawnIndicatorsToggle() {
     const spawnIndicatorsCheckbox = document.getElementById("spawnIndicators") as HTMLInputElement;
-    spawnIndicatorsCheckbox.checked = Settings.spawnIndicators === true;
+    spawnIndicatorsCheckbox.checked = InfernoSettings.spawnIndicators === true;
     spawnIndicatorsCheckbox.addEventListener("change", () => {
-      Settings.spawnIndicators = spawnIndicatorsCheckbox.checked;
-      Settings.persistToStorage();
+      InfernoSettings.spawnIndicators = spawnIndicatorsCheckbox.checked;
+      InfernoSettings.persistToStorage();
       // Update current spawn indicators visibility
-      if (!Settings.spawnIndicators) {
+      if (!InfernoSettings.spawnIndicators) {
         this.clearSpawnIndicators();
       } else {
         // Refresh spawn indicators if enabled
@@ -224,10 +225,10 @@ export class InfernoRegion extends Region {
 
   initializeDisplaySetTimerToggle() {
     const displaySetTimerCheckbox = document.getElementById("displaySetTimer") as HTMLInputElement;
-    displaySetTimerCheckbox.checked = Settings.displaySetTimer === true;
+    displaySetTimerCheckbox.checked = InfernoSettings.displaySetTimer === true;
     displaySetTimerCheckbox.addEventListener("change", () => {
-      Settings.displaySetTimer = displaySetTimerCheckbox.checked;
-      Settings.persistToStorage();
+      InfernoSettings.displaySetTimer = displaySetTimerCheckbox.checked;
+      InfernoSettings.persistToStorage();
     });
   }
 
@@ -620,7 +621,7 @@ export class InfernoRegion extends Region {
     this.clearSpawnIndicators();
 
     // Only show spawn indicators if the setting is enabled
-    if (!Settings.spawnIndicators) {
+    if (!InfernoSettings.spawnIndicators) {
       return;
     }
 
@@ -649,7 +650,7 @@ export class InfernoRegion extends Region {
 
   private handleWaveProgression() {
     // Only enable wave progression for waves 1-69 and if the setting is enabled
-    if (this.wave >= 1 && this.wave <= 69 && Settings.waveProgression) {
+    if (this.wave >= 1 && this.wave <= 69 && InfernoSettings.waveProgression) {
       this.waveProgressionEnabled = true;
     } else {
       this.waveProgressionEnabled = false;

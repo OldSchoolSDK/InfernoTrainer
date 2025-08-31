@@ -3,6 +3,7 @@
 import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings } from "osrs-sdk";
 
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
+import { InfernoSettings } from "../InfernoSettings";
 import { ZukShield } from "../ZukShield";
 import { find } from "lodash";
 import ZukAttackImage from "../../assets/images/zuk_attack.png";
@@ -330,7 +331,7 @@ export class TzKalZuk extends Mob {
     context.fillText(String(this.currentStats.hitpoint), offset.x, offset.y + 120);
 
     // Display set timer if the setting is enabled
-    if (Settings.displaySetTimer) {
+    if (InfernoSettings.displaySetTimer) {
       // Set color based on timer state: red when running, green when paused
       context.fillStyle = this.timerPaused ? "#999999" : "#ffffff";
       context.font = "20px OSRS";
