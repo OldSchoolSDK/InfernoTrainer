@@ -198,7 +198,7 @@ export class InfernoRegion extends Region {
 
   initializeWaveProgressionToggle() {
     const waveProgressionCheckbox = document.getElementById("waveProgression") as HTMLInputElement;
-    waveProgressionCheckbox.checked = Settings.waveProgression;
+    waveProgressionCheckbox.checked = Settings.waveProgression === true;
     waveProgressionCheckbox.addEventListener("change", () => {
       Settings.waveProgression = waveProgressionCheckbox.checked;
       Settings.persistToStorage();
@@ -207,7 +207,7 @@ export class InfernoRegion extends Region {
 
   initializeSpawnIndicatorsToggle() {
     const spawnIndicatorsCheckbox = document.getElementById("spawnIndicators") as HTMLInputElement;
-    spawnIndicatorsCheckbox.checked = Settings.spawnIndicators;
+    spawnIndicatorsCheckbox.checked = Settings.spawnIndicators === true;
     spawnIndicatorsCheckbox.addEventListener("change", () => {
       Settings.spawnIndicators = spawnIndicatorsCheckbox.checked;
       Settings.persistToStorage();
@@ -224,7 +224,7 @@ export class InfernoRegion extends Region {
 
   initializeDisplaySetTimerToggle() {
     const displaySetTimerCheckbox = document.getElementById("displaySetTimer") as HTMLInputElement;
-    displaySetTimerCheckbox.checked = Settings.displaySetTimer;
+    displaySetTimerCheckbox.checked = Settings.displaySetTimer === true;
     displaySetTimerCheckbox.addEventListener("change", () => {
       Settings.displaySetTimer = displaySetTimerCheckbox.checked;
       Settings.persistToStorage();
@@ -237,38 +237,38 @@ export class InfernoRegion extends Region {
 
     const exportWaveInput: HTMLButtonElement = document.getElementById("exportCustomWave") as HTMLButtonElement;
     const editWaveInput: HTMLButtonElement = document.getElementById("editWave") as HTMLButtonElement;
-    
+
     editWaveInput.addEventListener("click", () => {
       const magers = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_ZEK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const rangers = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_XIL;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const meleers = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_IM_KOT;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const blobs = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_AK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const bats = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_MEJ_RAJ;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const url = `/?wave=0&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(
         rangers,
       )}&melee=${JSON.stringify(meleers)}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
@@ -280,31 +280,31 @@ export class InfernoRegion extends Region {
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const rangers = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_XIL;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const meleers = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_IM_KOT;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const blobs = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_AK;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const bats = filter(this.mobs, (mob: Mob) => {
         return mob.mobName() === EntityNames.JAL_MEJ_RAJ;
       }).map((mob: Mob) => {
         return [mob.location.x - 11, mob.location.y - 14];
       });
-    
+
       const url = `/?wave=74&mager=${JSON.stringify(magers)}&ranger=${JSON.stringify(rangers)}&melee=${JSON.stringify(
         meleers,
       )}&blob=${JSON.stringify(blobs)}&bat=${JSON.stringify(bats)}&copyable`;
@@ -525,11 +525,11 @@ export class InfernoRegion extends Region {
 
     waveInput.addEventListener("focus", () => (ControlPanelController.controller.isUsingExternalUI = true));
     waveInput.addEventListener("focusout", () => (ControlPanelController.controller.isUsingExternalUI = false));
-    
+
     // set timer
     let timer_mode = "Start Set Timer";
     let timer_time = 210;
-    
+
     setInterval(() => {
       if (
         timer_mode === "Start Set Timer" ||
@@ -724,7 +724,7 @@ export class InfernoRegion extends Region {
     if (replayLink) {
       replayLink.href = `/?wave=${this.wave}&x=${player.location.x}&y=${player.location.y}&spawns=${encodedSpawn}`;
     }
-    
+
     const waveInput = document.getElementById("waveinput") as HTMLInputElement;
     if (waveInput) {
       waveInput.value = String(this.wave);
