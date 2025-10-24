@@ -1,8 +1,9 @@
 "use strict";
 
-import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer } from "osrs-sdk";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings } from "osrs-sdk";
 
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
+import { InfernoSettings } from "../InfernoSettings";
 import { ZukShield } from "../ZukShield";
 import { find } from "lodash";
 import ZukAttackImage from "../../assets/images/zuk_attack.png";
@@ -328,6 +329,22 @@ export class TzKalZuk extends Mob {
     context.font = "24px OSRS";
 
     context.fillText(String(this.currentStats.hitpoint), offset.x, offset.y + 120);
+
+    // Display set timer if the setting is enabled
+    if (InfernoSettings.displaySetTimer) {
+      // Set color based on timer state: red when running, green when paused
+      context.fillStyle = this.timerPaused ? "#999999" : "#ffffff";
+      context.font = "20px OSRS";
+
+      // Convert ticks to MM:SS format (1 tick = 0.6 seconds)
+      const totalSeconds = Math.round(this.setTimer * 0.6);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      const timerDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      // Draw timer below the health
+      context.fillText(timerDisplay, offset.x, offset.y + 150);
+    }
   }
 
   async preload() {
