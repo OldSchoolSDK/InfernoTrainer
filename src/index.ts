@@ -6,7 +6,7 @@ import NewRelicBrowser from "new-relic-browser";
 import { InfernoRegion } from "./content/inferno/js/InfernoRegion";
 import { InfernoSettings } from "./content/inferno/js/InfernoSettings";
 
-const SpecialAttackBarBackground = Assets.getAssetUrl("/assets/images/attackstyles/interface/special_attack_background.png");
+const SpecialAttackBarBackground = Assets.getAssetUrl("assets/images/attackstyles/interface/special_attack_background.png");
 
 declare global {
   interface Window {
