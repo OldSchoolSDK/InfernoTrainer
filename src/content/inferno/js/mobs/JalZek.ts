@@ -25,7 +25,7 @@ import MagerImage from "../../assets/images/mager.png";
 import MagerSound from "../../assets/sounds/mage_ranger_598.ogg";
 import { JalZekModelWithLight } from "../JalZekModelWithLight";
 
-const HitSound = Assets.getAssetUrl("assets/sounds/dragon_hit_410.ogg");
+const HitSound = Assets.getAssetUrl("assets/sounds/inferno_rangermager_dmg.ogg");
 
 export const MagerModel = Assets.getAssetUrl("models/7699_33000.glb");
 export const MageProjectileModel = Assets.getAssetUrl("models/mage_projectile.glb");
@@ -132,7 +132,7 @@ export class JalZek extends Mob {
   }
 
   hitSound(damaged) {
-    return new Sound(HitSound, 0.1);
+    return new Sound(HitSound, 0.25);
   }
 
   attackStyleForNewAttack() {
