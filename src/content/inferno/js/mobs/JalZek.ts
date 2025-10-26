@@ -37,6 +37,7 @@ export class JalZek extends Mob {
   flickerDurationTicks = 1;
   flickerTicksRemaining = 0;
   extendedGltfModelInstance: JalZekModelWithLight | null = null;
+  forceMeleeRespawn = false;
 
   mobName() {
     return EntityNames.JAL_ZEK;
@@ -196,8 +197,9 @@ export class JalZek extends Mob {
         // Set attack style before attacking
         this.attackStyle = this.attackStyleForNewAttack();
         this.attackFeedback = AttackIndicators.NONE;
-        if (Random.get() < 0.1 && !this.shouldRespawnMobs) {
-          const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region);
+        if (this.forceMeleeRespawn || (Random.get() < 0.1 && !this.shouldRespawnMobs)) {
+          const mobToResurrect = InfernoMobDeathStore.selectMobToResurect(this.region, this.forceMeleeRespawn);
+          this.forceMeleeRespawn = false;
           if (!mobToResurrect) {
             this.attack() && this.didAttack();
           } else {
