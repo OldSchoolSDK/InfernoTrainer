@@ -7,6 +7,7 @@ import MeleerSound from "../../assets/sounds/meleer.ogg";
 import { InfernoMobDeathStore } from "../InfernoMobDeathStore";
 
 const MeleerModel = Assets.getAssetUrl("models/7697_33010.glb");
+const HitSound = Assets.getAssetUrl("assets/sounds/inferno_melee_dmg.ogg");
 
 export class JalImKot extends Mob {
   private digSequenceTime = 0;
@@ -73,6 +74,11 @@ export class JalImKot extends Mob {
       },
     };
   }
+  
+  hitSound(damaged) {
+    return new Sound(HitSound, 0.25);
+  }
+
   get attackSpeed() {
     return 4;
   }
