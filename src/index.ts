@@ -1,10 +1,11 @@
 "use strict";
 
 import { Settings, Region, World, Viewport, MapController, TileMarker, Assets, Location, Chrome, ImageLoader, Trainer, ControlPanelController } from "osrs-sdk";
-
 import NewRelicBrowser from "new-relic-browser";
 import { InfernoRegion } from "./content/inferno/js/InfernoRegion";
 import { InfernoSettings } from "./content/inferno/js/InfernoSettings";
+import { JalZek } from "./content/inferno/js/mobs/JalZek";
+import { JalImKot } from "./content/inferno/js/mobs/JalImKot";
 
 const SpecialAttackBarBackground = Assets.getAssetUrl("assets/images/attackstyles/interface/special_attack_background.png");
 
@@ -41,6 +42,21 @@ document.getElementById("reset").addEventListener("click", () => {
 
 document.getElementById("settings").addEventListener("click", () => {
   ControlPanelController.controller.setActiveControl('SETTINGS');
+});
+
+document.getElementById("melee_respawn").addEventListener("click", () => {
+  const mager = Trainer.player.region.mobs.find((mob) => mob instanceof JalZek) as JalZek;
+  if (mager) {
+    mager.forceMeleeRespawn = true;
+  }
+});
+
+document.getElementById("melee_dig").addEventListener("click", () => {
+  const meleer = Trainer.player.region.mobs.find((mob) => mob instanceof JalImKot) as JalImKot;
+  if (meleer) {
+    meleer.startDig();
+    meleer.playAnimation(3);
+  }
 });
 
 const tileMarkerColor = document.getElementById("tileMarkerColor") as HTMLInputElement;
