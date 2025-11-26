@@ -4,11 +4,12 @@ import { UnitStats } from "osrs-sdk/lib/src/sdk/UnitStats";
 import { find } from "lodash";
 import { JalXil } from "./mobs/JalXil";
 
-
 const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
 const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
 
 const ShieldModel = Assets.getAssetUrl("models/7707_33036.glb");
+
+export type ShieldDirection = "random" | "west" | "east";
 
 export class ZukShield extends Mob {
   incomingProjectiles: Projectile[] = [];
@@ -17,14 +18,22 @@ export class ZukShield extends Mob {
   stats: UnitStats;
   currentStats: UnitStats;
 
-  movementDirection: boolean = Random.get() < 0.5 ? true : false;
+  movementDirection: boolean;
 
   get lineOfSight() {
     return LineOfSightMask.NONE;
   }
 
-  constructor(region: Region, location: Location, options: UnitOptions) {
+  constructor(region: Region, location: Location, options: UnitOptions, direction: ShieldDirection = "random") {
     super(region, location, options);
+
+    if (direction === "west") {
+      this.movementDirection = false;
+    } else if (direction === "east") {
+      this.movementDirection = true;
+    } else {
+      this.movementDirection = Random.get() < 0.5 ? true : false;
+    }
 
     this.freeze(1);
     this.missedHitsplatImage = ImageLoader.createImage(MissSplat);
