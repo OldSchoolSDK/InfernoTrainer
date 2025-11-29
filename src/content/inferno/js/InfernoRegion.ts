@@ -18,7 +18,7 @@ import { JalXil } from "./mobs/JalXil";
 import { JalZek } from "./mobs/JalZek";
 import { TzKalZuk } from "./mobs/TzKalZuk";
 import { Wall } from "./Wall";
-import { ZukShield } from "./ZukShield";
+import { ZukShield, type ShieldDirection } from "./ZukShield";
 
 import SidebarContent from "../sidebar.html";
 
@@ -184,6 +184,16 @@ export class InfernoRegion extends Region {
       Settings.persistToStorage();
     });
     return northPillarCheckbox.checked;
+  }
+
+  initializeAndGetShieldDirection(): ShieldDirection {
+    const directionSelect = document.getElementById("shieldDirection") as HTMLInputElement;
+    directionSelect.value = InfernoSettings.shieldDirection;
+    directionSelect.addEventListener("change", () => {
+      InfernoSettings.shieldDirection = directionSelect.value as ShieldDirection;
+      InfernoSettings.persistToStorage();
+    });
+    return directionSelect.value as ShieldDirection;
   }
 
   initializeAndGetUse3dView() {
@@ -472,7 +482,8 @@ export class InfernoRegion extends Region {
       player.location = { x: 25, y: 15 };
 
       // spawn zuk
-      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      const shieldDirection = this.initializeAndGetShieldDirection();
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player }, shieldDirection);
       this.addMob(shield);
 
       this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));
@@ -812,7 +823,8 @@ export class InfernoRegion extends Region {
       this.entities = this.entities.filter(entity => entity.entityName() !== EntityNames.PILLAR);
 
       // Spawn zuk
-      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      const shieldDirection = this.initializeAndGetShieldDirection();
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player }, shieldDirection);
       this.addMob(shield);
 
       this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));
