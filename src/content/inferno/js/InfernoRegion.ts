@@ -823,7 +823,8 @@ export class InfernoRegion extends Region {
       this.entities = this.entities.filter(entity => entity.entityName() !== EntityNames.PILLAR);
 
       // Spawn zuk
-      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      const shieldDirection = this.initializeAndGetShieldDirection();
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player }, shieldDirection);
       this.addMob(shield);
 
       this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));

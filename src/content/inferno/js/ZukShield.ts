@@ -24,7 +24,7 @@ export class ZukShield extends Mob {
     return LineOfSightMask.NONE;
   }
 
-  constructor(region: Region, location: Location, options: UnitOptions, direction: ShieldDirection = "random") {
+  constructor(region: Region, location: Location, options: UnitOptions, direction: ShieldDirection) {
     super(region, location, options);
 
     if (direction === "west") {
