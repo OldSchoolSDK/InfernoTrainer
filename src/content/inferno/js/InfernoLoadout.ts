@@ -54,6 +54,7 @@ import {
   PrayerRegenerationPotion,
   PrimordialBoots,
   RangerBoots,
+  RangingCapeT,
   RingOfSufferingImbued,
   RobinHoodHat,
   RubyBoltsE,
@@ -464,6 +465,54 @@ export class InfernoLoadout {
     };
   }
 
+  loadoutBudgetPureAcb() {
+    return {
+      equipment: {
+        weapon: new NightmareStaff(),
+        offhand: new MagesBook(),
+        helmet: new GuthixMitre(),
+        necklace: new OccultNecklace(),
+        cape: new RangingCapeT(),
+        ammo: new RubyDragonBoltsE(),
+        chest: new GuthixRobeTop(),
+        legs: new HueycoatlHideChaps(),
+        feet: new AraneaBoots(),
+        gloves: new TormentedBracelet(),
+        ring: new Lightbearer(),
+      },
+      inventory: [
+        new Blowpipe(),
+        new HueycoatlHideVambraces(),
+        new PrayerRegenerationPotion(),
+        new PrayerRegenerationPotion(),
+        new NecklaceOfAnguish(),
+        null,
+        new SuperRestore(),
+        new PrayerRegenerationPotion(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new ArmadylCrossbow(),
+        new DiamondDragonBoltsE(),
+        new SaradominBrew(),
+      ],
+    };
+  }
+
   findItemByName(list: Item[], name: ItemName) {
     return indexOf(map(list, "itemName"), name);
   }
@@ -492,6 +541,7 @@ export class InfernoLoadout {
         player.currentStats.defence = 45;
         break;
       case "pure":
+      case "budget_pure_acb":
         player.stats.prayer = 52;
         player.currentStats.prayer = 52;
         player.stats.defence = 1;
@@ -520,6 +570,9 @@ export class InfernoLoadout {
         break;
       case "pure":
         loadout = this.loadoutPure();
+        break;
+      case "budget_pure_acb":
+        loadout = this.loadoutBudgetPureAcb();
         break;
       case "rcb":
         loadout = this.loadoutRcb();
