@@ -28,6 +28,7 @@ import {
   DiamondDragonBoltsE,
   DizanasQuiver,
   DragonArrows,
+  Gloves,
   GuthixMitre,
   GuthixRobeTop,
   HolyBlessing,
@@ -626,6 +627,16 @@ export class InfernoLoadout {
       if (rangeLegs !== -1) {
         loadout.equipment.legs = loadout.inventory[rangeLegs] as Legs;
         loadout.inventory[rangeLegs] = mageLegs;
+      }
+
+      // swap out mage gloves for range gloves
+      const mageGloves = loadout.equipment.gloves;
+      const rangeGloves = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.HUEYCOATL_HIDE_VAMBRACES,
+      ]);
+      if (rangeGloves !== -1) {
+        loadout.equipment.gloves = loadout.inventory[rangeGloves] as Gloves;
+        loadout.inventory[rangeGloves] = mageGloves;
       }
     }
 
