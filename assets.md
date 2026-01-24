@@ -28,7 +28,7 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
 
 ### Player models
 
-    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959,25865,23975,23979,23971,7462,22109,21021,21024 maleModel0,maleModel1 anim 808,819,824,820,822,821,426,5061,7618 name player split
+    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959,25865,23975,23979,23971,7462,22109,21021,21024,11785,24422,29806,30079,30082,23444,6889,10499,19720,4502,6107,4675,21006 maleModel0,maleModel1 anim 808,819,824,820,822,821,426,4230,5061,7618,1979 name player split
 
     where:
 
@@ -51,7 +51,19 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
         - 22109 # ava's assembler
         - 21021 # ancestral top (buggy)
         - 21024 # ancestral bottom (buggy)
-
+        - 11785 # armadyl crossbow (needs animation)
+        - 24422 # nightmare staff (needs animation)
+        - 29806 # aranea boots
+        - 30079 # hueycoatl hide chaps
+        - 30082 # hueycoatl hide vambraces
+        - 23444 # tormented bracelet (or)
+        - 6889 # mage's book
+        - 10499 # ava's accumulator
+        - 19720 # occult neck (or)
+        - 4502 # bearhead
+        - 6107 # ghostly robe top
+        - 4675 # ancient staff
+        - 21006 # kodai wand
 
       - 808 # idle
       - 819 # walk
@@ -60,8 +72,10 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
       - 822 # strafe left
       - 821 # strafe right
       - 426 # fire bow
+      - 4230 # fire crossbow
       - 5061 # fire blowpipe
       - 7618 # throw chinchompa
+      - 1979 # barrage
 
 ### NPC models
 
@@ -99,6 +113,8 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
     npm run cmd modelBuilder spotanim 450 name jad_mage_rear
 
     npm run cmd modelBuilder spotanim 451 name jad_range
+
+    npm run cmd modelBuilder spotanim 301 name acb_spec
 
     npm run cmd modelBuilder spotanim 1120 name dragon_arrow
     npm run cmd modelBuilder spotanim 1122 name dragon_dart
