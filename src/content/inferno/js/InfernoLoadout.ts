@@ -640,7 +640,7 @@ export class InfernoLoadout {
       }
     }
 
-    if (this.onTask && this.loadoutType !== "pure") {
+    if (this.onTask && this.loadoutType !== "pure" && this.loadoutType !== "budget_pure_acb") {
       loadout.equipment.helmet = new SlayerHelmet();
     }
 
