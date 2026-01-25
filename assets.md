@@ -28,7 +28,7 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
 
 ### Player models
 
-    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959,25865,23975,23979,23971,7462,22109,21021,21024,11785,24422,29806,30079,30082,23444,6889,10499,19720,4502,6107,4675,21006 maleModel0,maleModel1 anim 808,819,824,820,822,821,426,4230,5061,7618,1979 name player split
+    npm run cmd modelBuilder item 26684,27235,27238,27241,26235,28902,13237,22249,12926,20997,11959,25865,23975,23979,23971,7462,22109,21021,21024,11785,24422,29806,30079,30082,23444,6889,10499,19720,4502,6107,4675,21006,28254,28256,28258,20366,22981,13239,25739,21295,29796,29801,30753,30750,30756,31097,28338,23995,22322,31106 maleModel0,maleModel1 anim 808,819,824,820,822,821,426,4230,5061,7618,1979,8057,8056,390,440,813,10172,10169 name player split
 
     where:
 
@@ -64,6 +64,24 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
         - 6107 # ghostly robe top
         - 4675 # ancient staff
         - 21006 # kodai wand
+        - 28254 # blorva helm
+        - 28256 # blorva platebody
+        - 28258 # blorva legs
+        - 20366 # amulet of torture (or)
+        - 22981 # ferocious gloves
+        - 13239 # primordial boots
+        - 25739 # sanguine scythe
+        - 21295 # infernal cape
+        - 29796 # nox hally
+        - 29801 # amulet of rancour
+        - 30753 # oathplate chest
+        - 30750 # oathplate helm
+        - 30756 # oathplate legs
+        - 31097 # avernic treads (max)
+        - 28338 # soulreaper axe
+        - 23995 # blade of saeldor
+        - 22322 # avernic defender
+        - 31106 # confliction gauntlets
 
       - 808 # idle
       - 819 # walk
@@ -76,6 +94,13 @@ Using Dezinator's `osrscachereader` at https://github.com/Dezinater/osrscacherea
       - 5061 # fire blowpipe
       - 7618 # throw chinchompa
       - 1979 # barrage
+      - 8057 # scythe idle
+      - 8056 # scythe crush
+      - 390 # sword slash
+      - 440 # halberd slash
+      - 813 # halberd idle
+      - 10172 # soulreaper axe idle
+      - 10169 # soulreaper axe slash
 
 ### NPC models
 

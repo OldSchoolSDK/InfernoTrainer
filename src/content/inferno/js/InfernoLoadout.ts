@@ -18,6 +18,7 @@ import {
   BowOfFaerdhinen,
   BrowserUtils,
   Chest,
+  ConflictionGauntlets,
   CrystalBody,
   CrystalHelm,
   CrystalLegs,
@@ -478,7 +479,7 @@ export class InfernoLoadout {
         chest: new GuthixRobeTop(),
         legs: new HueycoatlHideChaps(),
         feet: new AraneaBoots(),
-        gloves: new TormentedBracelet(),
+        gloves: new ConflictionGauntlets(),
         ring: new Lightbearer(),
       },
       inventory: [
