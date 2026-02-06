@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings } from "osrs-sdk";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings, Weapon, Location3, ProjectileOptions } from "osrs-sdk";
 
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
 import { InfernoSettings } from "../InfernoSettings";
@@ -18,6 +18,8 @@ import ZukAttackSound from "../../assets/sounds/fireblast_cast_and_fire_155.ogg"
 
 const ZukModel = Assets.getAssetUrl("models/7706_33011.glb");
 const ZukBall = Assets.getAssetUrl("models/zuk_projectile.glb");
+
+const targetIsLocation = (x: Unit | Location): x is Location => (x as Location).x !== undefined;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -37,25 +39,50 @@ class ZukWeapon extends MagicWeapon {
       // louder!
       sound.volume = 0.1;
     }
+
+    const uncappedDamageRoll = this.damageRoll;
+
     to.addProjectile(
-      new ZukProjectile(this, this.damage, from, to, "range", {
+      new ZukProjectile(this, this.damage, from, to, "range", uncappedDamageRoll, {
         model: ZukBall,
         modelScale: 1 / 128,
         setDelay: 4,
         visualDelayTicks: 2,
         sound,
+        rollDamageOnHit: true,
       }),
     );
   }
 }
 
 class ZukProjectile extends Projectile {
+  constructor(
+    weapon: Weapon,
+    damage: number,
+    from: Unit,
+    to: Unit | Location3,
+    attackStyle: string,
+    private uncappedDamageRoll: number,
+    options: ProjectileOptions = {},
+  ) {
+    super(weapon, damage, from, to, attackStyle, options);
+  }
+
   get size() {
     return 2;
   }
 
   get color() {
     return "#FFAA00";
+  }
+
+  override beforeHit() {
+    super.beforeHit();
+
+    if (this.options.rollDamageOnHit && !targetIsLocation(this.to)) {
+      const maxPossibleDamage = Math.min(this.to.currentStats.hitpoint, 148);
+      this.damage = Math.min(this.uncappedDamageRoll, maxPossibleDamage);
+    }
   }
 }
 
