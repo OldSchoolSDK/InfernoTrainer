@@ -365,4 +365,8 @@ export class TzKalZuk extends Mob {
   override get deathAnimationId() {
     return 3;
   }
+
+  override get clickboxHeight() {
+    return 4;
+  }
 }
