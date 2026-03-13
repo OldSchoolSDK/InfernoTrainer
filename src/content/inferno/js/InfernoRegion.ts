@@ -192,6 +192,7 @@ export class InfernoRegion extends Region {
     directionSelect.addEventListener("change", () => {
       InfernoSettings.shieldDirection = directionSelect.value as ShieldDirection;
       InfernoSettings.persistToStorage();
+      window.location.reload();
     });
     return directionSelect.value as ShieldDirection;
   }
