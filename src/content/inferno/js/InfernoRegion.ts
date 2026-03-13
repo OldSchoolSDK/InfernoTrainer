@@ -381,27 +381,38 @@ export class InfernoRegion extends Region {
     const mager = BrowserUtils.getQueryVar("mager") || "[]";
     const replayLink = document.getElementById("replayLink") as HTMLLinkElement;
 
-    function importSpawn(region: Region) {
+    function importSpawn(region: Region, makeDeletable: boolean = false) {
       try {
+        const newMobs: Mob[] = [];
         JSON.parse(mager).forEach((spawn: number[]) =>
-          region.addMob(new JalZek(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          newMobs.push(new JalZek(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(ranger).forEach((spawn: number[]) =>
-          region.addMob(new JalXil(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          newMobs.push(new JalXil(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(melee).forEach((spawn: number[]) =>
-          region.addMob(new JalImKot(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          newMobs.push(new JalImKot(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(blob).forEach((spawn: number[]) =>
-          region.addMob(new JalAk(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          newMobs.push(new JalAk(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
         JSON.parse(bat).forEach((spawn: number[]) =>
-          region.addMob(new JalMejRah(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
+          newMobs.push(new JalMejRah(region, { x: spawn[0] + 11, y: spawn[1] + 14 }, { aggro: player })),
         );
 
-        InfernoWaves.spawnNibblers(3, region, randomPillar).forEach(region.addMob.bind(region));
+        InfernoWaves.spawnNibblers(3, region, randomPillar).forEach((mob) => newMobs.push(mob));
 
         replayLink.href = `/${window.location.search}`;
+        
+        if (makeDeletable) {
+          newMobs.forEach((mob: Mob) => {
+            mob.removableWithRightClick = true;
+          });
+        }
+
+        for (const mob of newMobs) {
+          region.addMob(mob);
+        }
       } catch (ex) {
         console.log("failed to import wave from inferno stats", ex);
       }
@@ -419,7 +430,7 @@ export class InfernoRegion extends Region {
       const spawns = InfernoWaves.getRandomSpawns();
       this.updateSpawnIndicators(spawns);
 
-      importSpawn(this);
+      importSpawn(this, true);
     } else if (this.wave < 67) {
       player.location = { x: 28, y: 17 };
       if (bat != "[]" || blob != "[]" || melee != "[]" || ranger != "[]" || mager != "[]") {
