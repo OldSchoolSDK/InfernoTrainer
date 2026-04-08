@@ -18,7 +18,7 @@ import { JalXil } from "./mobs/JalXil";
 import { JalZek } from "./mobs/JalZek";
 import { TzKalZuk } from "./mobs/TzKalZuk";
 import { Wall } from "./Wall";
-import { ZukShield } from "./ZukShield";
+import { ZukShield, type ShieldDirection } from "./ZukShield";
 
 import SidebarContent from "../sidebar.html";
 
@@ -184,6 +184,17 @@ export class InfernoRegion extends Region {
       Settings.persistToStorage();
     });
     return northPillarCheckbox.checked;
+  }
+
+  initializeAndGetShieldDirection(): ShieldDirection {
+    const directionSelect = document.getElementById("shieldDirection") as HTMLInputElement;
+    directionSelect.value = InfernoSettings.shieldDirection;
+    directionSelect.addEventListener("change", () => {
+      InfernoSettings.shieldDirection = directionSelect.value as ShieldDirection;
+      InfernoSettings.persistToStorage();
+      window.location.reload();
+    });
+    return directionSelect.value as ShieldDirection;
   }
 
   initializeAndGetUse3dView() {
@@ -445,24 +456,26 @@ export class InfernoRegion extends Region {
 
       player.location = { x: 25, y: 27 };
 
+      const stunTimers = [1, 4, 7].sort(() => 0.5 - Math.random());
+
       const jad1 = new JalTokJad(
         this,
         { x: 18, y: 24 },
-        { aggro: player, attackSpeed: 9, stun: 1, healers: 3, isZukWave: false },
+        { aggro: player, attackSpeed: 9, stun: stunTimers[0], healers: 3, isZukWave: false },
       );
       this.addMob(jad1);
 
       const jad2 = new JalTokJad(
         this,
         { x: 28, y: 24 },
-        { aggro: player, attackSpeed: 9, stun: 7, healers: 3, isZukWave: false },
+        { aggro: player, attackSpeed: 9, stun: stunTimers[1], healers: 3, isZukWave: false },
       );
       this.addMob(jad2);
 
       const jad3 = new JalTokJad(
         this,
         { x: 23, y: 35 },
-        { aggro: player, attackSpeed: 9, stun: 4, healers: 3, isZukWave: false },
+        { aggro: player, attackSpeed: 9, stun: stunTimers[2], healers: 3, isZukWave: false },
       );
       this.addMob(jad3);
     } else if (this.wave === 69) {
@@ -472,7 +485,8 @@ export class InfernoRegion extends Region {
       player.location = { x: 25, y: 15 };
 
       // spawn zuk
-      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      const shieldDirection = this.initializeAndGetShieldDirection();
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player }, shieldDirection);
       this.addMob(shield);
 
       this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));
@@ -812,7 +826,8 @@ export class InfernoRegion extends Region {
       this.entities = this.entities.filter(entity => entity.entityName() !== EntityNames.PILLAR);
 
       // Spawn zuk
-      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player });
+      const shieldDirection = this.initializeAndGetShieldDirection();
+      const shield = new ZukShield(this, { x: 23, y: 13 }, { aggro: player }, shieldDirection);
       this.addMob(shield);
 
       this.addMob(new TzKalZuk(this, { x: 22, y: 8 }, { aggro: player }));

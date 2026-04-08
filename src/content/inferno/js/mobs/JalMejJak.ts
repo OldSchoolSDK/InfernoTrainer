@@ -44,29 +44,35 @@ class AoeWeapon extends Weapon {
 
   attack(from: Unit, to: Unit): boolean {
     const playerLocation = from.aggro.location;
-    // make splat in 2 random spots and where the player is
-    const limitedPlayerLocation = {
-      x: Math.min(Math.max(from.location.x - 5, playerLocation.x), from.location.x + 4),
+
+    const xMin = from.location.x - 5;
+    const xMax = from.location.x + 5; // exclusive
+    const yMin = 14;
+    const yMax = 18; // exclusive
+    
+    function generateRandomLocation() {
+      return {
+        x: xMin + (Math.floor(Random.get() * (xMax - xMin))),
+        y: yMin + Math.floor(Random.get() * (yMax - yMin)),
+        z: 0,
+      };
+    }
+
+    // If the player is within the box, create a spark at their location.
+    const spark1Location = (playerLocation.x >= xMin && playerLocation.x < xMax && playerLocation.y >= yMin && playerLocation.y < yMax) ? {
+      x: playerLocation.x,
       y: playerLocation.y,
       z: 0,
-    };
-    const spark2Location = {
-      x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-      y: 14 + Math.floor(Random.get() * 4),
-      z: 0,
-    };
-    const spark3Location = {
-      x: from.location.x + (Math.floor(Random.get() * 11) - 5),
-      y: 14 + Math.floor(Random.get() * 4),
-      z: 0,
-    };
-    from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, limitedPlayerLocation, "magic", AOE_PROJECTILE_SETTINGS))
+    } : generateRandomLocation();
+
+    const [spark2Location, spark3Location] = [generateRandomLocation(), generateRandomLocation()];
+    from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, spark1Location, "magic", AOE_PROJECTILE_SETTINGS))
     from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, spark2Location, "magic", AOE_PROJECTILE_SETTINGS))
     from.region.addProjectile(new Projectile(new InfernoSparkWeapon(), 0, from, spark3Location, "magic", AOE_PROJECTILE_SETTINGS))
 
     DelayedAction.registerDelayedAction(
       new DelayedAction(() => {
-        const spark1 = new InfernoHealerSpark(from.region, limitedPlayerLocation, from, to);
+        const spark1 = new InfernoHealerSpark(from.region, spark1Location, from, to);
         from.region.addEntity(spark1);
         const spark2 = new InfernoHealerSpark(from.region, spark2Location, from, to);
         from.region.addEntity(spark2);
