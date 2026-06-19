@@ -300,7 +300,7 @@ export class InfernoLoadout {
         new SuperRestore(),
         new SuperRestore(),
         new BastionPotion(),
-        new StaminaPotion(),
+        new BastionPotion(),
         new SuperRestore(),
         new SuperRestore(),
       ],
@@ -467,26 +467,69 @@ export class InfernoLoadout {
     );
   }
 
-  setStats(player: Player) {
-    player.stats.prayer = 99;
-    player.currentStats.prayer = 99;
-    player.stats.defence = 99;
-    player.currentStats.defence = 99;
-    switch (this.loadoutType) {
-      case "zerker":
-        player.stats.prayer = 52;
-        player.currentStats.prayer = 52;
-        player.stats.defence = 45;
-        player.currentStats.defence = 45;
-        break;
-      case "pure":
-        player.stats.prayer = 52;
-        player.currentStats.prayer = 52;
-        player.stats.defence = 1;
-        player.currentStats.defence = 1;
-        break;
+setStats(player: Player) {
+  const savedStats = JSON.parse(
+    localStorage.getItem("inferno_custom_stats_v1") || "{}",
+  );
+
+  const getSavedStat = (name: string, fallback: number) => {
+    const value = Number(savedStats[name]);
+
+    if (!Number.isFinite(value)) {
+      return fallback;
     }
+
+    if (value < 1) {
+      return 1;
+    }
+
+    if (value > 99) {
+      return 99;
+    }
+
+    return value;
+  };
+
+  const setPlayerStat = (name: string, value: number) => {
+    (player.stats as any)[name] = value;
+    (player.currentStats as any)[name] = value;
+  };
+
+  if (savedStats.enabled === true) {
+    setPlayerStat("attack", getSavedStat("attack", 99));
+    setPlayerStat("strength", getSavedStat("strength", 99));
+    setPlayerStat("defence", getSavedStat("defence", 99));
+    setPlayerStat("range", getSavedStat("range", 99));
+    setPlayerStat("magic", getSavedStat("magic", 99));
+    setPlayerStat("prayer", getSavedStat("prayer", 99));
+    setPlayerStat("hitpoint", getSavedStat("hitpoint", 99));
+    setPlayerStat("agility", getSavedStat("agility", 99));
+
+    return;
   }
+
+  // Default stats if custom stats are turned off
+  setPlayerStat("attack", 99);
+  setPlayerStat("strength", 99);
+  setPlayerStat("defence", 99);
+  setPlayerStat("range", 99);
+  setPlayerStat("magic", 99);
+  setPlayerStat("prayer", 99);
+  setPlayerStat("hitpoint", 99);
+  setPlayerStat("agility", 99);
+
+  switch (this.loadoutType) {
+    case "zerker":
+      setPlayerStat("prayer", 52);
+      setPlayerStat("defence", 45);
+      break;
+
+    case "pure":
+      setPlayerStat("prayer", 52);
+      setPlayerStat("defence", 1);
+      break;
+  }
+}
 
   getLoadout(): UnitOptions {
     let loadout: UnitOptions;

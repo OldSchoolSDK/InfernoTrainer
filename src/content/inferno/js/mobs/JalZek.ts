@@ -61,7 +61,7 @@ export class JalZek extends Mob {
 
   setStats() {
     const region = this.region as InfernoRegion;
-    this.shouldRespawnMobs = region.wave >= 69;
+    this.shouldRespawnMobs = region.wave === 69;
 
     this.stunned = 1;
 

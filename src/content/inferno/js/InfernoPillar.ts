@@ -4,6 +4,8 @@ import { Entity, Projectile, UnitBonuses, Region, Settings, DelayedAction, Model
 
 import { filter, remove } from "lodash";
 
+import { InfernoPillarModel } from "./InfernoPillarModel";
+
 const MissSplat = Assets.getAssetUrl("assets/images/hitsplats/miss.png");
 const DamageSplat = Assets.getAssetUrl("assets/images/hitsplats/damage.png");
 
@@ -216,7 +218,11 @@ export class InfernoPillar extends Entity {
     }
   }
 
-  create3dModel(): Model {
-    return BasicModel.forRenderable(this);
-  }
+create3dModel(): Model {
+  return BasicModel.forRenderable(this);
+}
+
+  /*create3dModel(): Model {
+  return new InfernoPillarModel();
+}*/
 }

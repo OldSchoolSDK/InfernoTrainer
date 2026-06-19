@@ -11,6 +11,7 @@
   >
     New Wave
   </button>
+  <button id="exportCustomWave">Play Wave</button>
   <a id="replayLink">Replay Wave</a>
   <button id="pauseResumeLink">Pause Wave</button>
 
@@ -24,6 +25,93 @@
     <option value="pure">Pure</option>
     <option value="max_melee">Max Melee (WIP)</option>
   </select>
+
+  <hr />
+
+<div style="padding: 8px;">
+  <h3>Custom Stats</h3>
+
+  <label>
+    <input type="checkbox" id="useCustomStats" />
+    Use custom stats
+  </label>
+
+  <div style="display: grid; grid-template-columns: 1fr 70px; gap: 6px; margin-top: 8px;">
+    <label for="customAttack">Attack</label>
+    <input id="customAttack" type="number" min="1" max="99" value="90" />
+
+    <label for="customStrength">Strength</label>
+    <input id="customStrength" type="number" min="1" max="99" value="99" />
+
+    <label for="customDefence">Defence</label>
+    <input id="customDefence" type="number" min="1" max="99" value="99" />
+
+    <label for="customRange">Range</label>
+    <input id="customRange" type="number" min="1" max="99" value="99" />
+
+    <label for="customMagic">Magic</label>
+    <input id="customMagic" type="number" min="1" max="99" value="94" />
+
+    <label for="customPrayer">Prayer</label>
+    <input id="customPrayer" type="number" min="1" max="99" value="80" />
+
+    <label for="customHitpoint">Hitpoint</label>
+    <input id="customHitpoint" type="number" min="1" max="99" value="99" />
+
+    <label for="customAgility">Agility</label>
+    <input id="customAgility" type="number" min="1" max="99" value="71" />
+  </div>
+
+  <button
+    id="saveCustomStats"
+    style="margin-top: 8px; width: 100%;"
+    onclick="
+      (function () {
+        const clamp = function (id) {
+          const input = document.getElementById(id);
+          const value = Number(input.value);
+
+          if (!Number.isFinite(value)) {
+            return 99;
+          }
+
+          if (value < 1) {
+            return 1;
+          }
+
+          if (value > 99) {
+            return 99;
+          }
+
+          return value;
+        };
+
+        const stats = {
+          enabled: document.getElementById('useCustomStats').checked,
+          attack: clamp('customAttack'),
+          strength: clamp('customStrength'),
+          defence: clamp('customDefence'),
+          range: clamp('customRange'),
+          magic: clamp('customMagic'),
+          prayer: clamp('customPrayer'),
+          hitpoint: clamp('customHitpoint'),
+          agility: clamp('customAgility')
+        };
+
+        localStorage.setItem('inferno_custom_stats_v1', JSON.stringify(stats));
+
+        alert('Custom stats saved. The wave will now reload.');
+        window.location.reload();
+      })();
+    "
+  >
+    Save custom stats
+  </button>
+
+  <p style="font-size: 12px; margin-top: 6px;">
+    Save, then reload the wave for the stats to apply.
+  </p>
+</div>
 
   <select name="shieldDirection" id="shieldDirection">
     <option value="random">Random Shield Direction</option>
@@ -81,16 +169,53 @@
     <input type="checkbox" id="displaySetTimer" name="displaySetTimer">
     <label for="displaySetTimer">Display Set Timer Below Zuk</label>
   </div>
-  
+  <hr />
+
+<div style="padding: 8px;">
+  <h3>Inferno Scouter Code</h3>
+
+  <input
+    id="infernoScouterCode"
+    type="text"
+    placeholder="Paste code e.g. oMRoBXoYo"
+    style="width: 100%; box-sizing: border-box;"
+  />
+
+  <button id="loadInfernoScouterCode" style="margin-top: 6px; width: 100%;">
+    Load Scouter Code
+  </button>
+  <button id="exportCustomWave">Play Wave</button>
+  <p id="infernoScouterCodeMessage" style="font-size: 12px; margin-top: 6px;"></p>
+</div>
+
+<hr />
+
+<div style="padding: 8px;">
+  <h3>1-Tick Training</h3>
+
+  <select id="oneTickScenario" style="width: 100%; box-sizing: border-box;">
+    <option value="mage_ranger">Mager + Ranger stack</option>
+    <option value="mage_melee">Mager + Melee stack</option>
+    <option value="ranger_melee">Ranger + Melee stack</option>
+    <option value="mage_ranger_blob">Mager + Ranger + Blob</option>
+    <option value="two_blobs_ranger">2 Blobs + Ranger</option>
+    <option value="two_blobs_mager">2 Blobs + Mager</option>
+    <option value="mage_ranger_melee">Mager + Ranger + Melee</option>
+    <option value="blob_ranger_melee">Blob + Ranger + Melee</option>
+  </select>
+
+  <button id="loadOneTickScenario" style="margin-top: 6px; width: 100%;">
+    Load 1-Tick Scenario
+  </button>
+
+  <p style="font-size: 12px; margin-top: 6px;">
+    Loads a custom stack for practising 1-tick alternate prayer flicking.
+  </p>
+</div>
+
   <a href="/?wave=0">Custom Mob Mode</a>
   <button id="exportCustomWave">Play/Export Wave</button>
   <button id="editWave">Edit Wave</button>
   <hr />
-
-  <a href="https://github.com/OldSchoolSDK/Engine" target="_blank"
-    >Explore Source on GitHub</a
-  >
-  <a href="https://discord.gg/Z3ZyY7Yzt5" target="_blank"
-    >Join Our Discord</a
   >
   <a href="https://oldschool.runescape.wiki/w/Inferno">Mob Explanations</a>

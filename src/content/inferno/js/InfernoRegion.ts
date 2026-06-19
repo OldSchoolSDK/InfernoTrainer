@@ -1,5 +1,5 @@
 "use strict";
-import { BrowserUtils, CardinalDirection, ControlPanelController, Entity, EntityNames, ImageLoader, InvisibleMovementBlocker, Location, Mob, Player, Region, Settings, TileMarker, Trainer, Viewport } from "osrs-sdk";
+import { BrowserUtils, ItemName, CardinalDirection, ControlPanelController, Entity, EntityNames, ImageLoader, InvisibleMovementBlocker, Location, Mob, Player, Region, Settings, TileMarker, Trainer, Viewport } from "osrs-sdk";
 
 import InfernoMapImage from "../assets/images/map.png";
 
@@ -21,11 +21,20 @@ import { Wall } from "./Wall";
 import { ZukShield, type ShieldDirection } from "./ZukShield";
 
 import SidebarContent from "../sidebar.html";
+import { AttackCooldownOverlay } from "./AttackCooldownOverlay";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+
+
 export class InfernoRegion extends Region {
   wave: number;
+  fourTickCycleIndex: number = 0;
+  fourTickBoxes: HTMLDivElement[] = [];
+  fourTickContainer: HTMLDivElement | null = null;
+  fourTickCycleEnabled: boolean = true;
+  fourTickSettingsToggle: HTMLDivElement | null = null;
+  private attackCooldownOverlay?: AttackCooldownOverlay;
   mapImage: HTMLImageElement = ImageLoader.createImage(InfernoMapImage);
 
   // Wave progression properties
@@ -234,6 +243,34 @@ export class InfernoRegion extends Region {
     });
   }
 
+  isSettingsTabOpen() {
+  const selectedControl = ControlPanelController.controller.selectedControl as any;
+  const controls = ControlPanelController.controls as any;
+
+  const possibleSettingsControls = [
+    controls.SETTINGS,
+    controls.OPTIONS,
+    controls.SETTING,
+    controls.CONFIG,
+  ].filter(Boolean);
+
+  const selectedControlText = [
+    selectedControl?.constructor?.name,
+    selectedControl?.name,
+    selectedControl?.label,
+    selectedControl?.id,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    possibleSettingsControls.includes(selectedControl) ||
+    selectedControlText.includes("setting") ||
+    selectedControlText.includes("option")
+  );
+}
+
   initializeDisplaySetTimerToggle() {
     const displaySetTimerCheckbox = document.getElementById("displaySetTimer") as HTMLInputElement;
     displaySetTimerCheckbox.checked = InfernoSettings.displaySetTimer === true;
@@ -243,7 +280,468 @@ export class InfernoRegion extends Region {
     });
   }
 
-  initialiseRegion() {
+  initializeFourTickCycle() {
+  // Remove old overlay if it somehow already exists
+  if (this.fourTickContainer) {
+    this.fourTickContainer.remove();
+    this.fourTickContainer = null;
+  }
+  if (this.fourTickSettingsToggle) {
+  this.fourTickSettingsToggle.remove();
+  this.fourTickSettingsToggle = null;
+}
+
+const savedFourTickSetting = localStorage.getItem(
+  "inferno_four_tick_cycle_enabled",
+);
+
+this.fourTickCycleEnabled =
+  savedFourTickSetting === null ? true : savedFourTickSetting === "true";
+
+  const container = document.createElement("div");
+  container.id = "floatingFourTickCycle";
+  container.style.position = "fixed";
+  container.style.right = "320px";
+  container.style.bottom = "400px";
+  container.style.zIndex = "9999";
+  container.style.display = "flex";
+  container.style.gap = "6px";
+  container.style.padding = "6px";
+  container.style.pointerEvents = "none";
+
+  const boxes: HTMLDivElement[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    const box = document.createElement("div");
+    box.innerText = String(i + 1);
+    box.style.width = "38px";
+    box.style.height = "38px";
+    box.style.lineHeight = "38px";
+    box.style.textAlign = "center";
+    box.style.fontWeight = "bold";
+    box.style.fontSize = "20px";
+    box.style.border = "2px solid #4a90e2";
+    box.style.borderRadius = "4px";
+    box.style.background = "#1e2b3a";
+    box.style.color = "white";
+    box.style.boxSizing = "border-box";
+    box.style.fontFamily = "sans-serif";
+
+    boxes.push(box);
+    container.appendChild(box);
+  }
+
+  document.body.appendChild(container);
+
+  this.fourTickContainer = container;
+  this.fourTickBoxes = boxes;
+
+  const settingsToggle = document.createElement("div");
+settingsToggle.id = "fourTickSettingsToggle";
+settingsToggle.style.position = "fixed";
+settingsToggle.style.right = "345px";
+settingsToggle.style.bottom = "405px";
+settingsToggle.style.zIndex = "10000";
+settingsToggle.style.display = "none";
+settingsToggle.style.alignItems = "center";
+settingsToggle.style.gap = "6px";
+settingsToggle.style.color = "yellow";
+settingsToggle.style.fontWeight = "";
+settingsToggle.style.fontSize = "24px";
+settingsToggle.style.pointerEvents = "auto";
+settingsToggle.style.userSelect = "none";
+
+const checkbox = document.createElement("input");
+checkbox.type = "checkbox";
+checkbox.checked = this.fourTickCycleEnabled;
+checkbox.style.cursor = "pointer";
+
+const label = document.createElement("span");
+label.innerText = "4-Tick Prayer Visual";
+
+checkbox.addEventListener("change", () => {
+  this.fourTickCycleEnabled = checkbox.checked;
+
+  localStorage.setItem(
+    "inferno_four_tick_cycle_enabled",
+    String(this.fourTickCycleEnabled),
+  );
+
+  this.updateFourTickCycleDisplay();
+});
+
+settingsToggle.addEventListener("mousedown", (event) => {
+  event.stopPropagation();
+});
+
+settingsToggle.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+settingsToggle.appendChild(checkbox);
+settingsToggle.appendChild(label);
+
+document.body.appendChild(settingsToggle);
+
+this.fourTickSettingsToggle = settingsToggle;
+
+  this.updateFourTickCycleDisplay();
+}
+
+updateFourTickCycleDisplay() {
+  const isPrayerTabOpen =
+    ControlPanelController.controller.selectedControl ===
+    ControlPanelController.controls.PRAYER;
+
+  const isSettingsTabOpen = this.isSettingsTabOpen();
+
+  if (this.fourTickSettingsToggle) {
+    this.fourTickSettingsToggle.style.display = isSettingsTabOpen
+      ? "flex"
+      : "none";
+  }
+
+  const shouldShowPrayerVisual =
+    this.fourTickCycleEnabled && isPrayerTabOpen;
+
+  if (this.fourTickContainer) {
+    this.fourTickContainer.style.display = shouldShowPrayerVisual
+      ? "flex"
+      : "none";
+  }
+
+  if (!shouldShowPrayerVisual) {
+    return;
+  }
+
+  this.fourTickBoxes.forEach((box, index) => {
+    if (index === this.fourTickCycleIndex) {
+      if (index === 0) {
+        box.style.background = "#7dff7d";
+        box.style.color = "black";
+        box.style.borderColor = "#ffffff";
+      } else {
+        box.style.background = "#58c4ff";
+        box.style.color = "black";
+        box.style.borderColor = "#ffffff";
+      }
+    } else {
+      box.style.background = "#1e2b3a";
+      box.style.color = "white";
+      box.style.borderColor = "#4a90e2";
+    }
+  });
+}
+  
+initializeInfernoScouterCodeImport() {
+  const input = document.getElementById(
+    "infernoScouterCode",
+  ) as HTMLInputElement;
+
+  const button = document.getElementById(
+    "loadInfernoScouterCode",
+  ) as HTMLButtonElement;
+
+  const message = document.getElementById(
+    "infernoScouterCodeMessage",
+  ) as HTMLElement;
+
+  if (!input || !button) {
+    return;
+  }
+
+  const trainerSpawnSlots = [
+    [1, 5],   // slot 1
+    [22, 5],  // slot 2
+    [3, 11],  // slot 3
+    [23, 12], // slot 4
+    [16, 17], // slot 5
+    [5, 23],  // slot 6
+    [23, 25], // slot 7
+    [1, 28],  // slot 8
+    [15, 28], // slot 9
+  ];
+
+  const parseCode = (rawCode: string) => {
+    let code = rawCode.trim();
+
+    // If the user pasted "[oMRoBXoYo]", use the part inside brackets.
+    const bracketMatch = code.match(/\[([^\]]+)\]/);
+    if (bracketMatch) {
+      code = bracketMatch[1];
+    }
+
+    // Remove spaces, brackets, and NPC-index rank numbers.
+    // Example: "M1oR2ooooo" becomes "MoRoooooo".
+    code = code
+      .toUpperCase()
+      .replace(/[\[\]\s]/g, "")
+      .replace(/[0-9]/g, "");
+
+    if (code.length !== 9) {
+      throw new Error(
+        `Invalid code length. Expected 9 spawn letters, got ${code.length}.`,
+      );
+    }
+
+    if (!/^[OYBRXM]{9}$/.test(code)) {
+      throw new Error(
+        "Invalid code. Only use o, Y, B, R, X, and M.",
+      );
+    }
+
+    return code;
+  };
+
+  const buildUrlFromCode = (rawCode: string) => {
+    const code = parseCode(rawCode);
+
+    const mobs = {
+      mager: [] as number[][],
+      ranger: [] as number[][],
+      melee: [] as number[][],
+      blob: [] as number[][],
+      bat: [] as number[][],
+    };
+
+    for (let i = 0; i < code.length; i++) {
+      const letter = code[i];
+      const spawn = trainerSpawnSlots[i];
+
+      switch (letter) {
+        case "M":
+          mobs.mager.push(spawn);
+          break;
+
+        case "R":
+          mobs.ranger.push(spawn);
+          break;
+
+        case "X":
+          mobs.melee.push(spawn);
+          break;
+
+        case "B":
+          mobs.blob.push(spawn);
+          break;
+
+        case "Y":
+          mobs.bat.push(spawn);
+          break;
+
+        case "O":
+          break;
+      }
+    }
+
+    return (
+      "/?wave=0" +
+      `&mager=${encodeURIComponent(JSON.stringify(mobs.mager))}` +
+      `&ranger=${encodeURIComponent(JSON.stringify(mobs.ranger))}` +
+      `&melee=${encodeURIComponent(JSON.stringify(mobs.melee))}` +
+      `&blob=${encodeURIComponent(JSON.stringify(mobs.blob))}` +
+      `&bat=${encodeURIComponent(JSON.stringify(mobs.bat))}` +
+      "&copyable"
+    );
+  };
+
+  const loadCode = () => {
+    try {
+      const url = buildUrlFromCode(input.value);
+      window.location.href = url;
+    } catch (error) {
+      if (message) {
+        message.innerText =
+          error instanceof Error ? error.message : "Invalid Inferno Scouter code.";
+        message.style.color = "red";
+      }
+    }
+  };
+
+  button.addEventListener("click", loadCode);
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      loadCode();
+    }
+  });
+}
+
+initializeOneTickTraining() {
+  const scenarioSelect = document.getElementById(
+    "oneTickScenario",
+  ) as HTMLSelectElement;
+
+  const loadButton = document.getElementById(
+    "loadOneTickScenario",
+  ) as HTMLButtonElement;
+
+  if (!scenarioSelect || !loadButton) {
+    return;
+  }
+
+  // These coordinates use the trainer's existing custom-wave coordinate system.
+  // importSpawn() later adds +11 and +14 to these values.
+  const stackTile = [16, 17];
+  const sideTileOne = [15, 17];
+  const sideTileTwo = [17, 17];
+
+  const scenarios: Record<
+    string,
+    {
+      mager: number[][];
+      ranger: number[][];
+      melee: number[][];
+      blob: number[][];
+      bat: number[][];
+    }
+  > = {
+    mage_ranger: {
+      mager: [stackTile],
+      ranger: [stackTile],
+      melee: [],
+      blob: [],
+      bat: [],
+    },
+
+    mage_melee: {
+      mager: [stackTile],
+      ranger: [],
+      melee: [stackTile],
+      blob: [],
+      bat: [],
+    },
+
+    ranger_melee: {
+      mager: [],
+      ranger: [stackTile],
+      melee: [stackTile],
+      blob: [],
+      bat: [],
+    },
+
+    mage_ranger_blob: {
+      mager: [stackTile],
+      ranger: [stackTile],
+      melee: [],
+      blob: [sideTileOne],
+      bat: [],
+    },
+
+    two_blobs_ranger: {
+      mager: [],
+      ranger: [stackTile],
+      melee: [],
+      blob: [sideTileOne, sideTileTwo],
+      bat: [],
+    },
+
+    two_blobs_mager: {
+      mager: [stackTile],
+      ranger: [],
+      melee: [],
+      blob: [sideTileOne, sideTileTwo],
+      bat: [],
+    },
+
+    mage_ranger_melee: {
+      mager: [stackTile],
+      ranger: [stackTile],
+      melee: [stackTile],
+      blob: [],
+      bat: [],
+    },
+
+    blob_ranger_melee: {
+      mager: [],
+      ranger: [stackTile],
+      melee: [stackTile],
+      blob: [sideTileOne],
+      bat: [],
+    },
+  };
+
+  const buildScenarioUrl = (scenarioKey: string) => {
+    const scenario = scenarios[scenarioKey];
+
+    if (!scenario) {
+      return "/?wave=0";
+    }
+
+    return (
+      "/?wave=0" +
+      `&mager=${encodeURIComponent(JSON.stringify(scenario.mager))}` +
+      `&ranger=${encodeURIComponent(JSON.stringify(scenario.ranger))}` +
+      `&melee=${encodeURIComponent(JSON.stringify(scenario.melee))}` +
+      `&blob=${encodeURIComponent(JSON.stringify(scenario.blob))}` +
+      `&bat=${encodeURIComponent(JSON.stringify(scenario.bat))}` +
+      "&copyable&autoplay=true"
+    );
+  };
+
+  loadButton.addEventListener("click", () => {
+    window.location.href = buildScenarioUrl(scenarioSelect.value);
+  });
+}
+
+startAutoplayIfRequested() {
+  const shouldAutoplay = BrowserUtils.getQueryVar("autoplay") === "true";
+
+  if (!shouldAutoplay) {
+    return;
+  }
+
+  // Wait until the trainer has fully rendered and the play button exists.
+  setTimeout(() => {
+    const pauseResumeButton = document.getElementById(
+      "pauseResumeLink",
+    ) as HTMLButtonElement;
+
+    if (!pauseResumeButton) {
+      return;
+    }
+
+    // Only start if it is actually paused.
+    if (this.world.isPaused) {
+      pauseResumeButton.click();
+    }
+  }, 1000);
+}
+
+initializeCustomStatsPanel() {
+  const savedStats = JSON.parse(
+    localStorage.getItem("inferno_custom_stats_v1") || "{}",
+  );
+
+  const useCustomStats = document.getElementById(
+    "useCustomStats",
+  ) as HTMLInputElement;
+
+  if (!useCustomStats) {
+    return;
+  }
+
+  useCustomStats.checked = savedStats.enabled === true;
+
+  const setInputValue = (id: string, value: number) => {
+    const input = document.getElementById(id) as HTMLInputElement;
+
+    if (input) {
+      input.value = String(value);
+    }
+  };
+
+  setInputValue("customAttack", savedStats.attack ?? 90);
+  setInputValue("customStrength", savedStats.strength ?? 99);
+  setInputValue("customDefence", savedStats.defence ?? 99);
+  setInputValue("customRange", savedStats.range ?? 99);
+  setInputValue("customMagic", savedStats.magic ?? 94);
+  setInputValue("customPrayer", savedStats.prayer ?? 80);
+  setInputValue("customHitpoint", savedStats.hitpoint ?? 99);
+  setInputValue("customAgility", savedStats.agility ?? 71);
+}
+
+initialiseRegion() {
     const waveInput: HTMLInputElement = document.getElementById("waveinput") as HTMLInputElement;
 
 
@@ -341,6 +839,10 @@ export class InfernoRegion extends Region {
     this.initializeWaveProgressionToggle();
     this.initializeSpawnIndicatorsToggle();
     this.initializeDisplaySetTimerToggle();
+    this.initializeFourTickCycle();
+    this.initializeInfernoScouterCodeImport();
+    this.initializeOneTickTraining();
+    this.initializeCustomStatsPanel();
     this.wave = parseInt(BrowserUtils.getQueryVar("wave"));
 
     if (isNaN(this.wave)) {
@@ -356,6 +858,25 @@ export class InfernoRegion extends Region {
     const loadout = new InfernoLoadout(this.wave, loadoutType, onTask);
     loadout.setStats(player); // flip this around one day
     player.setUnitOptions(loadout.getLoadout());
+
+    this.attackCooldownOverlay = new AttackCooldownOverlay(this, player);
+this.addEntity(this.attackCooldownOverlay);
+
+const originalDidAttack = player.didAttack.bind(player);
+
+player.didAttack = () => {
+  originalDidAttack();
+
+  const weaponName = player.equipment.weapon?.itemName;
+
+  const isBowAttack =
+    weaponName === ItemName.BOWFA ||
+    weaponName === ItemName.TWISTED_BOW;
+
+  if (isBowAttack) {
+    this.attackCooldownOverlay?.show();
+  }
+};
 
     if (this.wave < 67 || this.wave >= 70) {
       // Add pillars
@@ -593,9 +1114,11 @@ export class InfernoRegion extends Region {
     }
 
     player.perceivedLocation = player.location;
-    player.destinationLocation = player.location;
+player.destinationLocation = player.location;
 
-    return { player };
+this.startAutoplayIfRequested();
+
+return { player };
   }
 
   drawWorldBackground(context: OffscreenCanvasRenderingContext2D, scale: number) {
@@ -658,9 +1181,15 @@ export class InfernoRegion extends Region {
   }
 
   postTick() {
-    super.postTick();
-    this.handleWaveProgression();
-  }
+  super.postTick();
+
+  this.attackCooldownOverlay?.sync();
+
+  this.fourTickCycleIndex = (this.fourTickCycleIndex + 1) % 4;
+  this.updateFourTickCycleDisplay();
+
+  this.handleWaveProgression();
+}
 
   private handleWaveProgression() {
     // Only enable wave progression for waves 1-69 and if the setting is enabled
