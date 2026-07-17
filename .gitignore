@@ -105,3 +105,9 @@ typings/
 
 # TernJS port file
 .tern-port
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
