@@ -4,6 +4,9 @@ import {
   AncestralRobebottom,
   AncestralRobetop,
   AncientStaff,
+  AraneaBoots,
+  ArmadylBrew,
+  ArmadylCrossbow,
   AvasAccumulator,
   AvasAssembler,
   BarrowsGloves,
@@ -15,6 +18,7 @@ import {
   BowOfFaerdhinen,
   BrowserUtils,
   Chest,
+  ConflictionGauntlets,
   CrystalBody,
   CrystalHelm,
   CrystalLegs,
@@ -22,10 +26,15 @@ import {
   DagonhaiRobeTop,
   DevoutBoots,
   DiamondBoltsE,
+  DiamondDragonBoltsE,
   DizanasQuiver,
   DragonArrows,
+  Gloves,
+  GuthixMitre,
   GuthixRobeTop,
   HolyBlessing,
+  HueycoatlHideChaps,
+  HueycoatlHideVambraces,
   InfernalCape,
   Item,
   ItemName,
@@ -34,19 +43,24 @@ import {
   JusticiarLegguards,
   KodaiWand,
   Legs,
+  Lightbearer,
   MagesBook,
   MasoriBodyF,
   MasoriChapsF,
   MasoriMaskF,
   NecklaceOfAnguish,
+  NightmareStaff,
   OccultNecklace,
   PegasianBoots,
   Player,
+  PrayerRegenerationPotion,
   PrimordialBoots,
   RangerBoots,
+  RangingCapeT,
   RingOfSufferingImbued,
   RobinHoodHat,
   RubyBoltsE,
+  RubyDragonBoltsE,
   RuneCrossbow,
   RuneKiteshield,
   SaradominBody,
@@ -57,6 +71,7 @@ import {
   SlayerHelmet,
   StaminaPotion,
   SuperRestore,
+  TormentedBracelet,
   TorvaFullhelm,
   TorvaPlatebody,
   TorvaPlatelegs,
@@ -452,6 +467,54 @@ export class InfernoLoadout {
     };
   }
 
+  loadoutBudgetPureAcb() {
+    return {
+      equipment: {
+        weapon: new NightmareStaff(),
+        offhand: new MagesBook(),
+        helmet: new GuthixMitre(),
+        necklace: new OccultNecklace(),
+        cape: new RangingCapeT(),
+        ammo: new RubyDragonBoltsE(),
+        chest: new GuthixRobeTop(),
+        legs: new HueycoatlHideChaps(),
+        feet: new AraneaBoots(),
+        gloves: new ConflictionGauntlets(),
+        ring: new Lightbearer(),
+      },
+      inventory: [
+        new Blowpipe(),
+        new HueycoatlHideVambraces(),
+        new PrayerRegenerationPotion(),
+        new PrayerRegenerationPotion(),
+        new NecklaceOfAnguish(),
+        null,
+        new SuperRestore(),
+        new PrayerRegenerationPotion(),
+        new SaradominBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new SaradominBrew(),
+        new SuperRestore(),
+        new SuperRestore(),
+        new ArmadylBrew(),
+        new ArmadylCrossbow(),
+        new DiamondDragonBoltsE(),
+        new SaradominBrew(),
+      ],
+    };
+  }
+
   findItemByName(list: Item[], name: ItemName) {
     return indexOf(map(list, "itemName"), name);
   }
@@ -480,6 +543,7 @@ export class InfernoLoadout {
         player.currentStats.defence = 45;
         break;
       case "pure":
+      case "budget_pure_acb":
         player.stats.prayer = 52;
         player.currentStats.prayer = 52;
         player.stats.defence = 1;
@@ -509,6 +573,9 @@ export class InfernoLoadout {
       case "pure":
         loadout = this.loadoutPure();
         break;
+      case "budget_pure_acb":
+        loadout = this.loadoutBudgetPureAcb();
+        break;
       case "rcb":
         loadout = this.loadoutRcb();
         break;
@@ -528,6 +595,7 @@ export class InfernoLoadout {
         ItemName.TWISTED_BOW,
         ItemName.BOWFA,
         ItemName.RUNE_CROSSBOW,
+        ItemName.ARMADYL_CROSSBOW,
       ]);
       loadout.equipment.weapon = loadout.inventory[bow] as Weapon;
       loadout.inventory[bow] = staff;
@@ -561,9 +629,19 @@ export class InfernoLoadout {
         loadout.equipment.legs = loadout.inventory[rangeLegs] as Legs;
         loadout.inventory[rangeLegs] = mageLegs;
       }
+
+      // swap out mage gloves for range gloves
+      const mageGloves = loadout.equipment.gloves;
+      const rangeGloves = this.findAnyItemWithName(loadout.inventory, [
+        ItemName.HUEYCOATL_HIDE_VAMBRACES,
+      ]);
+      if (rangeGloves !== -1) {
+        loadout.equipment.gloves = loadout.inventory[rangeGloves] as Gloves;
+        loadout.inventory[rangeGloves] = mageGloves;
+      }
     }
 
-    if (this.onTask && this.loadoutType !== "pure") {
+    if (this.onTask && this.loadoutType !== "pure" && this.loadoutType !== "budget_pure_acb") {
       loadout.equipment.helmet = new SlayerHelmet();
     }
 
