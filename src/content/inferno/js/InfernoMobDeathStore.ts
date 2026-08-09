@@ -1,6 +1,7 @@
 import { Mob, Region } from "osrs-sdk";
 
 import { shuffle, remove } from "lodash";
+import { JalImKot } from "./mobs/JalImKot";
 
 export class InfernoMobDeathStore {
   static mobDeathStore = new InfernoMobDeathStore();
@@ -11,9 +12,11 @@ export class InfernoMobDeathStore {
     }
   }
 
-  static selectMobToResurect(_region: Region) {
+  static selectMobToResurect(_region: Region, forceMelee = false) {
     if (InfernoMobDeathStore.deadMobs.length) {
-      const mobToResurrect = shuffle(InfernoMobDeathStore.deadMobs)[0];
+      const mobToResurrect = forceMelee
+        ? InfernoMobDeathStore.deadMobs.find(mob => mob instanceof JalImKot)
+        : shuffle(InfernoMobDeathStore.deadMobs)[0];
       mobToResurrect.hasResurrected = true;
       remove(InfernoMobDeathStore.deadMobs, mobToResurrect);
       return mobToResurrect;
