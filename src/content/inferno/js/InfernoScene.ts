@@ -32,7 +32,7 @@ export class InfernoScene extends Entity {
   }
 
   create3dModel(): Model {
-    return new GLTFModel(this, [InfernoSceneModel], { scale: 1, verticalOffset: -2.5, originOffset: {
+    return new GLTFModel(this, [InfernoSceneModel], { scale: 1, verticalOffset: -2.375, originOffset: {
       x: -6.5,
       y: 12.5,
     }});
