@@ -47,7 +47,8 @@
     "wrangler": "^4.112.0"
   },
   "dependencies": {
-    "osrs-sdk": "0.1.4",
+    "@types/new-relic-browser": "^0.1118.2",
+    "osrs-sdk": "^0.1.7",
     "three": "^0.163.0"
   }
 }
