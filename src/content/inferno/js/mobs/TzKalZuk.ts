@@ -1,6 +1,6 @@
 "use strict";
 
-import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings } from "osrs-sdk";
+import { Assets, MagicWeapon, Unit, Sound, Projectile, Mob, Region, UnitOptions, ImageLoader, Location, Viewport, UnitTypes, UnitBonuses, Model, GLTFModel, EntityNames, Trainer, Settings, AttackBonuses } from "osrs-sdk";
 
 import ZukImage from "../../assets/images/TzKal-Zuk.png";
 import { InfernoSettings } from "../InfernoSettings";
@@ -31,6 +31,11 @@ class ZukWeapon extends MagicWeapon {
   isBlockable() {
     return false;
   }
+
+  getMaxDamageCap(bonuses: AttackBonuses): number {
+    return 148;
+  }
+
   registerProjectile(from: Unit, to: Unit) {
     const sound = new Sound(ZukAttackSound, 0.03);
     if (to.isPlayer) {
@@ -220,7 +225,7 @@ export class TzKalZuk extends Mob {
   }
 
   magicMaxHit() {
-    return 251;
+    return 148;
   }
 
   override get xpBonusMultiplier() {

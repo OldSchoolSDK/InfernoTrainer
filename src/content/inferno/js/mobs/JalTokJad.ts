@@ -79,6 +79,10 @@ class JadMagicWeapon extends MagicWeapon {
       }),
     );
   }
+
+  getMaxDamageCap(bonuses: AttackBonuses): number {
+    return 113;
+  }
 }
 class JadRangeWeapon extends RangedWeapon {
   attack(from: Mob, to: Unit, bonuses: AttackBonuses = {}): boolean {
@@ -108,7 +112,18 @@ class JadRangeWeapon extends RangedWeapon {
       }),
     );
   }
+
+  getMaxDamageCap(bonuses: AttackBonuses): number {
+    return 113;
+  }
 }
+
+class JadMeleeWeapon extends MeleeWeapon {
+  getMaxDamageCap(bonuses: AttackBonuses): number {
+    return 113;
+  }
+}
+
 
 const jadMageFrames = JAD_MAGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
 const jadRangeFrames = JAD_RANGE_FRAMES.map((frame) => ImageLoader.createImage(frame));
@@ -147,7 +162,7 @@ export class JalTokJad extends Mob {
 
   setStats() {
     this.weapons = {
-      stab: new MeleeWeapon(),
+      stab: new JadMeleeWeapon(),
       magic: new JadMagicWeapon(),
       range: new JadRangeWeapon(),
     };
